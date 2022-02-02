@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CGZBot3", "CGZBot3\CGZBot3.csproj", "{FC49F04E-B893-443D-8D4B-020D5B56AB60}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC49F04E-B893-443D-8D4B-020D5B56AB60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC49F04E-B893-443D-8D4B-020D5B56AB60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC49F04E-B893-443D-8D4B-020D5B56AB60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC49F04E-B893-443D-8D4B-020D5B56AB60}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A8706B20-D098-4CFC-B28E-B4B8F23ADDFC}
+	EndGlobalSection
+EndGlobal
