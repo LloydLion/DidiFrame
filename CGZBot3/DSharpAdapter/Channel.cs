@@ -28,5 +28,15 @@ namespace CGZBot3.DSharpAdapter
 		public bool Equals(IServerEntity? other) => Equals(other as Channel);
 
 		public bool Equals(IChannel? other) => other is Channel channel && channel.Id == Id;
+
+
+		public static Channel Construct(DiscordChannel channel, DiscordClient client)
+		{
+			return channel.Type switch
+			{
+				ChannelType.Text => new TextChannel(channel, client),
+				_ => new Channel(channel, client)
+			};
+		}
 	}
 }

@@ -17,7 +17,7 @@ namespace CGZBot3.DSharpAdapter
 		public string? Name => category?.Name;
 
 		public IReadOnlyCollection<IChannel> Channels =>
-			guild.GetChannelsAsync().Result.Where(s => s.Parent == category).Select(s => new Channel(s, client)).ToArray();
+			guild.GetChannelsAsync().Result.Where(s => s.Parent == category).Select(s => Channel.Construct(s, client)).ToArray();
 
 		public string Id => category?.Id.ToString() ?? $"server {guild.Id}";
 

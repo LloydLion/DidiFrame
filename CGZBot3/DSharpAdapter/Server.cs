@@ -49,12 +49,12 @@ namespace CGZBot3.DSharpAdapter
 
 		public Task<IReadOnlyCollection<IChannel>> GetChannelsAsync()
 		{
-			return Task.FromResult((IReadOnlyCollection<IChannel>)guild.Channels.Values.Select(s => new Channel(s, client)).ToArray());
+			return Task.FromResult((IReadOnlyCollection<IChannel>)guild.Channels.Values.Select(s => Channel.Construct(s, client)).ToArray());
 		}
 
 		public Task<IChannel> GetChannelAsync(string id)
 		{
-			return Task.FromResult((IChannel)new Channel(guild.GetChannel(ulong.Parse(id)), client));
+			return Task.FromResult((IChannel)Channel.Construct(guild.GetChannel(ulong.Parse(id)), client));
 		}
 
 		public bool Equals(IServer? other) => other is not null && other.Id == Id;
