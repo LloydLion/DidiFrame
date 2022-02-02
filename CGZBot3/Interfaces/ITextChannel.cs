@@ -2,6 +2,6 @@
 {
 	internal interface ITextChannel : IChannel
 	{
-		public IMessage SendMessage(IMessageSendModel messageSendModel);
+		public Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel);
 	}
 }

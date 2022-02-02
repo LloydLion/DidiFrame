@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Interfaces
 {
-	internal interface IMember : IServerEntity, IUser
+	internal interface IServerEntity : IEquatable<IServerEntity>
 	{
-
+		public IServer Server { get; }
 	}
 }
