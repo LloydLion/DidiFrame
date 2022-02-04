@@ -29,8 +29,6 @@ namespace CGZBot3.DSharpAdapter
 			{
 				StringPrefixes = opt.Prefixes.Split(' ')
 			});
-
-			client.ConnectAsync().Wait();
 		}
 
 
@@ -42,6 +40,7 @@ namespace CGZBot3.DSharpAdapter
 		public void Connect()
 		{
 			client.ConnectAsync().Wait();
+			Thread.Sleep(5000);
 		}
 
 

@@ -10,7 +10,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public string Name => guild.Name;
 
-		public string Id => guild.ToString();
+		public string Id => guild.Id.ToString();
 
 		public IClient Client => client;
 

@@ -15,4 +15,8 @@ var services = new ServiceCollection()
 	.AddSingleton<IClient, CGZBot3.DSharpAdapter.Client>()
 	.BuildServiceProvider();
 
-services.GetService<IClient>().AwaitForExit().Wait();
+var client = services.GetService<IClient>() ?? throw new Exception();
+
+client.Connect();
+
+client.AwaitForExit();
