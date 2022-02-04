@@ -11,20 +11,20 @@ namespace CGZBot3.DSharpAdapter
 	internal class Message : IMessage
 	{
 		private readonly DiscordMessage message;
-		private readonly DiscordClient client;
+		private readonly TextChannel owner;
 
 
 		public MessageSendModel SendModel { get; }
 
 		public string Id => message.Id.ToString();
 
-		public ITextChannel TextChannel => new TextChannel(message.Channel, client);
+		public ITextChannel TextChannel => owner;
 
 
-		public Message(DiscordMessage message, DiscordClient client, MessageSendModel sendModel)
+		public Message(DiscordMessage message, TextChannel owner, MessageSendModel sendModel)
 		{
 			this.message = message;
-			this.client = client;
+			this.owner = owner;
 			SendModel = sendModel;
 		}
 

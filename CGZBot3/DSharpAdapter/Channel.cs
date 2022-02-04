@@ -6,22 +6,22 @@ namespace CGZBot3.DSharpAdapter
 	internal class Channel : IChannel
 	{
 		private readonly DiscordChannel channel;
-		private readonly DiscordClient client;
+		private readonly Server server;
 
 		public string Name => channel.Name;
 
 		public string Id => channel.Id.ToString();
 
 		public IChannelCategory Category => channel.Parent is null ?
-			new ChannelCategory(channel.Guild, client) : new ChannelCategory(channel.Parent, client);
+			new ChannelCategory(channel.Guild, server) : new ChannelCategory(channel.Parent, server);
 
-		public IServer Server => new Server(channel.Guild, client);
+		public IServer Server => server;
 
 
-		public Channel(DiscordChannel channel, DiscordClient client)
+		public Channel(DiscordChannel channel, Server server)
 		{
 			this.channel = channel;
-			this.client = client;
+			this.server = server;
 		}
 
 
@@ -30,12 +30,12 @@ namespace CGZBot3.DSharpAdapter
 		public bool Equals(IChannel? other) => other is Channel channel && channel.Id == Id;
 
 
-		public static Channel Construct(DiscordChannel channel, DiscordClient client)
+		public static Channel Construct(DiscordChannel channel, Server server)
 		{
 			return channel.Type switch
 			{
-				ChannelType.Text => new TextChannel(channel, client),
-				_ => new Channel(channel, client)
+				ChannelType.Text => new TextChannel(channel, server),
+				_ => new Channel(channel, server)
 			};
 		}
 	}

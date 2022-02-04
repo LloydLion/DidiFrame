@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,24 +12,28 @@ namespace CGZBot3
 {
 	internal class DataBaseContext : DbContext
 	{
-		private static string? connectionString;
+		private readonly Options options;
 
 
-		public DataBaseContext()
+		public DataBaseContext(IOptions<Options> options)
 		{
+			this.options = options.Value;
 
+#if DEBUG
+			Database.EnsureDeleted();
+			Database.EnsureCreated();
+#endif
 		}
 
-
-		public static void AddSettings(IConfiguration configuration)
-		{
-			connectionString = configuration.GetValue<string>("connectionString");
-		}
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlite(connectionString ?? throw new InvalidOperationException
-				("Please setup a configuration with static method AddSettings before create instances"));
+			optionsBuilder.UseSqlite(options.ConnectionString);
+		}
+
+		public class Options
+		{
+			public string ConnectionString { get; set; } = "";
 		}
 	}
 }

@@ -11,5 +11,10 @@ namespace CGZBot3.Interfaces
 		public IReadOnlyCollection<IServer> Servers { get; }
 
 		public IUser SelfAccount { get; }
+
+
+		public Task AwaitForExit();
+
+		public void Connect();
 	}
 }

@@ -14,10 +14,10 @@ namespace CGZBot3.DSharpAdapter
 		public override string UserName => member.DisplayName;
 
 
-		public Member(DiscordMember member, DiscordClient client) : base(member, client)
+		public Member(DiscordMember member, Server server) : base(member, (Client)server.Client)
 		{
 			this.member = member;
-			Server = new Server(member.Guild, client);
+			Server = server;
 		}
 
 

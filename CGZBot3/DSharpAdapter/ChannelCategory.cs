@@ -11,30 +11,31 @@ namespace CGZBot3.DSharpAdapter
 	internal class ChannelCategory : IChannelCategory
 	{
 		private readonly DiscordChannel? category;
-		private readonly DiscordClient client;
 		private readonly DiscordGuild guild;
+		private readonly Server server;
+
 
 		public string? Name => category?.Name;
 
 		public IReadOnlyCollection<IChannel> Channels =>
-			guild.GetChannelsAsync().Result.Where(s => s.Parent == category).Select(s => Channel.Construct(s, client)).ToArray();
+			guild.GetChannelsAsync().Result.Where(s => s.Parent == category).Select(s => Channel.Construct(s, server)).ToArray();
 
 		public string Id => category?.Id.ToString() ?? $"server {guild.Id}";
 
-		public IServer Server => new Server(guild, client);
+		public IServer Server => server;
 
 
-		public ChannelCategory(DiscordChannel category, DiscordClient client)
+		public ChannelCategory(DiscordChannel category, Server server)
 		{
 			this.category = category;
-			this.client = client;
+			this.server = server;
 			this.guild = category.Guild;
 		}
 
-		public ChannelCategory(DiscordGuild guild, DiscordClient client)
+		public ChannelCategory(DiscordGuild guild, Server server)
 		{
 			this.guild = guild;
-			this.client = client;
+			this.server = server;
 		}
 
 
