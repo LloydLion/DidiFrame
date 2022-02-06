@@ -5,7 +5,7 @@
 
 	internal record UserCommandInfo(string Name, UserCommandHandler Handler, IReadOnlyList<UserCommandInfo.Argument> Arguments)
 	{
-		public record Argument(Type ArgumentType, string Name)
+		public record Argument(Argument.Type ArgumentType, string Name)
 		{
 			public enum Type
 			{

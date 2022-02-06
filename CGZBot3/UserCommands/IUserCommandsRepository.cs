@@ -2,6 +2,6 @@
 {
 	internal interface IUserCommandsRepository
 	{
-		public IReadOnlyCollection<UserCommandInfo> GetCommandsFor(IServer server);
+		public IUserCommandsCollection GetCommandsFor(IServer server);
 	}
 }

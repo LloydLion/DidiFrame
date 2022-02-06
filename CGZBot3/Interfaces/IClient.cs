@@ -12,6 +12,8 @@ namespace CGZBot3.Interfaces
 
 		public IUser SelfAccount { get; }
 
+		public ICommandsNotifier CommandsNotifier { get; }
+
 
 		public Task AwaitForExit();
 

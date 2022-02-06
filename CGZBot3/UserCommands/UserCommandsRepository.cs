@@ -3,33 +3,38 @@
 	internal class UserCommandsRepository : IUserCommandsRepository
 	{
 		private readonly List<UserCommandInfo> infos = new();
-		private readonly Options options;
+		private bool built = false;
 
 
-		public UserCommandsRepository(IOptions<Options> options)
+		public IUserCommandsCollection GetCommandsFor(IServer server)
 		{
-			this.options = options.Value;
-
-			infos.AddRange(this.options.Commands);
+			return new UserCommandsCollection(infos);
 		}
 
 
-		public IReadOnlyCollection<UserCommandInfo> GetCommandsFor(IServer server)
+		public class Builder : IUserCommandsRepositoryBuilder
 		{
-			return infos;
-		}
-
-		public void RegisterCommand(UserCommandInfo info)
-		{
-			if (infos.Any(s => s.Name == info.Name))
-				throw new InvalidOperationException("Command with given name already present in repository");
-			infos.Add(info);
-		}
+			private readonly UserCommandsRepository repository;
 
 
-		public class Options
-		{
-			public IReadOnlyCollection<UserCommandInfo> Commands { get; init; } = new List<UserCommandInfo>();
+			public Builder(UserCommandsRepository repository)
+			{
+				this.repository = repository;
+			}
+
+
+			public void AddCommand(UserCommandInfo commandInfo)
+			{
+				if (repository.built) throw new InvalidOperationException("Object has built");
+				if (repository.infos.Any(s => s.Name == commandInfo.Name))
+					throw new InvalidOperationException("Command with given name already present in repository");
+				repository.infos.Add(commandInfo);
+			}
+
+			public void Build()
+			{
+				repository.built = true;
+			}
 		}
 	}
 }

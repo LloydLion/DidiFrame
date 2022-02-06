@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using CGZBot3.UserCommands;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 
 namespace CGZBot3.DSharpAdapter
@@ -12,8 +13,12 @@ namespace CGZBot3.DSharpAdapter
 
 		public IUser SelfAccount => new User(client.CurrentUser, this);
 
+		public DiscordClient BaseClient => client;
 
-		public Client(IOptions<Options> options)
+		public ICommandsNotifier CommandsNotifier { get; }
+
+
+		public Client(IOptions<Options> options, IUserCommandsRepository repository)
 		{
 			var opt = options.Value;
 
@@ -25,10 +30,7 @@ namespace CGZBot3.DSharpAdapter
 				TokenType = TokenType.Bot
 			});
 
-			client.UseCommandsNext(new CommandsNextConfiguration
-			{
-				StringPrefixes = opt.Prefixes.Split(' ')
-			});
+			CommandsNotifier = new CommandsNotifier(this, repository, opt);
 		}
 
 

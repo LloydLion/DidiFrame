@@ -3,6 +3,7 @@ global using CGZBot3.Interfaces;
 global using Microsoft.Extensions.Options;
 
 using CGZBot3;
+using CGZBot3.UserCommands;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,10 @@ var services = new ServiceCollection()
 	.AddDbContext<DataBaseContext>()
 	.Configure<CGZBot3.DSharpAdapter.Client.Options>(config.GetSection("Discord"))
 	.AddSingleton<IClient, CGZBot3.DSharpAdapter.Client>()
+	.Configure<UserCommandsHandler.Options>(config.GetSection("Commands"))
+	.AddTransient<IUserCommandsHandler, UserCommandsHandler>()
+	.AddSingleton<IUserCommandsRepository, UserCommandsRepository>()
+	.AddSingleton<IUserCommandsRepositoryBuilder, UserCommandsRepository.Builder>()
 	.BuildServiceProvider();
 
 var client = services.GetService<IClient>() ?? throw new Exception();
