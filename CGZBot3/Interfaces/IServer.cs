@@ -4,21 +4,25 @@
 	{
 		public Task<IReadOnlyCollection<IMember>> GetMembersAsync();
 
-		public Task<IMember> GetMemberAsync(string id);
+		public Task<IMember> GetMemberAsync(ulong id);
 
 		public Task<IReadOnlyCollection<IChannelCategory>> GetCategoriesAsync();
 
-		public Task<IChannelCategory> GetCategoryAsync(string id);
+		public Task<IChannelCategory> GetCategoryAsync(ulong? id);
 
 		public Task<IReadOnlyCollection<IChannel>> GetChannelsAsync();
 
-		public Task<IChannel> GetChannelAsync(string id);
+		public Task<IChannel> GetChannelAsync(ulong id);
+
+		public Task<IReadOnlyCollection<IRole>> GetRolesAsync();
+
+		public Task<IRole> GetRoleAsync(ulong id);
 
 
 		public IClient Client { get; }
 
 		public string Name { get; }
 
-		public string Id { get; }
+		public ulong Id { get; }
 	}
 }

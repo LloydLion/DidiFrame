@@ -16,7 +16,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public MessageSendModel SendModel { get; }
 
-		public string Id => message.Id.ToString();
+		public ulong Id => message.Id;
 
 		public ITextChannel TextChannel => owner;
 

@@ -4,7 +4,7 @@
 	{
 		public string UserName { get; }
 
-		public string Id { get; }
+		public ulong Id { get; }
 
 		public IClient Client { get; }
 	}

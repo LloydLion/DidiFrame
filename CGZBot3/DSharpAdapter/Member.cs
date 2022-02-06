@@ -1,6 +1,4 @@
-﻿
-using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -22,5 +20,14 @@ namespace CGZBot3.DSharpAdapter
 
 
 		public bool Equals(IServerEntity? other) => other is Member member && member.Id == Id;
+
+		public Task<IReadOnlyCollection<IRole>> GetRolesAsync() => Task.FromResult((IReadOnlyCollection<IRole>)member.Roles.ToArray());
+
+		public Task GrantRoleAsync(IRole role) => member.GrantRoleAsync(((Role)role).BaseRole);
+
+		public Task RevokeRoleAsync(IRole role) => member.RevokeRoleAsync(((Role)role).BaseRole);
+
+		public bool HasPermissionIn(Permissions permissions, IChannel channel) =>
+			member.PermissionsIn(((Channel)channel).BaseChannel).GetAbstract().HasFlag(permissions);
 	}
 }

@@ -4,7 +4,7 @@
 	{
 		public string Name { get; }
 
-		public string Id { get; }
+		public ulong Id { get; }
 
 		public IChannelCategory Category { get; }
 	}

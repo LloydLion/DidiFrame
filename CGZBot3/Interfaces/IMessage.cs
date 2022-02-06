@@ -6,7 +6,7 @@
 
 		public string Content { get { return SendModel.Content; } }
 
-		public string Id { get; }
+		public ulong Id { get; }
 
 		public ITextChannel TextChannel { get; }
 	}

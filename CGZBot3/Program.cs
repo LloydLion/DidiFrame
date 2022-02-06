@@ -1,10 +1,10 @@
-﻿global using CGZBot3.Interfaces;
-global using CGZBot3.Entities;
+﻿global using CGZBot3.Entities;
+global using CGZBot3.Interfaces;
 global using Microsoft.Extensions.Options;
 
 using CGZBot3;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 var config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("settings.json").Build();
 

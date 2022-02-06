@@ -10,12 +10,14 @@ namespace CGZBot3.DSharpAdapter
 
 		public string Name => channel.Name;
 
-		public string Id => channel.Id.ToString();
+		public ulong Id => channel.Id;
 
 		public IChannelCategory Category => channel.Parent is null ?
 			new ChannelCategory(channel.Guild, server) : new ChannelCategory(channel.Parent, server);
 
 		public IServer Server => server;
+
+		public DiscordChannel BaseChannel => channel;
 
 
 		public Channel(DiscordChannel channel, Server server)

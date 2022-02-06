@@ -10,14 +10,13 @@ namespace CGZBot3.DSharpAdapter
 
 		public string Name => guild.Name;
 
-		public string Id => guild.Id.ToString();
-
 		public IClient Client => client;
 
+		public ulong Id => guild.Id;
 
-		public async Task<IMember> GetMemberAsync(string id)
+		public async Task<IMember> GetMemberAsync(ulong id)
 		{
-			return new Member(await guild.GetMemberAsync(ulong.Parse(id)), this);
+			return new Member(await guild.GetMemberAsync(id), this);
 		}
 
 		public async Task<IReadOnlyCollection<IMember>> GetMembersAsync()
@@ -32,17 +31,15 @@ namespace CGZBot3.DSharpAdapter
 			return Task.FromResult((IReadOnlyCollection<IChannelCategory>)ret);
 		}
 
-		public Task<IChannelCategory> GetCategoryAsync(string id)
+		public Task<IChannelCategory> GetCategoryAsync(ulong? id)
 		{
-			if (id.StartsWith("server "))
+			if (id == null)
 			{
-				var guid = ulong.Parse(id["server ".Length..]);
-				if (guild.Id != guid) throw new FormatException("Id is invalid. Global category for this server is another");
 				return Task.FromResult((IChannelCategory)new ChannelCategory(guild, this));
 			}
 			else
 			{
-				return Task.FromResult((IChannelCategory)new ChannelCategory(guild.GetChannel(ulong.Parse(id)), this));
+				return Task.FromResult((IChannelCategory)new ChannelCategory(guild.GetChannel((ulong)id), this));
 			}
 		}
 
@@ -51,12 +48,22 @@ namespace CGZBot3.DSharpAdapter
 			return Task.FromResult((IReadOnlyCollection<IChannel>)guild.Channels.Values.Select(s => Channel.Construct(s, this)).ToArray());
 		}
 
-		public Task<IChannel> GetChannelAsync(string id)
+		public Task<IChannel> GetChannelAsync(ulong id)
 		{
-			return Task.FromResult((IChannel)Channel.Construct(guild.GetChannel(ulong.Parse(id)), this));
+			return Task.FromResult((IChannel)Channel.Construct(guild.GetChannel(id), this));
 		}
 
-		public bool Equals(IServer? other) => other is not null && other.Id == Id;
+		public Task<IReadOnlyCollection<IRole>> GetRolesAsync()
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<IRole> GetRoleAsync(ulong id)
+		{
+			return Task.FromResult((IRole)new Role(guild.GetRole(id), this));
+		}
+
+		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
 
 
 		public Server(DiscordGuild guild, Client client)
