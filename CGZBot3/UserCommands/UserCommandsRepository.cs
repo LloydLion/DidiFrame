@@ -11,30 +11,22 @@
 			return new UserCommandsCollection(infos);
 		}
 
-
-		public class Builder : IUserCommandsRepositoryBuilder
+		public void AddCommand(UserCommandInfo commandInfo)
 		{
-			private readonly UserCommandsRepository repository;
+			if (built) throw new InvalidOperationException("Object has built");
+			if (infos.Any(s => s.Name == commandInfo.Name))
+				throw new InvalidOperationException("Command with given name already present in repository");
+			infos.Add(commandInfo);
+		}
 
+		public void AddCommand(UserCommandInfo cmd, IServer server)
+		{
+			throw new NotImplementedException();
+		}
 
-			public Builder(UserCommandsRepository repository)
-			{
-				this.repository = repository;
-			}
-
-
-			public void AddCommand(UserCommandInfo commandInfo)
-			{
-				if (repository.built) throw new InvalidOperationException("Object has built");
-				if (repository.infos.Any(s => s.Name == commandInfo.Name))
-					throw new InvalidOperationException("Command with given name already present in repository");
-				repository.infos.Add(commandInfo);
-			}
-
-			public void Build()
-			{
-				repository.built = true;
-			}
+		public void Bulk()
+		{
+			built = true;
 		}
 	}
 }

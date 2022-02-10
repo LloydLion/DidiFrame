@@ -1,6 +1,7 @@
 ﻿using CGZBot3.UserCommands;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
+using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace CGZBot3.DSharpAdapter
@@ -40,16 +41,37 @@ namespace CGZBot3.DSharpAdapter
 				var cmd = cmds.SingleOrDefault(s => s.Name == content[0]);
 				if (cmd is null) return;
 
-				if (content.Length - 1 != cmd.Arguments.Count) return;
-
 				var parsed = new object[cmd.Arguments.Count];
 
 				for (int i = 0; i < cmd.Arguments.Count; i++)
 				{
-					var rawStr = content[i + 1];
 					var arg = cmd.Arguments[i];
+					try
+					{
+						if (arg.IsArray == false)
+						{
+							var rawStr = content[i + 1];
 
-					try { parsed[i] = await ConvertArgumentAsync(rawStr, arg.ArgumentType, server); }
+							parsed[i] = await ConvertArgumentAsync(rawStr, arg.ArgumentType, server);
+						}
+						else
+						{
+							//Array must be last
+							var countOfRecived = content.Length - 1;
+							var countOfTranslated = (cmd.Arguments.Count - 1);
+
+							var countOfArray = countOfRecived - countOfTranslated;
+
+							var result = CreateArray(arg.ArgumentType, countOfRecived);
+
+							for (int j = 0; j < countOfArray; j++)
+							{
+								result[j] = await ConvertArgumentAsync(content[countOfTranslated + j + 1], arg.ArgumentType, server);
+							}
+
+							parsed[i] = result;
+						}
+					}
 					catch (Exception) { return; }
 				}
 
@@ -73,6 +95,21 @@ namespace CGZBot3.DSharpAdapter
 				case UserCommandInfo.Argument.Type.TimeSpan: return TimeSpan.Parse(rawStr);
 				default: throw new Exception();
 			}
+		}
+
+		private IList CreateArray(UserCommandInfo.Argument.Type ttype, int length)
+		{
+			return ttype switch
+			{
+				UserCommandInfo.Argument.Type.Integer => new int[length],
+				UserCommandInfo.Argument.Type.Double => new double[length],
+				UserCommandInfo.Argument.Type.String => new string[length],
+				UserCommandInfo.Argument.Type.Member => new IMember[length],
+				UserCommandInfo.Argument.Type.Role => new IRole[length],
+				UserCommandInfo.Argument.Type.Mentionable => new object[length],
+				UserCommandInfo.Argument.Type.TimeSpan => new TimeSpan[length],
+				_ => throw new Exception(),
+			};
 		}
 	}
 }
