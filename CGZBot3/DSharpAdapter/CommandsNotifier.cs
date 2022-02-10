@@ -62,7 +62,8 @@ namespace CGZBot3.DSharpAdapter
 
 							var countOfArray = countOfRecived - countOfTranslated;
 
-							var result = CreateArray(arg.ArgumentType, countOfRecived);
+							var result = (IList)(Activator.CreateInstance(arg.ArgumentType.GetReqObjectType().MakeArrayType(), countOfRecived)
+								?? throw new ImpossibleVariantException());
 
 							for (int j = 0; j < countOfArray; j++)
 							{
@@ -95,21 +96,6 @@ namespace CGZBot3.DSharpAdapter
 				case UserCommandInfo.Argument.Type.TimeSpan: return TimeSpan.Parse(rawStr);
 				default: throw new Exception();
 			}
-		}
-
-		private IList CreateArray(UserCommandInfo.Argument.Type ttype, int length)
-		{
-			return ttype switch
-			{
-				UserCommandInfo.Argument.Type.Integer => new int[length],
-				UserCommandInfo.Argument.Type.Double => new double[length],
-				UserCommandInfo.Argument.Type.String => new string[length],
-				UserCommandInfo.Argument.Type.Member => new IMember[length],
-				UserCommandInfo.Argument.Type.Role => new IRole[length],
-				UserCommandInfo.Argument.Type.Mentionable => new object[length],
-				UserCommandInfo.Argument.Type.TimeSpan => new TimeSpan[length],
-				_ => throw new Exception(),
-			};
 		}
 	}
 }

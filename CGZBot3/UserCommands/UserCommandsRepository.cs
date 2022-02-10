@@ -3,7 +3,14 @@
 	internal class UserCommandsRepository : IUserCommandsRepository
 	{
 		private readonly List<UserCommandInfo> infos = new();
+		private readonly IValidator<UserCommandInfo> cmdVal;
 		private bool built = false;
+
+
+		public UserCommandsRepository(IValidator<UserCommandInfo> cmdVal)
+		{
+			this.cmdVal = cmdVal;
+		}
 
 
 		public IUserCommandsCollection GetCommandsFor(IServer server)
@@ -16,6 +23,7 @@
 			if (built) throw new InvalidOperationException("Object has built");
 			if (infos.Any(s => s.Name == commandInfo.Name))
 				throw new InvalidOperationException("Command with given name already present in repository");
+			cmdVal.ValidateAndThrow(commandInfo);
 			infos.Add(commandInfo);
 		}
 

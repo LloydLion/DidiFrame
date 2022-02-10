@@ -1,6 +1,8 @@
 ﻿global using CGZBot3.Entities;
 global using CGZBot3.Interfaces;
+global using CGZBot3.Exceptions;
 global using Microsoft.Extensions.Options;
+global using FluentValidation;
 
 using CGZBot3;
 using CGZBot3.UserCommands;
@@ -20,16 +22,20 @@ var services = new ServiceCollection()
 	.AddSingleton<IUserCommandsRepository, UserCommandsRepository>()
 	.Configure<ReflectionUserCommandsLoader.Options>(config.GetSection("Commands:Loading"))
 	.AddTransient<IUserCommandsLoader, ReflectionUserCommandsLoader>()
+	.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true)
 	.BuildServiceProvider();
 
 
-var rp = services.GetService<IUserCommandsRepository>() ?? throw new Exception();
+var rp = services.GetService<IUserCommandsRepository>() ?? throw new ImpossibleVariantException();
 foreach (var loader in services.GetServices<IUserCommandsLoader>()) loader.LoadTo(rp);
 
 
-var client = services.GetService<IClient>() ?? throw new Exception();
+rp.Bulk();
 
-var cmdHandler = services.GetService<IUserCommandsHandler>() ?? throw new Exception();
+
+var client = services.GetService<IClient>() ?? throw new ImpossibleVariantException();
+
+var cmdHandler = services.GetService<IUserCommandsHandler>() ?? throw new ImpossibleVariantException();
 client.CommandsNotifier.CommandWritten += async (ctx) => { await cmdHandler.HandleAsync(ctx); };
 
 client.Connect();

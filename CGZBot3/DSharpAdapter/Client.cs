@@ -1,6 +1,5 @@
 ﻿using CGZBot3.UserCommands;
 using DSharpPlus;
-using DSharpPlus.CommandsNext;
 
 namespace CGZBot3.DSharpAdapter
 {

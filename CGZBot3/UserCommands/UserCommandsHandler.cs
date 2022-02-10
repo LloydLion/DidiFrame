@@ -5,22 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CGZBot3
+namespace CGZBot3.UserCommands
 {
 	internal class UserCommandsHandler : IUserCommandsHandler
 	{
 		private readonly Options options;
+		private readonly IValidator<UserCommandContext> ctxVal;
 
 
-		public UserCommandsHandler(IOptions<Options> options)
+		public UserCommandsHandler(IOptions<Options> options, IValidator<UserCommandContext> ctxVal)
 		{
 			this.options = options.Value;
+			this.ctxVal = ctxVal;
 		}
 
 
 		public async Task HandleAsync(UserCommandContext ctx)
 		{
 			UserCommandResult result;
+
+			ctxVal.ValidateAndThrow(ctx);
 
 			try
 			{
