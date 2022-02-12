@@ -1,4 +1,6 @@
-﻿namespace CGZBot3.UserCommands
+﻿using Microsoft.Extensions.Logging;
+
+namespace CGZBot3.UserCommands
 {
 	internal record UserCommandContext(
 		IMember Invoker,
@@ -6,6 +8,12 @@
 		UserCommandInfo Command,
 		IReadOnlyDictionary<UserCommandInfo.Argument, object> Arguments)
 	{
+		public ILogger? Logger { get; private set; }
 
+
+		public void AddLogger(ILogger logger)
+		{
+			Logger = logger;
+		}
 	}
 }

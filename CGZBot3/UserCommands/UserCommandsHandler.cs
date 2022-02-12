@@ -1,4 +1,5 @@
 ﻿using CGZBot3.UserCommands;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,14 @@ namespace CGZBot3.UserCommands
 	{
 		private readonly Options options;
 		private readonly IValidator<UserCommandContext> ctxVal;
+		private readonly ILogger<UserCommandsHandler> logger;
 
 
-		public UserCommandsHandler(IOptions<Options> options, IValidator<UserCommandContext> ctxVal)
+		public UserCommandsHandler(IOptions<Options> options, IValidator<UserCommandContext> ctxVal, ILogger<UserCommandsHandler> logger)
 		{
 			this.options = options.Value;
 			this.ctxVal = ctxVal;
+			this.logger = logger;
 		}
 
 
@@ -25,6 +28,8 @@ namespace CGZBot3.UserCommands
 			UserCommandResult result;
 
 			ctxVal.ValidateAndThrow(ctx);
+
+			using(logger.BeginScope("cmd: {CommandName}", ctx.Command.Name))
 
 			try
 			{
@@ -38,13 +43,13 @@ namespace CGZBot3.UserCommands
 				};
 			}
 
+			logger.Log(LogLevel.Trace, new EventId(33, "Command complite"), "Command executed with code {ResultCode}", result.Code);
+
 			if(result.RespondMessage != null)
 			{
 				await ctx.Channel.SendMessageAsync(result.RespondMessage);
+				logger.Log(LogLevel.Trace, new EventId(32, "Message sent"), "Message sent with content: {Content}", result.RespondMessage.Content);
 			}
-
-			//TEMP!!! Change to logger!!!
-			Console.WriteLine($"Command {ctx.Command.Name} executed with code {result.Code}");
 
 			MessageSendModel? createExcetionMessage(Exception ex)
 			{

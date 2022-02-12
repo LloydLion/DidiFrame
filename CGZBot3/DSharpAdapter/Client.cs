@@ -1,5 +1,6 @@
 ﻿using CGZBot3.UserCommands;
 using DSharpPlus;
+using Microsoft.Extensions.Logging;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -17,7 +18,7 @@ namespace CGZBot3.DSharpAdapter
 		public ICommandsNotifier CommandsNotifier { get; }
 
 
-		public Client(IOptions<Options> options, IUserCommandsRepository repository)
+		public Client(IOptions<Options> options, IUserCommandsRepository repository, ILoggerFactory factory)
 		{
 			var opt = options.Value;
 
@@ -26,7 +27,8 @@ namespace CGZBot3.DSharpAdapter
 				Token = opt.Token,
 				AutoReconnect = true,
 				HttpTimeout = new TimeSpan(0, 1, 0),
-				TokenType = TokenType.Bot
+				TokenType = TokenType.Bot,
+				LoggerFactory = factory
 			});
 
 			CommandsNotifier = new CommandsNotifier(this, repository, opt);
@@ -44,6 +46,10 @@ namespace CGZBot3.DSharpAdapter
 			Thread.Sleep(5000);
 		}
 
+		public bool IsInNamespace(string typeName)
+		{
+			return typeName.StartsWith("DSharpPlus.");
+		}
 
 		public class Options
 		{

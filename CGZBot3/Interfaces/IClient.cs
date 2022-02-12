@@ -14,6 +14,8 @@ namespace CGZBot3.Interfaces
 
 		public ICommandsNotifier CommandsNotifier { get; }
 
+		public bool IsInNamespace(string typeName);
+
 
 		public Task AwaitForExit();
 

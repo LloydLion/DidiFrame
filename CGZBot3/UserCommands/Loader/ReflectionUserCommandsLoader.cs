@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,11 +12,13 @@ namespace CGZBot3.UserCommands.Loader
 	internal class ReflectionUserCommandsLoader : IUserCommandsLoader
 	{
 		private readonly Options options;
+		private readonly ILogger<ReflectionUserCommandsLoader> logger;
 
-		
-		public ReflectionUserCommandsLoader(IOptions<Options> options)
+
+		public ReflectionUserCommandsLoader(IOptions<Options> options, ILogger<ReflectionUserCommandsLoader> logger)
 		{
 			this.options = options.Value;
+			this.logger = logger;
 		}
 
 
@@ -35,8 +38,7 @@ namespace CGZBot3.UserCommands.Loader
 
 					if(!ValidateMethod(method))
 					{
-						Console.WriteLine($"Method {method.Name} in {method.DeclaringType?.FullName}" +
-							$" can't be command, but marked as command by attribute");
+						logger.Log(LogLevel.Debug, new EventId(12, "Loading error"), "Method {MethodName} in {DeclaringType} can't be command, but marked as command by attribute", method.Name, method.DeclaringType?.FullName);
 						continue;
 					}
 
