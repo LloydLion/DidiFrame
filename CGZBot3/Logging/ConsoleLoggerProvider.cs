@@ -11,17 +11,19 @@ namespace CGZBot3.Logging
 	internal class ConsoleLoggerProvider : ILoggerProvider
 	{
 		private readonly Format format;
+		private readonly DateTime start;
 
 
-		public ConsoleLoggerProvider(Format format)
+		public ConsoleLoggerProvider(Format format, DateTime start)
 		{
 			this.format = format;
+			this.start = start;
 		}
 
 
 		public ILogger CreateLogger(string categoryName)
 		{
-			return new ConsoleLogger(categoryName, format);
+			return new ConsoleLogger(categoryName, format, start);
 		}
 
 		public void Dispose()

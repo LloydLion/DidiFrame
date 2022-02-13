@@ -12,22 +12,27 @@ namespace CGZBot3.Logging
 	{
 		private readonly string categoryName;
 		private readonly Format console;
-		private static DateTime start;
+		private static DateOnly start;
 		private static bool init;
+		private static readonly object syncRoot = new();
 
 
-		private Stack<ScopeHandler> scopeStack = new();
+		private readonly Stack<ScopeHandler> scopeStack = new();
 
 
-		public ConsoleLogger(string categoryName, Format format)
+		public ConsoleLogger(string categoryName, Format format, DateTime start)
 		{
-			this.categoryName = categoryName;
-			console = format;
-			if (init == false)
+			lock (syncRoot)
 			{
-				console.WriteLine($"Startup - now: {DateTime.Now}", Colors.txtInfo);
-				start = DateTime.Now;
-				init = true;
+				this.categoryName = categoryName;
+				console = format;
+
+				if (init == false)
+				{
+					console.WriteLine($"Startup - now: {start}", Colors.txtInfo);
+					ConsoleLogger.start = DateOnly.FromDateTime(start);
+					init = true;
+				}
 			}
 		}
 
@@ -49,26 +54,40 @@ namespace CGZBot3.Logging
 			var msg = formatter(state, exception);
 
 			var scope = string.Join('/', scopeStack.Select(s => s.State));
-			if (scopeStack.Count != 0) scope = '|' + scope;
 
-			console.Write("[Day:");
-			console.Write($"{(DateTime.Now - start).Days} {DateTime.Now:HH:mm:ss}", Colors.txtPrimary);
-			console.Write("] [");
-			console.Write($"{categoryName}|{eventId.Name}({eventId.Id}){scope}", Colors.txtSuccess);
-			console.Write($"] [");
-			console.Write(logLevel.ToString(), logLevel switch
+			lock (syncRoot)
 			{
-				LogLevel.Trace => Colors.bgMuted,
-				LogLevel.Debug => Colors.bgMuted,
-				LogLevel.Information => Colors.bgInfo,
-				LogLevel.Warning => Colors.bgWarning,
-				LogLevel.Error => Colors.bgDanger,
-				LogLevel.Critical => Colors.bgDanger,
-				_ or LogLevel.None => Colors.txtDefault,
-			});
-			console.Write($"] : {msg}");
+				console.Write("[Day:");
+				console.Write($"{(DateTime.Now - start.ToDateTime(new TimeOnly(0, 0, 0, 0))).Days} {DateTime.Now:HH:mm:ss}", Colors.txtWarning);
+				console.Write("] [");
+				console.Write(categoryName, Colors.txtSuccess);
+				if (scopeStack.Count != 0)
+				{
+					console.Write("|", Colors.txtDefault);
+					console.Write(scope.ToString(), Colors.txtSuccess);
+				}
+				console.Write("|", Colors.txtDefault);
+				console.Write($"{eventId.Name}({eventId.Id})", Colors.txtSuccess);
+				console.Write($"] [");
+				console.Write(logLevel.ToString(), logLevel switch
+				{
+					LogLevel.Trace => Colors.bgMuted,
+					LogLevel.Debug => Colors.bgPrimary,
+					LogLevel.Information => Colors.bgInfo,
+					LogLevel.Warning => Colors.bgWarning,
+					LogLevel.Error => Colors.bgDanger,
+					LogLevel.Critical => Colors.bgDanger,
+					_ or LogLevel.None => Colors.txtDefault,
+				});
+				console.Write($"] : {msg}");
 
-			Console.WriteLine();
+				Console.WriteLine();
+
+				if (exception is not null)
+				{
+					console.WriteLine(exception.ToString(), Colors.txtDanger);
+				}
+			}
 		}
 
 

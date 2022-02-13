@@ -11,6 +11,10 @@ namespace CGZBot3.UserCommands.Loader
 {
 	internal class ReflectionUserCommandsLoader : IUserCommandsLoader
 	{
+		private static readonly EventId LoadingSkipID = new(12, "LoadingSkip");
+		private static readonly EventId LoadingDoneID = new(13, "LoadingDone");
+
+
 		private readonly Options options;
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
 
@@ -36,37 +40,50 @@ namespace CGZBot3.UserCommands.Loader
 				{
 					if (method is null) throw new ImpossibleVariantException();
 
-					if(!ValidateMethod(method))
+					using (logger.BeginScope("Method {TypeName}.{MethodName}", method.DeclaringType?.FullName, method.Name))
 					{
-						logger.Log(LogLevel.Debug, new EventId(12, "Loading error"), "Method {MethodName} in {DeclaringType} can't be command, but marked as command by attribute", method.Name, method.DeclaringType?.FullName);
-						continue;
-					}
 
-					var commandName = ((CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), false)[0]).Name;
-
-					var @params = method.GetParameters();
-					var args = new UserCommandInfo.Argument[@params.Length - 1];
-					for (int i = 1; i < @params.Length; i++)
-					{
-						var ptype = @params[i].ParameterType;
-						var switchOn = ptype.IsArray && i == @params.Length - 1 ? ptype.GetElementType() ?? throw new ImpossibleVariantException() : ptype;
-
-						var atype = switchOn.FullName switch
+						if (!ValidateMethod(method))
 						{
-							"System.Int32" => UserCommandInfo.Argument.Type.Integer,
-							"System.Double" => UserCommandInfo.Argument.Type.Double,
-							"System.String" => UserCommandInfo.Argument.Type.String,
-							"System.TimeSpan" => UserCommandInfo.Argument.Type.TimeSpan,
-							"CGZBot3.Interfaces.IMember" => UserCommandInfo.Argument.Type.Member,
-							"CGZBot3.Interfaces.IRole" => UserCommandInfo.Argument.Type.Role,
-							"System.Object" => UserCommandInfo.Argument.Type.Mentionable,
-							_ => throw new ImpossibleVariantException(),
-						};
+							logger.Log(LogLevel.Debug, LoadingSkipID, "Validation for method failed, method can't be command, but marked as command by attribute");
+							continue;
+						}
 
-						args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, atype, @params[i].Name ?? "no_name");
+						try
+						{
+							var commandName = ((CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), false)[0]).Name;
+
+							var @params = method.GetParameters();
+							var args = new UserCommandInfo.Argument[@params.Length - 1];
+							for (int i = 1; i < @params.Length; i++)
+							{
+								var ptype = @params[i].ParameterType;
+								var switchOn = ptype.IsArray && i == @params.Length - 1 ? ptype.GetElementType() ?? throw new ImpossibleVariantException() : ptype;
+
+								var atype = switchOn.FullName switch
+								{
+									"System.Int32" => UserCommandInfo.Argument.Type.Integer,
+									"System.Double" => UserCommandInfo.Argument.Type.Double,
+									"System.String" => UserCommandInfo.Argument.Type.String,
+									"System.TimeSpan" => UserCommandInfo.Argument.Type.TimeSpan,
+									"CGZBot3.Interfaces.IMember" => UserCommandInfo.Argument.Type.Member,
+									"CGZBot3.Interfaces.IRole" => UserCommandInfo.Argument.Type.Role,
+									"System.Object" => UserCommandInfo.Argument.Type.Mentionable,
+									_ => throw new ImpossibleVariantException(),
+								};
+
+								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, atype, @params[i].Name ?? "no_name");
+							}
+
+							rp.AddCommand(new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args));
+
+							logger.Log(LogLevel.Trace, LoadingDoneID, "Method sucssesfully registrated as command {CommandName}", commandName);
+						}
+						catch (Exception ex)
+						{
+							logger.Log(LogLevel.Warning, LoadingSkipID, ex, "Error while registrating command");
+						}
 					}
-
-					rp.AddCommand(new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args));
 				}
 			}
 		}

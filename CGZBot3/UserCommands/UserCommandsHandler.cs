@@ -10,6 +10,10 @@ namespace CGZBot3.UserCommands
 {
 	internal class UserCommandsHandler : IUserCommandsHandler
 	{
+		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
+		private static readonly EventId MessageSentID = new(34, "MessageSent");
+
+
 		private readonly Options options;
 		private readonly IValidator<UserCommandContext> ctxVal;
 		private readonly ILogger<UserCommandsHandler> logger;
@@ -29,26 +33,29 @@ namespace CGZBot3.UserCommands
 
 			ctxVal.ValidateAndThrow(ctx);
 
-			using(logger.BeginScope("cmd: {CommandName}", ctx.Command.Name))
+			using (logger.BeginScope("Command: {CommandName}", ctx.Command.Name))
+			{
+				ctx.AddLogger(logger);
 
-			try
-			{
-				result = await ctx.Command.Handler.Invoke(ctx);
-			}
-			catch(Exception ex)
-			{
-				result = new UserCommandResult(UserCommandCode.UnspecifiedError)
+				try
 				{
-					RespondMessage = createExcetionMessage(ex)
-				};
-			}
+					result = await ctx.Command.Handler.Invoke(ctx);
+				}
+				catch (Exception ex)
+				{
+					result = new UserCommandResult(UserCommandCode.UnspecifiedError)
+					{
+						RespondMessage = createExcetionMessage(ex)
+					};
+				}
 
-			logger.Log(LogLevel.Trace, new EventId(33, "Command complite"), "Command executed with code {ResultCode}", result.Code);
+				logger.Log(LogLevel.Debug, CommandCompliteID, "Command executed with code {ResultCode}", result.Code);
 
-			if(result.RespondMessage != null)
-			{
-				await ctx.Channel.SendMessageAsync(result.RespondMessage);
-				logger.Log(LogLevel.Trace, new EventId(32, "Message sent"), "Message sent with content: {Content}", result.RespondMessage.Content);
+				if (result.RespondMessage != null)
+				{
+					await ctx.Channel.SendMessageAsync(result.RespondMessage);
+					logger.Log(LogLevel.Trace, MessageSentID, "Message sent with content: {Content}", result.RespondMessage.Content);
+				}
 			}
 
 			MessageSendModel? createExcetionMessage(Exception ex)
