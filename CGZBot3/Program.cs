@@ -1,17 +1,18 @@
 ﻿global using CGZBot3.Entities;
-global using CGZBot3.Interfaces;
 global using CGZBot3.Exceptions;
-global using Microsoft.Extensions.Options;
+global using CGZBot3.Interfaces;
 global using FluentValidation;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;
 
 using CGZBot3;
+using CGZBot3.Logging;
 using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.Loader;
+using CGZBot3.Utils.StateMachine;
+using Colorify;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using CGZBot3.Logging;
-using Colorify;
 using System.Reflection;
 
 ILogger? logger = null;
@@ -46,6 +47,8 @@ try
 		.AddLogging(builder => builder.AddFilter(logFilter).AddMyConsole(startTime))
 
 		.AddTransient(s => new Colorify.Format(Colorify.UI.Theme.Dark))
+
+		.AddTransient(typeof(IStateMachineBuilderFactory<>), typeof(StateMachineBuilderFactory<>))
 
 		.BuildServiceProvider();
 
