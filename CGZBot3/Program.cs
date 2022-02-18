@@ -4,6 +4,7 @@ global using CGZBot3.Interfaces;
 global using FluentValidation;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Localization;
 
 using CGZBot3;
 using CGZBot3.Logging;
@@ -14,13 +15,14 @@ using Colorify;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using CGZBot3.SystemsInjecting;
 
 ILogger? logger = null;
 IClient? client = null;
 IServiceProvider? services = null;
 var FatalErrorID = new EventId(1, "Fatal error");
 IConfiguration? config = null;
-DateTime startTime = DateTime.Now;
+var startTime = DateTime.Now;
 
 try
 {
@@ -50,13 +52,17 @@ try
 
 		.AddTransient(typeof(IStateMachineBuilderFactory<>), typeof(StateMachineBuilderFactory<>))
 
+		.AddLocalization(options => options.ResourcesPath = "Translations")
+
+		.InjectAutoDependencies(new AutoInjector())
+
 		.BuildServiceProvider();
 
 
-	printLogoAnimation(services.GetService<Format>() ?? throw new ImpossibleVariantException()).Wait();
+	printLogoAnimation(services.GetRequiredService<Format>()).Wait();
 
 
-	logger = services.GetService<ILogger<Program>>() ?? throw new ImpossibleVariantException();
+	logger = services.GetRequiredService<ILogger<Program>>();
 }
 catch (Exception ex)
 {

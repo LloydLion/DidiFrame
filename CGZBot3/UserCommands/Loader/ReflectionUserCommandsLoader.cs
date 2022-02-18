@@ -16,12 +16,14 @@ namespace CGZBot3.UserCommands.Loader
 
 
 		private readonly Options options;
+		private readonly IServiceProvider serviceProvider;
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
 
 
-		public ReflectionUserCommandsLoader(IOptions<Options> options, ILogger<ReflectionUserCommandsLoader> logger)
+		public ReflectionUserCommandsLoader(IServiceProvider serviceProvider, IOptions<Options> options, ILogger<ReflectionUserCommandsLoader> logger)
 		{
 			this.options = options.Value;
+			this.serviceProvider = serviceProvider;
 			this.logger = logger;
 		}
 
@@ -32,7 +34,13 @@ namespace CGZBot3.UserCommands.Loader
 
 			foreach (var type in types)
 			{
-				var instance = Activator.CreateInstance(type ?? throw new ImpossibleVariantException()) ?? throw new ImpossibleVariantException();
+				var instance = serviceProvider.GetService(type ?? throw new ImpossibleVariantException());
+
+				if(instance is null)
+				{
+					logger.Log(LogLevel.Warning, "Instance of type {Type} can't be loaded by serviceProvider, but present in load list in config", type.FullName);
+					continue;
+				}
 
 				var methods = type.GetMethods().Where(s => s.GetCustomAttributes(typeof(CommandAttribute), false).Length == 1);
 

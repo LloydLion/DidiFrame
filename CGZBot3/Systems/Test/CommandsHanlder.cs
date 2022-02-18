@@ -1,34 +1,38 @@
 ﻿using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.Loader;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CGZBot3.Systems.Test
 {
 	internal class CommandsHanlder
 	{
+		private readonly IStringLocalizer<CommandsHanlder> localizer;
+
+
+		public CommandsHanlder(IStringLocalizer<CommandsHanlder> localizer)
+		{
+			this.localizer = localizer;
+		}
+
+
 		[Command("hello")]
-		public Task<UserCommandResult> TestCmd(UserCommandContext ctx, string to)
+		public Task<UserCommandResult> TestCmd(UserCommandContext _, string to)
 		{
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel($"Hello {to} from new CGZBot3") });
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
 		}
 
 		[Command("sum")]
-		public Task<UserCommandResult> Sum(UserCommandContext ctx, int a, int b)
+		public Task<UserCommandResult> Sum(UserCommandContext _, int a, int b)
 		{
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-			{ RespondMessage = new MessageSendModel($"Sum result: {a + b}") });
+				{ RespondMessage = new MessageSendModel(localizer["SumResult", a + b]) });
 		}
 
 		[Command("asum")]
-		public Task<UserCommandResult> Sum(UserCommandContext ctx, int[] b)
+		public Task<UserCommandResult> Sum(UserCommandContext _, int[] b)
 		{
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-			{ RespondMessage = new MessageSendModel($"Sum result: {b.Sum()}") });
+				{ RespondMessage = new MessageSendModel(localizer["SumResult", b.Sum()]) });
 		}
 	}
 }
