@@ -1,6 +1,7 @@
 ﻿global using CGZBot3.Entities;
 global using CGZBot3.Exceptions;
 global using CGZBot3.Interfaces;
+global using CGZBot3.Data;
 global using FluentValidation;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using CGZBot3.SystemsInjecting;
+using CGZBot3.Data.Database;
 
 ILogger? logger = null;
 IClient? client = null;
@@ -30,8 +32,12 @@ try
 
 
 	services = new ServiceCollection()
-		.Configure<DataBaseContext.Options>(config.GetSection("DataBase"))
-		.AddDbContext<DataBaseContext>()
+		.Configure<DatabaseContextOptions>(config.GetSection("Database"))
+		.AddDbContext<SettingsDatabaseContext>()
+		.AddDbContext<StateDatabaseContext>()
+
+		.AddTransient<IServersSettingsRepository, ServersSettingsRepository>()
+		.AddTransient<IServersStatesRepository, ServersStatesRepository>()
 
 		.Configure<CGZBot3.DSharpAdapter.Client.Options>(config.GetSection("Discord"))
 		.AddSingleton<IClient, CGZBot3.DSharpAdapter.Client>()
