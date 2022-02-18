@@ -117,10 +117,13 @@ namespace CGZBot3.UserCommands.Loader
 				if (!Regex.IsMatch(@params[i].Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
 			}
 
-			var lastParamType = @params.Last().ParameterType;
-			lastParamType = lastParamType.IsArray ? lastParamType.GetElementType() : lastParamType;
-			if (!possibleTypes.Contains(lastParamType)) return false;
-			if (!Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
+			if (@params.Length > 1)
+			{
+				var lastParamType = @params.Last().ParameterType;
+				lastParamType = lastParamType.IsArray ? lastParamType.GetElementType() : lastParamType;
+				if (!possibleTypes.Contains(lastParamType)) return false;
+				if (!Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
+			}
 
 			return true;
 		}
