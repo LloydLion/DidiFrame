@@ -21,13 +21,17 @@ namespace CGZBot3.Data
 			return context.SaveChangesAsync();
 		}
 
-		public async Task<ServerSettings> GetOrCreateAsync(IServer server)
+		public async Task<ServerSettings> GetOrCreateAsync(IServer server, params string[] navProperties)
 		{
 			var dbset = context.GetSettings();
-
 			var value = dbset.SingleOrDefault(s => s.ServerId == server.Id);
 
-			if (value is not null) return value;
+			if (value is not null)
+			{
+				foreach (var property in navProperties)
+					context.Entry(value).Reference(property).Load();
+				return value;
+			}
 			else
 			{
 				value = new ServerSettings() { ServerId = server.Id };

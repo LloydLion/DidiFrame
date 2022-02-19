@@ -6,11 +6,13 @@ namespace CGZBot3.Systems.Test
 	internal class CommandsHanlder
 	{
 		private readonly IStringLocalizer<CommandsHanlder> localizer;
+		private readonly SystemCore core;
 
 
-		public CommandsHanlder(IStringLocalizer<CommandsHanlder> localizer)
+		public CommandsHanlder(IStringLocalizer<CommandsHanlder> localizer, SystemCore core)
 		{
 			this.localizer = localizer;
+			this.core = core;
 		}
 
 
@@ -33,6 +35,13 @@ namespace CGZBot3.Systems.Test
 		{
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
 				{ RespondMessage = new MessageSendModel(localizer["SumResult", b.Sum()]) });
+		}
+
+		[Command("display")]
+		public async Task<UserCommandResult> Display(UserCommandContext ctx)
+		{
+			await core.SendDisplayMessageAsync(ctx.Invoker.Server);
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["DisplayComplite"]) };
 		}
 	}
 }

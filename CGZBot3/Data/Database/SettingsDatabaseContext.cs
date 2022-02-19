@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CGZBot3.Systems.Test.Settings;
+using Microsoft.EntityFrameworkCore;
 
 namespace CGZBot3.Data.Database
 {
-	internal class SettingsDatabaseContext : DbContext
+	internal partial class SettingsDatabaseContext : DbContext
 	{
 		private readonly DatabaseContextOptions options;
 

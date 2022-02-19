@@ -3,6 +3,7 @@ using System;
 using CGZBot3.Data.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CGZBot3.Data.Database.SettingsMigrations
 {
     [DbContext(typeof(SettingsDatabaseContext))]
-    partial class SettingsDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220219101658_TestSystem")]
+    partial class TestSystem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");

@@ -31,9 +31,6 @@
     <None Update="settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="settings.sqlite.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="state.sqlite.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
