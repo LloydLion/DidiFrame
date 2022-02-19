@@ -1,13 +1,17 @@
-﻿namespace CGZBot3.Data.Json
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace CGZBot3.Data.Json
 {
 	internal class ServersStatesRepository : IServersStatesRepository
 	{
 		public readonly JsonContext context;
+		private readonly IServiceProvider provider;
 
 
-		public ServersStatesRepository(IOptions<Options> options)
+		public ServersStatesRepository(IOptions<Options> options, IServiceProvider provider)
 		{
 			context = new JsonContext(options.Value.BaseDirectory);
+			this.provider = provider;
 		}
 
 
@@ -23,7 +27,7 @@
 
 		public TModel GetOrCreate<TModel>(IServer server, string key) where TModel : class
 		{
-			return context.Load<TModel>(server, key);
+			return context.Load(server, key, provider.GetRequiredService<IModelFactory<TModel>>());
 		}
 
 		public void Update<TModel>(IServer server, TModel state, string key) where TModel : class

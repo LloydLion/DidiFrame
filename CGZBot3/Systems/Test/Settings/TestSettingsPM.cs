@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Systems.Test.Settings
 {
-	internal class TestSettingsRM
+	internal class TestSettingsPM
 	{
 		public string SomeString { get; set; } = "";
 

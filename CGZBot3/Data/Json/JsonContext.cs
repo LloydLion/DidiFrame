@@ -14,6 +14,25 @@ namespace CGZBot3.Data.Json
 		}
 
 
+		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel> factory) where TModel : class
+		{
+			var path = GetFileFromServer(server);
+
+			if (!File.Exists(path)) return PutDefault(server, key, factory);
+			else
+			{
+				using var fs = File.Open(path, FileMode.Open, FileAccess.Read);
+				var content = new StreamReader(fs).ReadToEnd();
+
+				var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
+
+				var model = jobj.GetValue(key)?.ToObject<TModel>();
+
+				if (model is null) return PutDefault(server, key, factory);
+				else return model;
+			}
+		}
+		
 		public TModel Load<TModel>(IServer server, string key) where TModel : class
 		{
 			var path = GetFileFromServer(server);
@@ -22,7 +41,10 @@ namespace CGZBot3.Data.Json
 			var content = new StreamReader(fs).ReadToEnd();
 
 			var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
-			return jobj.GetValue(key)?.ToObject<TModel>() ?? throw new ArgumentException("Key not found", nameof(key));
+
+			var model = jobj.GetValue(key)?.ToObject<TModel>() ?? throw new ArgumentException("Key dom't present in json or section contains invalid data", nameof(key));
+
+			return model;
 		}
 
 		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
@@ -58,6 +80,13 @@ namespace CGZBot3.Data.Json
 				writer.Write(JsonConvert.SerializeObject(jobj));
 				writer.Flush();
 			}
+		}
+
+		public TModel PutDefault<TModel>(IServer server, string key, IModelFactory<TModel> factory) where TModel : class
+		{
+			var model = factory.CreateDefault();
+			Put(server, key, model);
+			return model;
 		}
 
 		public void Delete(IServer server, string key)

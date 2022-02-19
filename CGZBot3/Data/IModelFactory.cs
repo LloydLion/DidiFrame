@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Data
 {
-	internal static class SystemsKeys
+	internal interface IModelFactory<out TModel>
 	{
-		public const string TestSystem = "test";
+		public TModel CreateDefault();
 	}
 }

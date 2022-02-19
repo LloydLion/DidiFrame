@@ -21,7 +21,7 @@
 			context.DeleteAll(server);
 		}
 
-		public TModel GetOrCreate<TModel>(IServer server, string key) where TModel : class
+		public TModel Get<TModel>(IServer server, string key) where TModel : class
 		{
 			return context.Load<TModel>(server, key);
 		}

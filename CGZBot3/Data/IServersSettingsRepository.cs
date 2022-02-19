@@ -2,7 +2,7 @@
 {
 	internal interface IServersSettingsRepository
 	{
-		public TModel GetOrCreate<TModel>(IServer server, string key) where TModel : class;
+		public TModel Get<TModel>(IServer server, string key) where TModel : class;
 
 		public void DeleteServer(IServer server, string key);
 

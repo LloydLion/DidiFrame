@@ -1,4 +1,5 @@
-﻿using CGZBot3.UserCommands;
+﻿using CGZBot3.Culture;
+using CGZBot3.UserCommands;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,15 @@ namespace CGZBot3.UserCommands
 		private readonly Options options;
 		private readonly IValidator<UserCommandContext> ctxVal;
 		private readonly ILogger<UserCommandsHandler> logger;
+		private readonly IServerCultureProvider cultureProvider;
 
 
-		public UserCommandsHandler(IOptions<Options> options, IValidator<UserCommandContext> ctxVal, ILogger<UserCommandsHandler> logger)
+		public UserCommandsHandler(IOptions<Options> options, IValidator<UserCommandContext> ctxVal, ILogger<UserCommandsHandler> logger, IServerCultureProvider cultureProvider)
 		{
 			this.options = options.Value;
 			this.ctxVal = ctxVal;
 			this.logger = logger;
+			this.cultureProvider = cultureProvider;
 		}
 
 
@@ -36,6 +39,8 @@ namespace CGZBot3.UserCommands
 			using (logger.BeginScope("Command: {CommandName}", ctx.Command.Name))
 			{
 				ctx.AddLogger(logger);
+
+				cultureProvider.SetupCulture(ctx.Invoker.Server);
 
 				try
 				{

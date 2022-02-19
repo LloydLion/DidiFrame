@@ -1,16 +1,16 @@
 ﻿namespace CGZBot3.Systems.Test.Settings
 {
-	internal class SettingsConverter : ISettingsConverter<TestSettingsRM, TestSettings>
+	internal class SettingsConverter : ISettingsConverter<TestSettingsPM, TestSettings>
 	{
-		public async Task<TestSettings> ConvertUpAsync(IServer server, TestSettingsRM db)
+		public async Task<TestSettings> ConvertUpAsync(IServer server, TestSettingsPM pm)
 		{
-			var channel = (ITextChannel)await server.GetChannelAsync(db.TestChannel);
-			return new(db.SomeString, channel);
+			var channel = (ITextChannel)await server.GetChannelAsync(pm.TestChannel);
+			return new(pm.SomeString, channel);
 		}
 
-		public Task<TestSettingsRM> ConvertDownAsync(IServer server, TestSettings origin)
+		public Task<TestSettingsPM> ConvertDownAsync(IServer server, TestSettings origin)
 		{
-			return Task.FromResult(new TestSettingsRM() { SomeString = origin.SomeString, TestChannel = origin.TestChannel.Id });
+			return Task.FromResult(new TestSettingsPM() { SomeString = origin.SomeString, TestChannel = origin.TestChannel.Id });
 		}
 	}
 }

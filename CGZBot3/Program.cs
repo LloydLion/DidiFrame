@@ -17,6 +17,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using CGZBot3.SystemsInjecting;
 using CGZBot3.Data.Json;
+using CGZBot3.Culture;
+
+using CultureSettingsConverter = CGZBot3.Culture.SettingsConverter;
 
 ILogger? logger = null;
 IClient? client = null;
@@ -57,6 +60,8 @@ try
 		.AddTransient(typeof(IStateMachineBuilderFactory<>), typeof(StateMachineBuilderFactory<>))
 
 		.AddLocalization(options => options.ResourcesPath = "Translations")
+		.AddTransient<IServerCultureProvider, ServerCultureProvider>()
+		.AddTransient<ISettingsConverter<CultureSettingsPM, CultureSettings>, CultureSettingsConverter>()
 
 		.InjectAutoDependencies(new AutoInjector())
 
