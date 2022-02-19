@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks;
-
-namespace CGZBot3.Data
+﻿namespace CGZBot3.Data
 {
 	internal interface IServersSettingsRepository
 	{
-		public Task<ServerSettings> GetOrCreateAsync(IServer server, params string[] navProperties);
+		public TModel GetOrCreate<TModel>(IServer server, string key) where TModel : class;
 
-		public Task DeleteServerAsync(IServer server);
+		public void DeleteServer(IServer server, string key);
 
-		public Task PostSettingsAsync(IServer server, ServerSettings settings);
+		public void DeleteServer(IServer server);
+
+		public void PostSettings<TModel>(IServer server, TModel settings, string key) where TModel : class;
 	}
 }

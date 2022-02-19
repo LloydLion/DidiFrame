@@ -2,10 +2,12 @@
 {
 	internal interface IServersStatesRepository
 	{
-		public Task<ServerState> GetOrCreateAsync(IServer server);
+		public TModel GetOrCreate<TModel>(IServer server, string key) where TModel : class;
 
-		public Task DeleteServerAsync(IServer server);
+		public void DeleteServer(IServer server, string key);
 
-		public Task UpdateAsync(IServer server, ServerState state);
+		public void DeleteServer(IServer server);
+
+		public void Update<TModel>(IServer server, TModel state, string key) where TModel : class;
 	}
 }

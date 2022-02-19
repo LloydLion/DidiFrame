@@ -7,7 +7,6 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Localization;
 
-using CGZBot3;
 using CGZBot3.Logging;
 using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.Loader;
@@ -17,7 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using CGZBot3.SystemsInjecting;
-using CGZBot3.Data.Database;
+using CGZBot3.Data.Json;
 
 ILogger? logger = null;
 IClient? client = null;
@@ -32,10 +31,9 @@ try
 
 
 	services = new ServiceCollection()
-		.Configure<DatabaseContextOptions>(config.GetSection("Database"))
-		.AddDbContext<SettingsDatabaseContext>()
-		.AddDbContext<StateDatabaseContext>()
 
+		.Configure<ServersSettingsRepository.Options>(config.GetSection("Data:Settings"))
+		.Configure<ServersStatesRepository.Options>(config.GetSection("Data:States"))
 		.AddTransient<IServersSettingsRepository, ServersSettingsRepository>()
 		.AddTransient<IServersStatesRepository, ServersStatesRepository>()
 

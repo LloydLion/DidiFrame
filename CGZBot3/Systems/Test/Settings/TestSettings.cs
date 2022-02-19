@@ -2,18 +2,15 @@
 {
 	internal class TestSettings
 	{
-		public TestSettings(string someString, ITextChannel testChannel, int dbId)
+		public TestSettings(string someString, ITextChannel testChannel)
 		{
 			SomeString = someString;
 			TestChannel = testChannel;
-			DatabaseId = dbId;
 		}
 
 
-		public string SomeString { get; init; }
+		public string SomeString { get; }
 
-		public ITextChannel TestChannel { get; init; }
-
-		public int DatabaseId { get; }
+		public ITextChannel TestChannel { get; }
 	}
 }
