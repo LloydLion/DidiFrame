@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DisplayComplite" xml:space="preserve">
+    <value>Сообщение отправлено успешно</value>
+  </data>
   <data name="Greeting" xml:space="preserve">
     <value>Приветствие от {0}</value>
   </data>
