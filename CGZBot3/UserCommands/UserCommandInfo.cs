@@ -1,9 +1,9 @@
 ﻿namespace CGZBot3.UserCommands
 {
-	internal delegate Task<UserCommandResult> UserCommandHandler(UserCommandContext ctx);
+	public delegate Task<UserCommandResult> UserCommandHandler(UserCommandContext ctx);
 
 
-	internal record UserCommandInfo(string Name, UserCommandHandler Handler, IReadOnlyList<UserCommandInfo.Argument> Arguments)
+	public record UserCommandInfo(string Name, UserCommandHandler Handler, IReadOnlyList<UserCommandInfo.Argument> Arguments)
 	{
 		public record Argument(bool IsArray, Argument.Type ArgumentType, string Name)
 		{

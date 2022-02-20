@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.UserCommands.Loader
 {
-	internal interface IUserCommandsLoader
+	public interface IUserCommandsLoader
 	{
 		public void LoadTo(IUserCommandsRepository rp);
 	}

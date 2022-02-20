@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Interfaces
 {
-	internal interface IClient
+	public interface IClient
 	{
 		public IReadOnlyCollection<IServer> Servers { get; }
 

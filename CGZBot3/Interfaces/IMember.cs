@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Interfaces
 {
-	internal interface IMember : IServerEntity, IUser
+	public interface IMember : IServerEntity, IUser
 	{
 		public Task<IReadOnlyCollection<IRole>> GetRolesAsync();
 

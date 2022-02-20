@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.UserCommands
 {
-	internal class UserCommandsHandler : IUserCommandsHandler
+	public class UserCommandsHandler : IUserCommandsHandler
 	{
 		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
 		private static readonly EventId MessageSentID = new(34, "MessageSent");

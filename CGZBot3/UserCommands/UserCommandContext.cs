@@ -2,7 +2,7 @@
 
 namespace CGZBot3.UserCommands
 {
-	internal record UserCommandContext(
+	public record UserCommandContext(
 		IMember Invoker,
 		ITextChannel Channel,
 		UserCommandInfo Command,

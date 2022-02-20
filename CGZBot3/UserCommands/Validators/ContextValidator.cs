@@ -2,7 +2,7 @@
 
 namespace CGZBot3.UserCommands.Validators
 {
-	internal class ContextValidator : AbstractValidator<UserCommandContext>
+	public class ContextValidator : AbstractValidator<UserCommandContext>
 	{
 		public ContextValidator(IValidator<UserCommandInfo> cmdInfoVal)
 		{

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.UserCommands
 {
-	internal interface IUserCommandsCollection : IReadOnlyCollection<UserCommandInfo>
+	public interface IUserCommandsCollection : IReadOnlyCollection<UserCommandInfo>
 	{
 		public UserCommandInfo GetCommad(string name);
 

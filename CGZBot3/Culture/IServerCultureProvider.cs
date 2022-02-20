@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Culture
 {
-	internal interface IServerCultureProvider
+	public interface IServerCultureProvider
 	{
 		public CultureInfo GetCulture(IServer server);
 

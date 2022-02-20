@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.UserCommands
 {
-	internal class UserCommandResult
+	public class UserCommandResult
 	{
 		public UserCommandResult(UserCommandCode code)
 		{

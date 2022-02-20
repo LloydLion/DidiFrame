@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Interfaces
 {
-	internal interface IRole : IServerEntity
+	public interface IRole : IServerEntity
 	{
 		public Permissions Permissions { get; }
 

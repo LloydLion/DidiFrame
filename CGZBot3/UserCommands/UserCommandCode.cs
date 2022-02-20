@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.UserCommands
 {
-	internal enum UserCommandCode
+	public enum UserCommandCode
 	{
 		Sucssesful,         //Command has sucssesfully excecuted
 		Unauthorizated,		//User hasn't no acsess to object (exclude permssions on server)

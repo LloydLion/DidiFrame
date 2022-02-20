@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Interfaces
 {
-	internal interface IUser : IEquatable<IUser>
+	public interface IUser : IEquatable<IUser>
 	{
 		public string UserName { get; }
 

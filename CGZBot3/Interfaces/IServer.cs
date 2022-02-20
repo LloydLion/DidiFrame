@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Interfaces
 {
-	internal interface IServer : IEquatable<IServer>
+	public interface IServer : IEquatable<IServer>
 	{
 		public Task<IReadOnlyCollection<IMember>> GetMembersAsync();
 

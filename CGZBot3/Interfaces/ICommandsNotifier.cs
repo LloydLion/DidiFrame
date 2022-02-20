@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Interfaces
 {
-	internal delegate void CommandWrittenHandler(UserCommandContext context);
+	public delegate void CommandWrittenHandler(UserCommandContext context);
 
 
-	internal interface ICommandsNotifier
+	public interface ICommandsNotifier
 	{
 		public event CommandWrittenHandler? CommandWritten;
 	}

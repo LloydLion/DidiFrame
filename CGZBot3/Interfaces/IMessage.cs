@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Interfaces
 {
-	internal interface IMessage : IEquatable<IMessage>
+	public interface IMessage : IEquatable<IMessage>
 	{
 		public MessageSendModel SendModel { get; }
 

@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.UserCommands
 {
-	internal class UserCommandsRepository : IUserCommandsRepository
+	public class UserCommandsRepository : IUserCommandsRepository
 	{
 		private readonly List<UserCommandInfo> infos = new();
 		private readonly IValidator<UserCommandInfo> cmdVal;

@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Interfaces
 {
-	internal interface IChannel : IServerEntity, IEquatable<IChannel>
+	public interface IChannel : IServerEntity, IEquatable<IChannel>
 	{
 		public string Name { get; }
 

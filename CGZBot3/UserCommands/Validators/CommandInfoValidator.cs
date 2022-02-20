@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace CGZBot3.UserCommands.Validators
 {
-	internal class CommandInfoValidator : AbstractValidator<UserCommandInfo>
+	public class CommandInfoValidator : AbstractValidator<UserCommandInfo>
 	{
 		private class ByNameArgumentEqComp : IEqualityComparer<UserCommandInfo.Argument>
 		{

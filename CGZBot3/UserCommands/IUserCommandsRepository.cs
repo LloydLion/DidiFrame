@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.UserCommands
 {
-	internal interface IUserCommandsRepository
+	public interface IUserCommandsRepository
 	{
 		public IUserCommandsCollection GetCommandsFor(IServer server);
 

@@ -2,7 +2,7 @@
 
 namespace CGZBot3.UserCommands.Validators
 {
-	internal class CommandArgumentValidator : AbstractValidator<UserCommandInfo.Argument>
+	public class CommandArgumentValidator : AbstractValidator<UserCommandInfo.Argument>
 	{
 		public CommandArgumentValidator()
 		{

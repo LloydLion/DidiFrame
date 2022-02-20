@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.UserCommands
 {
-	internal class UserCommandsCollection : IUserCommandsCollection
+	public class UserCommandsCollection : IUserCommandsCollection
 	{
 		private readonly Dictionary<string, UserCommandInfo> cmds;
 

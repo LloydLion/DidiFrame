@@ -2,7 +2,7 @@
 
 namespace CGZBot3.UserCommands
 {
-	internal interface IUserCommandsHandler
+	public interface IUserCommandsHandler
 	{
 		public Task HandleAsync(UserCommandContext ctx);
 	}
