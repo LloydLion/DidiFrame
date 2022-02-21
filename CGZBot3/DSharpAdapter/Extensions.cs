@@ -1,5 +1,8 @@
 ﻿using DPermissions = DSharpPlus.Permissions;
 using AbsPermissions = CGZBot3.Entities.Permissions;
+using DChannelType = DSharpPlus.ChannelType;
+using AbsChannelType = CGZBot3.Entities.ChannelType;
+using DSharpPlus.Entities;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -13,6 +16,31 @@ namespace CGZBot3.DSharpAdapter
 		public static DPermissions GetDSharp(this AbsPermissions absPermissions)
 		{
 			return (DPermissions)(long)absPermissions;
+		}
+
+		public static DChannelType GetDSharp(this AbsChannelType absChannelType)
+		{
+			return absChannelType switch
+			{
+				AbsChannelType.TextCompatible => DChannelType.Text,
+				AbsChannelType.Voice => DChannelType.Voice,
+				_ => throw new ImpossibleVariantException()
+			};
+		}
+
+		public static AbsChannelType? GetAbstract(this DChannelType dChannelType)
+		{
+			return dChannelType switch
+			{
+				DChannelType.Text or DChannelType.Group or DChannelType.News or	DChannelType.Private => AbsChannelType.TextCompatible,
+				DChannelType.Voice => AbsChannelType.Voice,
+				_ => null
+			};
+		}
+
+		public static DiscordColor GetDSharp(this Color color)
+		{
+			return new DiscordColor(color.Red, color.Green, color.Blue);
 		}
 	}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Exceptions
 {
-	internal class ImpossibleVariantException : Exception
+	public class ImpossibleVariantException : Exception
 	{
 
 	}

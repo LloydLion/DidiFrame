@@ -13,7 +13,7 @@ namespace TestProject.TestingSystemTests
 				var server = new Server(client, "Some server");
 				client.BaseServers.Add(server);
 
-				server.AddMember(new User(client, "The people"), CGZBot3.Entities.Permissions.All);
+				server.AddMember(new User(client, "The people"), Permissions.All);
 
 				var gcat = server.Categories.First();
 				var channel = new TextChannel("the-channel", gcat);
@@ -43,7 +43,7 @@ namespace TestProject.TestingSystemTests
 				var server = new Server(client, "Some server");
 				client.BaseServers.Add(server);
 
-				server.AddMember(new User(client, "The people"), CGZBot3.Entities.Permissions.All);
+				server.AddMember(new User(client, "The people"), Permissions.All);
 
 				var gcat = server.Categories.First();
 				var channel = new TextChannel("the-channel", gcat);
@@ -54,7 +54,7 @@ namespace TestProject.TestingSystemTests
 			//------------------
 
 			{
-				textChannel.SendMessageAsync(new CGZBot3.Entities.MessageSendModel("Text")).Wait();
+				textChannel.SendMessageAsync(new MessageSendModel("Text")).Wait();
 			}
 
 			//------------------
@@ -62,6 +62,36 @@ namespace TestProject.TestingSystemTests
 			{
 				var msg = ((TextChannel)textChannel).Messages.Single();
 				Assert.Equal("Text", msg.SendModel.Content);
+			}
+		}
+
+		[Fact]
+		public void CreateChannel()
+		{
+			var client = new Client();
+			IChannelCategory category;
+
+			{
+				var server = new Server(client, "Some server");
+				client.BaseServers.Add(server);
+
+				server.AddMember(new User(client, "The people"), Permissions.All);
+
+				category = server.Categories.First();
+			}
+
+			//------------------
+
+			{
+				category.CreateChannelAsync(new ChannelCreationModel("Some Channel", ChannelType.TextCompatible)).Wait();
+				category.CreateChannelAsync(new ChannelCreationModel("Some Voice", ChannelType.Voice)).Wait();
+			}
+
+			//------------------
+
+			{
+				Assert.Equal(ChannelType.TextCompatible, category.Channels.Single(s => s.Name == "Some Channel").GetChannelType());
+				Assert.Equal(ChannelType.Voice, category.Channels.Single(s => s.Name == "Some Voice").GetChannelType());
 			}
 		}
 	}

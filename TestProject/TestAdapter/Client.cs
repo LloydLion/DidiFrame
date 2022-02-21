@@ -17,9 +17,9 @@ namespace TestProject.TestAdapter
 
 		public IList<Server> BaseServers { get; } = new List<Server>();
 
-		public ICommandsNotifier CommandsNotifier => BaseCommandsNotifier;
+		public ICommandsDispatcher CommandsDispatcher => BaseCommandsNotifier;
 
-		public CommandsNotifier BaseCommandsNotifier { get; } = new CommandsNotifier();
+		public CommandsDispatcher BaseCommandsNotifier { get; } = new CommandsDispatcher();
 
 
 

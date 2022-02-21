@@ -1,5 +1,6 @@
 ﻿using CGZBot3.UserCommands;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace CGZBot3.DSharpAdapter
@@ -15,7 +16,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public DiscordClient BaseClient => client;
 
-		public ICommandsNotifier CommandsNotifier { get; }
+		public ICommandsDispatcher CommandsDispatcher { get; }
 
 
 		public Client(IOptions<Options> options, IUserCommandsRepository repository, ILoggerFactory factory)
@@ -31,7 +32,7 @@ namespace CGZBot3.DSharpAdapter
 				LoggerFactory = factory
 			});
 
-			CommandsNotifier = new CommandsNotifier(this, repository, opt);
+			CommandsDispatcher = new CommandsDispatcher(this, repository, opt);
 		}
 
 
@@ -44,11 +45,6 @@ namespace CGZBot3.DSharpAdapter
 		{
 			client.ConnectAsync().Wait();
 			Thread.Sleep(5000);
-		}
-
-		public bool IsInNamespace(string typeName)
-		{
-			return typeName.StartsWith("DSharpPlus.");
 		}
 
 		public class Options

@@ -12,6 +12,7 @@ namespace CGZBot3.UserCommands
 	public class UserCommandsHandler : IUserCommandsHandler
 	{
 		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
+		private static readonly EventId CallbackDoneID = new (35, "CallbackDone");
 		private static readonly EventId MessageSentID = new(34, "MessageSent");
 
 
@@ -30,7 +31,7 @@ namespace CGZBot3.UserCommands
 		}
 
 
-		public async Task HandleAsync(UserCommandContext ctx)
+		public async Task HandleAsync(UserCommandContext ctx, Action<UserCommandResult> callback)
 		{
 			UserCommandResult result;
 
@@ -56,11 +57,12 @@ namespace CGZBot3.UserCommands
 
 				logger.Log(LogLevel.Debug, CommandCompliteID, "Command executed with code {ResultCode}", result.Code);
 
-				if (result.RespondMessage != null)
-				{
-					await ctx.Channel.SendMessageAsync(result.RespondMessage);
+				callback(result);
+
+				logger.Log(LogLevel.Trace, CallbackDoneID, "Callback done");
+
+				if (result.RespondMessage is not null)
 					logger.Log(LogLevel.Trace, MessageSentID, "Message sent with content: {Content}", result.RespondMessage.Content);
-				}
 			}
 
 			MessageSendModel? createExcetionMessage(Exception ex)

@@ -9,5 +9,8 @@
 		public bool IsGlobal => Id == null;
 
 		public IReadOnlyCollection<IChannel> Channels { get; }
+
+
+		public Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel);
 	}
 }

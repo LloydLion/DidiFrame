@@ -6,14 +6,14 @@ using System.Text.RegularExpressions;
 
 namespace CGZBot3.DSharpAdapter
 {
-	internal class CommandsNotifier : ICommandsNotifier
+	internal class CommandsDispatcher : ICommandsDispatcher
 	{
 		private readonly Client client;
 		private readonly IUserCommandsRepository repository;
 		private readonly Client.Options clientOptions;
 
 
-		public CommandsNotifier(Client client, IUserCommandsRepository repository, Client.Options clientOptions)
+		public CommandsDispatcher(Client client, IUserCommandsRepository repository, Client.Options clientOptions)
 		{
 			client.BaseClient.MessageCreated += MessageCreatedHandler;
 			this.client = client;
@@ -76,8 +76,23 @@ namespace CGZBot3.DSharpAdapter
 					catch (Exception) { return; }
 				}
 
-				CommandWritten?.Invoke(new UserCommandContext(await server.GetMemberAsync(args.Author.Id), (ITextChannel)await server.GetChannelAsync(args.Channel.Id), cmd,
-					cmd.Arguments.Select((s, i) => (s, i)).Join(parsed.Select((s, i) => (s, i)), s => s.i, s => s.i, (a, b) => (a.s, b.s)).ToDictionary(s => s.Item1, s => s.Item2)));
+				var context = new UserCommandContext(await server.GetMemberAsync(args.Author.Id), (ITextChannel)await server.GetChannelAsync(args.Channel.Id), cmd,
+					cmd.Arguments.Select((s, i) => (s, i)).Join(parsed.Select((s, i) => (s, i)), s => s.i, s => s.i, (a, b) => (a.s, b.s)).ToDictionary(s => s.Item1, s => s.Item2));
+
+				CommandWritten?.Invoke(context, (result) => CallBack(context, result));
+			}
+		}
+
+		private void CallBack(UserCommandContext context, UserCommandResult result)
+		{
+			if (result.RespondMessage is not null)
+				context.Channel.SendMessageAsync(result.RespondMessage);
+			else
+			{
+				if (result.Code != UserCommandCode.Sucssesful)
+				{
+					context.Channel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code));
+				}
 			}
 		}
 

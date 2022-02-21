@@ -4,6 +4,6 @@ namespace CGZBot3.UserCommands
 {
 	public interface IUserCommandsHandler
 	{
-		public Task HandleAsync(UserCommandContext ctx);
+		public Task HandleAsync(UserCommandContext ctx, Action<UserCommandResult> callback);
 	}
 }

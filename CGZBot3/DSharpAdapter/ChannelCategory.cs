@@ -42,5 +42,10 @@ namespace CGZBot3.DSharpAdapter
 		public bool Equals(IServerEntity? other) => Equals(other as ChannelCategory);
 
 		public bool Equals(IChannelCategory? other) => other is ChannelCategory category && category.Id == Id;
+
+		public async Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel)
+		{
+			return Channel.Construct(await guild.CreateChannelAsync(creationModel.Name, creationModel.ChannelType.GetDSharp(), category), server);
+		}
 	}
 }

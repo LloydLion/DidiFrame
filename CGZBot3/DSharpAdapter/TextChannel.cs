@@ -1,10 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ChannelType = DSharpPlus.ChannelType;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -27,13 +23,35 @@ namespace CGZBot3.DSharpAdapter
 		{
 			return new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder =>
 			{
-				var embed = new DiscordEmbedBuilder
+				if (messageSendModel.MessageEmbed is null)
 				{
-					Color = DiscordColor.Gold,
-					Title = messageSendModel.Content
-				};
+					var embed = new DiscordEmbedBuilder
+					{
+						Color = DiscordColor.Gold,
+						Title = messageSendModel.Content
+					};
 
-				builder.AddEmbed(embed);
+					builder.AddEmbed(embed);
+				}
+				else
+				{
+					builder.WithContent(messageSendModel.Content);
+
+					var baseEmbed = messageSendModel.MessageEmbed;
+
+					var embed = new DiscordEmbedBuilder
+					{
+						Title = baseEmbed.Title,
+						Description = baseEmbed.Description,
+						Color = baseEmbed.Color.GetDSharp(),
+						Timestamp = baseEmbed.Metadata.Timestamp,
+						Author = new DiscordEmbedBuilder.EmbedAuthor()
+							{ IconUrl = baseEmbed.Metadata.AuthorIconUrl, Name = baseEmbed.Metadata.AuthorName, Url = baseEmbed.Metadata.AuthorPersonalUrl },
+						ImageUrl = baseEmbed.Metadata.DisplayImageUrl
+					};
+
+					builder.AddEmbed(embed);
+				}
 			}));
 		}
 	}

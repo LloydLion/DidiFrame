@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CGZBot3.Interfaces
+﻿namespace CGZBot3.Interfaces
 {
 	public interface IClient
 	{
@@ -12,9 +6,7 @@ namespace CGZBot3.Interfaces
 
 		public IUser SelfAccount { get; }
 
-		public ICommandsNotifier CommandsNotifier { get; }
-
-		public bool IsInNamespace(string typeName);
+		public ICommandsDispatcher CommandsDispatcher { get; }
 
 
 		public Task AwaitForExit();

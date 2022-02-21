@@ -128,7 +128,7 @@ try
 
 
 		var cmdHandler = services.GetService<IUserCommandsHandler>() ?? throw new ImpossibleVariantException();
-		client.CommandsNotifier.CommandWritten += (ctx) => { cmdHandler.HandleAsync(ctx); };
+		client.CommandsDispatcher.CommandWritten += (ctx, callback) => { cmdHandler.HandleAsync(ctx, callback); };
 		logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");
 
 
@@ -148,7 +148,7 @@ catch (Exception ex)
 
 bool logModuleFilter(string provider, string category, LogLevel level)
 {
-	if (client is not null && client.IsInNamespace(category))
+	if (category.StartsWith("DSharpPlus."))
 	{
 		return level >= LogLevel.Information;
 	}

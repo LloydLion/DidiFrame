@@ -1,5 +1,4 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -34,9 +33,10 @@ namespace CGZBot3.DSharpAdapter
 
 		public static Channel Construct(DiscordChannel channel, Server server)
 		{
-			return channel.Type switch
+			return channel.Type.GetAbstract() switch
 			{
-				ChannelType.Text => new TextChannel(channel, server),
+				ChannelType.TextCompatible => new TextChannel(channel, server),
+				ChannelType.Voice => new VoiceChannel(channel, server),
 				_ => new Channel(channel, server)
 			};
 		}
