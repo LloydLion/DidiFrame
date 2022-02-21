@@ -54,6 +54,7 @@ try
 		.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true)
 
 		.AddLogging(builder => builder.AddFilter(logFilter).AddMyConsole(startTime))
+		.AddTransient<ILoggingFilter, LoggingFilter>()
 
 		.AddTransient(s => new Colorify.Format(Colorify.UI.Theme.Dark))
 
@@ -61,7 +62,8 @@ try
 
 		.AddLocalization(options => options.ResourcesPath = "Translations")
 		.AddTransient<IServerCultureProvider, ServerCultureProvider>()
-		.AddTransient<ISettingsConverter<CultureSettingsPM, CultureSettings>, CultureSettingsConverter>()
+		.AddTransient<IModelConverter<CultureSettingsPM, CultureSettings>, CultureSettingsConverter>()
+		.AddSingleton(new LoggingFilterOption((category) => category.StartsWith("Microsoft.Extensions.Localization.") ? LogLevel.None : LogLevel.Trace))
 
 		.InjectAutoDependencies(new AutoInjector())
 

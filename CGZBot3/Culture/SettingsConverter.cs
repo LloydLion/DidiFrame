@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Culture
 {
-	internal class SettingsConverter : ISettingsConverter<CultureSettingsPM, CultureSettings>
+	internal class SettingsConverter : IModelConverter<CultureSettingsPM, CultureSettings>
 	{
 		public Task<CultureSettingsPM> ConvertDownAsync(IServer server, CultureSettings origin)
 		{

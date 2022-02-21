@@ -12,15 +12,14 @@ namespace CGZBot3.Logging
 	{
 		private readonly string categoryName;
 		private readonly Format console;
+		private readonly Stack<ScopeHandler> scopeStack = new();
+		private readonly ILoggingFilter filter;
 		private static DateOnly start;
 		private static bool init;
 		private static readonly object syncRoot = new();
 
 
-		private readonly Stack<ScopeHandler> scopeStack = new();
-
-
-		public ConsoleLogger(string categoryName, Format format, DateTime start)
+		public ConsoleLogger(string categoryName, Format format, DateTime start, ILoggingFilter filter)
 		{
 			lock (syncRoot)
 			{
@@ -34,6 +33,8 @@ namespace CGZBot3.Logging
 					init = true;
 				}
 			}
+
+			this.filter = filter;
 		}
 
 
@@ -51,6 +52,8 @@ namespace CGZBot3.Logging
 
 		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 		{
+			if(filter.Filter(typeof(ConsoleLoggerProvider).FullName ?? throw new ImpossibleVariantException(), categoryName, logLevel) == false) return;
+
 			var msg = formatter(state, exception);
 
 			var scope = string.Join('/', scopeStack.Select(s => s.State));

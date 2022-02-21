@@ -4,11 +4,11 @@ namespace CGZBot3.Culture
 {
 	internal class ServerCultureProvider : IServerCultureProvider
 	{
-		private readonly ISettingsConverter<CultureSettingsPM, CultureSettings> converter;
+		private readonly IModelConverter<CultureSettingsPM, CultureSettings> converter;
 		private readonly IServersSettingsRepository repository;
 
 
-		public ServerCultureProvider(ISettingsConverter<CultureSettingsPM, CultureSettings> converter, IServersSettingsRepository repository)
+		public ServerCultureProvider(IModelConverter<CultureSettingsPM, CultureSettings> converter, IServersSettingsRepository repository)
 		{
 			this.converter = converter;
 			this.repository = repository;

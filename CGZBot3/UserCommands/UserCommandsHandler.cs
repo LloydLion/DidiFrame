@@ -11,6 +11,7 @@ namespace CGZBot3.UserCommands
 {
 	public class UserCommandsHandler : IUserCommandsHandler
 	{
+		private static readonly EventId CommandStartID = new (32, "CommandStart");
 		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
 		private static readonly EventId CallbackDoneID = new (35, "CallbackDone");
 		private static readonly EventId MessageSentID = new(34, "MessageSent");
@@ -43,9 +44,12 @@ namespace CGZBot3.UserCommands
 
 				cultureProvider.SetupCulture(ctx.Invoker.Server);
 
+				logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
+
 				try
 				{
-					result = await ctx.Command.Handler.Invoke(ctx);
+					using (logger.BeginScope("Internal"))
+						result = await ctx.Command.Handler.Invoke(ctx);
 				}
 				catch (Exception ex)
 				{

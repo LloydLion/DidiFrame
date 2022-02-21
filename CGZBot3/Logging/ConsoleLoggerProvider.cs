@@ -1,10 +1,4 @@
 ﻿using Colorify;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CGZBot3.Logging
 {
@@ -12,18 +6,20 @@ namespace CGZBot3.Logging
 	{
 		private readonly Format format;
 		private readonly DateTime start;
+		private readonly ILoggingFilter filter;
 
 
-		public ConsoleLoggerProvider(Format format, DateTime start)
+		public ConsoleLoggerProvider(Format format, DateTime start, ILoggingFilter filter)
 		{
 			this.format = format;
 			this.start = start;
+			this.filter = filter;
 		}
 
 
 		public ILogger CreateLogger(string categoryName)
 		{
-			return new ConsoleLogger(categoryName, format, start);
+			return new ConsoleLogger(categoryName, format, start, filter);
 		}
 
 		public void Dispose()

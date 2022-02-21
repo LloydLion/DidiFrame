@@ -10,7 +10,7 @@ namespace CGZBot3.Systems.Test
 		{
 			services.AddSingleton<CommandsHanlder>();
 			services.AddSingleton<SystemCore>();
-			services.AddTransient<ISettingsConverter<TestSettingsPM, TestSettings>, SettingsConverter>();
+			services.AddTransient<IModelConverter<TestSettingsPM, TestSettings>, SettingsConverter>();
 			services.AddTransient<ITestSettingsRepository, TestSettingsRepository>();
 		}
 	}

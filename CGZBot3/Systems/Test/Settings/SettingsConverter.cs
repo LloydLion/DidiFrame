@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Systems.Test.Settings
 {
-	internal class SettingsConverter : ISettingsConverter<TestSettingsPM, TestSettings>
+	internal class SettingsConverter : IModelConverter<TestSettingsPM, TestSettings>
 	{
 		public async Task<TestSettings> ConvertUpAsync(IServer server, TestSettingsPM pm)
 		{

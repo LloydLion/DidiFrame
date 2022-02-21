@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace CGZBot3.Logging
 {
@@ -7,7 +6,7 @@ namespace CGZBot3.Logging
 	{
 		public static ILoggingBuilder AddMyConsole(this ILoggingBuilder builder, DateTime start)
 		{
-			builder.Services.AddTransient<ILoggerProvider, ConsoleLoggerProvider>((services) => new ConsoleLoggerProvider(services.GetService<Colorify.Format>() ?? throw new ImpossibleVariantException(), start));
+			builder.Services.AddTransient<ILoggerProvider, ConsoleLoggerProvider>((services) => new ConsoleLoggerProvider(services.GetRequiredService<Colorify.Format>(), start, services.GetRequiredService<ILoggingFilter>()));
 			return builder;
 		}
 	}

@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Data
 {
-	internal interface ISettingsConverter<TPrimitiveModel, TOutput>
+	internal interface IModelConverter<TPrimitiveModel, TOutput>
 	{
 		public Task<TOutput> ConvertUpAsync(IServer server, TPrimitiveModel pm);
 

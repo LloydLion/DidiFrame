@@ -3,10 +3,10 @@
 	internal class TestSettingsRepository : ITestSettingsRepository
 	{
 		private readonly IServersSettingsRepository repository;
-		private readonly ISettingsConverter<TestSettingsPM, TestSettings> converter;
+		private readonly IModelConverter<TestSettingsPM, TestSettings> converter;
 
 
-		public TestSettingsRepository(IServersSettingsRepository repository, ISettingsConverter<TestSettingsPM, TestSettings> converter)
+		public TestSettingsRepository(IServersSettingsRepository repository, IModelConverter<TestSettingsPM, TestSettings> converter)
 		{
 			this.repository = repository;
 			this.converter = converter;
