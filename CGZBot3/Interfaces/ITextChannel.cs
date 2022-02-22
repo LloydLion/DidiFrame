@@ -1,4 +1,6 @@
-﻿namespace CGZBot3.Interfaces
+﻿using CGZBot3.Entities.Message;
+
+namespace CGZBot3.Interfaces
 {
 	public interface ITextChannel : IChannel
 	{

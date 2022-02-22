@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using CGZBot3.Entities.Message;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;

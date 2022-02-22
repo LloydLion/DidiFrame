@@ -2,6 +2,8 @@
 using AbsPermissions = CGZBot3.Entities.Permissions;
 using DChannelType = DSharpPlus.ChannelType;
 using AbsChannelType = CGZBot3.Entities.ChannelType;
+using DButtonStyle= DSharpPlus.ButtonStyle;
+using AbsButtonStyle = CGZBot3.Entities.Message.Components.ButtonStyle;
 using DSharpPlus.Entities;
 
 namespace CGZBot3.DSharpAdapter
@@ -20,6 +22,8 @@ namespace CGZBot3.DSharpAdapter
 
 		public static DChannelType GetDSharp(this AbsChannelType absChannelType)
 		{
+			DiscordSelectComponent
+
 			return absChannelType switch
 			{
 				AbsChannelType.TextCompatible => DChannelType.Text,
@@ -41,6 +45,16 @@ namespace CGZBot3.DSharpAdapter
 		public static DiscordColor GetDSharp(this Color color)
 		{
 			return new DiscordColor(color.Red, color.Green, color.Blue);
+		}
+
+		public static DButtonStyle GetDSharp(this AbsButtonStyle style)
+		{
+			return (DButtonStyle)(int)style;
+		}
+
+		public static AbsButtonStyle GetAbstract(this DButtonStyle style)
+		{
+			return (AbsButtonStyle)(int)style;
 		}
 	}
 }

@@ -12,6 +12,8 @@ namespace CGZBot3.DSharpAdapter
 
 		public IClient Client => client;
 
+		public Client SourceClient => client;
+
 		public ulong Id => guild.Id;
 
 		public async Task<IMember> GetMemberAsync(ulong id)
