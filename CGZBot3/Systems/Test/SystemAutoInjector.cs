@@ -8,7 +8,7 @@ namespace CGZBot3.Systems.Test
 	{
 		public void InjectDependencies(IServiceCollection services)
 		{
-			services.AddSingleton<CommandsHanlder>();
+			services.AddSingleton<CommandsHandler>();
 			services.AddSingleton<SystemCore>();
 			services.AddTransient<IModelConverter<TestSettingsPM, TestSettings>, SettingsConverter>();
 			services.AddTransient<ITestSettingsRepository, TestSettingsRepository>();

@@ -32,15 +32,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Systems\Voice\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Translations\Systems\Test\CommandsHanlder.resx">
+    <EmbeddedResource Update="Translations\Systems\Test\CommandsHandl;er.resx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Update="Translations\Systems\Test\CommandsHanlder.ru-RU.resx">
+    <EmbeddedResource Update="Translations\Systems\Test\CommandsHandler.ru-RU.resx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Voice\UIHelper.ru-RU.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Voice\UIHelper.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Voice\CommandsHandler.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
 

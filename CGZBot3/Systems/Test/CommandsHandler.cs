@@ -1,15 +1,16 @@
-﻿using CGZBot3.UserCommands;
+﻿using CGZBot3.Entities.Message;
+using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.Loader;
 
 namespace CGZBot3.Systems.Test
 {
-	internal class CommandsHanlder
+	internal class CommandsHandler
 	{
-		private readonly IStringLocalizer<CommandsHanlder> localizer;
+		private readonly IStringLocalizer<CommandsHandler> localizer;
 		private readonly SystemCore core;
 
 
-		public CommandsHanlder(IStringLocalizer<CommandsHanlder> localizer, SystemCore core)
+		public CommandsHandler(IStringLocalizer<CommandsHandler> localizer, SystemCore core)
 		{
 			this.localizer = localizer;
 			this.core = core;

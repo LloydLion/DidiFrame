@@ -30,6 +30,11 @@ namespace CGZBot3.DSharpAdapter
 		}
 
 
+		public async Task<IReadOnlyCollection<IMessage>> GetMessagesAsync(int count = -1)
+		{
+			return (await channel.GetMessagesAsync(count == -1 ? 1000 : count)).Select(s => new Message(s, this, new MessageSendModel(s.Content))).ToArray();
+		}
+
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
 			

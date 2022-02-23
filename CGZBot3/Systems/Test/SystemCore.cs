@@ -1,4 +1,5 @@
-﻿using CGZBot3.Systems.Test.Settings;
+﻿using CGZBot3.Entities.Message;
+using CGZBot3.Systems.Test.Settings;
 
 namespace CGZBot3.Systems.Test
 {

@@ -22,8 +22,6 @@ namespace CGZBot3.DSharpAdapter
 
 		public static DChannelType GetDSharp(this AbsChannelType absChannelType)
 		{
-			DiscordSelectComponent
-
 			return absChannelType switch
 			{
 				AbsChannelType.TextCompatible => DChannelType.Text,

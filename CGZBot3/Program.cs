@@ -20,6 +20,7 @@ using CGZBot3.Data.Json;
 using CGZBot3.Culture;
 
 using CultureSettingsConverter = CGZBot3.Culture.SettingsConverter;
+using CGZBot3.GlobalEvents;
 
 ILogger? logger = null;
 IClient? client = null;
@@ -64,6 +65,8 @@ try
 		.AddTransient<IServerCultureProvider, ServerCultureProvider>()
 		.AddTransient<IModelConverter<CultureSettingsPM, CultureSettings>, CultureSettingsConverter>()
 		.AddSingleton(new LoggingFilterOption((category) => category.StartsWith("Microsoft.Extensions.Localization.") ? LogLevel.None : LogLevel.Trace))
+
+		.AddSingleton<StartupEvent>()
 
 		.InjectAutoDependencies(new AutoInjector())
 
@@ -127,6 +130,9 @@ try
 
 		client.Connect();
 		logger.Log(LogLevel.Information, ClientReadyID, "Client connected to discord server");
+
+
+		services.GetRequiredService<StartupEvent>().InvokeStartup();
 
 
 		var cmdHandler = services.GetService<IUserCommandsHandler>() ?? throw new ImpossibleVariantException();

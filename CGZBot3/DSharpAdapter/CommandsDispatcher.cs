@@ -1,4 +1,5 @@
-﻿using CGZBot3.UserCommands;
+﻿using CGZBot3.Entities.Message;
+using CGZBot3.UserCommands;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using System.Collections;

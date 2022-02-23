@@ -1,4 +1,6 @@
-﻿namespace CGZBot3.UserCommands
+﻿using CGZBot3.Entities.Message;
+
+namespace CGZBot3.UserCommands
 {
 	public class UserCommandResult
 	{

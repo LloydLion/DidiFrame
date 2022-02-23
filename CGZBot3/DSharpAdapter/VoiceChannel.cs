@@ -1,6 +1,5 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
-using ChannelType = DSharpPlus.ChannelType;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -12,7 +11,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public VoiceChannel(DiscordChannel channel, Server server) : base(channel, server)
 		{
-			if (!new[] { ChannelType.Text, ChannelType.Group, ChannelType.News, ChannelType.Private }.Contains(channel.Type))
+			if (channel.Type.GetAbstract() != Entities.ChannelType.Voice)
 			{
 				throw new InvalidOperationException("Channel must be text");
 			}

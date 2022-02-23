@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections;
 
 namespace CGZBot3.Data.Json
 {
@@ -21,8 +22,10 @@ namespace CGZBot3.Data.Json
 			if (!File.Exists(path)) return PutDefault(server, key, factory);
 			else
 			{
-				using var fs = File.Open(path, FileMode.Open, FileAccess.Read);
+				var fs = File.Open(path, FileMode.Open, FileAccess.Read);
 				var content = new StreamReader(fs).ReadToEnd();
+				fs.Close();
+				fs.Dispose();
 
 				var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
 
@@ -37,8 +40,10 @@ namespace CGZBot3.Data.Json
 		{
 			var path = GetFileFromServer(server);
 
-			using var fs = File.Open(path, FileMode.Open, FileAccess.Read);
+			var fs = File.Open(path, FileMode.Open, FileAccess.Read);
 			var content = new StreamReader(fs).ReadToEnd();
+			fs.Close();
+			fs.Dispose();
 
 			var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
 
@@ -65,20 +70,25 @@ namespace CGZBot3.Data.Json
 			JObject jobj;
 
 			{
-				using var fs = File.Open(file, FileMode.Open, FileAccess.Read);
+				var fs = File.Open(file, FileMode.Open, FileAccess.Read);
 				var content = new StreamReader(fs).ReadToEnd();
+				fs.Close();
+				fs.Dispose();
 
 				jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
 			}
 
-			jobj.Add(key, JObject.FromObject(model));
+			if(jobj.ContainsKey(key)) jobj.Remove(key);
+			jobj.Add(key, model is IEnumerable en ? JArray.FromObject(en.Cast<object>().ToArray()) : JObject.FromObject(model));
 
 			{
-				using var fs = File.Open(file, FileMode.Create, FileAccess.Write);
+				var fs = File.Open(file, FileMode.Create, FileAccess.Write);
 				var writer = new StreamWriter(fs);
 
 				writer.Write(JsonConvert.SerializeObject(jobj));
 				writer.Flush();
+				fs.Close();
+				fs.Dispose();
 			}
 		}
 
@@ -107,8 +117,10 @@ namespace CGZBot3.Data.Json
 			jobj.Remove(key);
 
 			{
-				using var fs = File.Open(file, FileMode.Create, FileAccess.Write);
+				var fs = File.Open(file, FileMode.Create, FileAccess.Write);
 				var writer = new StreamWriter(fs);
+				fs.Close();
+				fs.Dispose();
 
 				writer.Write(JsonConvert.SerializeObject(jobj));
 				writer.Flush();

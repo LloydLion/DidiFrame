@@ -11,5 +11,7 @@ namespace CGZBot3.Interfaces
 		public ulong Id { get; }
 
 		public ITextChannel TextChannel { get; }
+
+		Task DeleteAsync();
 	}
 }

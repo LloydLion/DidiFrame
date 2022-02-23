@@ -1,4 +1,5 @@
 ﻿using CGZBot3.Culture;
+using CGZBot3.Entities.Message;
 using CGZBot3.UserCommands;
 using Microsoft.Extensions.Logging;
 using System;

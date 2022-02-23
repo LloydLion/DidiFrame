@@ -31,5 +31,7 @@ namespace CGZBot3.DSharpAdapter
 
 
 		public bool Equals(IMessage? other) => other is Message msg && msg.Id == Id;
+
+		public Task DeleteAsync() => message.DeleteAsync();
 	}
 }

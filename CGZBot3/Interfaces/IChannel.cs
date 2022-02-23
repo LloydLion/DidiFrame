@@ -7,5 +7,8 @@
 		public ulong Id { get; }
 
 		public IChannelCategory Category { get; }
+
+
+		Task DeleteAsync();
 	}
 }

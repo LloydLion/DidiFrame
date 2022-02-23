@@ -40,5 +40,7 @@ namespace CGZBot3.DSharpAdapter
 				_ => new Channel(channel, server)
 			};
 		}
+
+		public Task DeleteAsync() => channel.DeleteAsync();
 	}
 }
