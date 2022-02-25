@@ -103,6 +103,8 @@ namespace CGZBot3.DSharpAdapter
 					ImageUrl = baseEmbed.Metadata.DisplayImageUrl
 				};
 
+				foreach (var field in baseEmbed.Fields) embed.AddField(field.Name, field.Value);
+
 				builder.AddEmbed(embed);
 			}
 

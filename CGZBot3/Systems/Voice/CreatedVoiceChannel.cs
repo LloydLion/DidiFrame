@@ -7,7 +7,6 @@
 			Name = name;
 			BaseChannel = baseChannel;
 			Creator = creator;
-			StateString = CreatedVoiceChannelLifetime.RunningState;
 		}
 
 
@@ -16,8 +15,6 @@
 		public IVoiceChannel BaseChannel { get; }
 
 		public IMember Creator { get; }
-
-		public string StateString { get; set; }
 
 
 		public override bool Equals(object? obj)

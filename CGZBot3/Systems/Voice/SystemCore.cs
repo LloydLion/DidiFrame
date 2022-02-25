@@ -1,5 +1,4 @@
-﻿using CGZBot3.Entities.Message;
-using CGZBot3.Entities.Message.Embed;
+﻿using CGZBot3.GlobalEvents;
 
 namespace CGZBot3.Systems.Voice
 {
@@ -13,11 +12,19 @@ namespace CGZBot3.Systems.Voice
 		public SystemCore(
 			ICreatedVoiceChannelLifetimeRepository repository,
 			ISettingsRepository settings,
-			IValidator<ChannelCreationArgs> creationArgsValidator)
+			IValidator<ChannelCreationArgs> creationArgsValidator,
+			StartupEvent startupEvent)
 		{
 			this.repository = repository;
 			this.settings = settings;
 			this.creationArgsValidator = creationArgsValidator;
+			startupEvent.ServerStartup += ServerStartup;
+		}
+
+
+		private async void ServerStartup(IServer server)
+		{
+			await repository.LoadStateAsync(server);
 		}
 
 
