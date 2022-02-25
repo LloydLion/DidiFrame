@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using CGZBot3.Entities.Message;
+using System.Linq;
 
 namespace TestProject.TestingSystemTests
 {

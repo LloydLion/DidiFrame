@@ -1,4 +1,5 @@
 ﻿using CGZBot3.Interfaces;
+using System.Threading.Tasks;
 
 namespace TestProject.TestAdapter
 {
@@ -23,6 +24,12 @@ namespace TestProject.TestAdapter
 		public Server BaseServer => BaseCategory.BaseServer;
 
 		public ChannelCategory BaseCategory { get; }
+
+		public Task DeleteAsync()
+		{
+			BaseCategory.BaseChannels.Remove(this);
+			return Task.CompletedTask;
+		}
 
 
 		public bool Equals(IServerEntity? other) => other is IChannel channel && Equals(channel);

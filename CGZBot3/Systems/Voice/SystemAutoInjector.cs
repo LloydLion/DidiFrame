@@ -12,6 +12,7 @@ namespace CGZBot3.Systems.Voice
 		{
 			services.AddTransient<SystemCore>();
 			services.AddTransient<CommandsHandler>();
+			services.AddTransient<UIHelper>();
 
 			//Settings
 			services.AddTransient<ISettingsRepository, SettingsRepository>();
@@ -22,9 +23,10 @@ namespace CGZBot3.Systems.Voice
 			services.AddTransient<IModelFactory<ICollection<CreatedVoiceChannelPM>>, DefaultFactory>();
 			services.AddTransient<IModelConverter<CreatedVoiceChannelPM, CreatedVoiceChannel>, ModelConverter>();
 
-			//Core
-			services.AddSingleton<ICreatedVoiceChannelLifetimeRepository, CreatedVoiceChannelLifetimeRepository>();
-			services.AddTransient<UIHelper>();
+			//Lifetime
+			services.AddSingleton<ICreatedVoiceChannelLifetimeRegistry, CreatedVoiceChannelLifetimeRegistry>();
+			services.AddTransient<ICreatedVoiceChannelLifetimeRepository, CreatedVoiceChannelLifetimeRepository>();
+			services.AddTransient<ICreatedVoiceChannelLifetimeFactory, CreatedVoiceChannelLifetimeFactory>();
 		}
 	}
 }

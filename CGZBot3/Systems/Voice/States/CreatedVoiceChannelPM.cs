@@ -7,7 +7,5 @@
 		public ulong BaseChannel { get; set; }
 
 		public ulong Creator { get; set; }
-
-		public string StateString { get; set; } = "";
 	}
 }

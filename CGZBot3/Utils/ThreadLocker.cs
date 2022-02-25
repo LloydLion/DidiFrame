@@ -1,41 +1,53 @@
 ﻿namespace CGZBot3.Utils
 {
-	internal class ThreadLocker
+	internal class ThreadLocker<TLock> where TLock : class
 	{
-		private int locked;
+		private readonly List<TLock> locked = new();
+		private readonly IEqualityComparer<TLock> comparer;
 
 
-		public async Task AwaitUnlock()
+		public ThreadLocker() : this(EqualityComparer<TLock>.Default) { }
+
+		public ThreadLocker(IEqualityComparer<TLock> comparer)
 		{
-			while (locked != 0) { await Task.Delay(100); }
+			this.comparer = comparer;
 		}
 
-		public IDisposable Lock()
+
+		public async Task AwaitUnlock(TLock obj)
 		{
-			locked++;
-			return new Hanlder(this);
+			while (locked.Contains(obj, comparer)) { await Task.Delay(50); }
 		}
 
-		private void Unlock()
+		public IDisposable Lock(TLock obj)
 		{
-			locked--;
+			AwaitUnlock(obj).Wait();
+			locked.Add(obj);
+			return new Hanlder(this, obj);
+		}
+
+		private void Unlock(TLock obj)
+		{
+			locked.RemoveAll(s => comparer.Equals(obj, s));
 		}
 
 
 		private class Hanlder : IDisposable
 		{
-			private readonly ThreadLocker owner;
+			private readonly ThreadLocker<TLock> owner;
+			private readonly TLock obj;
 
 
-			public Hanlder(ThreadLocker owner)
+			public Hanlder(ThreadLocker<TLock> owner, TLock obj)
 			{
 				this.owner = owner;
+				this.obj = obj;
 			}
 
 
 			public void Dispose()
 			{
-				owner.Unlock();
+				owner.Unlock(obj);
 			}
 		}
 	}

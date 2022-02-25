@@ -1,6 +1,7 @@
 ﻿using CGZBot3.Entities.Message;
 using CGZBot3.UserCommands;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System.Collections;
 using System.Text.RegularExpressions;
@@ -80,21 +81,27 @@ namespace CGZBot3.DSharpAdapter
 				var context = new UserCommandContext(await server.GetMemberAsync(args.Author.Id), (ITextChannel)await server.GetChannelAsync(args.Channel.Id), cmd,
 					cmd.Arguments.Select((s, i) => (s, i)).Join(parsed.Select((s, i) => (s, i)), s => s.i, s => s.i, (a, b) => (a.s, b.s)).ToDictionary(s => s.Item1, s => s.Item2));
 
-				CommandWritten?.Invoke(context, (result) => CallBack(context, result));
+				CommandWritten?.Invoke(context, (result) => CallBack(context, result, args.Message));
 			}
 		}
 
-		private void CallBack(UserCommandContext context, UserCommandResult result)
+		private async void CallBack(UserCommandContext context, UserCommandResult result, DiscordMessage cmdMsg)
 		{
+			IMessage? msg = null;
+
 			if (result.RespondMessage is not null)
-				context.Channel.SendMessageAsync(result.RespondMessage);
+				msg = await context.Channel.SendMessageAsync(result.RespondMessage);
 			else
 			{
 				if (result.Code != UserCommandCode.Sucssesful)
 				{
-					context.Channel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code));
+					msg = await context.Channel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code));
 				}
 			}
+
+			await Task.Delay(10000);
+			if (msg is not null) try { await msg.DeleteAsync(); } catch(Exception) { }
+			try { await cmdMsg.DeleteAsync(); } catch (Exception) { }
 		}
 
 		private async Task<object> ConvertArgumentAsync(string rawStr, UserCommandInfo.Argument.Type ttype, IServer server)

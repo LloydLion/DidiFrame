@@ -8,8 +8,7 @@
 			{
 				BaseChannel = origin.BaseChannel.Id,
 				Creator = origin.Creator.Id,
-				Name = origin.Name,
-				StateString = origin.StateString
+				Name = origin.Name
 			});
 		}
 

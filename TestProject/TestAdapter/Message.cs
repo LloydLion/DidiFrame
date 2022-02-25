@@ -1,5 +1,7 @@
 ﻿using CGZBot3.Entities;
+using CGZBot3.Entities.Message;
 using CGZBot3.Interfaces;
+using System.Threading.Tasks;
 
 namespace TestProject.TestAdapter
 {
@@ -20,6 +22,12 @@ namespace TestProject.TestAdapter
 		public ITextChannel TextChannel => BaseTextChannel;
 
 		public TextChannel BaseTextChannel { get; }
+
+		public Task DeleteAsync()
+		{
+			BaseTextChannel.Messages.Remove(this);
+			return Task.CompletedTask;
+		}
 
 
 		public bool Equals(IMessage? other) => other is Message message && message.Id == Id;
