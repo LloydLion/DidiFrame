@@ -15,6 +15,10 @@
 		public TObject Object { get; }
 
 
-		public async ValueTask DisposeAsync() => await asyncCallback(this);
+		public async ValueTask DisposeAsync()
+		{
+			await asyncCallback(this);
+			GC.SuppressFinalize(this);
+		}
 	}
 }

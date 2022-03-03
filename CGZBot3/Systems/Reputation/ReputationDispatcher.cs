@@ -108,6 +108,8 @@
 			//Unsubscribe
 			voiceNotifier.ChannelCreated -= VoiceCreated;
 			client.MessageSent -= MessageSent;
+
+			GC.SuppressFinalize(this);
 		}
 	}
 }
