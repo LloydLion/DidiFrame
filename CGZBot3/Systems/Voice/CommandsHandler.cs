@@ -7,11 +7,11 @@ namespace CGZBot3.Systems.Voice
 	public class CommandsHandler
 	{
 		private readonly SystemCore core;
-		private readonly IValidator<SystemCore.ChannelCreationArgs> creationArgsValidator;
+		private readonly IValidator<VoiceChannelCreationArgs> creationArgsValidator;
 		private readonly IStringLocalizer<CommandsHandler> localizer;
 
 
-		public CommandsHandler(SystemCore core, IValidator<SystemCore.ChannelCreationArgs> creationArgsValidator, IStringLocalizer<CommandsHandler> localizer)
+		public CommandsHandler(SystemCore core, IValidator<VoiceChannelCreationArgs> creationArgsValidator, IStringLocalizer<CommandsHandler> localizer)
 		{
 			this.core = core;
 			this.creationArgsValidator = creationArgsValidator;
@@ -22,7 +22,7 @@ namespace CGZBot3.Systems.Voice
 		[Command("voice")]
 		public async Task<UserCommandResult> CreateChannel(UserCommandContext ctx, string name)
 		{
-			var args = new SystemCore.ChannelCreationArgs(name, ctx.Invoker);
+			var args = new VoiceChannelCreationArgs(name, ctx.Invoker);
 
 			var valRes = creationArgsValidator.Validate(args);
 			if (!valRes.IsValid)

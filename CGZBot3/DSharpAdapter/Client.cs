@@ -1,6 +1,8 @@
-﻿using CGZBot3.UserCommands;
+﻿using CGZBot3.Entities.Message;
+using CGZBot3.UserCommands;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
 
 namespace CGZBot3.DSharpAdapter
@@ -8,6 +10,10 @@ namespace CGZBot3.DSharpAdapter
 	internal class Client : IClient
 	{
 		private readonly DiscordClient client;
+		private readonly MessageConverter converter = new();
+
+
+		public event MessageSentEventHandler? MessageSent;
 
 
 		public IReadOnlyCollection<IServer> Servers => client.Guilds.Values.Select(s => new Server(s, this)).ToArray();
@@ -33,8 +39,16 @@ namespace CGZBot3.DSharpAdapter
 			});
 
 			CommandsDispatcher = new CommandsDispatcher(this, repository, opt);
+
+			client.MessageCreated += Client_MessageCreated;
 		}
 
+		private async Task Client_MessageCreated(DiscordClient sender, MessageCreateEventArgs e)
+		{
+			var server = Servers.Single(s => s.Id == e.Guild.Id);
+			var channel = await server.GetChannelAsync(e.Channel.Id);
+			MessageSent?.Invoke(this, new Message(e.Message, (TextChannel)channel, converter.ConvertDown(e.Message)));
+		}
 
 		public Task AwaitForExit()
 		{

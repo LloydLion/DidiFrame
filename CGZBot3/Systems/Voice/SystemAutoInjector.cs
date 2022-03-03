@@ -10,8 +10,9 @@ namespace CGZBot3.Systems.Voice
 	{
 		public void InjectDependencies(IServiceCollection services)
 		{
-			services.AddTransient<SystemCore>();
-			services.AddTransient<CommandsHandler>();
+			services.AddSingleton<SystemCore>();
+			services.AddSingleton<ISystemNotifier, SystemCore>(services => services.GetRequiredService<SystemCore>());
+			services.AddSingleton<CommandsHandler>();
 			services.AddTransient<UIHelper>();
 
 			//Settings

@@ -111,7 +111,10 @@ namespace CGZBot3.DSharpAdapter
 				case UserCommandInfo.Argument.Type.Integer: return int.Parse(rawStr);
 				case UserCommandInfo.Argument.Type.Double: return double.Parse(rawStr);
 				case UserCommandInfo.Argument.Type.String: return rawStr;
-				case UserCommandInfo.Argument.Type.Member: return await server.GetMemberAsync(ulong.Parse(Regex.Match(rawStr, @"^<@!?(\d+)>$").Groups[0].Value)); //NOTE mention struct: <@USERID> or <@!USERID>
+				case UserCommandInfo.Argument.Type.Member:
+					var match = Regex.Match(rawStr, @"^<@!?(\d+)>$").Groups[1].Value;
+					var id = ulong.Parse(match);
+					return await server.GetMemberAsync(id); //NOTE mention struct: <@USERID> or <@!USERID>
 				case UserCommandInfo.Argument.Type.Role: return await server.GetRoleAsync(ulong.Parse(rawStr[2..^1])); //NOTE mention struct: <@&ROLEID>
 				case UserCommandInfo.Argument.Type.Mentionable:
 					if(Regex.IsMatch(rawStr, @"^<@!?(\d+)>$")) return await ConvertArgumentAsync(rawStr, UserCommandInfo.Argument.Type.Member, server);

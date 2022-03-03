@@ -12,6 +12,7 @@ namespace CGZBot3.DSharpAdapter
 		private readonly DiscordChannel channel;
 		private readonly Server server;
 		private readonly ComponentObserver observer;
+		private readonly MessageConverter converter;
 
 
 		public TextChannel(DiscordChannel channel, Server server) : base(channel, server)
@@ -24,6 +25,7 @@ namespace CGZBot3.DSharpAdapter
 			this.channel = channel;
 			this.server = server;
 			observer = new(this);
+			converter = new();
 
 			server.SourceClient.BaseClient.ComponentInteractionCreated += observer.OnInteratctionCreated;
 			server.SourceClient.BaseClient.MessageDeleted += observer.OnMessageDeleted;
@@ -37,8 +39,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
-			
-			var builder = new DiscordMessageBuilder();
+			var builder = await converter.ConvertUpAsync(messageSendModel);
 
 			if(messageSendModel.Components is not null)
 				foreach (var component in messageSendModel.Components)
@@ -67,45 +68,6 @@ namespace CGZBot3.DSharpAdapter
 					return new DiscordSelectComponent(uid, menu.PlaceHolder, options, menu.Disabled, menu.MinOptions, menu.MaxOptions);
 				}
 				else throw new NotSupportedException("Message contains unsupported component");
-			}
-
-			if (messageSendModel.Files is not null)
-				foreach (var file in messageSendModel.Files)
-				{
-					var stream = new MemoryStream(Encoding.Default.GetBytes(await file.Reader.ReadToEndAsync()));
-					builder.WithFile(file.FileName, stream);
-				}
-
-			if (messageSendModel.MessageEmbed is null)
-			{
-				var embed = new DiscordEmbedBuilder
-				{
-					Color = DiscordColor.Gold,
-					Title = messageSendModel.Content
-				};
-
-				builder.AddEmbed(embed);
-			}
-			else
-			{
-				builder.WithContent(messageSendModel.Content);
-
-				var baseEmbed = messageSendModel.MessageEmbed;
-
-				var embed = new DiscordEmbedBuilder
-				{
-					Title = baseEmbed.Title,
-					Description = baseEmbed.Description,
-					Color = baseEmbed.Color.GetDSharp(),
-					Timestamp = baseEmbed.Metadata.Timestamp,
-					Author = new DiscordEmbedBuilder.EmbedAuthor()
-						{ IconUrl = baseEmbed.Metadata.AuthorIconUrl, Name = baseEmbed.Metadata.AuthorName, Url = baseEmbed.Metadata.AuthorPersonalUrl },
-					ImageUrl = baseEmbed.Metadata.DisplayImageUrl
-				};
-
-				foreach (var field in baseEmbed.Fields) embed.AddField(field.Name, field.Value);
-
-				builder.AddEmbed(embed);
 			}
 
 			var msg = new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder));

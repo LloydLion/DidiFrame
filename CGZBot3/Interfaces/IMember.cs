@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CGZBot3.Entities.Message;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,7 @@ namespace CGZBot3.Interfaces
 		public Task RevokeRoleAsync(IRole role);
 
 		public bool HasPermissionIn(Permissions permissions, IChannel channel);
+
+		Task SendDirectMessageAsync(MessageSendModel model);
 	}
 }

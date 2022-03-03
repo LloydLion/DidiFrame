@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CGZBot3.Utils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 
@@ -7,6 +8,7 @@ namespace CGZBot3.Data.Json
 	internal class JsonContext
 	{
 		private readonly string directoryPath;
+		private readonly ThreadLocker<IServer> locker = new();
 
 
 		public JsonContext(string directoryPath)
@@ -17,11 +19,34 @@ namespace CGZBot3.Data.Json
 
 		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel> factory) where TModel : class
 		{
-			var path = GetFileFromServer(server);
-
-			if (!File.Exists(path)) return PutDefault(server, key, factory);
-			else
+			using (locker.Lock(server))
 			{
+				var path = GetFileFromServer(server);
+
+				if (!File.Exists(path)) return PutDefault(server, key, factory);
+				else
+				{
+					var fs = File.Open(path, FileMode.Open, FileAccess.Read);
+					var content = new StreamReader(fs).ReadToEnd();
+					fs.Close();
+					fs.Dispose();
+
+					var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
+
+					var model = jobj.GetValue(key)?.ToObject<TModel>();
+
+					if (model is null) return PutDefault(server, key, factory);
+					else return model;
+				}
+			}
+		}
+		
+		public TModel Load<TModel>(IServer server, string key) where TModel : class
+		{
+			using (locker.Lock(server))
+			{
+				var path = GetFileFromServer(server);
+
 				var fs = File.Open(path, FileMode.Open, FileAccess.Read);
 				var content = new StreamReader(fs).ReadToEnd();
 				fs.Close();
@@ -29,30 +54,13 @@ namespace CGZBot3.Data.Json
 
 				var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
 
-				var model = jobj.GetValue(key)?.ToObject<TModel>();
+				var model = jobj.GetValue(key)?.ToObject<TModel>() ?? throw new ArgumentException("Key dom't present in json or section contains invalid data", nameof(key));
 
-				if (model is null) return PutDefault(server, key, factory);
-				else return model;
+				return model;
 			}
 		}
-		
-		public TModel Load<TModel>(IServer server, string key) where TModel : class
-		{
-			var path = GetFileFromServer(server);
 
-			var fs = File.Open(path, FileMode.Open, FileAccess.Read);
-			var content = new StreamReader(fs).ReadToEnd();
-			fs.Close();
-			fs.Dispose();
-
-			var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
-
-			var model = jobj.GetValue(key)?.ToObject<TModel>() ?? throw new ArgumentException("Key dom't present in json or section contains invalid data", nameof(key));
-
-			return model;
-		}
-
-		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
+		private void PrivatePut<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
 			if (model is null) throw new ArgumentNullException(nameof(model));
 
@@ -78,7 +86,7 @@ namespace CGZBot3.Data.Json
 				jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
 			}
 
-			if(jobj.ContainsKey(key)) jobj.Remove(key);
+			if (jobj.ContainsKey(key)) jobj.Remove(key);
 			jobj.Add(key, model is IEnumerable en ? JArray.FromObject(en.Cast<object>().ToArray()) : JObject.FromObject(model));
 
 			{
@@ -95,45 +103,59 @@ namespace CGZBot3.Data.Json
 		public TModel PutDefault<TModel>(IServer server, string key, IModelFactory<TModel> factory) where TModel : class
 		{
 			var model = factory.CreateDefault();
-			Put(server, key, model);
+			PrivatePut(server, key, model);
 			return model;
+		}
+
+		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
+		{
+			using (locker.Lock(server))
+			{
+				PrivatePut(server, key, model);
+			}
 		}
 
 		public void Delete(IServer server, string key)
 		{
-			var file = GetFileFromServer(server);
-
-			if (!File.Exists(file)) return;
-
-			JObject jobj;
-
+			using (locker.Lock(server))
 			{
-				using var fs = File.Open(file, FileMode.Open, FileAccess.Read);
-				var content = new StreamReader(fs).ReadToEnd();
+				var file = GetFileFromServer(server);
 
-				jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
-			}
+				if (!File.Exists(file)) return;
 
-			jobj.Remove(key);
+				JObject jobj;
 
-			{
-				var fs = File.Open(file, FileMode.Create, FileAccess.Write);
-				var writer = new StreamWriter(fs);
-				fs.Close();
-				fs.Dispose();
+				{
+					using var fs = File.Open(file, FileMode.Open, FileAccess.Read);
+					var content = new StreamReader(fs).ReadToEnd();
 
-				writer.Write(JsonConvert.SerializeObject(jobj));
-				writer.Flush();
+					jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
+				}
+
+				jobj.Remove(key);
+
+				{
+					var fs = File.Open(file, FileMode.Create, FileAccess.Write);
+					var writer = new StreamWriter(fs);
+					fs.Close();
+					fs.Dispose();
+
+					writer.Write(JsonConvert.SerializeObject(jobj));
+					writer.Flush();
+				}
 			}
 		}
 
 		public void DeleteAll(IServer server)
 		{
-			var file = GetFileFromServer(server);
+			using (locker.Lock(server))
+			{
+				var file = GetFileFromServer(server);
 
-			if (!File.Exists(file)) return;
+				if (!File.Exists(file)) return;
 
-			File.Delete(file);
+				File.Delete(file);
+			}
 		}
 
 		private string GetFileFromServer(IServer server) => $"{directoryPath}/{server.Id}.json";

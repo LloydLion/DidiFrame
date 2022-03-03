@@ -2,17 +2,19 @@
 {
 	public class StateCollectionHandler<TCollection> : IAsyncDisposable
 	{
+		private readonly Func<StateCollectionHandler<TCollection>, Task> asyncCallback;
+
+
 		public StateCollectionHandler(ICollection<TCollection> collection, Func<StateCollectionHandler<TCollection>, Task> asyncCallback)
 		{
 			Collection = collection;
-			this.AsyncCallback = asyncCallback;
+			this.asyncCallback = asyncCallback;
 		}
 
 
 		public ICollection<TCollection> Collection { get; }
-		public Func<StateCollectionHandler<TCollection>, Task> AsyncCallback { get; }
 
 
-		public async ValueTask DisposeAsync() => await AsyncCallback(this);
+		public async ValueTask DisposeAsync() => await asyncCallback(this);
 	}
 }

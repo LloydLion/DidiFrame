@@ -10,6 +10,8 @@ namespace CGZBot3.Systems.Voice.States
 		private readonly IModelConverter<CreatedVoiceChannelPM, CreatedVoiceChannel> converter;
 		private readonly IServersStatesRepository repository;
 		private readonly ILogger<CreatedVoiceChannelRepository> logger;
+		private readonly ThreadLocker<IServer> locker = new();
+
 
 		public CreatedVoiceChannelRepository(
 			IModelConverter<CreatedVoiceChannelPM, CreatedVoiceChannel> converter,
@@ -24,6 +26,8 @@ namespace CGZBot3.Systems.Voice.States
 
 		public async Task<StateCollectionHandler<CreatedVoiceChannel>> GetChannelsAsync(IServer server)
 		{
+			var lockFree = locker.Lock(server);
+
 			var pmsCol = repository.GetOrCreate<ICollection<CreatedVoiceChannelPM>>(server, StatesKeys.VoiceSystem);
 			var collection = new List<CreatedVoiceChannel>();
 
@@ -46,6 +50,7 @@ namespace CGZBot3.Systems.Voice.States
 				await Task.WhenAll(pms);
 				var collectioToSave = pms.Select(s => s.Result).ToArray();
 				repository.Update(server, collectioToSave, StatesKeys.VoiceSystem);
+				lockFree.Dispose();
 			});
 		}
 	}

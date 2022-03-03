@@ -7,5 +7,7 @@
 		public const string TestSystem = "test";
 
 		public const string VoiceSystem = "voice";
+
+		public const string ReputationSystem = "reputation";
 	}
 }

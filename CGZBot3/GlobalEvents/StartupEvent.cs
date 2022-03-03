@@ -31,5 +31,30 @@ namespace CGZBot3.GlobalEvents
 		public event Action? Startup;
 
 		public event Action<IServer>? ServerStartup;
+
+
+		public static StartupEvent operator+(StartupEvent self, Action subscriber)
+		{
+			self.Startup += subscriber;
+			return self;
+		}
+		
+		public static StartupEvent operator+(StartupEvent self, Action<IServer> subscriber)
+		{
+			self.ServerStartup += subscriber;
+			return self;
+		}
+
+		public static StartupEvent operator-(StartupEvent self, Action subscriber)
+		{
+			self.Startup -= subscriber;
+			return self;
+		}
+		
+		public static StartupEvent operator-(StartupEvent self, Action<IServer> subscriber)
+		{
+			self.ServerStartup -= subscriber;
+			return self;
+		}
 	}
 }

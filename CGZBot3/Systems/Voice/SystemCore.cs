@@ -2,22 +2,24 @@
 
 namespace CGZBot3.Systems.Voice
 {
-	public class SystemCore
+	public class SystemCore : ISystemNotifier, IDisposable
 	{
 		private readonly ICreatedVoiceChannelLifetimeRepository repository;
 		private readonly ISettingsRepository settings;
-		private readonly IValidator<ChannelCreationArgs> creationArgsValidator;
+		private readonly IValidator<VoiceChannelCreationArgs> creationArgsValidator;
+		private readonly StartupEvent startupEvent;
 
 
 		public SystemCore(
 			ICreatedVoiceChannelLifetimeRepository repository,
 			ISettingsRepository settings,
-			IValidator<ChannelCreationArgs> creationArgsValidator,
+			IValidator<VoiceChannelCreationArgs> creationArgsValidator,
 			StartupEvent startupEvent)
 		{
 			this.repository = repository;
 			this.settings = settings;
 			this.creationArgsValidator = creationArgsValidator;
+			this.startupEvent = startupEvent;
 			startupEvent.ServerStartup += ServerStartup;
 		}
 
@@ -28,7 +30,10 @@ namespace CGZBot3.Systems.Voice
 		}
 
 
-		public async Task<CreatedVoiceChannelLifetime> CreateAsync(ChannelCreationArgs args)
+		public event EventHandler<VoiceChannelCreatedEventArgs>? ChannelCreated;
+
+
+		public async Task<CreatedVoiceChannelLifetime> CreateAsync(VoiceChannelCreationArgs args)
 		{
 			creationArgsValidator.ValidateAndThrow(args);
 
@@ -41,10 +46,16 @@ namespace CGZBot3.Systems.Voice
 
 			var model = new CreatedVoiceChannel(args.Name, channel, args.Owner);
 
-			return await repository.AddChannelAsync(model);
+			var lt = await repository.AddChannelAsync(model);
+
+			ChannelCreated?.Invoke(this, new VoiceChannelCreatedEventArgs(lt, args));
+
+			return lt;
 		}
 
-
-		public record ChannelCreationArgs(string Name, IMember Owner);
+		public void Dispose()
+		{
+			startupEvent.ServerStartup -= ServerStartup;
+		}
 	}
 }

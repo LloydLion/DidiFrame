@@ -12,6 +12,9 @@ namespace CGZBot3.Interfaces
 
 		public ITextChannel TextChannel { get; }
 
+		public IMember Author { get; }
+
+
 		Task DeleteAsync();
 	}
 }

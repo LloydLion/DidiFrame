@@ -1,13 +1,17 @@
-﻿using DSharpPlus.Entities;
+﻿using CGZBot3.Entities.Message;
+using DSharpPlus.Entities;
 
 namespace CGZBot3.DSharpAdapter
 {
 	internal class Member : User, IMember
 	{
 		private readonly DiscordMember member;
+		private readonly MessageConverter converter = new();
 
 
-		public IServer Server { get; }
+		public IServer Server => BaseServer;
+
+		public Server BaseServer { get; }
 
 		public override string UserName => member.DisplayName;
 
@@ -15,13 +19,14 @@ namespace CGZBot3.DSharpAdapter
 		public Member(DiscordMember member, Server server) : base(member, (Client)server.Client)
 		{
 			this.member = member;
-			Server = server;
+			BaseServer = server;
 		}
 
 
 		public bool Equals(IServerEntity? other) => other is Member member && member.Id == Id;
 
-		public Task<IReadOnlyCollection<IRole>> GetRolesAsync() => Task.FromResult((IReadOnlyCollection<IRole>)member.Roles.ToArray());
+		public Task<IReadOnlyCollection<IRole>> GetRolesAsync() =>
+			Task.FromResult((IReadOnlyCollection<IRole>)member.Roles.Select(s => new Role(s, BaseServer)).ToArray());
 
 		public Task GrantRoleAsync(IRole role) => member.GrantRoleAsync(((Role)role).BaseRole);
 
@@ -29,5 +34,11 @@ namespace CGZBot3.DSharpAdapter
 
 		public bool HasPermissionIn(Permissions permissions, IChannel channel) =>
 			member.PermissionsIn(((Channel)channel).BaseChannel).GetAbstract().HasFlag(permissions);
+
+		public async Task SendDirectMessageAsync(MessageSendModel model)
+		{
+			var channel = await member.CreateDmChannelAsync();
+			await channel.SendMessageAsync(await converter.ConvertUpAsync(model));
+		}
 	}
 }

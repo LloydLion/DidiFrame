@@ -21,12 +21,15 @@ namespace CGZBot3.DSharpAdapter
 
 		public ITextChannel TextChannel => owner;
 
+		public IMember Author { get; }
+
 
 		public Message(DiscordMessage message, TextChannel owner, MessageSendModel sendModel)
 		{
 			this.message = message;
 			this.owner = owner;
 			SendModel = sendModel;
+			Author = owner.Server.GetMemberAsync(message.Author.Id).Result;
 		}
 
 
