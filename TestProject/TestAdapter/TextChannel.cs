@@ -14,7 +14,8 @@ namespace TestProject.TestAdapter
 
 		public Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
-			var msg = new Message(messageSendModel, this);
+			var server = BaseCategory.BaseServer;
+			var msg = new Message(messageSendModel, this, server.Members.Single(s => s.Id == server.Client.SelfAccount.Id));
 			Messages.Add(msg);
 			return Task.FromResult((IMessage)msg);
 		}

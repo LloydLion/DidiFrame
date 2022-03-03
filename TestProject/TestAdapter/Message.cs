@@ -7,11 +7,12 @@ namespace TestProject.TestAdapter
 {
 	internal class Message : IMessage
 	{
-		public Message(MessageSendModel sendModel, TextChannel baseTextChannel)
+		public Message(MessageSendModel sendModel, TextChannel baseTextChannel, Member author)
 		{
 			SendModel = sendModel;
 			BaseTextChannel = baseTextChannel;
 			Id = baseTextChannel.BaseServer.BaseClient.GenerateId();
+			Author = author;
 		}
 
 
@@ -22,6 +23,9 @@ namespace TestProject.TestAdapter
 		public ITextChannel TextChannel => BaseTextChannel;
 
 		public TextChannel BaseTextChannel { get; }
+
+		public IMember Author { get; }
+
 
 		public Task DeleteAsync()
 		{

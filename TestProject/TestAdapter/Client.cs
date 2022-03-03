@@ -9,6 +9,9 @@ namespace TestProject.TestAdapter
 		private ulong lastId = 0;
 
 
+		public event MessageSentEventHandler? MessageSent;
+
+
 		public IReadOnlyCollection<IServer> Servers => (IReadOnlyCollection<IServer>)BaseServers;
 
 		public IUser SelfAccount => BaseSelfAccount;
@@ -47,6 +50,11 @@ namespace TestProject.TestAdapter
 		public ulong GenerateId()
 		{
 			return lastId++;
+		}
+
+		public void CallMessageSent(Message message)
+		{
+			MessageSent?.Invoke(this, message);
 		}
 	}
 }

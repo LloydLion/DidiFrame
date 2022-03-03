@@ -35,7 +35,7 @@ namespace TestProject.SystemsTests.Voice
 
 			//-------------------------------------------------------------------------
 			//Act
-			var lt = systemCore.CreateAsync(new SystemCore.ChannelCreationArgs("Correct name", people)).Result;
+			var lt = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name", people)).Result;
 			var voice = (VoiceChannel)lt.BaseObject.BaseChannel;
 
 			//-------------------------------------------------------------------------
@@ -94,7 +94,7 @@ namespace TestProject.SystemsTests.Voice
 
 			//-------------------------------------------------------------------------
 			//Act and Assert
-			Assert.Throws<AggregateException>(() => systemCore.CreateAsync(new SystemCore.ChannelCreationArgs("   ", people)).Wait());
+			Assert.Throws<AggregateException>(() => systemCore.CreateAsync(new VoiceChannelCreationArgs("   ", people)).Wait());
 		}
 
 		[Fact]
@@ -122,7 +122,7 @@ namespace TestProject.SystemsTests.Voice
 
 			//-------------------------------------------------------------------------
 			//Act
-			var lt = systemCore.CreateAsync(new SystemCore.ChannelCreationArgs("Correct name", people)).Result;
+			var lt = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name", people)).Result;
 			var voice = (VoiceChannel)lt.BaseObject.BaseChannel;
 			voice.DeleteAsync().Wait();
 			Thread.Sleep(12000);
