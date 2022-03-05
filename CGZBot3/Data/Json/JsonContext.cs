@@ -1,4 +1,5 @@
-﻿using CGZBot3.Utils;
+﻿using CGZBot3.Data.Json.Converters;
+using CGZBot3.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections;
@@ -7,13 +8,13 @@ namespace CGZBot3.Data.Json
 {
 	internal class JsonContext
 	{
-		private readonly string directoryPath;
 		private readonly ThreadLocker<IServer> locker = new();
+		private readonly FileCache cache;
 
 
 		public JsonContext(string directoryPath)
 		{
-			this.directoryPath = directoryPath;
+			cache = new FileCache(directoryPath, "{}");
 		}
 
 
@@ -21,23 +22,15 @@ namespace CGZBot3.Data.Json
 		{
 			using (locker.Lock(server))
 			{
-				var path = GetFileFromServer(server);
+				var path = GetFileForServer(server);
+				var content = cache.GetString(path);
 
-				if (!File.Exists(path)) return PutDefault(server, key, factory);
-				else
-				{
-					var fs = File.Open(path, FileMode.Open, FileAccess.Read);
-					var content = new StreamReader(fs).ReadToEnd();
-					fs.Close();
-					fs.Dispose();
+				var jobj = CreateSerializer(server).Deserialize<JObject>(content);
 
-					var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
+				var model = jobj.GetValue(key)?.ToObject<TModel>();
 
-					var model = jobj.GetValue(key)?.ToObject<TModel>();
-
-					if (model is null) return PutDefault(server, key, factory);
-					else return model;
-				}
+				if (model is null) return PutDefault(server, key, factory);
+				else return model;
 			}
 		}
 		
@@ -45,59 +38,32 @@ namespace CGZBot3.Data.Json
 		{
 			using (locker.Lock(server))
 			{
-				var path = GetFileFromServer(server);
+				var path = GetFileForServer(server);
+				var content = cache.GetString(path);
 
-				var fs = File.Open(path, FileMode.Open, FileAccess.Read);
-				var content = new StreamReader(fs).ReadToEnd();
-				fs.Close();
-				fs.Dispose();
+				var jobj = CreateSerializer(server).Deserialize<JObject>(content);
 
-				var jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
-
-				var model = jobj.GetValue(key)?.ToObject<TModel>() ?? throw new ArgumentException("Key dom't present in json or section contains invalid data", nameof(key));
+				var model = jobj.GetValue(key)?.ToObject<TModel>() ?? throw new ArgumentException("Key don't present in json or section contains invalid data", nameof(key));
 
 				return model;
 			}
 		}
 
-		private void PrivatePut<TModel>(IServer server, string key, TModel model) where TModel : class
+		private async void PrivatePut<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
 			if (model is null) throw new ArgumentNullException(nameof(model));
 
-			var file = GetFileFromServer(server);
+			var path = GetFileForServer(server);
+			var serializer = CreateSerializer(server);
 
-			if (!File.Exists(file))
-			{
-				var nfs = File.Create(file);
-				var writer = new StreamWriter(nfs);
-				writer.Write("{}");
-				writer.Flush();
-				nfs.Close();
-			}
-
-			JObject jobj;
-
-			{
-				var fs = File.Open(file, FileMode.Open, FileAccess.Read);
-				var content = new StreamReader(fs).ReadToEnd();
-				fs.Close();
-				fs.Dispose();
-
-				jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
-			}
+			var content = cache.GetString(path);
+			var jobj = serializer.Deserialize<JObject>(content);
 
 			if (jobj.ContainsKey(key)) jobj.Remove(key);
 			jobj.Add(key, model is IEnumerable en ? JArray.FromObject(en.Cast<object>().ToArray()) : JObject.FromObject(model));
 
-			{
-				var fs = File.Open(file, FileMode.Create, FileAccess.Write);
-				var writer = new StreamWriter(fs);
-
-				writer.Write(JsonConvert.SerializeObject(jobj));
-				writer.Flush();
-				fs.Close();
-				fs.Dispose();
-			}
+			cache.Put(path, serializer.Serialize(jobj));
+			await cache.SaveAsync();
 		}
 
 		public TModel PutDefault<TModel>(IServer server, string key, IModelFactory<TModel> factory) where TModel : class
@@ -115,34 +81,20 @@ namespace CGZBot3.Data.Json
 			}
 		}
 
-		public void Delete(IServer server, string key)
+		public async void Delete(IServer server, string key)
 		{
 			using (locker.Lock(server))
 			{
-				var file = GetFileFromServer(server);
+				var path = GetFileForServer(server);
+				var serializer = CreateSerializer(server);
 
-				if (!File.Exists(file)) return;
-
-				JObject jobj;
-
-				{
-					using var fs = File.Open(file, FileMode.Open, FileAccess.Read);
-					var content = new StreamReader(fs).ReadToEnd();
-
-					jobj = (JObject)(JsonConvert.DeserializeObject(content) ?? throw new ImpossibleVariantException());
-				}
+				var content = cache.GetString(path);
+				var jobj = serializer.Deserialize<JObject>(content);
 
 				jobj.Remove(key);
 
-				{
-					var fs = File.Open(file, FileMode.Create, FileAccess.Write);
-					var writer = new StreamWriter(fs);
-					fs.Close();
-					fs.Dispose();
-
-					writer.Write(JsonConvert.SerializeObject(jobj));
-					writer.Flush();
-				}
+				cache.Put(path, serializer.Serialize(jobj));
+				await cache.SaveAsync();
 			}
 		}
 
@@ -150,14 +102,29 @@ namespace CGZBot3.Data.Json
 		{
 			using (locker.Lock(server))
 			{
-				var file = GetFileFromServer(server);
-
-				if (!File.Exists(file)) return;
-
-				File.Delete(file);
+				var path = GetFileForServer(server);
+				cache.PutDefault(path);
 			}
 		}
 
-		private string GetFileFromServer(IServer server) => $"{directoryPath}/{server.Id}.json";
+		private static string GetFileForServer(IServer server) => $"{server.Id}.json";
+
+		private static JsonSerializer CreateSerializer(IServer server)
+		{
+			var ret = new JsonSerializer()
+			{
+				Formatting = Formatting.Indented,
+			};
+
+			ret.Converters.Add(new AbstractConveter());
+
+			ret.Converters.Add(new CategoryConveter(server));
+			ret.Converters.Add(new ChannelConverter(server));
+			ret.Converters.Add(new MemberConveter(server));
+			ret.Converters.Add(new RoleConverter(server));
+			ret.Converters.Add(new ServerConveter(server.Client));
+
+			return ret;
+		}
 	}
 }

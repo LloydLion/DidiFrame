@@ -27,7 +27,7 @@ IClient? client = null;
 IServiceProvider? services = null;
 var FatalErrorID = new EventId(1, "Fatal error");
 IConfiguration? config = null;
-var startTime = DateTime.Now;
+var startupTime = DateTime.Now;
 
 try
 {
@@ -38,8 +38,8 @@ try
 
 		.Configure<ServersSettingsRepository.Options>(config.GetSection("Data:Settings"))
 		.Configure<ServersStatesRepository.Options>(config.GetSection("Data:States"))
-		.AddTransient<IServersSettingsRepository, ServersSettingsRepository>()
-		.AddTransient<IServersStatesRepository, ServersStatesRepository>()
+		.AddSingleton<IServersSettingsRepository, ServersSettingsRepository>()
+		.AddSingleton<IServersStatesRepository, ServersStatesRepository>()
 
 		.Configure<CGZBot3.DSharpAdapter.Client.Options>(config.GetSection("Discord"))
 		.AddSingleton<IClient, CGZBot3.DSharpAdapter.Client>()
@@ -54,7 +54,7 @@ try
 
 		.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true)
 
-		.AddLogging(builder => builder.AddFilter(logFilter).AddMyConsole(startTime))
+		.AddLogging(builder => builder.AddMyConsole(startupTime))
 		.AddTransient<ILoggingFilter, LoggingFilter>()
 
 		.AddTransient(s => new Colorify.Format(Colorify.UI.Theme.Dark))
@@ -141,7 +141,7 @@ try
 
 
 		client.AwaitForExit().Wait();
-		logger.Log(LogLevel.Information, ClientExitID, "Client exited. Bot work done. Worktime - {Time}h", (DateTime.Now - startTime).TotalHours);
+		logger.Log(LogLevel.Information, ClientExitID, "Client exited. Bot work done. Worktime - {Time}h", (DateTime.Now - startupTime).TotalHours);
 	}
 }
 catch (Exception ex)
@@ -152,35 +152,6 @@ catch (Exception ex)
 
 
 
-
-
-bool logModuleFilter(string provider, string category, LogLevel level)
-{
-	if (category.StartsWith("DSharpPlus."))
-	{
-		return level >= LogLevel.Information;
-	}
-
-	return true;
-}
-
-bool logLevelFilter(string provider, string category, LogLevel level)
-{
-	LogLevel minLogLevel;
-
-#if DEBUG
-	minLogLevel = LogLevel.Trace;
-#else
-	minLogLevel = config.GetSection("Logging").GetValue<LogLevel>("MinLogLevel");
-#endif
-
-	return level >= minLogLevel;
-}
-
-bool logFilter(string provider, string category, LogLevel level)
-{
-	return logLevelFilter(provider, category, level) && logModuleFilter(provider, category, level);
-}
 
 
 async Task printLogoAnimation(Format console)
