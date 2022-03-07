@@ -71,7 +71,7 @@ namespace CGZBot3.Data.Json.Converters
 			}
 		}
 
-		private (PropertyInfo[] settable, PropertyInfo[] ctor) GetProperties(Type type)
+		private static (PropertyInfo[] settable, PropertyInfo[] ctor) GetProperties(Type type)
 		{
 			var settable = type.GetProperties().Where(s => s.CanRead && s.CanWrite && s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() == null).ToArray();
 			var ctor = type.GetProperties().Where(s => s.CanRead && s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() != null).ToArray();

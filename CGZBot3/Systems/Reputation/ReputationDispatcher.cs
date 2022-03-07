@@ -42,7 +42,7 @@
 			var setting = settings.GetSettings(args.Lifetime.BaseObject.BaseChannel.Server);
 
 			rp.Object.Increase(ReputationType.ServerActivity, setting.Sources.VoiceCreation);
-			rp.Object.Decrease(ReputationType.Experience, setting.Sources.VoiceCreation);
+			rp.Object.Increase(ReputationType.Experience, setting.Sources.VoiceCreation);
 			ReputationChanged?.Invoke(rp.Object);
 		}
 

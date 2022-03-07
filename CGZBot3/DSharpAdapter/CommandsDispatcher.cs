@@ -85,7 +85,7 @@ namespace CGZBot3.DSharpAdapter
 			}
 		}
 
-		private async void CallBack(UserCommandContext context, UserCommandResult result, DiscordMessage cmdMsg)
+		private static async void CallBack(UserCommandContext context, UserCommandResult result, DiscordMessage cmdMsg)
 		{
 			IMessage? msg = null;
 

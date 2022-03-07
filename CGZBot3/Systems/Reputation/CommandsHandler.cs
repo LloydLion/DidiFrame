@@ -26,7 +26,7 @@ namespace CGZBot3.Systems.Reputation
 
 
 		[Command("illegal")]
-		public async Task<UserCommandResult> AddIllegal(UserCommandContext ctx, IMember member, int amount, string reason)
+		public async Task<UserCommandResult> AddIllegal(UserCommandContext ctx, IMember member, int amount, string[] reason)
 		{
 			if (!member.HasPermissionIn(Permissions.KickMembers, ctx.Channel))
 				return new UserCommandResult(UserCommandCode.NoPermission) { RespondMessage = new MessageSendModel(localizer["IllegalNoHasPermission", Permissions.KickMembers]) };
@@ -40,7 +40,7 @@ namespace CGZBot3.Systems.Reputation
 
 
 			var t1 = system.AddIllegalAsync(args);
-			await member.SendDirectMessageAsync(uiHelper.CreateDirectNotification(ctx.Invoker, amount, reason));
+			await member.SendDirectMessageAsync(uiHelper.CreateDirectNotification(ctx.Invoker, amount, reason.JoinWords()));
 			var doMsg = await t1;
 
 			if (doMsg) return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["IllegalAppliedWarning", member.UserName, amount]) };
@@ -56,7 +56,7 @@ namespace CGZBot3.Systems.Reputation
 		}
 
 		[Command("seerp")]
-		public async Task<UserCommandResult> SeeReputaion(UserCommandContext ctx, IMember member)
+		public async Task<UserCommandResult> SeeReputaion(UserCommandContext _, IMember member)
 		{
 			var rp = await system.GetReputationAsync(member);
 			var sm = uiHelper.CreateReputaionTablet(rp, member);
