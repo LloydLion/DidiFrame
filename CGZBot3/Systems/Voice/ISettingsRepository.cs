@@ -2,6 +2,6 @@
 {
 	public interface ISettingsRepository
 	{
-		public Task<VoiceSettings> GetSettingsAsync(IServer server);
+		public VoiceSettings GetSettings(IServer server);
 	}
 }

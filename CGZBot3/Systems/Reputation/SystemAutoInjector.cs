@@ -15,13 +15,11 @@ namespace CGZBot3.Systems.Reputation
 			services.AddSingleton<IReputationDispatcher, ReputationDispatcher>();
 
 			//Settings
-			services.AddTransient<IModelConverter<ReputationSettingsPM, ReputationSettings>, SettingsConverter>();
 			services.AddTransient<ISettingsRepository, SettingsRepository>();
 
 			//States
-			services.AddTransient<IModelFactory<ICollection<MemberReputationPM>>, DefaultFactory>();
+			services.AddTransient<IModelFactory<ICollection<MemberReputation>>, DefaultCtorModelFactory<List<MemberReputation>>>();
 			services.AddTransient<IMembersReputationRepository, MembersReputationRepository>();
-			services.AddTransient<IModelConverter<MemberReputationPM, MemberReputation>, ModelConverter>();
 		}
 	}
 }

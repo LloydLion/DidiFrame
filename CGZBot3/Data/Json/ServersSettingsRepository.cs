@@ -1,4 +1,6 @@
-﻿namespace CGZBot3.Data.Json
+﻿using CGZBot3.GlobalEvents;
+
+namespace CGZBot3.Data.Json
 {
 	internal class ServersSettingsRepository : IServersSettingsRepository
 	{
@@ -29,6 +31,11 @@
 		public void PostSettings<TModel>(IServer server, TModel settings, string key) where TModel : class
 		{
 			context.Put(server, key, settings);
+		}
+
+		public Task PreloadDataAsync()
+		{
+			return context.LoadAllAsync();
 		}
 
 

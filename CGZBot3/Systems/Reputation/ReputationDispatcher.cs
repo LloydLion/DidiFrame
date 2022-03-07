@@ -37,23 +37,23 @@
 
 		private async void VoiceCreated(object? _, Voice.VoiceChannelCreatedEventArgs args)
 		{
-			await using var rp = await repository.GetReputationAsync(args.CreationArgs.Owner);
+			await using var rp = repository.GetReputation(args.CreationArgs.Owner);
 
-			var setting = await settings.GetSettingsAsync(args.Lifetime.BaseObject.BaseChannel.Server);
+			var setting = settings.GetSettings(args.Lifetime.BaseObject.BaseChannel.Server);
 
-			rp.Object.Reputation[ReputationType.ServerActivity] += setting.Sources.VoiceCreation;
-			rp.Object.Reputation[ReputationType.Experience] += setting.Sources.VoiceCreation;
+			rp.Object.Increase(ReputationType.ServerActivity, setting.Sources.VoiceCreation);
+			rp.Object.Decrease(ReputationType.Experience, setting.Sources.VoiceCreation);
 			ReputationChanged?.Invoke(rp.Object);
 		}
 
 		private async void MessageSent(IClient _, IMessage message)
 		{
-			await using var rp = await repository.GetReputationAsync(message.Author);
+			await using var rp = repository.GetReputation(message.Author);
 
-			var setting = await settings.GetSettingsAsync(message.TextChannel.Server);
+			var setting = settings.GetSettings(message.TextChannel.Server);
 
-			rp.Object.Reputation[ReputationType.ServerActivity] += setting.Sources.MessageSending;
-			rp.Object.Reputation[ReputationType.Experience] += setting.Sources.MessageSending;
+			rp.Object.Increase(ReputationType.ServerActivity, setting.Sources.MessageSending);
+			rp.Object.Increase(ReputationType.Experience, setting.Sources.MessageSending);
 			ReputationChanged?.Invoke(rp.Object);
 		}
 
@@ -83,17 +83,17 @@
 		{
 			var members = await server.GetMembersAsync();
 
-			var setting = await settings.GetSettingsAsync(server);
+			var setting = settings.GetSettings(server);
 
 			foreach (var member in members)
 			{
-				await using var rp = await repository.GetReputationAsync(member);
+				await using var rp = repository.GetReputation(member);
 
 				var ll = rp.Object.Reputation[ReputationType.LegalLevel];
-				if (ll < 0)	rp.Object.Reputation[ReputationType.LegalLevel] += Math.Min(setting.GlobalLegalLevelIncrease, -ll);
+				if (ll < 0)	rp.Object.Increase(ReputationType.LegalLevel, Math.Min(setting.GlobalLegalLevelIncrease, -ll));
 				
 				var sa = rp.Object.Reputation[ReputationType.ServerActivity];
-				if (sa > 0) rp.Object.Reputation[ReputationType.ServerActivity] -= Math.Min(setting.GlobalServerActivityDecrease, sa);
+				if (sa > 0) rp.Object.Decrease(ReputationType.ServerActivity, Math.Min(setting.GlobalServerActivityDecrease, sa));
 
 				ReputationChanged?.Invoke(rp.Object);
 			}

@@ -9,5 +9,7 @@
 		public void DeleteServer(IServer server);
 
 		public void Update<TModel>(IServer server, TModel state, string key) where TModel : class;
+
+		public Task PreloadDataAsync();
 	}
 }

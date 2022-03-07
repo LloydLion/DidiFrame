@@ -39,7 +39,7 @@ namespace CGZBot3.Systems.Voice
 
 			var server = args.Owner.Server;
 
-			var setting = await settings.GetSettingsAsync(server);
+			var setting = settings.GetSettings(server);
 			var category = setting.CreationCategory;
 
 			var channel = (await category.CreateChannelAsync(new ChannelCreationModel(args.Name, ChannelType.Voice))).AsVoice();
@@ -56,6 +56,7 @@ namespace CGZBot3.Systems.Voice
 		public void Dispose()
 		{
 			startupEvent.ServerStartup -= ServerStartup;
+			GC.SuppressFinalize(this);
 		}
 	}
 }

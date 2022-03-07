@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using CGZBot3.Data.Model;
+using System.Globalization;
 
 namespace CGZBot3.Culture
 {
@@ -10,6 +11,7 @@ namespace CGZBot3.Culture
 		}
 
 
+		[ConstructorAssignableProperty(0, "cultureInfo")]
 		public CultureInfo CultureInfo { get; }
 	}
 }

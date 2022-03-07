@@ -4,6 +4,6 @@ namespace CGZBot3.Systems.Voice
 {
 	public interface ICreatedVoiceChannelRepository
 	{
-		public Task<StateCollectionHandler<CreatedVoiceChannel>> GetChannelsAsync(IServer server);
+		public StateCollectionHandler<CreatedVoiceChannel> GetChannels(IServer server);
 	}
 }

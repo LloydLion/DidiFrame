@@ -16,10 +16,15 @@ namespace CGZBot3.Data.Json.Converters
 		public override IChannel? ReadJson(JsonReader reader, Type objectType, IChannel? existingValue, bool hasExistingValue, JsonSerializer serializer)
 		{
 			//I can't..... await..... NOOOOOOOOOOOOOO
-			if (hasExistingValue) throw new InvalidOperationException("Enable to populate discord channel. It is muttable object");
+			if (hasExistingValue) throw new InvalidOperationException("Enable to populate discord channel. It is immuttable object");
 
 			if (reader.Value is null) return null;
-			else return server.GetChannelAsync(BitConverter.ToUInt64(reader.ReadAsBytes())).Result;
+			else
+			{
+				var id = (ulong)(long)reader.Value;
+				reader.Read();
+				return server.GetChannelAsync(id).Result;
+			}
 		}
 
 		public override void WriteJson(JsonWriter writer, IChannel? value, JsonSerializer serializer)

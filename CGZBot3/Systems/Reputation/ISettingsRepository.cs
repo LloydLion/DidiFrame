@@ -2,6 +2,6 @@
 {
 	public interface ISettingsRepository
 	{
-		public Task<ReputationSettings> GetSettingsAsync(IServer server);
+		public ReputationSettings GetSettings(IServer server);
 	}
 }

@@ -2,6 +2,6 @@
 {
 	internal interface ITestSettingsRepository
 	{
-		public Task<TestSettings> GetSettingsAsync(IServer server);
+		public TestSettings GetSettings(IServer server);
 	}
 }

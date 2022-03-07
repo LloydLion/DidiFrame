@@ -9,5 +9,7 @@
 		public void DeleteServer(IServer server);
 
 		public void PostSettings<TModel>(IServer server, TModel settings, string key) where TModel : class;
+
+		public Task PreloadDataAsync();
 	}
 }

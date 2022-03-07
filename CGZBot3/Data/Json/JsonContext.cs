@@ -25,9 +25,11 @@ namespace CGZBot3.Data.Json
 				var path = GetFileForServer(server);
 				var content = cache.GetString(path);
 
-				var jobj = CreateSerializer(server).Deserialize<JObject>(content);
+				var serializer = CreateSerializer(server);
 
-				var model = jobj.GetValue(key)?.ToObject<TModel>();
+				var jobj = serializer.Deserialize<JObject>(content);
+
+				var model = jobj.GetValue(key)?.ToObject<TModel>(serializer);
 
 				if (model is null) return PutDefault(server, key, factory);
 				else return model;
@@ -41,9 +43,11 @@ namespace CGZBot3.Data.Json
 				var path = GetFileForServer(server);
 				var content = cache.GetString(path);
 
-				var jobj = CreateSerializer(server).Deserialize<JObject>(content);
+				var serializer = CreateSerializer(server);
 
-				var model = jobj.GetValue(key)?.ToObject<TModel>() ?? throw new ArgumentException("Key don't present in json or section contains invalid data", nameof(key));
+				var jobj = serializer.Deserialize<JObject>(content);
+
+				var model = jobj.GetValue(key)?.ToObject<TModel>(serializer) ?? throw new ArgumentException("Key don't present in json or section contains invalid data", nameof(key));
 
 				return model;
 			}
@@ -60,7 +64,7 @@ namespace CGZBot3.Data.Json
 			var jobj = serializer.Deserialize<JObject>(content);
 
 			if (jobj.ContainsKey(key)) jobj.Remove(key);
-			jobj.Add(key, model is IEnumerable en ? JArray.FromObject(en.Cast<object>().ToArray()) : JObject.FromObject(model));
+			jobj.Add(key, model is IEnumerable en ? JArray.FromObject(en.Cast<object>().ToArray(), serializer) : JObject.FromObject(model, serializer));
 
 			cache.Put(path, serializer.Serialize(jobj));
 			await cache.SaveAsync();
@@ -79,6 +83,11 @@ namespace CGZBot3.Data.Json
 			{
 				PrivatePut(server, key, model);
 			}
+		}
+
+		public Task LoadAllAsync()
+		{
+			return cache.LoadAllAsync();
 		}
 
 		public async void Delete(IServer server, string key)
@@ -123,6 +132,8 @@ namespace CGZBot3.Data.Json
 			ret.Converters.Add(new MemberConveter(server));
 			ret.Converters.Add(new RoleConverter(server));
 			ret.Converters.Add(new ServerConveter(server.Client));
+
+			ret.Converters.Add(new SafeCollectionConveter((str, ex) => { }));
 
 			return ret;
 		}

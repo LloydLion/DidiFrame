@@ -16,7 +16,7 @@ namespace CGZBot3.Systems.Test
 
 		public async Task SendDisplayMessageAsync(IServer server)
 		{
-			var sets = await settings.GetSettingsAsync(server);
+			var sets = settings.GetSettings(server);
 
 			await sets.TestChannel.SendMessageAsync(new MessageSendModel(sets.SomeString));
 		}

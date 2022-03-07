@@ -1,4 +1,6 @@
-﻿namespace CGZBot3.Systems.Test.Settings
+﻿using CGZBot3.Data.Model;
+
+namespace CGZBot3.Systems.Test.Settings
 {
 	internal class TestSettings
 	{
@@ -9,8 +11,10 @@
 		}
 
 
+		[ConstructorAssignableProperty(0, "someString")]
 		public string SomeString { get; }
 
+		[ConstructorAssignableProperty(1, "testChannel")]
 		public ITextChannel TestChannel { get; }
 	}
 }

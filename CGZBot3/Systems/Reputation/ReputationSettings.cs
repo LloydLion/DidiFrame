@@ -1,4 +1,6 @@
-﻿namespace CGZBot3.Systems.Reputation
+﻿using CGZBot3.Data.Model;
+
+namespace CGZBot3.Systems.Reputation
 {
 	public class ReputationSettings
 	{
@@ -12,14 +14,19 @@
 		}
 
 
+		[ConstructorAssignableProperty(0, "grants")]
 		public IReadOnlyCollection<GrantRole> Grants { get; }
 
+		[ConstructorAssignableProperty(1, "sources")]
 		public Source Sources { get; }
 
+		[ConstructorAssignableProperty(2, "banThreshold")]
 		public int BanThreshold { get; }
 
+		[ConstructorAssignableProperty(3, "globalLegalLevelIncrease")]
 		public int GlobalLegalLevelIncrease { get; }
 
+		[ConstructorAssignableProperty(4, "globalServerActivityDecrease")]
 		public int GlobalServerActivityDecrease { get; }
 
 
@@ -33,17 +40,22 @@
 			}
 
 
+			[ConstructorAssignableProperty(0, "role")]
 			public IRole Role { get; }
 
+			[ConstructorAssignableProperty(1, "level")]
 			public int Level { get; }
 
+			[ConstructorAssignableProperty(2, "type")]
 			public ReputationType Type { get; }
 		}
 
 		public class Source
 		{
+			[ConstructorAssignableProperty(0, "voiceCreation")]
 			public int VoiceCreation { get; }
 
+			[ConstructorAssignableProperty(1, "messageSending")]
 			public int MessageSending { get; }
 
 

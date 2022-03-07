@@ -17,7 +17,7 @@
 
 		public async Task<CreatedVoiceChannelLifetime> CreateAsync(CreatedVoiceChannel model, Action<CreatedVoiceChannelLifetime> endOfLifeCallback)
 		{
-			var report = await helper.SendReportAsync(model, (await settings.GetSettingsAsync(model.BaseChannel.Server)).ReportChannel);
+			var report = await helper.SendReportAsync(model, settings.GetSettings(model.BaseChannel.Server).ReportChannel);
 
 			var lifetime = new CreatedVoiceChannelLifetime(model, loggerFactory.CreateLogger<CreatedVoiceChannelLifetime>(), report, endOfLifeCallback);
 

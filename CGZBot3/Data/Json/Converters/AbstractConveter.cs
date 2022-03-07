@@ -1,6 +1,7 @@
 ﻿using CGZBot3.Data.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections;
 using System.Reflection;
 
 namespace CGZBot3.Data.Json.Converters
@@ -12,7 +13,7 @@ namespace CGZBot3.Data.Json.Converters
 
 		public override bool CanConvert(Type objectType)
 		{
-			return !unsupportedTypes.Any(s => s.IsAssignableFrom(objectType));
+			return !(objectType.Assembly != Assembly.GetExecutingAssembly() || typeof(IEnumerable).IsAssignableFrom(objectType) || unsupportedTypes.Any(s => s.IsAssignableFrom(objectType)));
 		}
 
 		public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
@@ -29,9 +30,9 @@ namespace CGZBot3.Data.Json.Converters
 
 				for (int i = 0; i < octor.Length; i++)
 				{
-					var maybe = jobj[octor[i]];
+					var maybe = jobj[octor[i].Name];
 					if (maybe is null) continue;
-					ctorArgs[i] = maybe.ToObject(octor[i].PropertyType);
+					ctorArgs[i] = maybe.ToObject(octor[i].PropertyType, serializer);
 				}
 
 				existingValue = Activator.CreateInstance(objectType, ctorArgs);
@@ -58,10 +59,15 @@ namespace CGZBot3.Data.Json.Converters
 				var type = value.GetType();
 				var (settable, ctor) = GetProperties(type);
 
-				foreach (var item in settable)
-					serializer.Serialize(writer, item.GetValue(value));
-				foreach (var item in ctor)
-					serializer.Serialize(writer, item.GetValue(value));
+				var jobj = new JObject();
+
+				foreach (var item in settable.Concat(ctor))
+				{
+					var val = item.GetValue(value);
+					jobj.Add(item.Name, val is null ? null : JToken.FromObject(val, serializer));
+				}
+
+				serializer.Serialize(writer, jobj);
 			}
 		}
 

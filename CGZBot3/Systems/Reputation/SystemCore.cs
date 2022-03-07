@@ -43,7 +43,7 @@ namespace CGZBot3.Systems.Reputation
 		{
 			//Manage grants
 
-			var grants = (await settings.GetSettingsAsync(rp.Member.Server)).Grants;
+			var grants = settings.GetSettings(rp.Member.Server).Grants;
 
 			IReadOnlyCollection<IRole> roles;
 			try { roles = await rp.Member.GetRolesAsync(); }
@@ -75,10 +75,10 @@ namespace CGZBot3.Systems.Reputation
 		{
 			argsValidator.ValidateAndThrow(args);
 
-			await using var rp = await repository.GetReputationAsync(args.Member);
-			var setting = await settings.GetSettingsAsync(args.Member.Server);
+			await using var rp = repository.GetReputation(args.Member);
+			var setting = settings.GetSettings(args.Member.Server);
 
-			rp.Object.Reputation[ReputationType.LegalLevel] -= args.Amount;
+			rp.Object.Decrease(ReputationType.LegalLevel, args.Amount);
 
 			return rp.Object.Reputation[ReputationType.LegalLevel] < setting.BanThreshold;
 		}
@@ -93,7 +93,7 @@ namespace CGZBot3.Systems.Reputation
 
 		public async Task<IReadOnlyDictionary<ReputationType, int>> GetReputationAsync(IMember member)
 		{
-			await using var rp = await repository.GetReputationAsync(member);
+			await using var rp = repository.GetReputation(member);
 
 			return (IReadOnlyDictionary<ReputationType, int>)rp.Object.Reputation;
 		}

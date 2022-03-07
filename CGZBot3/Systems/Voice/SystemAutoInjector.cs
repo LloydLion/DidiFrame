@@ -17,12 +17,10 @@ namespace CGZBot3.Systems.Voice
 
 			//Settings
 			services.AddTransient<ISettingsRepository, SettingsRepository>();
-			services.AddTransient<IModelConverter<VoiceSettingsPM, VoiceSettings>, SettingsConverter>();
 
 			//States
 			services.AddTransient<ICreatedVoiceChannelRepository, CreatedVoiceChannelRepository>();
-			services.AddTransient<IModelFactory<ICollection<CreatedVoiceChannelPM>>, DefaultFactory>();
-			services.AddTransient<IModelConverter<CreatedVoiceChannelPM, CreatedVoiceChannel>, ModelConverter>();
+			services.AddTransient<IModelFactory<ICollection<CreatedVoiceChannel>>, DefaultCtorModelFactory<List<CreatedVoiceChannel>>>();
 
 			//Lifetime
 			services.AddSingleton<ICreatedVoiceChannelLifetimeRegistry, CreatedVoiceChannelLifetimeRegistry>();

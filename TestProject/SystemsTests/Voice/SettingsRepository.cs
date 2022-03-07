@@ -15,9 +15,9 @@ namespace TestProject.SystemsTests.Voice
 			this.reportChannel = reportChannel;
 		}
 
-		public Task<VoiceSettings> GetSettingsAsync(IServer server)
+		public VoiceSettings GetSettings(IServer server)
 		{
-			return Task.FromResult(new VoiceSettings(category, reportChannel));
+			return new VoiceSettings(category, reportChannel);
 		}
 	}
 }

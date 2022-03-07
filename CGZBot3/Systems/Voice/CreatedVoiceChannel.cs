@@ -1,4 +1,6 @@
-﻿namespace CGZBot3.Systems.Voice
+﻿using CGZBot3.Data.Model;
+
+namespace CGZBot3.Systems.Voice
 {
 	public class CreatedVoiceChannel
 	{
@@ -10,10 +12,13 @@
 		}
 
 
+		[ConstructorAssignableProperty(0, "name")]
 		public string Name { get; }
 
+		[ConstructorAssignableProperty(1, "baseChannel")]
 		public IVoiceChannel BaseChannel { get; }
 
+		[ConstructorAssignableProperty(2, "creator")]
 		public IMember Creator { get; }
 
 

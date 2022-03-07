@@ -3,20 +3,17 @@
 	internal class SettingsRepository : ISettingsRepository
 	{
 		private readonly IServersSettingsRepository repository;
-		private readonly IModelConverter<VoiceSettingsPM, VoiceSettings> converter;
 
 
-		public SettingsRepository(IServersSettingsRepository repository, IModelConverter<VoiceSettingsPM, VoiceSettings> converter)
+		public SettingsRepository(IServersSettingsRepository repository)
 		{
 			this.repository = repository;
-			this.converter = converter;
 		}
 
 
-		public async Task<VoiceSettings> GetSettingsAsync(IServer server)
+		public VoiceSettings GetSettings(IServer server)
 		{
-			var pm = repository.Get<VoiceSettingsPM>(server, SettingsKeys.VoiceSystem);
-			return await converter.ConvertUpAsync(server, pm);	
+			return repository.Get<VoiceSettings>(server, SettingsKeys.VoiceSystem);
 		}
 	}
 }

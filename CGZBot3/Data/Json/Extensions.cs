@@ -1,28 +1,27 @@
 ﻿using Newtonsoft.Json;
-using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace CGZBot3.Data.Json
 {
 	internal static class Extensions
 	{
-		public static T Deserialize<T>(this JsonSerializer serializer, string content)
+		public static string Serialize<T>(this JsonSerializer serializer, T? obj)
 		{
-			using var memstr = new MemoryStream();
-			using var reader = new StreamReader(memstr);
-			using var json = new JsonTextReader(reader);
-
-			return serializer.Deserialize<T>(json) ?? throw new ImpossibleVariantException();
-		}
-
-		public static string Serialize<T>(this JsonSerializer serializer, T obj)
-		{
-			using var memstr = new MemoryStream();
-			using var writer = new StreamWriter(memstr);
-			using var json = new JsonTextWriter(writer);
+			var strWriter = new StringWriter();
+			using var json = new JsonTextWriter(strWriter);
 
 			serializer.Serialize(json, obj);
 
-			return Encoding.Default.GetString(memstr.ToArray());
+			return strWriter.GetStringBuilder().ToString();
+		}
+
+		public static T Deserialize<T>(this JsonSerializer serializer, string str)
+		{
+			if (string.IsNullOrWhiteSpace(str)) str = "{}";
+			var stringReader = new StringReader(str);
+			using var json = new JsonTextReader(stringReader);
+
+			return serializer.Deserialize<T>(json) ?? throw new ImpossibleVariantException();
 		}
 	}
 }

@@ -3,20 +3,17 @@
 	internal class SettingsRepository : ISettingsRepository
 	{
 		private readonly IServersSettingsRepository settings;
-		private readonly IModelConverter<ReputationSettingsPM, ReputationSettings> converter;
 
 
-		public SettingsRepository(IServersSettingsRepository settings, IModelConverter<ReputationSettingsPM, ReputationSettings> converter)
+		public SettingsRepository(IServersSettingsRepository settings)
 		{
 			this.settings = settings;
-			this.converter = converter;
 		}
 
 
-		public Task<ReputationSettings> GetSettingsAsync(IServer server)
+		public ReputationSettings GetSettings(IServer server)
 		{
-			var pm = settings.Get<ReputationSettingsPM>(server, SettingsKeys.ReputationSystem);
-			return converter.ConvertUpAsync(server, pm);
+			return settings.Get<ReputationSettings>(server, SettingsKeys.ReputationSystem);
 		}
 	}
 }

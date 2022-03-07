@@ -19,7 +19,6 @@ using CGZBot3.SystemsInjecting;
 using CGZBot3.Data.Json;
 using CGZBot3.Culture;
 
-using CultureSettingsConverter = CGZBot3.Culture.SettingsConverter;
 using CGZBot3.GlobalEvents;
 
 ILogger? logger = null;
@@ -54,7 +53,7 @@ try
 
 		.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true)
 
-		.AddLogging(builder => builder.AddMyConsole(startupTime))
+		.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddMyConsole(startupTime))
 		.AddTransient<ILoggingFilter, LoggingFilter>()
 
 		.AddTransient(s => new Colorify.Format(Colorify.UI.Theme.Dark))
@@ -63,7 +62,6 @@ try
 
 		.AddLocalization(options => options.ResourcesPath = "Translations")
 		.AddTransient<IServerCultureProvider, ServerCultureProvider>()
-		.AddTransient<IModelConverter<CultureSettingsPM, CultureSettings>, CultureSettingsConverter>()
 		.AddSingleton(new LoggingFilterOption((category) => category.StartsWith("Microsoft.Extensions.Localization.") ? LogLevel.None : LogLevel.Trace))
 
 		.AddSingleton<StartupEvent>()
@@ -132,12 +130,15 @@ try
 		logger.Log(LogLevel.Information, ClientReadyID, "Client connected to discord server");
 
 
-		services.GetRequiredService<StartupEvent>().InvokeStartup();
-
-
 		var cmdHandler = services.GetService<IUserCommandsHandler>() ?? throw new ImpossibleVariantException();
 		client.CommandsDispatcher.CommandWritten += (ctx, callback) => { cmdHandler.HandleAsync(ctx, callback); };
 		logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");
+
+
+		services.GetRequiredService<IServersSettingsRepository>().PreloadDataAsync().Wait();
+		services.GetRequiredService<IServersStatesRepository>().PreloadDataAsync().Wait();
+
+		services.GetRequiredService<StartupEvent>().InvokeStartup();
 
 
 		client.AwaitForExit().Wait();
@@ -154,7 +155,7 @@ catch (Exception ex)
 
 
 
-async Task printLogoAnimation(Format console)
+static async Task printLogoAnimation(Format console)
 {
 	for (int i = 0; i < 40; i++)
 	{

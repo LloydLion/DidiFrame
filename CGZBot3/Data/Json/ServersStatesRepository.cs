@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CGZBot3.GlobalEvents;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CGZBot3.Data.Json
 {
@@ -8,10 +9,9 @@ namespace CGZBot3.Data.Json
 		private readonly static EventId OperationFatalID = new(13, "OperationFatal");
 
 
-		public readonly JsonContext context;
+		private readonly JsonContext context;
 		private readonly IServiceProvider provider;
 		private readonly ILogger<ServersStatesRepository> logger;
-
 
 		public ServersStatesRepository(IOptions<Options> options, IServiceProvider provider, ILogger<ServersStatesRepository> logger)
 		{
@@ -29,6 +29,11 @@ namespace CGZBot3.Data.Json
 		public void DeleteServer(IServer server)
 		{
 			DoContextOpertionSafe<object?>(() => { context.DeleteAll(server); return null; }, "Can't delete all server state");
+		}
+
+		public Task PreloadDataAsync()
+		{
+			return context.LoadAllAsync();
 		}
 
 		public TModel GetOrCreate<TModel>(IServer server, string key) where TModel : class
@@ -61,7 +66,7 @@ namespace CGZBot3.Data.Json
 				Thread.Sleep(5000);
 			}
 
-			logger.Log(LogLevel.Error, ContextOperationErrorID, "{LogString}. Operation skip!", logString);
+			logger.Log(LogLevel.Error, OperationFatalID, "{LogString}. Operation skip!", logString);
 			throw new AggregateException(exceptions);
 		}
 

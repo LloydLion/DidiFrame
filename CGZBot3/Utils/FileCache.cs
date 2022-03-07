@@ -32,11 +32,11 @@ namespace CGZBot3.Utils
 				tasks.Add(load(file));
 
 			var results = await Task.WhenAll(tasks);
-
+			
 			foreach (var result in results) baseCache.Add(result.Item1, result.Item2);
 
-			static async Task<(string, byte[])> load(string file) =>
-				(file, await File.ReadAllBytesAsync(file));
+			async Task<(string, byte[])> load(string file) =>
+				(Path.GetRelativePath(basePath, file), await File.ReadAllBytesAsync(file));
 		}
 
 		public void Put(string path, ReadOnlySpan<byte> data)
@@ -61,7 +61,9 @@ namespace CGZBot3.Utils
 			{
 				if (!baseCache.ContainsKey(path))
 					baseCache.Add(path, defaultValue);
-				return baseCache[path];
+				var val = baseCache[path];
+				if (val.Length == 0) val = defaultValue;
+				return val;
 			}
 		}
 
@@ -74,7 +76,7 @@ namespace CGZBot3.Utils
 				foreach (var file in baseCache)
 				{
 
-					tasks.Add(push(stream, file.Value));
+					tasks.Add(push(file.Key, file.Value));
 				}
 
 				await Task.WhenAll(tasks);
@@ -91,10 +93,10 @@ namespace CGZBot3.Utils
 					await fs.WriteAsync(data);
 					await fs.FlushAsync();
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
+					//TODO: make logging
 					fs?.Dispose();
-					logger.Log(LogLevel.Warning);
 				}
 			}
 		}
