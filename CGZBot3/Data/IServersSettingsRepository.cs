@@ -1,15 +1,9 @@
 ﻿namespace CGZBot3.Data
 {
-	internal interface IServersSettingsRepository
+	public interface IServersSettingsRepository<TModel> where TModel : class
 	{
-		public TModel Get<TModel>(IServer server, string key) where TModel : class;
+		public TModel Get(IServer server);
 
-		public void DeleteServer(IServer server, string key);
-
-		public void DeleteServer(IServer server);
-
-		public void PostSettings<TModel>(IServer server, TModel settings, string key) where TModel : class;
-
-		public Task PreloadDataAsync();
+		public void PostSettings(IServer server, TModel settings);
 	}
 }

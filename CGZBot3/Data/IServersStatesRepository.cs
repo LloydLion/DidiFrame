@@ -1,14 +1,10 @@
-﻿namespace CGZBot3.Data
+﻿using CGZBot3.Utils;
+
+namespace CGZBot3.Data
 {
-	internal interface IServersStatesRepository
+	public interface IServersStatesRepository<TModel> where TModel : class
 	{
-		public TModel GetOrCreate<TModel>(IServer server, string key) where TModel : class;
-
-		public void DeleteServer(IServer server, string key);
-
-		public void DeleteServer(IServer server);
-
-		public void Update<TModel>(IServer server, TModel state, string key) where TModel : class;
+		public ObjectHolder<TModel> GetState(IServer server);
 
 		public Task PreloadDataAsync();
 	}

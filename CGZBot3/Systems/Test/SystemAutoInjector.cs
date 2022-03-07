@@ -1,5 +1,4 @@
-﻿using CGZBot3.Systems.Test.Settings;
-using CGZBot3.SystemsInjecting;
+﻿using CGZBot3.SystemsInjecting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CGZBot3.Systems.Test
@@ -10,7 +9,6 @@ namespace CGZBot3.Systems.Test
 		{
 			services.AddSingleton<CommandsHandler>();
 			services.AddSingleton<SystemCore>();
-			services.AddTransient<ITestSettingsRepository, TestSettingsRepository>();
 		}
 	}
 }

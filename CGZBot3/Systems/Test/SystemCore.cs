@@ -1,22 +1,22 @@
-﻿using CGZBot3.Entities.Message;
-using CGZBot3.Systems.Test.Settings;
+﻿using CGZBot3.Data;
+using CGZBot3.Entities.Message;
 
 namespace CGZBot3.Systems.Test
 {
 	internal class SystemCore
 	{
-		private readonly ITestSettingsRepository settings;
+		private readonly IServersSettingsRepository<TestSettings> settings;
 
 
-		public SystemCore(ITestSettingsRepository settings)
+		public SystemCore(IServersSettingsRepositoryFactory settingsFactory)
 		{
-			this.settings = settings;
+			settings = settingsFactory.Create<TestSettings>(SettingsKeys.TestSystem);
 		}
 
 
 		public async Task SendDisplayMessageAsync(IServer server)
 		{
-			var sets = settings.GetSettings(server);
+			var sets = settings.Get(server);
 
 			await sets.TestChannel.SendMessageAsync(new MessageSendModel(sets.SomeString));
 		}

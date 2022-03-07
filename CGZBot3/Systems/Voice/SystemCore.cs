@@ -5,19 +5,19 @@ namespace CGZBot3.Systems.Voice
 	public class SystemCore : ISystemNotifier, IDisposable
 	{
 		private readonly ICreatedVoiceChannelLifetimeRepository repository;
-		private readonly ISettingsRepository settings;
+		private readonly IServersSettingsRepository<VoiceSettings> settings;
 		private readonly IValidator<VoiceChannelCreationArgs> creationArgsValidator;
 		private readonly StartupEvent startupEvent;
 
 
 		public SystemCore(
 			ICreatedVoiceChannelLifetimeRepository repository,
-			ISettingsRepository settings,
+			IServersSettingsRepositoryFactory settingsFactory,
 			IValidator<VoiceChannelCreationArgs> creationArgsValidator,
 			StartupEvent startupEvent)
 		{
 			this.repository = repository;
-			this.settings = settings;
+			settings = settingsFactory.Create<VoiceSettings>(SettingsKeys.VoiceSystem);
 			this.creationArgsValidator = creationArgsValidator;
 			this.startupEvent = startupEvent;
 			startupEvent.ServerStartup += ServerStartup;
@@ -39,7 +39,7 @@ namespace CGZBot3.Systems.Voice
 
 			var server = args.Owner.Server;
 
-			var setting = settings.GetSettings(server);
+			var setting = settings.Get(server);
 			var category = setting.CreationCategory;
 
 			var channel = (await category.CreateChannelAsync(new ChannelCreationModel(args.Name, ChannelType.Voice))).AsVoice();

@@ -1,6 +1,6 @@
 ﻿using CGZBot3.Data.Model;
 
-namespace CGZBot3.Systems.Test.Settings
+namespace CGZBot3.Systems.Test
 {
 	internal class TestSettings
 	{

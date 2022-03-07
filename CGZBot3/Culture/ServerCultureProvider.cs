@@ -4,18 +4,18 @@ namespace CGZBot3.Culture
 {
 	internal class ServerCultureProvider : IServerCultureProvider
 	{
-		private readonly IServersSettingsRepository repository;
+		private readonly IServersSettingsRepository<CultureSettings> repository;
 
 
-		public ServerCultureProvider(IServersSettingsRepository repository)
+		public ServerCultureProvider(IServersSettingsRepositoryFactory repositoryFactory)
 		{
-			this.repository = repository;
+			repository = repositoryFactory.Create<CultureSettings>(SettingsKeys.Culture);
 		}
 
 
 		public CultureInfo GetCulture(IServer server)
 		{
-			return repository.Get<CultureSettings>(server, SettingsKeys.Culture).CultureInfo;
+			return repository.Get(server).CultureInfo;
 		}
 
 		public void SetupCulture(IServer server)

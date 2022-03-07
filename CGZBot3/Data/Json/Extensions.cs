@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CGZBot3.Data.Json
@@ -22,6 +24,14 @@ namespace CGZBot3.Data.Json
 			using var json = new JsonTextReader(stringReader);
 
 			return serializer.Deserialize<T>(json) ?? throw new ImpossibleVariantException();
+		}
+
+		public static IServiceCollection AddDataManagement(this IServiceCollection services, IConfiguration configuration)
+		{
+			services.Configure<DataOptions>(configuration);
+			services.AddSingleton<IServersSettingsRepositoryFactory, ServersSettingsRepositoryFactory>();
+			services.AddSingleton<IServersStatesRepositoryFactory, ServersStatesRepositoryFactory>();
+			return services;
 		}
 	}
 }

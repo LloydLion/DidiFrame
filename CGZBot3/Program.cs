@@ -35,10 +35,7 @@ try
 
 	services = new ServiceCollection()
 
-		.Configure<ServersSettingsRepository.Options>(config.GetSection("Data:Settings"))
-		.Configure<ServersStatesRepository.Options>(config.GetSection("Data:States"))
-		.AddSingleton<IServersSettingsRepository, ServersSettingsRepository>()
-		.AddSingleton<IServersStatesRepository, ServersStatesRepository>()
+		.AddDataManagement(config.GetSection("Data"))
 
 		.Configure<CGZBot3.DSharpAdapter.Client.Options>(config.GetSection("Discord"))
 		.AddSingleton<IClient, CGZBot3.DSharpAdapter.Client>()
@@ -135,8 +132,8 @@ try
 		logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");
 
 
-		services.GetRequiredService<IServersSettingsRepository>().PreloadDataAsync().Wait();
-		services.GetRequiredService<IServersStatesRepository>().PreloadDataAsync().Wait();
+		Task.WaitAll(services.GetRequiredService<IServersStatesRepositoryFactory>().PreloadDataAsync(),
+			services.GetRequiredService<IServersSettingsRepositoryFactory>().PreloadDataAsync());
 
 		services.GetRequiredService<StartupEvent>().InvokeStartup();
 

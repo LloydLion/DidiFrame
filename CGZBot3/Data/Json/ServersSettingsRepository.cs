@@ -1,47 +1,26 @@
-﻿using CGZBot3.GlobalEvents;
-
-namespace CGZBot3.Data.Json
+﻿namespace CGZBot3.Data.Json
 {
-	internal class ServersSettingsRepository : IServersSettingsRepository
+	internal class ServersSettingsRepository<TModel> : IServersSettingsRepository<TModel> where TModel : class
 	{
 		private readonly JsonContext context;
+		private readonly string key;
 
 
-		public ServersSettingsRepository(IOptions<Options> options)
+		public ServersSettingsRepository(JsonContext context, string key)
 		{
-			context = new JsonContext(options.Value.BaseDirectory);
+			this.context = context;
+			this.key = key;
 		}
 
 
-		public void DeleteServer(IServer server, string key)
-		{
-			context.Delete(server, key);
-		}
-
-		public void DeleteServer(IServer server)
-		{
-			context.DeleteAll(server);
-		}
-
-		public TModel Get<TModel>(IServer server, string key) where TModel : class
+		public TModel Get(IServer server)
 		{
 			return context.Load<TModel>(server, key);
 		}
 
-		public void PostSettings<TModel>(IServer server, TModel settings, string key) where TModel : class
+		public void PostSettings(IServer server, TModel settings)
 		{
 			context.Put(server, key, settings);
-		}
-
-		public Task PreloadDataAsync()
-		{
-			return context.LoadAllAsync();
-		}
-
-
-		public class Options
-		{
-			public string BaseDirectory { get; set; } = "";
 		}
 	}
 }

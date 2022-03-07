@@ -2,44 +2,44 @@
 {
 	internal class CreatedVoiceChannelLifetimeRepository : ICreatedVoiceChannelLifetimeRepository
 	{
-		private readonly ICreatedVoiceChannelRepository repository;
-		private readonly ISettingsRepository settings;
+		private readonly IServersStatesRepository<ICollection<CreatedVoiceChannel>> repository;
+		private readonly IServersSettingsRepository<VoiceSettings> settings;
 		private readonly ICreatedVoiceChannelLifetimeRegistry registry;
 
 
 		public CreatedVoiceChannelLifetimeRepository(
-			ICreatedVoiceChannelRepository repository,
-			ISettingsRepository settings,
+			IServersStatesRepositoryFactory repositoryFactory,
+			IServersSettingsRepositoryFactory settingsFactory,
 			ICreatedVoiceChannelLifetimeRegistry registry)
 		{
-			this.repository = repository;
-			this.settings = settings;
+			repository = repositoryFactory.Create<ICollection<CreatedVoiceChannel>>(StatesKeys.VoiceSystem);
+			settings = settingsFactory.Create<VoiceSettings>(SettingsKeys.VoiceSystem);
 			this.registry = registry;
 		}
 
 
 		public async Task LoadStateAsync(IServer server)
 		{
-			var reportChannel = settings.GetSettings(server).ReportChannel;
+			var reportChannel = settings.Get(server).ReportChannel;
 			foreach (var msg in await reportChannel.GetMessagesAsync()) await msg.DeleteAsync();
 
-			await using var channels = repository.GetChannels(server);
-			foreach (var model in channels.Collection) await registry.RegisterAsync(model, EndOfLifeCallBack);
+			using var channels = repository.GetState(server);
+			foreach (var model in channels.Object) await registry.RegisterAsync(model, EndOfLifeCallBack);
 		}
 
 		public async Task<CreatedVoiceChannelLifetime> AddChannelAsync(CreatedVoiceChannel channel)
 		{
-			await using (var channels = repository.GetChannels(channel.BaseChannel.Server))
-			channels.Collection.Add(channel);
+			using (var channels = repository.GetState(channel.BaseChannel.Server))
+			channels.Object.Add(channel);
 
 			return await registry.RegisterAsync(channel, EndOfLifeCallBack);
 		}
 
-		private async void EndOfLifeCallBack(CreatedVoiceChannelLifetime lifetime)
+		private void EndOfLifeCallBack(CreatedVoiceChannelLifetime lifetime)
 		{
 			var server = lifetime.BaseObject.BaseChannel.Server;
-			await using var channels = repository.GetChannels(server);
-			channels.Collection.Remove(lifetime.BaseObject);
+			using var channels = repository.GetState(server);
+			channels.Object.Remove(lifetime.BaseObject);
 		}
 	}
 }

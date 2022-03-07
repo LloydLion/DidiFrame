@@ -1,6 +1,4 @@
 ﻿using CGZBot3.Systems.Voice.Lifetime;
-using CGZBot3.Systems.Voice.Settings;
-using CGZBot3.Systems.Voice.States;
 using CGZBot3.SystemsInjecting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,11 +13,7 @@ namespace CGZBot3.Systems.Voice
 			services.AddSingleton<CommandsHandler>();
 			services.AddTransient<UIHelper>();
 
-			//Settings
-			services.AddTransient<ISettingsRepository, SettingsRepository>();
-
 			//States
-			services.AddTransient<ICreatedVoiceChannelRepository, CreatedVoiceChannelRepository>();
 			services.AddTransient<IModelFactory<ICollection<CreatedVoiceChannel>>, DefaultCtorModelFactory<List<CreatedVoiceChannel>>>();
 
 			//Lifetime

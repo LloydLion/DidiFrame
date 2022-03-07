@@ -1,73 +1,40 @@
-﻿using CGZBot3.GlobalEvents;
-using Microsoft.Extensions.DependencyInjection;
+﻿using CGZBot3.Utils;
 
 namespace CGZBot3.Data.Json
 {
-	internal class ServersStatesRepository : IServersStatesRepository
+	internal class ServersStatesRepository<TModel> : IServersStatesRepository<TModel> where TModel : class
 	{
-		private readonly static EventId ContextOperationErrorID = new(11, "ContextOperationError");
-		private readonly static EventId OperationFatalID = new(13, "OperationFatal");
-
-
 		private readonly JsonContext context;
-		private readonly IServiceProvider provider;
-		private readonly ILogger<ServersStatesRepository> logger;
+		private readonly string key;
+		private readonly IModelFactoryProvider provider;
+		private readonly ThreadLocker<IServer> locker = new();
 
-		public ServersStatesRepository(IOptions<Options> options, IServiceProvider provider, ILogger<ServersStatesRepository> logger)
+
+		public ServersStatesRepository(JsonContext context, IModelFactoryProvider provider, string key)
 		{
-			context = new JsonContext(options.Value.BaseDirectory);
+			this.context = context;
+			this.key = key;
 			this.provider = provider;
-			this.logger = logger;
 		}
 
-
-		public void DeleteServer(IServer server, string key)
-		{
-			DoContextOpertionSafe<object?>(() => { context.Delete(server, key); return null; }, "Can't delete state key");
-		}
-
-		public void DeleteServer(IServer server)
-		{
-			DoContextOpertionSafe<object?>(() => { context.DeleteAll(server); return null; }, "Can't delete all server state");
-		}
 
 		public Task PreloadDataAsync()
 		{
 			return context.LoadAllAsync();
 		}
 
-		public TModel GetOrCreate<TModel>(IServer server, string key) where TModel : class
+		public ObjectHolder<TModel> GetState(IServer server)
 		{
-			var factory = provider.GetRequiredService<IModelFactory<TModel>>();
-			return DoContextOpertionSafe(() => context.Load(server, key, factory), "Can't load state object");
-		}
+			var lockFree = locker.Lock(server);
 
-		public void Update<TModel>(IServer server, TModel state, string key) where TModel : class
-		{
-			DoContextOpertionSafe<object?>(() => { context.Put(server, key, state); return null; }, "Can't put state object");
-		}
+			var factory = provider.GetFactory<TModel>();
+			var obj = context.Load(server, key, factory);
 
-		private TResult DoContextOpertionSafe<TResult>(Func<TResult> action, string logString)
-		{
-			var exceptions = new List<Exception>();
-
-			for (int i = 0; i < 5; i++)
+			return new ObjectHolder<TModel>(obj, (holder) =>
 			{
-				try
-				{
-					return action();
-				}
-				catch (Exception ex)
-				{
-					logger.Log(LogLevel.Warning, ContextOperationErrorID, ex, "{LogString}. Retry in 5s", logString);
-					exceptions.Add(ex);
-				}
-
-				Thread.Sleep(5000);
-			}
-
-			logger.Log(LogLevel.Error, OperationFatalID, "{LogString}. Operation skip!", logString);
-			throw new AggregateException(exceptions);
+				context.Put(server, key, obj);
+				lockFree.Dispose();
+			});
 		}
 
 
