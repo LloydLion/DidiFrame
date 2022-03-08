@@ -38,29 +38,28 @@ namespace CGZBot3.Systems.Reputation
 			if (!vres.IsValid)
 				return new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(localizer["IllegalInvalidInput", vres.Errors[0]]) };
 
+			var doMsg = system.AddIllegal(args);
 
-			var t1 = system.AddIllegalAsync(args);
 			await member.SendDirectMessageAsync(uiHelper.CreateDirectNotification(ctx.Invoker, amount, reason.JoinWords()));
-			var doMsg = await t1;
 
 			if (doMsg) return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["IllegalAppliedWarning", member.UserName, amount]) };
 			else return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["IllegalApplied", member.UserName, amount]) };
 		}
 
 		[Command("myrp")]
-		public async Task<UserCommandResult> SeeReputaion(UserCommandContext ctx)
+		public Task<UserCommandResult> SeeReputaion(UserCommandContext ctx)
 		{
-			var rp = await system.GetReputationAsync(ctx.Invoker);
+			var rp = system.GetReputation(ctx.Invoker);
 			var sm = uiHelper.CreateReputaionTablet(rp, ctx.Invoker);
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = sm };
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = sm });
 		}
 
 		[Command("seerp")]
-		public async Task<UserCommandResult> SeeReputaion(UserCommandContext _, IMember member)
+		public Task<UserCommandResult> SeeReputaion(UserCommandContext _, IMember member)
 		{
-			var rp = await system.GetReputationAsync(member);
+			var rp = system.GetReputation(member);
 			var sm = uiHelper.CreateReputaionTablet(rp, member);
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = sm };
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = sm });
 		}
 	}
 }

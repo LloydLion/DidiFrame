@@ -29,15 +29,15 @@
 
 		public void Start()
 		{
-			legalLevelIncreeseTask = CreateLegalIncreeseTask(cts.Token);
+			legalLevelIncreeseTask = CreatePriodicRpUpdateTask(cts.Token);
 			voiceNotifier.ChannelCreated += VoiceCreated;
 			client.MessageSent += MessageSent;
 		}
 
 
-		private async void VoiceCreated(object? _, Voice.VoiceChannelCreatedEventArgs args)
+		private void VoiceCreated(object? _, Voice.VoiceChannelCreatedEventArgs args)
 		{
-			await using var rp = repository.GetReputation(args.CreationArgs.Owner);
+			using var rp = repository.GetReputation(args.CreationArgs.Owner);
 
 			var setting = settings.GetSettings(args.Lifetime.BaseObject.BaseChannel.Server);
 
@@ -46,9 +46,9 @@
 			ReputationChanged?.Invoke(rp.Object);
 		}
 
-		private async void MessageSent(IClient _, IMessage message)
+		private void MessageSent(IClient _, IMessage message)
 		{
-			await using var rp = repository.GetReputation(message.Author);
+			using var rp = repository.GetReputation(message.Author);
 
 			var setting = settings.GetSettings(message.TextChannel.Server);
 
@@ -57,7 +57,7 @@
 			ReputationChanged?.Invoke(rp.Object);
 		}
 
-		private async Task CreateLegalIncreeseTask(CancellationToken token)
+		private async Task CreatePriodicRpUpdateTask(CancellationToken token)
 		{
 			while (!token.IsCancellationRequested)
 			{
@@ -87,7 +87,7 @@
 
 			foreach (var member in members)
 			{
-				await using var rp = repository.GetReputation(member);
+				using var rp = repository.GetReputation(member);
 
 				var ll = rp.Object.Reputation[ReputationType.LegalLevel];
 				if (ll < 0)	rp.Object.Increase(ReputationType.LegalLevel, Math.Min(setting.GlobalLegalLevelIncrease, -ll));

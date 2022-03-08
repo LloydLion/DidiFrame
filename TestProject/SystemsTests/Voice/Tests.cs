@@ -26,7 +26,7 @@ namespace TestProject.SystemsTests.Voice
 
 
 			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
-			var setting = new SettingsRepository(gcat, channel);
+			var setting = new SettingsRepositoryFactory(gcat, channel);
 			var culture = new CultureProvider();
 			var startupEvent = new StartupEvent(client, culture);
 			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
@@ -85,7 +85,7 @@ namespace TestProject.SystemsTests.Voice
 
 
 			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
-			var setting = new SettingsRepository(gcat, channel);
+			var setting = new SettingsRepositoryFactory(gcat, channel);
 			var culture = new CultureProvider();
 			var startupEvent = new StartupEvent(client, culture);
 			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
@@ -113,7 +113,7 @@ namespace TestProject.SystemsTests.Voice
 
 
 			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
-			var setting = new SettingsRepository(gcat, channel);
+			var setting = new SettingsRepositoryFactory(gcat, channel);
 			var culture = new CultureProvider();
 			var startupEvent = new StartupEvent(client, culture);
 			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
@@ -148,7 +148,7 @@ namespace TestProject.SystemsTests.Voice
 			gcat.BaseChannels.Add(channel);
 
 			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
-			var setting = new SettingsRepository(gcat, channel);
+			var setting = new SettingsRepositoryFactory(gcat, channel);
 			var culture = new CultureProvider();
 			var startupEvent = new StartupEvent(client, culture);
 			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);

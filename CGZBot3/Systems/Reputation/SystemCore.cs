@@ -71,11 +71,11 @@ namespace CGZBot3.Systems.Reputation
 			catch (Exception ex) { logger.Log(LogLevel.Warning, ManageGrantsErrorID, ex, "Enable to apply roles to member"); return; }
 		}
 
-		public async Task<bool> AddIllegalAsync(MemberLegalLevelChangeOperationArgs args)
+		public bool AddIllegal(MemberLegalLevelChangeOperationArgs args)
 		{
 			argsValidator.ValidateAndThrow(args);
 
-			await using var rp = repository.GetReputation(args.Member);
+			using var rp = repository.GetReputation(args.Member);
 			var setting = settings.GetSettings(args.Member.Server);
 
 			rp.Object.Decrease(ReputationType.LegalLevel, args.Amount);
@@ -91,11 +91,11 @@ namespace CGZBot3.Systems.Reputation
 			GC.SuppressFinalize(this);
 		}
 
-		public async Task<IReadOnlyDictionary<ReputationType, int>> GetReputationAsync(IMember member)
+		public IReadOnlyDictionary<ReputationType, int> GetReputation(IMember member)
 		{
-			await using var rp = repository.GetReputation(member);
+			using var rp = repository.GetReputation(member);
 
-			return (IReadOnlyDictionary<ReputationType, int>)rp.Object.Reputation;
+			return rp.Object.Reputation;
 		}
 	}
 }
