@@ -7,7 +7,7 @@ namespace CGZBot3.Systems.Reputation
 		private readonly static EventId ManageGrantsErrorID = new(33, "ManageGrantsError");
 
 
-		private readonly ISettingsRepository settings;
+		private readonly IServersSettingsRepository<ReputationSettings> settings;
 		private readonly IMembersReputationRepository repository;
 		private readonly IValidator<MemberLegalLevelChangeOperationArgs> argsValidator;
 		private readonly IReputationDispatcher dispatcher;
@@ -16,14 +16,14 @@ namespace CGZBot3.Systems.Reputation
 
 
 		public SystemCore(
-			ISettingsRepository settings,
+			IServersSettingsRepositoryFactory settingsFactory,
 			IMembersReputationRepository repository,
 			IValidator<MemberLegalLevelChangeOperationArgs> argsValidator,
 			IReputationDispatcher dispatcher,
 			ILogger<SystemCore> logger,
 			StartupEvent startup)
 		{
-			this.settings = settings;
+			settings = settingsFactory.Create<ReputationSettings>(SettingsKeys.ReputationSystem);
 			this.repository = repository;
 			this.argsValidator = argsValidator;
 			this.dispatcher = dispatcher;
@@ -43,7 +43,7 @@ namespace CGZBot3.Systems.Reputation
 		{
 			//Manage grants
 
-			var grants = settings.GetSettings(rp.Member.Server).Grants;
+			var grants = settings.Get(rp.Member.Server).Grants;
 
 			IReadOnlyCollection<IRole> roles;
 			try { roles = await rp.Member.GetRolesAsync(); }
@@ -56,15 +56,19 @@ namespace CGZBot3.Systems.Reputation
 				var count = rp.Reputation[grant.Type];
 
 				if (grant.Type == ReputationType.LegalLevel)
+				{
 					if (count <= grant.Level && !roles.Contains(grant.Role)) //can and not contains, add
 						tasks.Add(rp.Member.GrantRoleAsync(grant.Role));
 					else if (count > grant.Level && roles.Contains(grant.Role)) //can't but contains, delete
 						tasks.Add(rp.Member.RevokeRoleAsync(grant.Role));
+				}
 				else
+				{
 					if (count >= grant.Level && !roles.Contains(grant.Role)) //can and not contains, add
 						tasks.Add(rp.Member.GrantRoleAsync(grant.Role));
 					else if (count < grant.Level && roles.Contains(grant.Role)) //can't but contains, delete
 						tasks.Add(rp.Member.RevokeRoleAsync(grant.Role));
+				}
 			}
 
 			try { await Task.WhenAll(tasks); }
@@ -76,7 +80,7 @@ namespace CGZBot3.Systems.Reputation
 			argsValidator.ValidateAndThrow(args);
 
 			using var rp = repository.GetReputation(args.Member);
-			var setting = settings.GetSettings(args.Member.Server);
+			var setting = settings.Get(args.Member.Server);
 
 			rp.Object.Decrease(ReputationType.LegalLevel, args.Amount);
 

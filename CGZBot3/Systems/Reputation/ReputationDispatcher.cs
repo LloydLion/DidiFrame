@@ -5,7 +5,7 @@
 		private readonly Voice.ISystemNotifier voiceNotifier;
 		private readonly IClient client;
 		private readonly IMembersReputationRepository repository;
-		private readonly ISettingsRepository settings;
+		private readonly IServersSettingsRepository<ReputationSettings> settings;
 		private Task? legalLevelIncreeseTask;
 		private readonly CancellationTokenSource cts;
 
@@ -17,12 +17,12 @@
 			Voice.ISystemNotifier voiceNotifier,
 			IClient client,
 			IMembersReputationRepository repository,
-			ISettingsRepository settings)
+			IServersSettingsRepositoryFactory settingsFactory)
 		{
 			this.voiceNotifier = voiceNotifier;
 			this.client = client;
 			this.repository = repository;
-			this.settings = settings;
+			settings = settingsFactory.Create<ReputationSettings>(SettingsKeys.ReputationSystem);
 			cts = new CancellationTokenSource();
 		}
 
@@ -39,7 +39,7 @@
 		{
 			using var rp = repository.GetReputation(args.CreationArgs.Owner);
 
-			var setting = settings.GetSettings(args.Lifetime.BaseObject.BaseChannel.Server);
+			var setting = settings.Get(args.Lifetime.BaseObject.BaseChannel.Server);
 
 			rp.Object.Increase(ReputationType.ServerActivity, setting.Sources.VoiceCreation);
 			rp.Object.Increase(ReputationType.Experience, setting.Sources.VoiceCreation);
@@ -50,7 +50,7 @@
 		{
 			using var rp = repository.GetReputation(message.Author);
 
-			var setting = settings.GetSettings(message.TextChannel.Server);
+			var setting = settings.Get(message.TextChannel.Server);
 
 			rp.Object.Increase(ReputationType.ServerActivity, setting.Sources.MessageSending);
 			rp.Object.Increase(ReputationType.Experience, setting.Sources.MessageSending);
@@ -83,7 +83,7 @@
 		{
 			var members = await server.GetMembersAsync();
 
-			var setting = settings.GetSettings(server);
+			var setting = settings.Get(server);
 
 			foreach (var member in members)
 			{

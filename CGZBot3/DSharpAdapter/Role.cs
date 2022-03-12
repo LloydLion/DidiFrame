@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.DSharpAdapter
 {
-	internal class Role : IRole
+	internal class Role : IRole, IEquatable<Role?>
 	{
 		private readonly DiscordRole role;
 		private readonly Server server;
@@ -32,5 +32,21 @@ namespace CGZBot3.DSharpAdapter
 
 
 		public bool Equals(IServerEntity? other) => other is Role role && role?.Id == Id;
+
+		public bool Equals(Role? other) => other is Role role && role?.Id == Id;
+
+		public override bool Equals(object? obj) => obj is Role role && role?.Id == Id;
+
+		public override int GetHashCode() => Id.GetHashCode();
+
+		public static bool operator ==(Role? left, Role? right)
+		{
+			return EqualityComparer<Role>.Default.Equals(left, right);
+		}
+
+		public static bool operator !=(Role? left, Role? right)
+		{
+			return !(left == right);
+		}
 	}
 }

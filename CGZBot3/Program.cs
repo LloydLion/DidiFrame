@@ -36,6 +36,7 @@ try
 	services = new ServiceCollection()
 
 		.AddDataManagement(config.GetSection("Data"))
+		.AddTransient<IModelFactoryProvider, ModelFactoryProvider>()
 
 		.Configure<CGZBot3.DSharpAdapter.Client.Options>(config.GetSection("Discord"))
 		.AddSingleton<IClient, CGZBot3.DSharpAdapter.Client>()
