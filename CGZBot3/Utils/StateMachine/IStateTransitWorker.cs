@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Utils.StateMachine
 {
-	internal interface IStateTransitWorker<TState> where TState : struct
+	public interface IStateTransitWorker<TState> where TState : struct
 	{
 		public void Activate(IStateMachine<TState> stateMahcine);
 

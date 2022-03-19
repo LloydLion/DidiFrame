@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Utils.StateMachine
 {
-	internal interface IStateMachineBuilder<TState> where TState : struct
+	public interface IStateMachineBuilder<TState> where TState : struct
 	{
 		public void AddStateTransitWorker(IStateTransitWorker<TState> worker);
 

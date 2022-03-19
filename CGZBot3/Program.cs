@@ -20,6 +20,7 @@ using CGZBot3.Data.Json;
 using CGZBot3.Culture;
 
 using CGZBot3.GlobalEvents;
+using CGZBot3.Data.Lifetime;
 
 ILogger? logger = null;
 IClient? client = null;
@@ -69,7 +70,9 @@ try
 		.BuildServiceProvider();
 
 
+#if !DEBUG
 	printLogoAnimation(services.GetRequiredService<Format>()).Wait();
+#endif
 
 
 	logger = services.GetRequiredService<ILogger<Program>>();
@@ -136,6 +139,9 @@ try
 		Task.WaitAll(services.GetRequiredService<IServersStatesRepositoryFactory>().PreloadDataAsync(),
 			services.GetRequiredService<IServersSettingsRepositoryFactory>().PreloadDataAsync());
 
+		foreach (var registry in services.GetServices<ILifetimesRegistry>())
+			foreach (var server in client.Servers) registry.LoadAndRunAll(server);
+
 		services.GetRequiredService<StartupEvent>().InvokeStartup();
 
 
@@ -152,7 +158,7 @@ catch (Exception ex)
 
 
 
-
+#if !DEBUG
 static async Task printLogoAnimation(Format console)
 {
 	for (int i = 0; i < 40; i++)
@@ -181,3 +187,4 @@ static async Task printLogoAnimation(Format console)
 
 	Console.Clear();
 }
+#endif

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CGZBot3.Utils.StateMachine
 {
-	internal interface IStateMachineBuilderFactory<TState> where TState : struct
+	public interface IStateMachineBuilderFactory<TState> where TState : struct
 	{
 		public IStateMachineBuilder<TState> Create(string logCategory);
 	}

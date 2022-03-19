@@ -1,11 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace CGZBot3.Utils.StateMachine
+﻿namespace CGZBot3.Utils.StateMachine
 {
-	internal delegate void StateChangedEventHandler<TState>(IStateMachine<TState> stateMahcine, TState oldState) where TState : struct;
+	public delegate void StateChangedEventHandler<TState>(IStateMachine<TState> stateMahcine, TState oldState) where TState : struct;
 
 
-	internal interface IStateMachine<TState> : IDisposable where TState : struct
+	public interface IStateMachine<TState> : IDisposable where TState : struct
 	{
 		public event StateChangedEventHandler<TState>? StateChanged;
 
