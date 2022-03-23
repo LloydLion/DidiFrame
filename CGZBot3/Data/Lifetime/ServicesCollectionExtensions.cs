@@ -11,7 +11,7 @@ namespace CGZBot3.Data.Lifetime
 		{
 			services.AddSingleton<ILifetimesRegistry, LifetimeRegistry<TLifetime, TBase>>(provider =>
 				new LifetimeRegistry<TLifetime, TBase>(
-				provider.GetRequiredService<IServerLifetimesRepository<TLifetime, TBase>>(),
+				provider.GetRequiredService<IServersLifetimesRepositoryFactory>().Create<TLifetime, TBase>(stateKey),
 				provider.GetRequiredService<IServersStatesRepositoryFactory>().Create<ICollection<TBase>>(stateKey)));
 			services.AddTransient<ILifetimeFactory<TLifetime,TBase>, TFactory>();
 			return services;

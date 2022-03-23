@@ -65,6 +65,8 @@ try
 
 		.AddSingleton<StartupEvent>()
 
+		.AddTransient<IServersLifetimesRepositoryFactory, ServersLifetimesRepositoryFactory>()
+
 		.InjectAutoDependencies(new AutoInjector())
 
 		.BuildServiceProvider();

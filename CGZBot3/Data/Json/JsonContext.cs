@@ -148,6 +148,7 @@ namespace CGZBot3.Data.Json
 			ret.Converters.Add(new ChannelConverter(server));
 			ret.Converters.Add(new MemberConveter(server));
 			ret.Converters.Add(new RoleConverter(server));
+			ret.Converters.Add(new MessageConverter(server));
 			ret.Converters.Add(new ServerConveter(server.Client));
 
 			ret.Converters.Add(new SafeCollectionConveter((str, ex) => { }));

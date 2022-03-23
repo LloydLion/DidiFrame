@@ -2,12 +2,12 @@
 {
 	public class LifetimeRegistry<TLifetime, TBase> : ILifetimesRegistry where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
-		private readonly IServerLifetimesRepository<TLifetime, TBase> repository;
+		private readonly IServersLifetimesRepository<TLifetime, TBase> repository;
 		private readonly IServersStatesRepository<ICollection<TBase>> baseRepository;
 
 
 		//Must be created by custom factory in di container
-		public LifetimeRegistry(IServerLifetimesRepository<TLifetime, TBase> repository, IServersStatesRepository<ICollection<TBase>> baseRepository)
+		public LifetimeRegistry(IServersLifetimesRepository<TLifetime, TBase> repository, IServersStatesRepository<ICollection<TBase>> baseRepository)
 		{
 			this.repository = repository;
 			this.baseRepository = baseRepository;

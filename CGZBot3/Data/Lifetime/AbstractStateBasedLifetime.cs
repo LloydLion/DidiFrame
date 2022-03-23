@@ -52,11 +52,29 @@ namespace CGZBot3.Data.Lifetime
 		{
 			this.updater = updater;
 			machine = smBuilder.Build();
+			machine.StateChanged += Machine_StateChanged;
 			hasBuilt = true;
-			machine.Start(baseObj.State);
+
+			OnRun(baseObj.State);
 
 			foreach (var item in startupHandlers)
 				foreach (var handler in item.Value) handler();
+
+			machine.Start(baseObj.State);
+			
+		}
+
+		private void Machine_StateChanged(IStateMachine<TState> stateMahcine, TState oldState)
+		{
+			if (stateMahcine.CurrentState.Equals(null))
+			{
+				OnDispose();
+				GetUpdater().Finish(this);
+			}
+			else
+			{
+				GetUpdater().Update(this);
+			}
 		}
 
 		protected ILifetimeStateUpdater<TBase> GetUpdater()
@@ -66,11 +84,31 @@ namespace CGZBot3.Data.Lifetime
 			return updater ?? throw new ImpossibleVariantException();
 		}
 
+		/// <summary>
+		/// WARNING! Returned object is readonly!
+		/// If changed changed will not writen to state
+		/// </summary>
+		/// <returns></returns>
+		protected TBase GetBaseDirect()
+		{
+			return baseObj;
+		}
+
 		protected IStateMachine<TState> GetStateMachine()
 		{
 			if (!hasBuilt)
 				throw new InvalidOperationException("Enable to get state machine before starting");
 			return machine ?? throw new ImpossibleVariantException();
+		}
+
+		protected virtual void OnRun(TState state)
+		{
+
+		}
+
+		protected virtual void OnDispose()
+		{
+
 		}
 
 		private void ThrowIfBuilt()

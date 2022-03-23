@@ -14,6 +14,8 @@ namespace CGZBot3.Interfaces
 
 		public IMember Author { get; }
 
+		public bool IsExist { get; }
+
 
 		Task DeleteAsync();
 	}

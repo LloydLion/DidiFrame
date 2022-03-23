@@ -8,6 +8,8 @@
 
 		public IChannelCategory Category { get; }
 
+		public bool IsExist { get; }
+
 
 		Task DeleteAsync();
 	}

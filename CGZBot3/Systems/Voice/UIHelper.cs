@@ -14,18 +14,18 @@ namespace CGZBot3.Systems.Voice
 		}
 
 
-		public MessageSendModel CreateReport(CreatedVoiceChannel model)
+		public MessageSendModel CreateReport(string name, IMember owner)
 		{
 			return new MessageSendModel(localizer["ReportContent"])
 			{
 				MessageEmbed = new MessageEmbed(localizer["ReportTitle"], localizer["ReportDescription"], new Color("#41D1C3"),
-					new List<EmbedField>() { new EmbedField(localizer["ReportNameField"], model.Name) }, new EmbedMeta())
+					new List<EmbedField>() { new EmbedField(localizer["ReportNameField"], name) }, new EmbedMeta())
 			};
 		}
 
-		public async Task<IMessage> SendReportAsync(CreatedVoiceChannel model, ITextChannel channel)
+		public async Task<IMessage> SendReportAsync(string name, IMember owner, ITextChannel channel)
 		{
-			return await channel.SendMessageAsync(CreateReport(model));
+			return await channel.SendMessageAsync(CreateReport(name, owner));
 		}
 	}
 }

@@ -8,6 +8,8 @@ namespace CGZBot3.Utils.StateMachine
 		private static readonly EventId StateChangedID = new(45, "StateChanged");
 		private static readonly EventId StateChangingID = new(42, "StateChanging");
 		private static readonly EventId MachineStartupID = new(14, "MachineStartup");
+		private static readonly EventId StateChangedHandlerErrorID = new(65, "StateChangedHandlerError");
+		private static readonly EventId InternalErrorID = new(65, "InternalError");
 
 
 		private readonly List<IStateTransitWorker<TState>> workers;
@@ -24,7 +26,10 @@ namespace CGZBot3.Utils.StateMachine
 			{
 				while (CurrentState != null)
 				{
-					UpdateState();
+					try { UpdateState(); }
+					catch (Exception ex)
+					{ Logger.Log(LogLevel.Warning, InternalErrorID, ex, "State machine internal error"); }
+
 					Thread.Sleep(100);
 				}
 			});
@@ -44,25 +49,23 @@ namespace CGZBot3.Utils.StateMachine
 		{
 			lock(this)
 			{
-				using (Logger.BeginScope("State update"))
-				{
-					var fod = activeWorkers.FirstOrDefault(s => s.CanDoTransit());
-					if (fod == null) return;
+				var fod = activeWorkers.FirstOrDefault(s => s.CanDoTransit());
+				if (fod == null) return;
 
-					Logger.Log(LogLevel.Trace, StateChangingID, "StateTransitWorker which can does transit found. Current state - {CurrentState}", CurrentState);
+				Logger.Log(LogLevel.Trace, StateChangingID, "StateTransitWorker which can does transit found. Current state - {CurrentState}", CurrentState);
 
-					var oldState = CurrentState ?? throw new ImpossibleVariantException();
+				var oldState = CurrentState ?? throw new ImpossibleVariantException();
 
-					using (Logger.BeginScope("{WorkerType} #{Index}", fod.GetType().ToString(), workers.IndexOf(fod)))
-						CurrentState = fod.DoTransit();
+				CurrentState = fod.DoTransit();
 
-					StateChanged?.Invoke(this, oldState);
+				try { StateChanged?.Invoke(this, oldState); }
+				catch (Exception ex) { Logger.Log(LogLevel.Warning, StateChangedHandlerErrorID, ex, "Some StateChanged event handler executed with error"); }
 
-					UpdateActiveWorkers();
+				if (CurrentState is not null) UpdateActiveWorkers();
+				else activeWorkers.Clear();
 
-					Logger.Log(LogLevel.Trace, StateChangedID, "State changed from {OldState} to {State} by {WorkerType} #{Index}",
-						oldState, CurrentState, fod.GetType().ToString(), workers.IndexOf(fod));
-				}
+				Logger.Log(LogLevel.Trace, StateChangedID, "State changed from {OldState} to {State} by {WorkerType} #{Index}",
+					oldState, CurrentState?.ToString() ?? "[NULL]", fod.GetType().ToString(), workers.IndexOf(fod));
 			}
 		}
 

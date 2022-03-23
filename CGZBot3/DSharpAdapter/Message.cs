@@ -1,11 +1,6 @@
 ﻿using CGZBot3.Entities.Message;
-using DSharpPlus;
 using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DSharpPlus.Exceptions;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -22,6 +17,23 @@ namespace CGZBot3.DSharpAdapter
 		public ITextChannel TextChannel => owner;
 
 		public IMember Author { get; }
+
+		public bool IsExist
+		{
+			get
+			{
+				try
+				{
+					owner.BaseChannel.GetMessageAsync(Id);
+					return true;
+				}
+				catch (AggregateException ex)
+				{
+					if (ex.InnerException is NotFoundException) return false;
+					else throw;
+				}
+			}
+		}
 
 
 		public Message(DiscordMessage message, TextChannel owner, MessageSendModel sendModel)

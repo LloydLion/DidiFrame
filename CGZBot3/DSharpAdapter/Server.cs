@@ -45,14 +45,17 @@ namespace CGZBot3.DSharpAdapter
 			}
 		}
 
-		public Task<IReadOnlyCollection<IChannel>> GetChannelsAsync()
+		public async Task<IReadOnlyCollection<IChannel>> GetChannelsAsync()
 		{
-			return Task.FromResult((IReadOnlyCollection<IChannel>)guild.Channels.Values.Select(s => Channel.Construct(s, this)).ToArray());
+			var channels = await guild.GetChannelsAsync();
+			return channels.Select(s => Channel.Construct(s, this)).ToArray();
 		}
 
-		public Task<IChannel> GetChannelAsync(ulong id)
+		public async Task<IChannel> GetChannelAsync(ulong id)
 		{
-			return Task.FromResult((IChannel)Channel.Construct(guild.GetChannel(id), this));
+			var channels = await guild.GetChannelsAsync();
+			var channel = channels.Single(s => s.Id == id);
+			return Channel.Construct(channel, this);
 		}
 
 		public Task<IReadOnlyCollection<IRole>> GetRolesAsync()

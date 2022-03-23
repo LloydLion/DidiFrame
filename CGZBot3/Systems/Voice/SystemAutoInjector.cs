@@ -1,4 +1,4 @@
-﻿using CGZBot3.Systems.Voice.Lifetime;
+﻿using CGZBot3.Data.Lifetime;
 using CGZBot3.SystemsInjecting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,9 +17,7 @@ namespace CGZBot3.Systems.Voice
 			services.AddTransient<IModelFactory<ICollection<CreatedVoiceChannel>>, DefaultCtorModelFactory<List<CreatedVoiceChannel>>>();
 
 			//Lifetime
-			services.AddSingleton<ICreatedVoiceChannelLifetimeRegistry, CreatedVoiceChannelLifetimeRegistry>();
-			services.AddTransient<ICreatedVoiceChannelLifetimeRepository, CreatedVoiceChannelLifetimeRepository>();
-			services.AddTransient<ICreatedVoiceChannelLifetimeFactory, CreatedVoiceChannelLifetimeFactory>();
+			services.AddLifetime<CreatedVoiceChannelLifetime, CreatedVoiceChannel>(StatesKeys.VoiceSystem);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Data.Lifetime
 {
-	public interface IServerLifetimesRepository<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
+	public interface IServersLifetimesRepository<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
 		public TLifetime AddLifetime(TBase baseObject);
 

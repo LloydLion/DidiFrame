@@ -18,6 +18,27 @@ namespace CGZBot3.DSharpAdapter
 
 		public DiscordChannel BaseChannel => channel;
 
+		public bool IsExist
+		{
+			get
+			{
+				try
+				{
+					server.GetChannelAsync(Id).Wait();
+					return true;
+				}
+				catch (AggregateException ex)
+				{
+					if (ex.InnerException is InvalidOperationException) return false;
+					else throw;
+				}
+				catch (InvalidOperationException)
+				{
+					return false;
+				}
+			}
+		}
+
 
 		public Channel(DiscordChannel channel, Server server)
 		{

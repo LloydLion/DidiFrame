@@ -1,6 +1,6 @@
 ﻿namespace CGZBot3.Data.Lifetime
 {
-	public class ServerLifetimesRepository<TLifetime, TBase> : IServerLifetimesRepository<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
+	public class ServersLifetimesRepository<TLifetime, TBase> : IServersLifetimesRepository<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
 		private readonly ILifetimeFactory<TLifetime, TBase> factory;
 		private readonly Dictionary<IServer, Dictionary<TBase, TLifetime>> lifetimes = new();
@@ -8,7 +8,7 @@
 
 
 		//Must be not integrated in di container!!
-		public ServerLifetimesRepository(ILifetimeFactory<TLifetime, TBase> factory, ILifetimeStateUpdater<TBase> updater)
+		public ServersLifetimesRepository(ILifetimeFactory<TLifetime, TBase> factory, ILifetimeStateUpdater<TBase> updater)
 		{
 			this.factory = factory;
 			this.updater = updater;

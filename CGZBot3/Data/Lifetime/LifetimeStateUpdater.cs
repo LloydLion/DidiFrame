@@ -19,5 +19,13 @@
 			if (holder.Object.Contains(baseObj)) holder.Object.Remove(baseObj);
 			holder.Object.Add(baseObj);
 		}
+
+		public void Finish(ILifetime<TBase> lifetime)
+		{
+			var baseObj = lifetime.GetBaseClone();
+			using var holder = repository.GetState(baseObj.Server);
+
+			if (holder.Object.Contains(baseObj)) holder.Object.Remove(baseObj);
+		}
 	}
 }

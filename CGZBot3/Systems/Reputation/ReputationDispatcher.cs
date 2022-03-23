@@ -38,8 +38,8 @@
 		private void VoiceCreated(object? _, Voice.VoiceChannelCreatedEventArgs args)
 		{
 			using var rp = repository.GetReputation(args.CreationArgs.Owner);
-
-			var setting = settings.Get(args.Lifetime.BaseObject.BaseChannel.Server);
+			
+			var setting = settings.Get(args.CreationArgs.Owner.Server);
 
 			rp.Object.Increase(ReputationType.ServerActivity, setting.Sources.VoiceCreation);
 			rp.Object.Increase(ReputationType.Experience, setting.Sources.VoiceCreation);

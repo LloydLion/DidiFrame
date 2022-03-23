@@ -2,6 +2,8 @@
 {
 	public interface ILifetimeStateUpdater<TBase> where TBase : class, ILifetimeBase
 	{
-		void Update(ILifetime<TBase> lifetime);
+		public void Update(ILifetime<TBase> lifetime);
+
+		public void Finish(ILifetime<TBase> lifetime);
 	}
 }

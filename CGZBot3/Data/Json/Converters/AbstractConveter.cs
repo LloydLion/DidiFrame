@@ -8,12 +8,12 @@ namespace CGZBot3.Data.Json.Converters
 {
 	internal class AbstractConveter : JsonConverter
 	{
-		private static readonly Type[] unsupportedTypes = new[] { typeof(IChannel), typeof(IMember), typeof(IServer), typeof(IChannelCategory), typeof(IRole) };
+		private static readonly Type[] unsupportedTypes = new[] { typeof(IChannel), typeof(IMember), typeof(IServer), typeof(IChannelCategory), typeof(IRole), typeof(IMessage) };
 
 
 		public override bool CanConvert(Type objectType)
 		{
-			return !(objectType.Assembly != Assembly.GetExecutingAssembly() || typeof(IEnumerable).IsAssignableFrom(objectType) || unsupportedTypes.Any(s => s.IsAssignableFrom(objectType)));
+			return !(objectType.Assembly != Assembly.GetExecutingAssembly() || objectType.IsValueType || typeof(IEnumerable).IsAssignableFrom(objectType) || unsupportedTypes.Any(s => s.IsAssignableFrom(objectType)));
 		}
 
 		public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
