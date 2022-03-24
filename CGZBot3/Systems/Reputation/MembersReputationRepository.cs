@@ -15,6 +15,9 @@ namespace CGZBot3.Systems.Reputation
 
 		public ObjectHolder<MemberReputation> GetReputation(IMember member)
 		{
+			if (member.IsBot)
+				throw new InvalidOperationException("Enable to get reputation for bot. Member is bot");
+			
 			var state = repository.GetState(member.Server);
 
 			var rp = state.Object.SingleOrDefault(s => s.Member.Equals((IUser)member));

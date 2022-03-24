@@ -57,6 +57,8 @@ namespace CGZBot3.Systems.Reputation
 		[Command("seerp")]
 		public Task<UserCommandResult> SeeReputaion(UserCommandContext _, IMember member)
 		{
+			if (member.IsBot) return Task.FromResult(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(localizer["MemberIsBotError", member.UserName]) });
+
 			var rp = system.GetReputation(member);
 			var sm = uiHelper.CreateReputaionTablet(rp, member);
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = sm });

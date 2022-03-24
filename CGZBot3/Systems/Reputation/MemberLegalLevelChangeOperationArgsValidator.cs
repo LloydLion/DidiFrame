@@ -11,6 +11,7 @@ namespace CGZBot3.Systems.Reputation
 		public MemberLegalLevelChangeOperationArgsValidator()
 		{
 			RuleFor(s => s.Amount).GreaterThan(0);
+			RuleFor(s => s.Member).Must(s => s.IsBot == false);
 		}
 	}
 }
