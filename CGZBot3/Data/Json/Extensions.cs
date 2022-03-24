@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace CGZBot3.Data.Json
 {
@@ -24,6 +25,24 @@ namespace CGZBot3.Data.Json
 			using var json = new JsonTextReader(stringReader);
 
 			return serializer.Deserialize<T>(json) ?? throw new ImpossibleVariantException();
+		}
+
+		public static JContainer GetAbsoluteRoot(this JContainer token, out string jpath)
+		{
+			var result = new StringBuilder();
+			result.Append('.');
+
+			while (token.Parent is not null)
+			{
+				result.Append(token.Path);
+
+				token = token.Parent;
+				if (token is JObject) //if jarray do nothing
+					result.Append('.');
+			}
+
+			jpath = result.ToString();
+			return token;
 		}
 
 		public static IServiceCollection AddDataManagement(this IServiceCollection services, IConfiguration configuration)

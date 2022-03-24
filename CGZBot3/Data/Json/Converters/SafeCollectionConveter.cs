@@ -6,10 +6,10 @@ namespace CGZBot3.Data.Json.Converters
 {
 	internal class SafeCollectionConveter : JsonConverter
 	{
-		private readonly Action<string, Exception> invalidElementCallback;
+		private readonly Action<JContainer, string, Exception> invalidElementCallback;
 
 
-		public SafeCollectionConveter(Action<string, Exception> invalidElementCallback)
+		public SafeCollectionConveter(Action<JContainer, string, Exception> invalidElementCallback)
 		{
 			this.invalidElementCallback = invalidElementCallback;
 		}
@@ -38,7 +38,7 @@ namespace CGZBot3.Data.Json.Converters
 				}
 				catch (Exception ex)
 				{
-					invalidElementCallback(el.ToString(Formatting.Indented), ex);
+					invalidElementCallback(el.Parent ?? throw new ImpossibleVariantException(), el.Path, ex);
 				}
 
 			return list;

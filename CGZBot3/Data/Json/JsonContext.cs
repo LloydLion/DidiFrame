@@ -2,20 +2,22 @@
 using CGZBot3.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections;
 
 namespace CGZBot3.Data.Json
 {
 	internal class JsonContext
 	{
+		private readonly EventId CollectionElementParseErrorID = new(41, "CollectionElementParseError");
+		private readonly EventId FileSaveErrorID = new(21, "FileSaveError");
+
 		private readonly ThreadLocker<IServer> locker = new();
-		private readonly FileCache cache;
+		private readonly JsonCache cache;
 		private readonly ILogger logger;
 
 
 		public JsonContext(string directoryPath, ILogger logger)
 		{
-			cache = new FileCache(directoryPath, "{}");
+			cache = new JsonCache(directoryPath);
 			this.logger = logger;
 		}
 
@@ -25,21 +27,27 @@ namespace CGZBot3.Data.Json
 			using (locker.Lock(server))
 			{
 				var path = GetFileForServer(server);
-				var content = cache.GetString(path);
-
 				bool isRepatchCollection = false;
-				var serializer = CreateSerializer(server, (str, ex) => { isRepatchCollection = true; DefaultInvalidCollectionElementCallback(str, ex); });
+				var serializer = CreateSerializer(server, (obj, str, ex) => { isRepatchCollection = true; });
 
-				var jobj = serializer.Deserialize<JObject>(content);
+				TModel model;
 
-				var model = jobj.GetValue(key)?.ToObject<TModel>(serializer);
-
-				if (model is null) model = PutDefault(server, key, factory);
-
-				if (isRepatchCollection)
+				if (cache.Has(path, key) == false)
 				{
-					//Loaded collection will not contain errors
-					PrivatePut(server, key, model);
+					model = factory.CreateDefault();
+					cache.PutAsync(path, key, model, serializer);
+				}
+				else
+				{
+					model = cache.Get<TModel>(path, key, serializer, out var task);
+					if (task is not null) task.ContinueWith(s =>
+					{
+						if (isRepatchCollection)
+						{
+							//Loaded collection will not contain errors
+							PrivatePut(server, key, model);
+						}
+					});
 				}
 
 				return model;
@@ -51,20 +59,18 @@ namespace CGZBot3.Data.Json
 			using (locker.Lock(server))
 			{
 				var path = GetFileForServer(server);
-				var content = cache.GetString(path);
-
 				bool isRepatchCollection = false;
-				var serializer = CreateSerializer(server, (str, ex) => { isRepatchCollection = true; DefaultInvalidCollectionElementCallback(str, ex); });
+				var serializer = CreateSerializer(server, (obj, str, ex) => { isRepatchCollection = true; });
 
-				var jobj = serializer.Deserialize<JObject>(content);
-
-				var model = jobj.GetValue(key)?.ToObject<TModel>(serializer) ?? throw new ArgumentException("Key don't present in json or section contains invalid data", nameof(key));
-
-				if (isRepatchCollection)
+				var model = cache.Get<TModel>(path, key, serializer, out var task);
+				if (task is not null) task.ContinueWith(s =>
 				{
-					//Loaded collection will not contain errors
-					PrivatePut(server, key, model);
-				}
+					if (isRepatchCollection)
+					{
+						//Loaded collection will not contain errors
+						PrivatePut(server, key, model);
+					}
+				});
 
 				return model;
 			}
@@ -72,26 +78,14 @@ namespace CGZBot3.Data.Json
 
 		private async void PrivatePut<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
-			if (model is null) throw new ArgumentNullException(nameof(model));
-
-			var path = GetFileForServer(server);
-			var serializer = CreateSerializer(server);
-
-			var content = cache.GetString(path);
-			var jobj = serializer.Deserialize<JObject>(content);
-
-			if (jobj.ContainsKey(key)) jobj.Remove(key);
-			jobj.Add(key, model is IEnumerable en ? JArray.FromObject(en.Cast<object>().ToArray(), serializer) : JObject.FromObject(model, serializer));
-
-			cache.Put(path, serializer.Serialize(jobj));
-			await cache.SaveAsync();
-		}
-
-		public TModel PutDefault<TModel>(IServer server, string key, IModelFactory<TModel> factory) where TModel : class
-		{
-			var model = factory.CreateDefault();
-			PrivatePut(server, key, model);
-			return model;
+			try
+			{
+				await cache.PutAsync(GetFileForServer(server), key, model, CreateSerializer(server));
+			}
+			catch (Exception ex)
+			{
+				logger.Log(LogLevel.Warning, FileSaveErrorID, ex, "Enable save changes into files");
+			}
 		}
 
 		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
@@ -107,35 +101,9 @@ namespace CGZBot3.Data.Json
 			return cache.LoadAllAsync();
 		}
 
-		public async void Delete(IServer server, string key)
-		{
-			using (locker.Lock(server))
-			{
-				var path = GetFileForServer(server);
-				var serializer = CreateSerializer(server);
-
-				var content = cache.GetString(path);
-				var jobj = serializer.Deserialize<JObject>(content);
-
-				jobj.Remove(key);
-
-				cache.Put(path, serializer.Serialize(jobj));
-				await cache.SaveAsync();
-			}
-		}
-
-		public void DeleteAll(IServer server)
-		{
-			using (locker.Lock(server))
-			{
-				var path = GetFileForServer(server);
-				cache.PutDefault(path);
-			}
-		}
-
 		private static string GetFileForServer(IServer server) => $"{server.Id}.json";
 
-		private static JsonSerializer CreateSerializer(IServer server, Action<string, Exception> invalidCollectionElementCallback)
+		private static JsonSerializer CreateSerializerInternal(IServer server, Action<JContainer, string, Exception> invalidCollectionElementCallback)
 		{
 			var ret = new JsonSerializer()
 			{
@@ -151,19 +119,26 @@ namespace CGZBot3.Data.Json
 			ret.Converters.Add(new MessageConverter(server));
 			ret.Converters.Add(new ServerConveter(server.Client));
 
-			ret.Converters.Add(new SafeCollectionConveter((str, ex) => { }));
+			ret.Converters.Add(new SafeCollectionConveter(invalidCollectionElementCallback));
 
 			return ret;
 		}
 
 		private JsonSerializer CreateSerializer(IServer server)
 		{
-			return CreateSerializer(server, DefaultInvalidCollectionElementCallback);
+			return CreateSerializerInternal(server, DefaultInvalidCollectionElementCallback);
+		}
+		
+		private JsonSerializer CreateSerializer(IServer server, Action<JContainer, string, Exception> invalidCollectionElementCallback)
+		{
+			var deleg = new Action<JContainer, string, Exception>(invalidCollectionElementCallback);
+			deleg += DefaultInvalidCollectionElementCallback;
+			return CreateSerializerInternal(server, deleg);
 		}
 
-		private void DefaultInvalidCollectionElementCallback(string str, Exception ex)
+		private void DefaultInvalidCollectionElementCallback(JContainer root, string str, Exception ex)
 		{
-			logger.Log(LogLevel.Warning, ex, "Enable to convert object: {Json}", str);
+			logger.Log(LogLevel.Warning, CollectionElementParseErrorID, ex, "Enable to convert object:\n{Json}", root.SelectToken(str));
 		}
 	}
 }

@@ -16,9 +16,11 @@ namespace CGZBot3.Systems.Voice
 			State = state;
 			ReportMessage = report;
 			Id = id;
+			nextId = Math.Max(nextId, id); //if id from saved state
 		}
 		
-		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, IMessage report, IMember creator, VoiceChannelState state) : this(name, baseChannel, report, creator, state, ++nextId)
+		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, IMessage report, IMember creator, VoiceChannelState state)
+			: this(name, baseChannel, report, creator, state, ++nextId)
 		{
 
 		}
