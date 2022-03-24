@@ -7,7 +7,7 @@ namespace CGZBot3.Interfaces
 		public bool IsBot { get; }
 
 
-		public Task<IReadOnlyCollection<IRole>> GetRolesAsync();
+		public IReadOnlyCollection<IRole> GetRoles();
 
 		public Task GrantRoleAsync(IRole role);
 

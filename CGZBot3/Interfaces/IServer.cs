@@ -2,24 +2,26 @@
 {
 	public interface IServer : IEquatable<IServer>
 	{
-		public Task<IReadOnlyCollection<IMember>> GetMembersAsync();
+		public IReadOnlyCollection<IMember> GetMembers();
 
-		public Task<IMember> GetMemberAsync(ulong id);
+		public IMember GetMember(ulong id);
 
-		public Task<IReadOnlyCollection<IChannelCategory>> GetCategoriesAsync();
+		public IReadOnlyCollection<IChannelCategory> GetCategories();
 
-		public Task<IChannelCategory> GetCategoryAsync(ulong? id);
+		public IChannelCategory GetCategory(ulong? id);
 
-		public Task<IReadOnlyCollection<IChannel>> GetChannelsAsync();
+		public IReadOnlyCollection<IChannel> GetChannels();
 
-		public Task<IChannel> GetChannelAsync(ulong id);
+		public IChannel GetChannel(ulong id);
 
-		public Task<IReadOnlyCollection<IRole>> GetRolesAsync();
+		public IReadOnlyCollection<IRole> GetRoles();
 
-		public Task<IRole> GetRoleAsync(ulong id);
+		public IRole GetRole(ulong id);
 
 
 		public IClient Client { get; }
+
+		public IInteractionObserver InteractionObserver { get; }
 
 		public string Name { get; }
 

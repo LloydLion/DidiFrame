@@ -6,6 +6,8 @@ namespace CGZBot3.Interfaces
 	{
 		public Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel);
 
-		public Task<IReadOnlyCollection<IMessage>> GetMessagesAsync(int count = -1);
+		public IReadOnlyList<IMessage> GetMessages(int count = -1);
+
+		public IMessage GetMessage(ulong id);
 	}
 }
