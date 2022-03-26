@@ -21,8 +21,6 @@
 
 		public IClient Client { get; }
 
-		public IInteractionObserver InteractionObserver { get; }
-
 		public string Name { get; }
 
 		public ulong Id { get; }

@@ -24,15 +24,10 @@ namespace CGZBot3.DSharpAdapter
 			{
 				try
 				{
-					server.GetChannelAsync(Id).Wait();
+					server.GetChannel(Id);
 					return true;
 				}
-				catch (AggregateException ex)
-				{
-					if (ex.InnerException is InvalidOperationException) return false;
-					else throw;
-				}
-				catch (InvalidOperationException)
+				catch (Exception)
 				{
 					return false;
 				}

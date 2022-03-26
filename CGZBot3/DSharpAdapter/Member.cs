@@ -27,8 +27,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public bool Equals(IServerEntity? other) => other is Member member && member.Id == Id;
 
-		public Task<IReadOnlyCollection<IRole>> GetRolesAsync() =>
-			Task.FromResult((IReadOnlyCollection<IRole>)member.Roles.Select(s => new Role(s, BaseServer)).ToArray());
+		public IReadOnlyCollection<IRole> GetRoles() => member.Roles.Select(s => new Role(s, BaseServer)).ToArray();
 
 		public Task GrantRoleAsync(IRole role) => member.GrantRoleAsync(((Role)role).BaseRole);
 
@@ -40,7 +39,7 @@ namespace CGZBot3.DSharpAdapter
 		public async Task SendDirectMessageAsync(MessageSendModel model)
 		{
 			var channel = await member.CreateDmChannelAsync();
-			await channel.SendMessageAsync(await converter.ConvertUpAsync(model));
+			await channel.SendMessageAsync(converter.ConvertUp(model));
 		}
 	}
 }

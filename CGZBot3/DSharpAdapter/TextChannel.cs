@@ -1,9 +1,6 @@
 ﻿using CGZBot3.Entities.Message;
-using CGZBot3.Entities.Message.Components;
-using DSharpPlus;
+using CGZBot3.Utils;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
-using System.Text;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -12,9 +9,13 @@ namespace CGZBot3.DSharpAdapter
 		private readonly DiscordChannel channel;
 		private readonly Server server;
 		private readonly MessageConverter converter;
+		private readonly List<Message> messages = new();
+		private static readonly ThreadLocker<TextChannel> listLocker = new();
 
 
 		public Server BaseServer => server;
+
+		public IReadOnlyList<Message> Messages => messages;
 
 
 		public TextChannel(DiscordChannel channel, Server server) : base(channel, server)
@@ -31,23 +32,54 @@ namespace CGZBot3.DSharpAdapter
 
 		public IMessage GetMessage(ulong id)
 		{
-			var msg = channel.GetMessageAsync(id).Result;
-			var model = converter.ConvertDown(msg);
-
-			return new Message(msg, this, model);
+			return messages.Single(s => s.Id == id);
 		}
 
 		public IReadOnlyList<IMessage> GetMessages(int count = -1)
 		{
-			return channel.GetMessagesAsync(count == -1 ? 1000 : count).Result.Select(s => new Message(s, this, new MessageSendModel(s.Content))).ToArray();
+			if (count == -1) return messages;
+			return messages.AsEnumerable().Reverse().Take(Math.Min(count, messages.Count)).ToArray();
 		}
 
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
-			var builder = await converter.ConvertUpAsync(messageSendModel);
+			var builder = converter.ConvertUp(messageSendModel);
 
 			var msg = new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder));
+
+			using (listLocker.Lock(this))
+			{
+				messages.Add(msg);
+				if (messages.Count > 50) messages.RemoveRange(0, messages.Count - 50);
+			}
+
 			return msg;
+		}
+
+		public void OnMessageCreate(DiscordMessage message)
+		{
+			//Bot's messages already in list
+			if (message.Author.Id == server.Client.SelfAccount.Id) return;
+
+			var model = new Message(message, this, converter.ConvertDown(message));
+
+			using (listLocker.Lock(this))
+			{
+				messages.Add(model);
+				if(messages.Count > 50) messages.RemoveRange(0, messages.Count - 50);
+			}
+		}
+
+		public void OnMessageDelete(DiscordMessage message)
+		{
+			var sor = messages.SingleOrDefault(s => s.Id == message.Id);
+			if (sor is null) return;
+
+			using (listLocker.Lock(this))
+			{
+				messages.Remove(sor);
+				sor.Dispose();
+			}
 		}
 	}
 }

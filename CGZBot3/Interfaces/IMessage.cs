@@ -6,7 +6,7 @@ namespace CGZBot3.Interfaces
 	{
 		public MessageSendModel SendModel { get; }
 
-		public string Content { get { return SendModel.Content; } }
+		public string? Content { get { return SendModel.Content; } }
 
 		public ulong Id { get; }
 
@@ -18,5 +18,7 @@ namespace CGZBot3.Interfaces
 
 
 		Task DeleteAsync();
+
+		public IInteractionDispatcher GetInteractionDispatcher();
 	}
 }

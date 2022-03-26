@@ -10,7 +10,6 @@ namespace CGZBot3.DSharpAdapter
 	{
 		private readonly DiscordGuild guild;
 		private readonly Client client;
-		private readonly InteractionObserver observer;
 
 		private readonly Task globalCacheUpdateTask;
 		private readonly CancellationTokenSource cts = new();
@@ -30,10 +29,6 @@ namespace CGZBot3.DSharpAdapter
 		public Client SourceClient => client;
 
 		public ulong Id => guild.Id;
-
-		public IInteractionObserver InteractionObserver => observer;
-
-		public ServerComponentsRegistry ComponentsRegistry { get; } = new();
 
 
 		public IMember GetMember(ulong id) => GetMembers().Single(s => s.Id == id);
@@ -57,15 +52,15 @@ namespace CGZBot3.DSharpAdapter
 		public void Dispose()
 		{
 			//Detatch events
-			client.BaseClient.InteractionCreated -= observer.OnInteractionCreated;
-
 			client.BaseClient.GuildMemberAdded -= OnGuildMemberAdded;
 			client.BaseClient.GuildRoleCreated -= OnGuildRoleCreated;
 			client.BaseClient.ChannelCreated -= OnChannelCreated;
+			client.BaseClient.MessageCreated -= OnMessageCreated;
 
 			client.BaseClient.GuildMemberRemoved -= OnGuildMemberRemoved;
 			client.BaseClient.GuildRoleDeleted -= OnGuildRoleDeleted;
 			client.BaseClient.ChannelDeleted -= OnChannelDeleted;
+			client.BaseClient.MessageDeleted -= OnMessageDeleted;
 
 			cts.Cancel();
 			globalCacheUpdateTask.Wait();
@@ -77,19 +72,17 @@ namespace CGZBot3.DSharpAdapter
 			this.guild = guild;
 			this.client = client;
 
-			observer = new InteractionObserver(this);
-
 			categories.Add(new ChannelCategory(guild, this)); //Global category
-
-			client.BaseClient.InteractionCreated += observer.OnInteractionCreated;
 
 			client.BaseClient.GuildMemberAdded += OnGuildMemberAdded;
 			client.BaseClient.GuildRoleCreated += OnGuildRoleCreated;
 			client.BaseClient.ChannelCreated += OnChannelCreated;
+			client.BaseClient.MessageCreated += OnMessageCreated;
 
 			client.BaseClient.GuildMemberRemoved += OnGuildMemberRemoved;
 			client.BaseClient.GuildRoleDeleted += OnGuildRoleDeleted;
 			client.BaseClient.ChannelDeleted += OnChannelDeleted;
+			client.BaseClient.MessageDeleted += OnMessageDeleted;
 
 			globalCacheUpdateTask = CreateServerCacheUpdateTask(cts.Token);
 		}
@@ -99,10 +92,10 @@ namespace CGZBot3.DSharpAdapter
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			if (e.Channel.IsCategory)
-				using (cacheUpdateLocker.Lock(roles)) 
+				using (cacheUpdateLocker.Lock(roles))
 					categories.RemoveAll(s => s.Id == e.Channel.Id);
 			else
-				using (cacheUpdateLocker.Lock(roles)) 
+				using (cacheUpdateLocker.Lock(roles))
 					channels.RemoveAll(s => s.Id == e.Channel.Id);
 			return Task.CompletedTask;
 		}
@@ -125,6 +118,15 @@ namespace CGZBot3.DSharpAdapter
 			return Task.CompletedTask;
 		}
 
+		private Task OnMessageDeleted(DiscordClient sender, MessageDeleteEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			var channel = (TextChannel)GetChannel(e.Channel.Id);
+			channel.OnMessageDelete(e.Message);
+			return Task.CompletedTask;
+		}
+
 		private Task OnChannelCreated(DiscordClient sender, ChannelCreateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
@@ -133,7 +135,7 @@ namespace CGZBot3.DSharpAdapter
 				using (cacheUpdateLocker.Lock(roles))
 					categories.Add(new ChannelCategory(e.Channel, this));
 			else
-				using (cacheUpdateLocker.Lock(roles)) 
+				using (cacheUpdateLocker.Lock(roles))
 					channels.Add(Channel.Construct(e.Channel, this));
 			return Task.CompletedTask;
 		}
@@ -153,6 +155,15 @@ namespace CGZBot3.DSharpAdapter
 
 			using (cacheUpdateLocker.Lock(roles))
 				members.Add(new Member(e.Member, this));
+			return Task.CompletedTask;
+		}
+
+		private Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			var channel = (TextChannel)GetChannel(e.Channel.Id);
+			channel.OnMessageCreate(e.Message);
 			return Task.CompletedTask;
 		}
 
