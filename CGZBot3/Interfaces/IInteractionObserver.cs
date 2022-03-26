@@ -4,6 +4,6 @@ namespace CGZBot3.Interfaces
 {
 	public interface IInteractionObserver
 	{
-		public void Observe<TComponent>(IMessage message, IComponent component, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent;
+		public void Observe<TComponent>(TComponent component, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent;
 	}
 }

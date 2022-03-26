@@ -1,12 +1,27 @@
-﻿using DSharpPlus;
+﻿using CGZBot3.Utils;
+using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using System.Collections;
 
 namespace CGZBot3.DSharpAdapter
 {
-	internal class Server : IServer
+	internal class Server : IServer, IDisposable
 	{
 		private readonly DiscordGuild guild;
 		private readonly Client client;
+		private readonly InteractionObserver observer;
+
+		private readonly Task globalCacheUpdateTask;
+		private readonly CancellationTokenSource cts = new();
+
+		private readonly List<Member> members = new();
+		private readonly List<ChannelCategory> categories = new();
+		private readonly List<Channel> channels = new();
+		private readonly List<Role> roles = new();
+
+		private readonly ThreadLocker<IList> cacheUpdateLocker = new();
+
 
 		public string Name => guild.Name;
 
@@ -16,65 +31,164 @@ namespace CGZBot3.DSharpAdapter
 
 		public ulong Id => guild.Id;
 
-		public async Task<IMember> GetMemberAsync(ulong id)
-		{
-			return new Member(await guild.GetMemberAsync(id), this);
-		}
+		public IInteractionObserver InteractionObserver => observer;
 
-		public async Task<IReadOnlyCollection<IMember>> GetMembersAsync()
-		{
-			return (await guild.GetAllMembersAsync()).Select(s => new Member(s, this)).ToArray();
-		}
+		public ServerComponentsRegistry ComponentsRegistry { get; } = new();
 
-		public Task<IReadOnlyCollection<IChannelCategory>> GetCategoriesAsync()
-		{
-			var ret = guild.Channels.Where(s => s.Value.IsCategory).Select(s => new ChannelCategory(s.Value, this)).ToList();
-			ret.Add(new ChannelCategory(guild, this));
-			return Task.FromResult((IReadOnlyCollection<IChannelCategory>)ret);
-		}
 
-		public Task<IChannelCategory> GetCategoryAsync(ulong? id)
-		{
-			if (id == null)
-			{
-				return Task.FromResult((IChannelCategory)new ChannelCategory(guild, this));
-			}
-			else
-			{
-				return Task.FromResult((IChannelCategory)new ChannelCategory(guild.GetChannel((ulong)id), this));
-			}
-		}
+		public IMember GetMember(ulong id) => GetMembers().Single(s => s.Id == id);
 
-		public async Task<IReadOnlyCollection<IChannel>> GetChannelsAsync()
-		{
-			var channels = await guild.GetChannelsAsync();
-			return channels.Select(s => Channel.Construct(s, this)).ToArray();
-		}
+		public IReadOnlyCollection<IMember> GetMembers() => members;
 
-		public async Task<IChannel> GetChannelAsync(ulong id)
-		{
-			var channels = await guild.GetChannelsAsync();
-			var channel = channels.Single(s => s.Id == id);
-			return Channel.Construct(channel, this);
-		}
+		public IReadOnlyCollection<IChannelCategory> GetCategories() => categories;
 
-		public Task<IReadOnlyCollection<IRole>> GetRolesAsync()
-		{
-			throw new NotImplementedException();
-		}
+		public IChannelCategory GetCategory(ulong? id) => GetCategories().Single(s => s.Id == id);
 
-		public Task<IRole> GetRoleAsync(ulong id)
-		{
-			return Task.FromResult((IRole)new Role(guild.GetRole(id), this));
-		}
+		public IReadOnlyCollection<IChannel> GetChannels() => channels;
+
+		public IChannel GetChannel(ulong id) => GetChannels().Single(s => s.Id == id);
+
+		public IReadOnlyCollection<IRole> GetRoles() => roles;
+
+		public IRole GetRole(ulong id) => GetRoles().Single(s => s.Id == id);
 
 		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
+
+		public void Dispose()
+		{
+			//Detatch events
+			client.BaseClient.InteractionCreated -= observer.OnInteractionCreated;
+
+			client.BaseClient.GuildMemberAdded -= OnGuildMemberAdded;
+			client.BaseClient.GuildRoleCreated -= OnGuildRoleCreated;
+			client.BaseClient.ChannelCreated -= OnChannelCreated;
+
+			client.BaseClient.GuildMemberRemoved -= OnGuildMemberRemoved;
+			client.BaseClient.GuildRoleDeleted -= OnGuildRoleDeleted;
+			client.BaseClient.ChannelDeleted -= OnChannelDeleted;
+
+			cts.Cancel();
+			globalCacheUpdateTask.Wait();
+		}
 
 
 		public Server(DiscordGuild guild, Client client)
 		{
 			this.guild = guild;
 			this.client = client;
+
+			observer = new InteractionObserver(this);
+
+			categories.Add(new ChannelCategory(guild, this)); //Global category
+
+			client.BaseClient.InteractionCreated += observer.OnInteractionCreated;
+
+			client.BaseClient.GuildMemberAdded += OnGuildMemberAdded;
+			client.BaseClient.GuildRoleCreated += OnGuildRoleCreated;
+			client.BaseClient.ChannelCreated += OnChannelCreated;
+
+			client.BaseClient.GuildMemberRemoved += OnGuildMemberRemoved;
+			client.BaseClient.GuildRoleDeleted += OnGuildRoleDeleted;
+			client.BaseClient.ChannelDeleted += OnChannelDeleted;
+
+			globalCacheUpdateTask = CreateServerCacheUpdateTask(cts.Token);
+		}
+
+		private Task OnChannelDeleted(DiscordClient sender, ChannelDeleteEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			if (e.Channel.IsCategory)
+				using (cacheUpdateLocker.Lock(roles)) 
+					categories.RemoveAll(s => s.Id == e.Channel.Id);
+			else
+				using (cacheUpdateLocker.Lock(roles)) 
+					channels.RemoveAll(s => s.Id == e.Channel.Id);
+			return Task.CompletedTask;
+		}
+
+		private Task OnGuildRoleDeleted(DiscordClient sender, GuildRoleDeleteEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			using (cacheUpdateLocker.Lock(roles))
+				roles.RemoveAll(s => s.Id == e.Role.Id);
+			return Task.CompletedTask;
+		}
+
+		private Task OnGuildMemberRemoved(DiscordClient sender, GuildMemberRemoveEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			using (cacheUpdateLocker.Lock(roles))
+				members.RemoveAll(s => s.Id == e.Member.Id);
+			return Task.CompletedTask;
+		}
+
+		private Task OnChannelCreated(DiscordClient sender, ChannelCreateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			if (e.Channel.IsCategory)
+				using (cacheUpdateLocker.Lock(roles))
+					categories.Add(new ChannelCategory(e.Channel, this));
+			else
+				using (cacheUpdateLocker.Lock(roles)) 
+					channels.Add(Channel.Construct(e.Channel, this));
+			return Task.CompletedTask;
+		}
+
+		private Task OnGuildRoleCreated(DiscordClient sender, GuildRoleCreateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			using (cacheUpdateLocker.Lock(roles))
+				roles.Add(new Role(e.Role, this));
+			return Task.CompletedTask;
+		}
+
+		private Task OnGuildMemberAdded(DiscordClient sender, GuildMemberAddEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			using (cacheUpdateLocker.Lock(roles))
+				members.Add(new Member(e.Member, this));
+			return Task.CompletedTask;
+		}
+
+		private async Task CreateServerCacheUpdateTask(CancellationToken token)
+		{
+			while (token.IsCancellationRequested)
+			{
+				using (cacheUpdateLocker.Lock(members))
+				{
+					members.Clear();
+					members.AddRange((await guild.GetAllMembersAsync()).Select(s => new Member(s, this)));
+				}
+
+				using (cacheUpdateLocker.Lock(roles))
+				{
+					roles.Clear();
+					roles.AddRange(guild.Roles.Select(s => new Role(s.Value, this)));
+				}
+
+				using (cacheUpdateLocker.Lock(channels))
+				{
+					using (cacheUpdateLocker.Lock(categories))
+					{
+						var chs = await guild.GetChannelsAsync();
+						channels.Clear();
+						categories.Clear();
+						foreach (var ch in chs)
+						{
+							if (ch.IsCategory) categories.Add(new ChannelCategory(ch, this));
+							else channels.Add(Channel.Construct(ch, this));
+						}
+					}
+				}
+
+				await Task.Delay(new TimeSpan(0, 5, 0), token);
+			}
 		}
 	}
 }

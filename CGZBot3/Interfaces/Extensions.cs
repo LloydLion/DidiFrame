@@ -2,9 +2,9 @@
 {
 	public static class Extensions
 	{
-		public static Task<IMember> GetMemberAsync(this IServer server, IUser user)
+		public static IMember GetMember(this IServer server, IUser user)
 		{
-			return server.GetMemberAsync(user.Id);
+			return server.GetMember(user.Id);
 		}
 
 		public static ITextChannel AsText(this IChannel channel) => (ITextChannel)channel;

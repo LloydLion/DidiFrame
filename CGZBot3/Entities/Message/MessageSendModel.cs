@@ -3,7 +3,7 @@ using CGZBot3.Entities.Message.Embed;
 
 namespace CGZBot3.Entities.Message
 {
-	public record MessageSendModel(string Content)
+	public record MessageSendModel(string? Content = null)
 	{
 		public MessageEmbed? MessageEmbed { get; init; }
 

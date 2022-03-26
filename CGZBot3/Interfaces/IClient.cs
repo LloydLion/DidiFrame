@@ -3,7 +3,7 @@
 	public delegate void MessageSentEventHandler(IClient sender, IMessage message);
 
 
-	public interface IClient
+	public interface IClient : IDisposable
 	{
 		public IReadOnlyCollection<IServer> Servers { get; }
 
