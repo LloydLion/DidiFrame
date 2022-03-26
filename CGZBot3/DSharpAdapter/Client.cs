@@ -6,6 +6,9 @@ namespace CGZBot3.DSharpAdapter
 {
 	internal class Client : IClient
 	{
+		private readonly static EventId MessageSentHandlerExceptionID = new(44, "MessageSentHandlerException");
+
+
 		private readonly DiscordClient client;
 		private readonly MessageConverter converter = new();
 		private readonly List<Server> servers = new();
@@ -40,16 +43,19 @@ namespace CGZBot3.DSharpAdapter
 			});
 
 			CommandsDispatcher = new CommandsDispatcher(this, repository, opt);
-
-			client.MessageCreated += Client_MessageCreated;
 		}
 
-		private Task Client_MessageCreated(DiscordClient sender, MessageCreateEventArgs e)
+		//Must be invoked from TextChannel objects
+		public void OnMessageCreated(Message message)
 		{
-			var server = Servers.Single(s => s.Id == e.Guild.Id);
-			var channel = server.GetChannel(e.Channel.Id);
-			MessageSent?.Invoke(this, new Message(e.Message, (TextChannel)channel, converter.ConvertDown(e.Message)));
-			return Task.CompletedTask;
+			try
+			{
+				MessageSent?.Invoke(this, message);
+			}
+			catch (Exception ex)
+			{
+				client?.Logger.Log(LogLevel.Warning, MessageSentHandlerExceptionID, ex, "Execution of event handler for message sent event finished with exception");
+			}
 		}
 
 		public Task AwaitForExit()
@@ -60,8 +66,8 @@ namespace CGZBot3.DSharpAdapter
 		public void Connect()
 		{
 			client.ConnectAsync().Wait();
-			serverListUpdateTask = CreateServerListUpdateTask(cts.Token);
 			Thread.Sleep(5000);
+			serverListUpdateTask = CreateServerListUpdateTask(cts.Token);
 		}
 
 		private async Task CreateServerListUpdateTask(CancellationToken token)
@@ -92,6 +98,7 @@ namespace CGZBot3.DSharpAdapter
 		{
 			cts.Cancel();
 			serverListUpdateTask?.Wait();
+			client.Dispose();
 		}
 
 		public class Options

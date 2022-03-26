@@ -169,12 +169,12 @@ namespace CGZBot3.DSharpAdapter
 
 		private async Task CreateServerCacheUpdateTask(CancellationToken token)
 		{
-			update().Wait();
+			update().Wait(token);
 
 			while (token.IsCancellationRequested)
 			{
 				await update();
-				await Task.Delay(new TimeSpan(0, 5, 0), token);
+				await Task.Delay(new TimeSpan(0, 0, 30), token);
 			}
 
 			async Task update()

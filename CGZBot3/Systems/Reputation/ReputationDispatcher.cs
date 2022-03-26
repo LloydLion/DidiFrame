@@ -61,7 +61,7 @@
 		{
 			while (!token.IsCancellationRequested)
 			{
-				//Increese only at 00:00
+				//Process only at 00:00
 
 				var now = DateTime.Now;
 				var yesterday = DateOnly.FromDateTime(now).AddDays(1).ToDateTime(new TimeOnly(0, 0)); //Set time here
@@ -71,17 +71,13 @@
 
 				var servers = client.Servers;
 
-				var tasks = new List<Task>();
-
-				foreach (var server in servers) tasks.Add(ProcessServerPeriodicTasks(server));
-
-				await Task.WhenAll(tasks);
+				foreach (var server in servers) ProcessServerPeriodicTasks(server);
 			}
 		}
 
-		private async Task ProcessServerPeriodicTasks(IServer server)
+		private void ProcessServerPeriodicTasks(IServer server)
 		{
-			var members = await server.GetMembersAsync();
+			var members = server.GetMembers();
 
 			var setting = settings.Get(server);
 

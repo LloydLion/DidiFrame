@@ -15,7 +15,6 @@ namespace CGZBot3.Data.Json.Converters
 
 		public override IChannelCategory? ReadJson(JsonReader reader, Type objectType, IChannelCategory? existingValue, bool hasExistingValue, JsonSerializer serializer)
 		{
-			//I can't..... await..... NOOOOOOOOOOOOOO
 			if (hasExistingValue) throw new InvalidOperationException("Enable to populate discord category. It is immuttable object");
 
 			if (reader.Value is null) return null;
@@ -23,7 +22,7 @@ namespace CGZBot3.Data.Json.Converters
 			{
 				var id = (ulong)(long)reader.Value;
 				reader.Read();
-				return server.GetCategoryAsync(id).Result;
+				return server.GetCategory(id);
 			}
 		}
 

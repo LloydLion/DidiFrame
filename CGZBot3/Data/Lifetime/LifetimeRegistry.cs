@@ -17,7 +17,8 @@
 		public void LoadAndRunAll(IServer server)
 		{
 			using var state = baseRepository.GetState(server);
-			foreach (var item in state.Object) repository.AddLifetime(item);
+			for (int i = 0; i < state.Object.Count; i++)
+				repository.AddLifetime(state.Object.ElementAt(i));
 		}
 	}
 }

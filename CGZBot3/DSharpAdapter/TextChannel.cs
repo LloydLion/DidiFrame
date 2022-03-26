@@ -6,7 +6,7 @@ namespace CGZBot3.DSharpAdapter
 {
 	internal class TextChannel : Channel, ITextChannel
 	{
-		public const int MessagesLimit = 50;
+		public const int MessagesLimit = 7;
 
 
 		private readonly DiscordChannel channel;
@@ -71,6 +71,9 @@ namespace CGZBot3.DSharpAdapter
 				messages.Add(model);
 				if(messages.Count > MessagesLimit) messages.RemoveRange(0, messages.Count - MessagesLimit);
 			}
+
+			//Bot messages will be ignored
+			server.SourceClient.OnMessageCreated(model);
 		}
 
 		public void OnMessageDelete(DiscordMessage message)
@@ -100,7 +103,15 @@ namespace CGZBot3.DSharpAdapter
 						messages.Add(maybe);
 						temp.Remove(maybe);
 					}
-					else messages.Add(new Message(msg, this, converter.ConvertDown(msg)));
+					else
+					{
+						try
+						{
+							//Messages in channels can't be written by membed witch exited from server
+							messages.Add(new Message(msg, this, converter.ConvertDown(msg)));
+						}
+						catch (Exception) { }
+					}
 				}
 
 				foreach (var item in temp) item.Dispose();

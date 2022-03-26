@@ -46,7 +46,7 @@ namespace CGZBot3.Systems.Reputation
 			var grants = settings.Get(rp.Member.Server).Grants;
 
 			IReadOnlyCollection<IRole> roles;
-			try { roles = await rp.Member.GetRolesAsync(); }
+			try { roles = rp.Member.GetRoles(); }
 			catch (Exception ex) { logger.Log(LogLevel.Warning, ManageGrantsErrorID, ex, "Enable to get member roles"); return; }
 
 			var tasks = new List<Task>();

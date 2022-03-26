@@ -8,7 +8,7 @@ namespace CGZBot3.DSharpAdapter
 	{
 		private readonly DiscordMessage message;
 		private readonly TextChannel owner;
-		private Lazy<MessageInteractionDispatcher> mid;
+		private readonly Lazy<MessageInteractionDispatcher> mid;
 
 
 		public TextChannel BaseChannel => owner;

@@ -38,10 +38,10 @@ namespace CGZBot3.DSharpAdapter
 				embed = new MessageEmbed(baseEmbed.Title, baseEmbed.Description, new Color(baseEmbed.Color.Value.R, baseEmbed.Color.Value.G, baseEmbed.Color.Value.B),
 					baseEmbed.Fields.Select(s => new EmbedField(s.Name, s.Value)).ToArray(), new EmbedMeta()
 					{
-						AuthorIconUrl = baseEmbed.Author.IconUrl.ToString(),
-						AuthorPersonalUrl = baseEmbed.Author.Url.ToString(),
-						AuthorName = baseEmbed.Author.Name,
-						DisplayImageUrl = baseEmbed.Image.Url.ToString(),
+						AuthorIconUrl = baseEmbed.Author?.IconUrl?.ToString(),
+						AuthorPersonalUrl = baseEmbed.Author?.Url?.ToString(),
+						AuthorName = baseEmbed.Author?.Name,
+						DisplayImageUrl = baseEmbed.Image?.Url?.ToString(),
 						Timestamp =  baseEmbed.Timestamp?.DateTime
 					});
 			}

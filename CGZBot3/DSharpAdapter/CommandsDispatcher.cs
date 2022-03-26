@@ -27,7 +27,7 @@ namespace CGZBot3.DSharpAdapter
 		public event CommandWrittenHandler? CommandWritten;
 
 
-		public async Task MessageCreatedHandler(DiscordClient sender, MessageCreateEventArgs args)
+		public Task MessageCreatedHandler(DiscordClient sender, MessageCreateEventArgs args)
 		{
 			var content = args.Message.Content.Split(' ');
 
@@ -41,7 +41,7 @@ namespace CGZBot3.DSharpAdapter
 
 				var cmds = repository.GetCommandsFor(server);
 				var cmd = cmds.SingleOrDefault(s => s.Name == content[0]);
-				if (cmd is null) return;
+				if (cmd is null) return Task.CompletedTask;
 
 				var parsed = new object[cmd.Arguments.Count];
 
@@ -54,7 +54,7 @@ namespace CGZBot3.DSharpAdapter
 						{
 							var rawStr = content[i + 1];
 
-							parsed[i] = await ConvertArgumentAsync(rawStr, arg.ArgumentType, server);
+							parsed[i] = ConvertArgument(rawStr, arg.ArgumentType, server);
 						}
 						else
 						{
@@ -69,20 +69,22 @@ namespace CGZBot3.DSharpAdapter
 
 							for (int j = 0; j < countOfArray; j++)
 							{
-								result[j] = await ConvertArgumentAsync(content[countOfTranslated + j + 1], arg.ArgumentType, server);
+								result[j] = ConvertArgument(content[countOfTranslated + j + 1], arg.ArgumentType, server);
 							}
 
 							parsed[i] = result;
 						}
 					}
-					catch (Exception) { return; }
+					catch (Exception) { return Task.CompletedTask; }
 				}
 
-				var context = new UserCommandContext(await server.GetMemberAsync(args.Author.Id), (ITextChannel)await server.GetChannelAsync(args.Channel.Id), cmd,
+				var context = new UserCommandContext(server.GetMember(args.Author.Id), server.GetChannel(args.Channel.Id).AsText(), cmd,
 					cmd.Arguments.Select((s, i) => (s, i)).Join(parsed.Select((s, i) => (s, i)), s => s.i, s => s.i, (a, b) => (a.s, b.s)).ToDictionary(s => s.Item1, s => s.Item2));
 
 				CommandWritten?.Invoke(context, (result) => CallBack(context, result, args.Message));
 			}
+
+			return Task.CompletedTask;
 		}
 
 		private static async void CallBack(UserCommandContext context, UserCommandResult result, DiscordMessage cmdMsg)
@@ -104,7 +106,7 @@ namespace CGZBot3.DSharpAdapter
 			try { await cmdMsg.DeleteAsync(); } catch (Exception) { }
 		}
 
-		private async Task<object> ConvertArgumentAsync(string rawStr, UserCommandInfo.Argument.Type ttype, IServer server)
+		private object ConvertArgument(string rawStr, UserCommandInfo.Argument.Type ttype, IServer server)
 		{
 			switch (ttype)
 			{
@@ -114,11 +116,11 @@ namespace CGZBot3.DSharpAdapter
 				case UserCommandInfo.Argument.Type.Member:
 					var match = Regex.Match(rawStr, @"^<@!?(\d+)>$").Groups[1].Value;
 					var id = ulong.Parse(match);
-					return await server.GetMemberAsync(id); //NOTE mention struct: <@USERID> or <@!USERID>
-				case UserCommandInfo.Argument.Type.Role: return await server.GetRoleAsync(ulong.Parse(rawStr[2..^1])); //NOTE mention struct: <@&ROLEID>
+					return server.GetMember(id); //NOTE mention struct: <@USERID> or <@!USERID>
+				case UserCommandInfo.Argument.Type.Role: return server.GetRole(ulong.Parse(rawStr[2..^1])); //NOTE mention struct: <@&ROLEID>
 				case UserCommandInfo.Argument.Type.Mentionable:
-					if(Regex.IsMatch(rawStr, @"^<@!?(\d+)>$")) return await ConvertArgumentAsync(rawStr, UserCommandInfo.Argument.Type.Member, server);
-					else return await ConvertArgumentAsync(rawStr, UserCommandInfo.Argument.Type.Role, server);
+					if(Regex.IsMatch(rawStr, @"^<@!?(\d+)>$")) return ConvertArgument(rawStr, UserCommandInfo.Argument.Type.Member, server);
+					else return ConvertArgument(rawStr, UserCommandInfo.Argument.Type.Role, server);
 				case UserCommandInfo.Argument.Type.TimeSpan: return TimeSpan.Parse(rawStr);
 				default: throw new Exception();
 			}

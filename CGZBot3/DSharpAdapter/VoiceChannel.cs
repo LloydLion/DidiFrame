@@ -21,6 +21,6 @@ namespace CGZBot3.DSharpAdapter
 		}
 
 
-		public IReadOnlyCollection<IMember> ConnectedMembers => channel.Users.Select(s => server.GetMemberAsync(s.Id).Result).ToArray();
+		public IReadOnlyCollection<IMember> ConnectedMembers => channel.Users.Select(s => server.GetMember(s.Id)).ToArray();
 	}
 }

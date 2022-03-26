@@ -15,7 +15,6 @@ namespace CGZBot3.Data.Json.Converters
 
 		public override IRole? ReadJson(JsonReader reader, Type objectType, IRole? existingValue, bool hasExistingValue, JsonSerializer serializer)
 		{
-			//I can't..... await..... NOOOOOOOOOOOOOO
 			if (hasExistingValue) throw new InvalidOperationException("Enable to populate discord role. It is immuttable object");
 
 			if (reader.Value is null) return null;
@@ -23,7 +22,7 @@ namespace CGZBot3.Data.Json.Converters
 			{
 				var id = (ulong)(long)reader.Value;
 				reader.Read();
-				return server.GetRoleAsync(id).Result;
+				return server.GetRole(id);
 			}
 		}
 
