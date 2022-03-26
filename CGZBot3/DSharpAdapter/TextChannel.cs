@@ -6,6 +6,9 @@ namespace CGZBot3.DSharpAdapter
 {
 	internal class TextChannel : Channel, ITextChannel
 	{
+		public const int MessagesLimit = 50;
+
+
 		private readonly DiscordChannel channel;
 		private readonly Server server;
 		private readonly MessageConverter converter;
@@ -20,7 +23,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public TextChannel(DiscordChannel channel, Server server) : base(channel, server)
 		{
-			if(channel.Type.GetAbstract() != Entities.ChannelType.TextCompatible )
+			if(channel.Type.GetAbstract() != ChannelType.TextCompatible )
 			{
 				throw new InvalidOperationException("Channel must be text");
 			}
@@ -50,7 +53,7 @@ namespace CGZBot3.DSharpAdapter
 			using (listLocker.Lock(this))
 			{
 				messages.Add(msg);
-				if (messages.Count > 50) messages.RemoveRange(0, messages.Count - 50);
+				if (messages.Count > MessagesLimit) messages.RemoveRange(0, messages.Count - MessagesLimit);
 			}
 
 			return msg;
@@ -66,7 +69,7 @@ namespace CGZBot3.DSharpAdapter
 			using (listLocker.Lock(this))
 			{
 				messages.Add(model);
-				if(messages.Count > 50) messages.RemoveRange(0, messages.Count - 50);
+				if(messages.Count > MessagesLimit) messages.RemoveRange(0, messages.Count - MessagesLimit);
 			}
 		}
 
@@ -79,6 +82,28 @@ namespace CGZBot3.DSharpAdapter
 			{
 				messages.Remove(sor);
 				sor.Dispose();
+			}
+		}
+
+		public void SetMessages(IReadOnlyList<DiscordMessage> newMessages)
+		{
+			using (listLocker.Lock(this))
+			{
+				var temp = messages.ToList();
+				messages.Clear();
+
+				foreach (var msg in newMessages)
+				{
+					var maybe = temp.SingleOrDefault(s => s.Id == msg.Id);
+					if (maybe is not null)
+					{
+						messages.Add(maybe);
+						temp.Remove(maybe);
+					}
+					else messages.Add(new Message(msg, this, converter.ConvertDown(msg)));
+				}
+
+				foreach (var item in temp) item.Dispose();
 			}
 		}
 	}

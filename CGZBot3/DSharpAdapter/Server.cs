@@ -169,7 +169,15 @@ namespace CGZBot3.DSharpAdapter
 
 		private async Task CreateServerCacheUpdateTask(CancellationToken token)
 		{
+			update().Wait();
+
 			while (token.IsCancellationRequested)
+			{
+				await update();
+				await Task.Delay(new TimeSpan(0, 5, 0), token);
+			}
+
+			async Task update()
 			{
 				using (cacheUpdateLocker.Lock(members))
 				{
@@ -198,7 +206,8 @@ namespace CGZBot3.DSharpAdapter
 					}
 				}
 
-				await Task.Delay(new TimeSpan(0, 5, 0), token);
+				foreach (var channel in channels.Where(s => s is TextChannel).Cast<TextChannel>())
+					channel.SetMessages((await channel.BaseChannel.GetMessagesAsync(TextChannel.MessagesLimit)).Reverse().ToArray());
 			}
 		}
 	}

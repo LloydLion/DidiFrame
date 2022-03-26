@@ -80,7 +80,6 @@ namespace CGZBot3.DSharpAdapter
 						temp.Remove(maybe);
 					}
 					else servers.Add(new Server(server.Value, this));
-
 				}
 
 				foreach (var item in temp) item.Dispose();
