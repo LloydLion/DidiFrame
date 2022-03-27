@@ -9,21 +9,31 @@ namespace CGZBot3.UserCommands.ArgumentsValidation.Validators
 		private readonly bool allowEquals;
 
 
-		public GreaterThen(IComparable number, bool inverse, bool allowEquals = false)
+		public GreaterThen(IComparable number, bool inverse, bool allowEquals)
 		{
 			numberSource = (ctx) => number;
 			this.inverse = inverse;
 			this.allowEquals = allowEquals;
 		}
 
-		public GreaterThen(string argumentName, bool inverse, bool allowEquals = false)
+		public GreaterThen(IComparable number, bool inverse) : this(number, inverse, false) { }
+
+		public GreaterThen(IComparable number) : this(number, false, false) { }
+
+
+		public GreaterThen(string argumentName, bool inverse, bool allowEquals)
 		{
 			numberSource = (ctx) => (IComparable)ctx.Arguments[ctx.Command.Arguments.Single(s => s.Name == argumentName)];
 			this.inverse = inverse;
 			this.allowEquals = allowEquals;
 		}
 
-		public GreaterThen(Type type, string customSourceName, bool inverse, bool allowEquals = false)
+		public GreaterThen(string argumentName, bool inverse) : this(argumentName, inverse, false) { }
+
+		public GreaterThen(string argumentName) : this(argumentName, false, false) { }
+
+
+		public GreaterThen(Type type, string customSourceName, bool inverse, bool allowEquals)
 		{
 			var method = type.GetMethod(customSourceName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic) ??
 				throw new ArgumentException("Method not found. *Method can be private or public and must be static");
@@ -31,6 +41,10 @@ namespace CGZBot3.UserCommands.ArgumentsValidation.Validators
 			this.inverse = inverse;
 			this.allowEquals = allowEquals;
 		}
+
+		public GreaterThen(Type type, string customSourceName, bool inverse) : this(type, customSourceName, inverse, false) { }
+
+		public GreaterThen(Type type, string customSourceName) : this(type, customSourceName, false, false) { }
 
 
 		public string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, object value)

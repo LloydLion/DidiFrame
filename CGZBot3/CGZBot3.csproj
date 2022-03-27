@@ -48,6 +48,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Translations\Systems\Reputation\CommandsHandler.ru-RU.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Reputation\CommandsHandler.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Reputation\UIHelper.ru-RU.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Reputation\UIHelper.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Translations\Systems\Test\CommandsHandl;er.resx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
