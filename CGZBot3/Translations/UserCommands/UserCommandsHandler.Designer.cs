@@ -61,6 +61,15 @@ namespace CGZBot3.Translations.UserCommands {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Sorry, you can&apos;t run this command, you have blocked by filter: {0}.
+        /// </summary>
+        internal static string ByFilterBlockedMessage {
+            get {
+                return ResourceManager.GetString("ByFilterBlockedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Sorry, command has invalid input! Please fix arguments values and try again: {0}.
         /// </summary>
         internal static string ValidationErrorMessage {

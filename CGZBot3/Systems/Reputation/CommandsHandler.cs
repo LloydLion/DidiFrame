@@ -1,6 +1,7 @@
 ﻿using CGZBot3.Entities.Message;
 using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.ArgumentsValidation.Validators;
+using CGZBot3.UserCommands.InvokerFiltartion.Filters;
 using CGZBot3.UserCommands.Loader;
 
 namespace CGZBot3.Systems.Reputation
@@ -24,11 +25,9 @@ namespace CGZBot3.Systems.Reputation
 
 
 		[Command("illegal")]
+		[InvokerFilter(typeof(PermissionFilter), Permissions.KickMembers)]
 		public async Task<UserCommandResult> AddIllegal(UserCommandContext ctx, [Validator(typeof(NoBot))] IMember member, [Validator(typeof(GreaterThen), 0)] int amount, string[] reason)
 		{
-			if (!member.HasPermissionIn(Permissions.KickMembers, ctx.Channel))
-				return new UserCommandResult(UserCommandCode.NoPermission) { RespondMessage = new MessageSendModel(localizer["IllegalNoHasPermission", Permissions.KickMembers]) };
-
 			var doMsg = system.AddIllegal(new MemberLegalLevelChangeOperationArgs(member, amount));
 
 			await member.SendDirectMessageAsync(uiHelper.CreateDirectNotification(ctx.Invoker, amount, reason.JoinWords()));

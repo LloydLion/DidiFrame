@@ -42,6 +42,18 @@ namespace CGZBot3.UserCommands
 
 					logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
 
+					foreach (var filter in ctx.Command.InvokerFilters)
+					{
+						var tf = filter.Filter(ctx);
+						if (tf is null) continue;
+						else
+						{
+							var content = localizer["ByFilterBlockedMessage", ctx.Command.Localizer[$"{ctx.Command.Name}:{tf.LocaleKey}"]];
+							callback(new UserCommandResult(tf.Code) { RespondMessage = new MessageSendModel(content) });
+							return;
+						}
+					}
+
 					foreach (var argument in ctx.Command.Arguments)
 					{
 						foreach (var validator in argument.Validators)

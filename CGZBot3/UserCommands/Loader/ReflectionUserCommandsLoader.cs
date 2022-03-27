@@ -54,7 +54,6 @@ namespace CGZBot3.UserCommands.Loader
 
 					using (logger.BeginScope("Method {TypeName}.{MethodName}", method.DeclaringType?.FullName, method.Name))
 					{
-
 						if (!ValidateMethod(method))
 						{
 							logger.Log(LogLevel.Debug, LoadingSkipID, "Validation for method failed, method can't be command, but marked as command by attribute");
@@ -89,7 +88,9 @@ namespace CGZBot3.UserCommands.Loader
 								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, atype, @params[i].Name ?? "no_name", validators);
 							}
 
-							rp.AddCommand(new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args, handlerLocalizer));
+							var filters = method.GetCustomAttributes<InvokerFilter>().Select(s => s.Filter).ToArray();
+
+							rp.AddCommand(new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args, handlerLocalizer, filters));
 
 							logger.Log(LogLevel.Trace, LoadingDoneID, "Method sucssesfully registrated as command {CommandName}", commandName);
 						}

@@ -123,14 +123,14 @@
   <data name="illegal.member:IsBot" xml:space="preserve">
     <value>Target member must be not a bot</value>
   </data>
+  <data name="Illegal:NoPermission" xml:space="preserve">
+    <value>You haven't permission to increese illegal level</value>
+  </data>
   <data name="IllegalApplied" xml:space="preserve">
     <value>Legal level of {0} decreased by {1}</value>
   </data>
   <data name="IllegalAppliedWarning" xml:space="preserve">
     <value>Legal level of {0} decreased by {1}. Warning - level drop under ban threshold</value>
-  </data>
-  <data name="IllegalNoHasPermission" xml:space="preserve">
-    <value>You haven't permission to increese illegal level</value>
   </data>
   <data name="seerp.member:IsBot" xml:space="preserve">
     <value>Target member must be not a bot</value>

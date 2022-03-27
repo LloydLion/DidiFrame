@@ -2,7 +2,7 @@
 
 namespace CGZBot3.UserCommands.Loader
 {
-	[AttributeUsage(AttributeTargets.Parameter)]
+	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = true)]
 	internal class ValidatorAttribute : Attribute
 	{
 		public ValidatorAttribute(Type validatorType, params object[] ctorArgs)

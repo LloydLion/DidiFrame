@@ -123,14 +123,14 @@
   <data name="illegal.member:IsBot" xml:space="preserve">
     <value>Целевой участник не должен быть ботом</value>
   </data>
+  <data name="Illegal:NoPermission" xml:space="preserve">
+    <value>У вас нет разрешения понижать уровень легальности</value>
+  </data>
   <data name="IllegalApplied" xml:space="preserve">
     <value>Уровень легальности {0} уменьшен на {1}</value>
   </data>
   <data name="IllegalAppliedWarning" xml:space="preserve">
     <value>Уровень легальности {0} уменьшен на {1}. Внимание - уровень упал ниже порога бана</value>
-  </data>
-  <data name="IllegalNoHasPermission" xml:space="preserve">
-    <value>У вас нет разрешения понижать уровень легальности</value>
   </data>
   <data name="seerp.member:IsBot" xml:space="preserve">
     <value>Целевой участник не должен быть ботом</value>
