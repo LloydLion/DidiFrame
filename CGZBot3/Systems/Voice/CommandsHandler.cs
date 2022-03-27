@@ -1,5 +1,6 @@
 ﻿using CGZBot3.Entities.Message;
 using CGZBot3.UserCommands;
+using CGZBot3.UserCommands.ArgumentsValidation.Validators;
 using CGZBot3.UserCommands.Loader;
 
 namespace CGZBot3.Systems.Voice
@@ -7,28 +8,20 @@ namespace CGZBot3.Systems.Voice
 	public class CommandsHandler
 	{
 		private readonly SystemCore core;
-		private readonly IValidator<VoiceChannelCreationArgs> creationArgsValidator;
 		private readonly IStringLocalizer<CommandsHandler> localizer;
 
 
-		public CommandsHandler(SystemCore core, IValidator<VoiceChannelCreationArgs> creationArgsValidator, IStringLocalizer<CommandsHandler> localizer)
+		public CommandsHandler(SystemCore core, IStringLocalizer<CommandsHandler> localizer)
 		{
 			this.core = core;
-			this.creationArgsValidator = creationArgsValidator;
 			this.localizer = localizer;
 		}
 
 
 		[Command("voice")]
-		public async Task<UserCommandResult> CreateChannel(UserCommandContext ctx, string name)
+		public async Task<UserCommandResult> CreateChannel(UserCommandContext ctx, [Validator(typeof(StringCase), false)] string name)
 		{
-			var args = new VoiceChannelCreationArgs(name, ctx.Invoker);
-
-			var valRes = creationArgsValidator.Validate(args);
-			if (!valRes.IsValid)
-				return new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(localizer["ChannelCreationInvalidInput", valRes.Errors[0]])};
-
-			await core.CreateAsync(args);
+			await core.CreateAsync(new VoiceChannelCreationArgs(name, ctx.Invoker));
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["ChannelCreated", name]) };
 		}

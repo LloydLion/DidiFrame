@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +19,15 @@ namespace CGZBot3.UserCommands.Loader
 		private readonly Options options;
 		private readonly IServiceProvider serviceProvider;
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
+		private readonly IStringLocalizerFactory stringLocalizerFactory;
 
 
-		public ReflectionUserCommandsLoader(IServiceProvider serviceProvider, IOptions<Options> options, ILogger<ReflectionUserCommandsLoader> logger)
+		public ReflectionUserCommandsLoader(IServiceProvider serviceProvider, IOptions<Options> options, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory)
 		{
 			this.options = options.Value;
 			this.serviceProvider = serviceProvider;
 			this.logger = logger;
+			this.stringLocalizerFactory = stringLocalizerFactory;
 		}
 
 
@@ -35,8 +38,9 @@ namespace CGZBot3.UserCommands.Loader
 			foreach (var type in types)
 			{
 				var instance = serviceProvider.GetService(type ?? throw new ImpossibleVariantException());
+				var handlerLocalizer = stringLocalizerFactory.Create(type);
 
-				if(instance is null)
+				if (instance is null)
 				{
 					logger.Log(LogLevel.Warning, "Instance of type {Type} can't be loaded by serviceProvider, but present in load list in config", type.FullName);
 					continue;
@@ -80,10 +84,12 @@ namespace CGZBot3.UserCommands.Loader
 									_ => throw new ImpossibleVariantException(),
 								};
 
-								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, atype, @params[i].Name ?? "no_name");
+								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Select(s => s.Validator).ToArray();
+
+								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, atype, @params[i].Name ?? "no_name", validators);
 							}
 
-							rp.AddCommand(new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args));
+							rp.AddCommand(new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args, handlerLocalizer));
 
 							logger.Log(LogLevel.Trace, LoadingDoneID, "Method sucssesfully registrated as command {CommandName}", commandName);
 						}

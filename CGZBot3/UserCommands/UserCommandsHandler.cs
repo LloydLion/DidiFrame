@@ -1,13 +1,6 @@
 ﻿using CGZBot3.Culture;
 using CGZBot3.Entities.Message;
-using CGZBot3.UserCommands;
 using CGZBot3.Utils;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CGZBot3.UserCommands
 {
@@ -20,18 +13,18 @@ namespace CGZBot3.UserCommands
 
 
 		private readonly Options options;
-		private readonly IValidator<UserCommandContext> ctxVal;
 		private readonly ILogger<UserCommandsHandler> logger;
 		private readonly IServerCultureProvider cultureProvider;
+		private readonly IStringLocalizer<UserCommandsHandler> localizer;
 		private readonly ThreadLocker<IServer> threadLocker = new();
 
 
-		public UserCommandsHandler(IOptions<Options> options, IValidator<UserCommandContext> ctxVal, ILogger<UserCommandsHandler> logger, IServerCultureProvider cultureProvider)
+		public UserCommandsHandler(IOptions<Options> options, ILogger<UserCommandsHandler> logger, IServerCultureProvider cultureProvider, IStringLocalizer<UserCommandsHandler> localizer)
 		{
 			this.options = options.Value;
-			this.ctxVal = ctxVal;
 			this.logger = logger;
 			this.cultureProvider = cultureProvider;
+			this.localizer = localizer;
 		}
 
 
@@ -41,8 +34,6 @@ namespace CGZBot3.UserCommands
 			{
 				UserCommandResult result;
 
-				ctxVal.ValidateAndThrow(ctx);
-
 				using (logger.BeginScope("Command: {CommandName}", ctx.Command.Name))
 				{
 					ctx.AddLogger(logger);
@@ -50,6 +41,21 @@ namespace CGZBot3.UserCommands
 					cultureProvider.SetupCulture(ctx.Invoker.Server);
 
 					logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
+
+					foreach (var argument in ctx.Command.Arguments)
+					{
+						foreach (var validator in argument.Validators)
+						{
+							var tf = validator.Validate(ctx, argument, ctx.Arguments[argument]);
+							if (tf is null) continue;
+							else
+							{
+								var content = localizer["ValidationErrorMessage", ctx.Command.Localizer[$"{ctx.Command.Name}.{argument.Name}:{tf}", ctx.Arguments[argument]]];
+								callback(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(content) });
+								return;
+							}
+						}
+					}
 
 					try
 					{
@@ -73,6 +79,7 @@ namespace CGZBot3.UserCommands
 					if (result.RespondMessage is not null)
 						logger.Log(LogLevel.Trace, MessageSentID, "Message sent with content: {Content}", result.RespondMessage.Content);
 				}
+
 
 				MessageSendModel? createExcetionMessage(Exception ex)
 				{

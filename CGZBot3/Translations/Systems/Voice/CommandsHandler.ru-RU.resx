@@ -120,7 +120,7 @@
   <data name="ChannelCreated" xml:space="preserve">
     <value>Канал {0} создан</value>
   </data>
-  <data name="ChannelCreationInvalidInput" xml:space="preserve">
-    <value>Аргументы содежат ошибку: {0}</value>
+  <data name="voice.name:OnlyInLowerCase" xml:space="preserve">
+    <value>Название должно быть в нижнем регистре ({0})</value>
   </data>
 </root>
