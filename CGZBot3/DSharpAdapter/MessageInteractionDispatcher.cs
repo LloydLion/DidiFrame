@@ -23,12 +23,12 @@ namespace CGZBot3.DSharpAdapter
 
 		public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent
 		{
-			throw new NotImplementedException();
+			holders.Add(new EventHolder<TComponent>(message, id, callback));
 		}
 
 		public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent
 		{
-			throw new NotImplementedException();
+			holders.RemoveAll(s => s is EventHolder<TComponent> ev && (ev.Id, ev.Callback) == (id, callback));
 		}
 
 		private async Task OnInteractionCreated(DiscordClient client, ComponentInteractionCreateEventArgs args)
@@ -71,6 +71,11 @@ namespace CGZBot3.DSharpAdapter
 				this.id = id;
 				this.callback = callback;
 			}
+
+
+			public string Id => id;
+
+			public AsyncInteractionCallback<TComponent> Callback => callback;
 
 
 			public override Task<ComponentInteractionResult>? Handle(ComponentInteractionCreateEventArgs args)

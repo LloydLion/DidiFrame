@@ -5,5 +5,7 @@
 		public const string VoiceSystem = "voice";
 
 		public const string ReputationSystem = "reputation";
+
+		public const string DiscussionSystem = "discussion";
 	}
 }

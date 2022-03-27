@@ -9,7 +9,7 @@
 
 		public async Task Await()
 		{
-			while (waitDone) await Task.Delay(50);
+			while (!waitDone) await Task.Delay(50);
 		}
 	}
 }

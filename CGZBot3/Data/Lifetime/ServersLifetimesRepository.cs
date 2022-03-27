@@ -21,6 +21,7 @@
 			lt.Run(updater);
 			if (!lifetimes.ContainsKey(baseObject.Server)) lifetimes.Add(baseObject.Server, new());
 			lifetimes[baseObject.Server].Add(baseObject, lt);
+			updater.Update(lt); //Add into state
 			return lt;
 		}
 
