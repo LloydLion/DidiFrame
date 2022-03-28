@@ -30,7 +30,8 @@ namespace CGZBot3.Systems.Discussion
 				new MessageButton(DiscussionChannelLifetime.CloseButtonId, localizer["CloseButtonText"], ButtonStyle.Secondary)
 			};
 
-			return new MessageSendModel() { MessageEmbed = embed, Components = components };
+			return new MessageSendModel() { MessageEmbeds = new MessageEmbed[] { embed },
+				ComponentsRows = new MessageComponentsRow[] { new MessageComponentsRow(components) } };
 		}
 	}
 }

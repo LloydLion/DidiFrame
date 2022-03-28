@@ -30,7 +30,7 @@ namespace CGZBot3.Systems.Reputation
 
 			embedBuilder.AddAuthor(member.UserName, null, null);
 
-			return new MessageSendModel() { MessageEmbed = embedBuilder.Build() };
+			return new MessageSendModel() { MessageEmbeds = new MessageEmbed[] { embedBuilder.Build() } };
 		}
 	}
 }

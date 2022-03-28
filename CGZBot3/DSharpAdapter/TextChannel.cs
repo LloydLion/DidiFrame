@@ -6,7 +6,7 @@ namespace CGZBot3.DSharpAdapter
 {
 	internal class TextChannel : Channel, ITextChannel
 	{
-		public const int MessagesLimit = 7;
+		public const int MessagesLimit = 5;
 
 
 		private readonly DiscordChannel channel;
@@ -14,6 +14,9 @@ namespace CGZBot3.DSharpAdapter
 		private readonly MessageConverter converter;
 		private readonly List<Message> messages = new();
 		private static readonly ThreadLocker<TextChannel> listLocker = new();
+
+
+		public event MessageSentEventHandler? MessageSent;
 
 
 		public Server BaseServer => server;
@@ -35,7 +38,14 @@ namespace CGZBot3.DSharpAdapter
 
 		public IMessage GetMessage(ulong id)
 		{
-			return messages.Single(s => s.Id == id);
+			var msg = messages.SingleOrDefault(s => s.Id == id);
+			if (msg is not null) return msg;
+			else
+			{
+				//If not exist throw
+				var discord = channel.GetMessageAsync(id).Result;
+				return new Message(discord, this, converter.ConvertDown(discord));
+			}
 		}
 
 		public IReadOnlyList<IMessage> GetMessages(int count = -1)
@@ -73,6 +83,7 @@ namespace CGZBot3.DSharpAdapter
 			}
 
 			//Bot messages will be ignored
+			MessageSent?.Invoke(server.Client, model);
 			server.SourceClient.OnMessageCreated(model);
 		}
 
@@ -85,36 +96,6 @@ namespace CGZBot3.DSharpAdapter
 			{
 				messages.Remove(sor);
 				sor.Dispose();
-			}
-		}
-
-		public void SetMessages(IReadOnlyList<DiscordMessage> newMessages)
-		{
-			using (listLocker.Lock(this))
-			{
-				var temp = messages.ToList();
-				messages.Clear();
-
-				foreach (var msg in newMessages)
-				{
-					var maybe = temp.SingleOrDefault(s => s.Id == msg.Id);
-					if (maybe is not null)
-					{
-						messages.Add(maybe);
-						temp.Remove(maybe);
-					}
-					else
-					{
-						try
-						{
-							//Messages in channels can't be written by membed witch exited from server
-							messages.Add(new Message(msg, this, converter.ConvertDown(msg)));
-						}
-						catch (Exception) { }
-					}
-				}
-
-				foreach (var item in temp) item.Dispose();
 			}
 		}
 	}

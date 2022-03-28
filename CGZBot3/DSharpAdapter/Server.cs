@@ -205,9 +205,6 @@ namespace CGZBot3.DSharpAdapter
 						}
 					}
 				}
-
-				foreach (var channel in channels.Where(s => s is TextChannel).Cast<TextChannel>())
-					channel.SetMessages((await channel.BaseChannel.GetMessagesAsync(TextChannel.MessagesLimit)).Reverse().ToArray());
 			}
 		}
 	}

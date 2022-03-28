@@ -12,6 +12,7 @@ namespace CGZBot3.DSharpAdapter
 		{
 			var content = message.Content;
 
+
 			List<MessageFile>? files = null;
 
 			if(message.Attachments.Count != 0)
@@ -29,30 +30,62 @@ namespace CGZBot3.DSharpAdapter
 				Task.WaitAll(tasks.ToArray());
 			}
 
-			MessageEmbed? embed = null;
 
-			if (message.Embeds.Count != 0)
+			List<MessageEmbed>? embeds = null;
+
+			if (message.Embeds.Any())
 			{
-				var baseEmbed = message.Embeds[0];
-
-				embed = new MessageEmbed(baseEmbed.Title, baseEmbed.Description, new Color(baseEmbed.Color.Value.R, baseEmbed.Color.Value.G, baseEmbed.Color.Value.B),
-					baseEmbed.Fields.Select(s => new EmbedField(s.Name, s.Value)).ToArray(), new EmbedMeta()
-					{
-						AuthorIconUrl = baseEmbed.Author?.IconUrl?.ToString(),
-						AuthorPersonalUrl = baseEmbed.Author?.Url?.ToString(),
-						AuthorName = baseEmbed.Author?.Name,
-						DisplayImageUrl = baseEmbed.Image?.Url?.ToString(),
-						Timestamp =  baseEmbed.Timestamp?.DateTime
-					});
+				embeds = new();
+				foreach (var baseEmbed in message.Embeds)
+					embeds.Add(new MessageEmbed(baseEmbed.Title, baseEmbed.Description, new Color(baseEmbed.Color.Value.R, baseEmbed.Color.Value.G, baseEmbed.Color.Value.B),
+						baseEmbed.Fields?.Select(s => new EmbedField(s.Name, s.Value))?.ToArray() ?? Array.Empty<EmbedField>(), new EmbedMeta()
+						{
+							AuthorIconUrl = baseEmbed.Author?.IconUrl?.ToString(),
+							AuthorPersonalUrl = baseEmbed.Author?.Url?.ToString(),
+							AuthorName = baseEmbed.Author?.Name,
+							DisplayImageUrl = baseEmbed.Image?.Url?.ToString(),
+							Timestamp =  baseEmbed.Timestamp?.DateTime
+						}));
 			}
 
-			return new MessageSendModel(content) { Files = files, MessageEmbed = embed };
+
+			List<MessageComponentsRow>? components = null;
+
+			if (message.Components.Any())
+			{
+				components = new();
+				foreach (var actionRow in message.Components)
+				{
+					var temp = new List<IComponent>();
+					foreach (var component in actionRow.Components)
+					{
+						IComponent? value = component switch
+						{
+							DiscordButtonComponent bnt => new MessageButton(bnt.CustomId, bnt.Label, bnt.Style.GetAbstract(), bnt.Disabled),
+							DiscordLinkButtonComponent link => new MessageLinkButton(link.Label, link.Url, link.Disabled),
+							DiscordSelectComponent menu => new MessageSelectMenu(menu.CustomId, menu.Options.Select(s => new MessageSelectMenuOption(s.Label, s.Value, s.Description)).ToArray(),
+								menu.Placeholder, menu.MinimumSelectedValues ?? 1, menu.MaximumSelectedValues ?? 1, menu.Disabled),
+							_ => null
+						};
+
+						if (value is null) continue;
+						else temp.Add(value);
+					}
+
+					if (temp.Any() == false) continue;
+					components.Add(new MessageComponentsRow(temp));
+				}
+			}
+
+			return new MessageSendModel(content) { Files = files, MessageEmbeds = embeds, ComponentsRows = components };
 		}
 
 		public DiscordMessageBuilder ConvertUp(MessageSendModel messageSendModel)
 		{
 			var builder = new DiscordMessageBuilder();
 
+
+			builder.WithContent(messageSendModel.Content); //If null all ok
 
 			if (messageSendModel.Files is not null)
 				foreach (var file in messageSendModel.Files)
@@ -61,24 +94,9 @@ namespace CGZBot3.DSharpAdapter
 					builder.WithFile(file.FileName, stream);
 				}
 
-			//If no embed and text is small print it in embed else print it in content
-			if (messageSendModel.MessageEmbed is null && messageSendModel.Content is not null && messageSendModel.Content.Length < 200)
+			if (messageSendModel.MessageEmbeds is not null)
 			{
-				var embed = new DiscordEmbedBuilder
-				{
-					Color = DiscordColor.Gold,
-					Title = messageSendModel.Content
-				};
-
-				builder.AddEmbed(embed);
-			}
-			else
-			{
-				builder.WithContent(messageSendModel.Content); //If null all ok
-
-				var baseEmbed = messageSendModel.MessageEmbed;
-
-				if (baseEmbed is not null)
+				foreach (var baseEmbed in messageSendModel.MessageEmbeds)
 				{
 					var embed = new DiscordEmbedBuilder
 					{
@@ -87,7 +105,7 @@ namespace CGZBot3.DSharpAdapter
 						Color = baseEmbed.Color.GetDSharp(),
 						Timestamp = baseEmbed.Metadata.Timestamp,
 						Author = new DiscordEmbedBuilder.EmbedAuthor()
-							{ IconUrl = baseEmbed.Metadata.AuthorIconUrl, Name = baseEmbed.Metadata.AuthorName, Url = baseEmbed.Metadata.AuthorPersonalUrl },
+						{ IconUrl = baseEmbed.Metadata.AuthorIconUrl, Name = baseEmbed.Metadata.AuthorName, Url = baseEmbed.Metadata.AuthorPersonalUrl },
 						ImageUrl = baseEmbed.Metadata.DisplayImageUrl
 					};
 
@@ -97,20 +115,22 @@ namespace CGZBot3.DSharpAdapter
 				}
 			}
 
-			if (messageSendModel.Components is not null)
+			if (messageSendModel.ComponentsRows is not null)
 			{
-				foreach (var component in messageSendModel.Components)
+				foreach (var row in messageSendModel.ComponentsRows)
 				{
-					DiscordComponent discord = component switch
-					{
-						MessageButton bnt => new DiscordButtonComponent(bnt.Style.GetDSharp(), bnt.Id, bnt.Text, bnt.Disabled),
-						MessageLinkButton bnt => new DiscordLinkButtonComponent(bnt.Url, bnt.Text, bnt.Disabled),
-						MessageSelectMenu menu => new DiscordSelectComponent(menu.Id, menu.PlaceHolder,
-							menu.Options.Select(s => new DiscordSelectComponentOption(s.Labеl, s.Value, s.Description)), menu.Disabled, menu.MinOptions, menu.MaxOptions),
-						_ => throw new NotSupportedException($"Component with a type {component.GetType()} is not supported")
-					};
+					var components = new List<DiscordComponent>();
+					foreach (var component in row.Components)
+						components.Add(component switch
+						{
+							MessageButton bnt => new DiscordButtonComponent(bnt.Style.GetDSharp(), bnt.Id, bnt.Text, bnt.Disabled),
+							MessageLinkButton bnt => new DiscordLinkButtonComponent(bnt.Url, bnt.Text, bnt.Disabled),
+							MessageSelectMenu menu => new DiscordSelectComponent(menu.Id, menu.PlaceHolder,
+								menu.Options.Select(s => new DiscordSelectComponentOption(s.Labеl, s.Value, s.Description)), menu.Disabled, menu.MinOptions, menu.MaxOptions),
+							_ => throw new NotSupportedException($"Component with a type {component.GetType()} is not supported")
+						});
 
-					builder.AddComponents(discord);
+					builder.AddComponents(components);
 				}
 			}
 

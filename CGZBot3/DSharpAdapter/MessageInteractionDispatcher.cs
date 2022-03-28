@@ -15,7 +15,7 @@ namespace CGZBot3.DSharpAdapter
 		public MessageInteractionDispatcher(Message message)
 		{
 			this.message = message;
-			if (message.SendModel.Components is null || message.SendModel.Components.Count == 0) throw new ArgumentException("Enable to created InteractionDispatcher if message no contains components");
+			if (message.SendModel.ComponentsRows is null || message.SendModel.ComponentsRows.Any() == false) throw new ArgumentException("Enable to created InteractionDispatcher if message no contains components");
 			message.BaseChannel.BaseServer.SourceClient.BaseClient.ComponentInteractionCreated += OnInteractionCreated;
 			converter = new MessageConverter();
 		}
@@ -81,7 +81,9 @@ namespace CGZBot3.DSharpAdapter
 			public override Task<ComponentInteractionResult>? Handle(ComponentInteractionCreateEventArgs args)
 			{
 				var server = message.TextChannel.Server;
-				var components = message.SendModel.Components ?? throw new ImpossibleVariantException();
+				var componentsRows = message.SendModel.ComponentsRows ?? throw new ImpossibleVariantException();
+				var components = componentsRows.SelectMany(s => s.Components);
+
 				if (args.Id != id) return null;
 
 				var component = args.Interaction.Data.ComponentType switch

@@ -9,5 +9,8 @@ namespace CGZBot3.Interfaces
 		public IReadOnlyList<IMessage> GetMessages(int count = -1);
 
 		public IMessage GetMessage(ulong id);
+
+
+		public event MessageSentEventHandler? MessageSent;
 	}
 }

@@ -5,10 +5,10 @@ namespace CGZBot3.Entities.Message
 {
 	public record MessageSendModel(string? Content = null)
 	{
-		public MessageEmbed? MessageEmbed { get; init; }
+		public IReadOnlyList<MessageEmbed>? MessageEmbeds { get; init; }
 
 		public IReadOnlyCollection<MessageFile>? Files { get; init; }
 
-		public IReadOnlyCollection<IComponent>? Components { get; init; }
+		public IReadOnlyCollection<MessageComponentsRow>? ComponentsRows { get; init; }
 	}
 }

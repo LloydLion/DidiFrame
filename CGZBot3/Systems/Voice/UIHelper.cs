@@ -18,8 +18,8 @@ namespace CGZBot3.Systems.Voice
 		{
 			return new MessageSendModel(localizer["ReportContent"])
 			{
-				MessageEmbed = new MessageEmbed(localizer["ReportTitle"], localizer["ReportDescription"], new Color("#41D1C3"),
-					new List<EmbedField>() { new EmbedField(localizer["ReportNameField"], name) }, new EmbedMeta())
+				MessageEmbeds = new MessageEmbed[] { new MessageEmbed(localizer["ReportTitle"], localizer["ReportDescription"], new Color("#41D1C3"),
+					new List<EmbedField>() { new EmbedField(localizer["ReportNameField"], name) }, new EmbedMeta()) }
 			};
 		}
 
