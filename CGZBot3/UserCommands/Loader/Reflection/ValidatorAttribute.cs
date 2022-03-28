@@ -1,6 +1,6 @@
 ﻿using CGZBot3.UserCommands.ArgumentsValidation;
 
-namespace CGZBot3.UserCommands.Loader
+namespace CGZBot3.UserCommands.Loader.Reflection
 {
 	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = true)]
 	internal class ValidatorAttribute : Attribute

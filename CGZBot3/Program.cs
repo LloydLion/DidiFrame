@@ -21,6 +21,7 @@ using CGZBot3.Culture;
 
 using CGZBot3.GlobalEvents;
 using CGZBot3.Data.Lifetime;
+using CGZBot3.UserCommands.Loader.Reflection;
 
 ILogger? logger = null;
 IClient? client = null;
@@ -47,7 +48,6 @@ try
 
 		.AddSingleton<IUserCommandsRepository, UserCommandsRepository>()
 
-		.Configure<ReflectionUserCommandsLoader.Options>(config.GetSection("Commands:Loading"))
 		.AddTransient<IUserCommandsLoader, ReflectionUserCommandsLoader>()
 
 		.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true)

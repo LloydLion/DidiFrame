@@ -1,6 +1,6 @@
 ﻿using CGZBot3.UserCommands.InvokerFiltartion;
 
-namespace CGZBot3.UserCommands.Loader
+namespace CGZBot3.UserCommands.Loader.Reflection
 {
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	internal class InvokerFilter : Attribute

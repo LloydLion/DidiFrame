@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CGZBot3.UserCommands.Loader
+﻿namespace CGZBot3.UserCommands.Loader.Reflection
 {
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 	internal class CommandAttribute : Attribute

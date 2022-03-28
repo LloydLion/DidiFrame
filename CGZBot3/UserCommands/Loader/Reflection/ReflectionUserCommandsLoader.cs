@@ -1,14 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace CGZBot3.UserCommands.Loader
+namespace CGZBot3.UserCommands.Loader.Reflection
 {
 	internal class ReflectionUserCommandsLoader : IUserCommandsLoader
 	{
@@ -16,15 +9,13 @@ namespace CGZBot3.UserCommands.Loader
 		private static readonly EventId LoadingDoneID = new(13, "LoadingDone");
 
 
-		private readonly Options options;
 		private readonly IServiceProvider serviceProvider;
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
 		private readonly IStringLocalizerFactory stringLocalizerFactory;
 
 
-		public ReflectionUserCommandsLoader(IServiceProvider serviceProvider, IOptions<Options> options, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory)
+		public ReflectionUserCommandsLoader(IServiceProvider serviceProvider, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory)
 		{
-			this.options = options.Value;
 			this.serviceProvider = serviceProvider;
 			this.logger = logger;
 			this.stringLocalizerFactory = stringLocalizerFactory;
@@ -33,7 +24,7 @@ namespace CGZBot3.UserCommands.Loader
 
 		public void LoadTo(IUserCommandsRepository rp)
 		{
-			var types = options.Types.Select(s => Type.GetType(s, true, true)).ToArray();
+			var types = Assembly.GetExecutingAssembly().GetTypes().Where(s => s.IsAssignableTo(typeof(ICommandsHandler)));
 
 			foreach (var type in types)
 			{
@@ -135,11 +126,6 @@ namespace CGZBot3.UserCommands.Loader
 			return true;
 		}
 
-
-		public class Options
-		{
-			public string[] Types { get; init; } = Array.Empty<string>();
-		}
 
 		private readonly struct Handler
 		{

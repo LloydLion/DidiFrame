@@ -1,11 +1,11 @@
 ﻿using CGZBot3.Entities.Message;
 using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.ArgumentsValidation.Validators;
-using CGZBot3.UserCommands.Loader;
+using CGZBot3.UserCommands.Loader.Reflection;
 
 namespace CGZBot3.Systems.Voice
 {
-	public class CommandsHandler
+	public class CommandsHandler : ICommandsHandler
 	{
 		private readonly SystemCore core;
 		private readonly IStringLocalizer<CommandsHandler> localizer;

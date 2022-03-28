@@ -2,11 +2,11 @@
 using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.ArgumentsValidation.Validators;
 using CGZBot3.UserCommands.InvokerFiltartion.Filters;
-using CGZBot3.UserCommands.Loader;
+using CGZBot3.UserCommands.Loader.Reflection;
 
 namespace CGZBot3.Systems.Reputation
 {
-	internal class CommandsHandler
+	internal class CommandsHandler : ICommandsHandler
 	{
 		private readonly SystemCore system;
 		private readonly UIHelper uiHelper;

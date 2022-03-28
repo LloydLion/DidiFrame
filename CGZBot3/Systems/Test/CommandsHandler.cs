@@ -1,10 +1,10 @@
 ﻿using CGZBot3.Entities.Message;
 using CGZBot3.UserCommands;
-using CGZBot3.UserCommands.Loader;
+using CGZBot3.UserCommands.Loader.Reflection;
 
 namespace CGZBot3.Systems.Test
 {
-	internal class CommandsHandler
+	internal class CommandsHandler : ICommandsHandler
 	{
 		private readonly IStringLocalizer<CommandsHandler> localizer;
 		private readonly SystemCore core;
