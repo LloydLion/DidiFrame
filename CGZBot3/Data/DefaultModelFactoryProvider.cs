@@ -2,12 +2,12 @@
 
 namespace CGZBot3.Data
 {
-	internal class ModelFactoryProvider : IModelFactoryProvider
+	internal class DefaultModelFactoryProvider : IModelFactoryProvider
 	{
 		private readonly IServiceProvider provider;
 
 
-		public ModelFactoryProvider(IServiceProvider provider)
+		public DefaultModelFactoryProvider(IServiceProvider provider)
 		{
 			this.provider = provider;
 		}

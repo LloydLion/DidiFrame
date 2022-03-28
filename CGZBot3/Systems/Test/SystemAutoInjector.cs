@@ -1,4 +1,4 @@
-﻿using CGZBot3.SystemsInjecting;
+﻿using CGZBot3.AutoInjecting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CGZBot3.Systems.Test

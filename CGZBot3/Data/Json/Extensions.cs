@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
 
@@ -43,14 +41,6 @@ namespace CGZBot3.Data.Json
 
 			jpath = result.ToString();
 			return token;
-		}
-
-		public static IServiceCollection AddDataManagement(this IServiceCollection services, IConfiguration configuration)
-		{
-			services.Configure<DataOptions>(configuration);
-			services.AddSingleton<IServersSettingsRepositoryFactory, ServersSettingsRepositoryFactory>();
-			services.AddSingleton<IServersStatesRepositoryFactory, ServersStatesRepositoryFactory>();
-			return services;
 		}
 	}
 }

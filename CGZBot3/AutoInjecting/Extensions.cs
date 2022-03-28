@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.SystemsInjecting
+namespace CGZBot3.AutoInjecting
 {
 	internal static class Extensions
 	{

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace CGZBot3.SystemsInjecting
+namespace CGZBot3.AutoInjecting
 {
 	internal class AutoInjector : IAutoInjector
 	{

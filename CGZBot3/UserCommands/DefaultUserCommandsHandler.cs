@@ -4,7 +4,7 @@ using CGZBot3.Utils;
 
 namespace CGZBot3.UserCommands
 {
-	public class UserCommandsHandler : IUserCommandsHandler
+	public class DefaultUserCommandsHandler : IUserCommandsHandler
 	{
 		private static readonly EventId CommandStartID = new (32, "CommandStart");
 		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
@@ -13,13 +13,13 @@ namespace CGZBot3.UserCommands
 
 
 		private readonly Options options;
-		private readonly ILogger<UserCommandsHandler> logger;
+		private readonly ILogger<DefaultUserCommandsHandler> logger;
 		private readonly IServerCultureProvider cultureProvider;
-		private readonly IStringLocalizer<UserCommandsHandler> localizer;
+		private readonly IStringLocalizer<DefaultUserCommandsHandler> localizer;
 		private readonly ThreadLocker<IServer> threadLocker = new();
 
 
-		public UserCommandsHandler(IOptions<Options> options, ILogger<UserCommandsHandler> logger, IServerCultureProvider cultureProvider, IStringLocalizer<UserCommandsHandler> localizer)
+		public DefaultUserCommandsHandler(IOptions<Options> options, ILogger<DefaultUserCommandsHandler> logger, IServerCultureProvider cultureProvider, IStringLocalizer<DefaultUserCommandsHandler> localizer)
 		{
 			this.options = options.Value;
 			this.logger = logger;

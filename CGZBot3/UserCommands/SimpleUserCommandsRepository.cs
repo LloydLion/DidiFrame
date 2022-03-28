@@ -1,13 +1,13 @@
 ﻿namespace CGZBot3.UserCommands
 {
-	public class UserCommandsRepository : IUserCommandsRepository
+	public class SimpleUserCommandsRepository : IUserCommandsRepository
 	{
 		private readonly List<UserCommandInfo> infos = new();
 		private readonly IValidator<UserCommandInfo> cmdVal;
 		private bool built = false;
 
 
-		public UserCommandsRepository(IValidator<UserCommandInfo> cmdVal)
+		public SimpleUserCommandsRepository(IValidator<UserCommandInfo> cmdVal)
 		{
 			this.cmdVal = cmdVal;
 		}

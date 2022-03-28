@@ -9,19 +9,20 @@ global using Microsoft.Extensions.Localization;
 
 using CGZBot3.Logging;
 using CGZBot3.UserCommands;
-using CGZBot3.UserCommands.Loader;
 using CGZBot3.Utils.StateMachine;
-using Colorify;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-using CGZBot3.SystemsInjecting;
+using CGZBot3.AutoInjecting;
 using CGZBot3.Data.Json;
 using CGZBot3.Culture;
-
 using CGZBot3.GlobalEvents;
 using CGZBot3.Data.Lifetime;
 using CGZBot3.UserCommands.Loader.Reflection;
+using CGZBot3.DSharpAdapter;
+using CGZBot3;
+
+using AutoInjector = CGZBot3.AutoInjecting.AutoInjector;
+
 
 ILogger? logger = null;
 IClient? client = null;
@@ -30,45 +31,27 @@ var FatalErrorID = new EventId(1, "Fatal error");
 IConfiguration? config = null;
 var startupTime = DateTime.Now;
 
+
 try
 {
 	config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("settings.json").Build();
 
 
 	services = new ServiceCollection()
-
-		.AddDataManagement(config.GetSection("Data"))
-		.AddTransient<IModelFactoryProvider, ModelFactoryProvider>()
-
-		.Configure<CGZBot3.DSharpAdapter.Client.Options>(config.GetSection("Discord"))
-		.AddSingleton<IClient, CGZBot3.DSharpAdapter.Client>()
-
-		.Configure<UserCommandsHandler.Options>(config.GetSection("Commands:Handling"))
-		.AddTransient<IUserCommandsHandler, UserCommandsHandler>()
-
-		.AddSingleton<IUserCommandsRepository, UserCommandsRepository>()
-
-		.AddTransient<IUserCommandsLoader, ReflectionUserCommandsLoader>()
-
+		.AddDataManagement<DefaultModelFactoryProvider>(config.GetSection("Data"))
+		.AddDSharpClient(config.GetSection("Discord"))
+		.AddDefaultUserCommandHandler(config.GetSection("Commands:Handling"))
+		.AddSimpleUserCommandsRepository()
+		.AddReflectionUserCommandsLoader()
 		.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true)
-
 		.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddMyConsole(startupTime))
-		.AddTransient<ILoggingFilter, LoggingFilter>()
-
-		.AddTransient(s => new Colorify.Format(Colorify.UI.Theme.Dark))
-
-		.AddTransient(typeof(IStateMachineBuilderFactory<>), typeof(StateMachineBuilderFactory<>))
-
-		.AddLocalization(options => options.ResourcesPath = "Translations")
-		.AddTransient<IServerCultureProvider, ServerCultureProvider>()
-		.AddSingleton(new LoggingFilterOption((category) => category.StartsWith("Microsoft.Extensions.Localization.") ? LogLevel.None : LogLevel.Trace))
-
-		.AddSingleton<StartupEvent>()
-
-		.AddTransient<IServersLifetimesRepositoryFactory, ServersLifetimesRepositoryFactory>()
-
+		.AddColorfy()
+		.AddStateMachineUtility()
+		.AddCultureMachine()
+		.AddConfiguratedLocalization()
+		.AddLifetimes()
+		.AddGlobalEvents()
 		.InjectAutoDependencies(new AutoInjector())
-
 		.BuildServiceProvider();
 
 
