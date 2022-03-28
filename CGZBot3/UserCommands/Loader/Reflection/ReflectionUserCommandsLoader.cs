@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace CGZBot3.UserCommands.Loader.Reflection
@@ -24,18 +25,10 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 
 		public void LoadTo(IUserCommandsRepository rp)
 		{
-			var types = Assembly.GetExecutingAssembly().GetTypes().Where(s => s.IsAssignableTo(typeof(ICommandsHandler)));
-
-			foreach (var type in types)
+			foreach (var instance in serviceProvider.GetServices<ICommandsHandler>())
 			{
-				var instance = serviceProvider.GetService(type ?? throw new ImpossibleVariantException());
+				var type = instance.GetType();
 				var handlerLocalizer = stringLocalizerFactory.Create(type);
-
-				if (instance is null)
-				{
-					logger.Log(LogLevel.Warning, "Instance of type {Type} can't be loaded by serviceProvider, but present in load list in config", type.FullName);
-					continue;
-				}
 
 				var methods = type.GetMethods().Where(s => s.GetCustomAttributes(typeof(CommandAttribute), false).Length == 1);
 

@@ -101,10 +101,13 @@ try
 
 
 
-	var ClientInstantiationID = new EventId(55, "ClientInstantiation");
+	var ClientInstantiationID = new EventId(51, "ClientInstantiation");
+	var ClientReadyID = new EventId(52, "ClientReady");
+	var DataPreloadCompliteID = new EventId(53, "DataPreloadComplite");
+	var StartEventFiredID = new EventId(54, "StartEventFired");
+	var LifetimeRegistrationDoneID = new EventId(55, "LifetimeRegistrationDone");
 	var UserCommandsHandlerDoneID = new EventId(56, "UserCommandsHandlerDone");
-	var ClientReadyID = new EventId(57, "ClientReady");
-	var ClientExitID = new EventId(58, "ClientExit");
+	var ClientExitID = new EventId(80, "ClientExit");
 
 	using (logger.BeginScope("Creating client"))
 	{
@@ -116,18 +119,23 @@ try
 		logger.Log(LogLevel.Information, ClientReadyID, "Client connected to discord server");
 
 
-		var cmdHandler = services.GetService<IUserCommandsHandler>() ?? throw new ImpossibleVariantException();
-		client.CommandsDispatcher.CommandWritten += (ctx, callback) => { cmdHandler.HandleAsync(ctx, callback); };
-		logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");
-
-
 		Task.WaitAll(services.GetRequiredService<IServersStatesRepositoryFactory>().PreloadDataAsync(),
 			services.GetRequiredService<IServersSettingsRepositoryFactory>().PreloadDataAsync());
+		logger.Log(LogLevel.Debug, DataPreloadCompliteID, "Servers data preloaded (states and settings)");
+
+
+		services.GetRequiredService<StartupEvent>().InvokeStartup();
+		logger.Log(LogLevel.Debug, StartEventFiredID, "Startup event fired and finished with sucsess");
+
 
 		foreach (var registry in services.GetServices<ILifetimesRegistry>())
 			foreach (var server in client.Servers) registry.LoadAndRunAll(server);
+		logger.Log(LogLevel.Debug, LifetimeRegistrationDoneID, "Every lifetime loaded and started");
 
-		services.GetRequiredService<StartupEvent>().InvokeStartup();
+
+		var cmdHandler = services.GetService<IUserCommandsHandler>() ?? throw new ImpossibleVariantException();
+		client.CommandsDispatcher.CommandWritten += (ctx, callback) => { cmdHandler.HandleAsync(ctx, callback); };
+		logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");
 
 
 		client.AwaitForExit().Wait();
