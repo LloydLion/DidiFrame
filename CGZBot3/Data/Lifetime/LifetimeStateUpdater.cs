@@ -5,11 +5,6 @@
 		private readonly IServersStatesRepository<ICollection<TBase>> repository;
 
 
-		public event Action<ILifetime<TBase>>? Updated;
-
-		public event Action<ILifetime<TBase>>? Finished;
-
-
 		public LifetimeStateUpdater(IServersStatesRepository<ICollection<TBase>> repository)
 		{
 			this.repository = repository;
@@ -23,8 +18,6 @@
 
 			if (holder.Object.Contains(baseObj)) holder.Object.Remove(baseObj);
 			holder.Object.Add(baseObj);
-
-			try { Updated?.Invoke(lifetime); } catch (Exception) { }
 		}
 
 		public void Finish(ILifetime<TBase> lifetime)
@@ -33,8 +26,6 @@
 			using var holder = repository.GetState(baseObj.Server);
 
 			if (holder.Object.Contains(baseObj)) holder.Object.Remove(baseObj);
-
-			try { Finished?.Invoke(lifetime); } catch (Exception) { }
 		}
 	}
 }
