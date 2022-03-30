@@ -54,6 +54,14 @@ namespace CGZBot3.DSharpAdapter
 			return messages.AsEnumerable().Reverse().Take(Math.Min(count, messages.Count)).ToArray();
 		}
 
+		public bool HasMessage(ulong id)
+		{
+			if (messages.Any(m => m.Id == id)) return true;
+			var message = channel.GetMessageAsync(id);
+			message.Wait();
+			return message.Exception is null;
+		}
+
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
 			var builder = converter.ConvertUp(messageSendModel);

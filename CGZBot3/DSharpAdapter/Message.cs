@@ -21,21 +21,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public IMember Author { get; }
 
-		public bool IsExist
-		{
-			get
-			{
-				try
-				{
-					owner.GetMessage(Id);
-					return true;
-				}
-				catch (Exception)
-				{
-					return false;
-				}
-			}
-		}
+		public bool IsExist => owner.HasMessage(Id);
 
 
 		public Message(DiscordMessage message, TextChannel owner, MessageSendModel sendModel)

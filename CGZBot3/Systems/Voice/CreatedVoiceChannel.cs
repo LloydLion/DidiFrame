@@ -1,5 +1,6 @@
 ﻿using CGZBot3.Data.Lifetime;
 using CGZBot3.Data.Model;
+using CGZBot3.Utils;
 
 namespace CGZBot3.Systems.Voice
 {
@@ -14,7 +15,7 @@ namespace CGZBot3.Systems.Voice
 			BaseChannel = baseChannel;
 			Creator = creator;
 			State = state;
-			ReportMessage = report;
+			ReportMessage = new MessageAliveHolder(report);
 			Id = id;
 			nextId = Math.Max(nextId, id); //if id from saved state
 		}
@@ -30,7 +31,7 @@ namespace CGZBot3.Systems.Voice
 
 		[ConstructorAssignableProperty(1, "baseChannel")] public IVoiceChannel BaseChannel { get; set; }
 
-		[ConstructorAssignableProperty(2, "report")] public IMessage ReportMessage { get; set; }
+		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolder ReportMessage { get; set; }
 
 		[ConstructorAssignableProperty(3, "creator")] public IMember Creator { get; }
 
@@ -41,7 +42,7 @@ namespace CGZBot3.Systems.Voice
 		public IServer Server => Creator.Server;
 		
 
-		public object Clone() => new CreatedVoiceChannel(Name, BaseChannel, ReportMessage, Creator, State, Id);
+		public object Clone() => new CreatedVoiceChannel(Name, BaseChannel, ReportMessage.Message, Creator, State, Id);
 
 		public override bool Equals(object? obj) =>
 			obj is CreatedVoiceChannel channel && channel.Id == Id;

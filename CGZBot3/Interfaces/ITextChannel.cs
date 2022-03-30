@@ -10,6 +10,8 @@ namespace CGZBot3.Interfaces
 
 		public IMessage GetMessage(ulong id);
 
+		public bool HasMessage(ulong id);
+
 
 		public event MessageSentEventHandler? MessageSent;
 	}

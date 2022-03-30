@@ -10,13 +10,11 @@ namespace CGZBot3.Systems.Voice
 
 
 		private readonly ILogger<CreatedVoiceChannelLifetime> logger;
-		private readonly SystemCore sysCore;
 
 
 		public CreatedVoiceChannelLifetime(CreatedVoiceChannel baseChannel, IServiceProvider services) : base(services, baseChannel)
 		{
 			logger = services.GetRequiredService<ILoggerFactory>().CreateLogger<CreatedVoiceChannelLifetime>();
-			sysCore = services.GetRequiredService<SystemCore>();
 
 			AddTransit(VoiceChannelState.Timeout, VoiceChannelState.Alive, 10000);
 			AddTransit(VoiceChannelState.Alive, null, AliveDisposingTransit);
@@ -49,11 +47,6 @@ namespace CGZBot3.Systems.Voice
 			await Task.Delay(1000, token);
 
 			return baseObj.BaseChannel.ConnectedMembers.Count == 0;
-		}
-
-		protected override void OnRun(VoiceChannelState state)
-		{
-			sysCore.FixChannelLifetimeAsync(this).Wait();
 		}
 	}
 }
