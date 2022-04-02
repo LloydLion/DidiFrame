@@ -15,7 +15,7 @@ namespace CGZBot3.Systems.Voice
 			BaseChannel = baseChannel;
 			Creator = creator;
 			State = state;
-			ReportMessage = new MessageAliveHolder(report);
+			ReportMessage = new MessageAliveHolder(new MessageAliveHolder.Model(report.TextChannel), true, (channel) => channel.SendMessageAsync(report.SendModel));
 			Id = id;
 			nextId = Math.Max(nextId, id); //if id from saved state
 		}
@@ -48,6 +48,8 @@ namespace CGZBot3.Systems.Voice
 			obj is CreatedVoiceChannel channel && channel.Id == Id;
 
 		public override int GetHashCode() => Id.GetHashCode();
+
+		public bool Equals(IStateBasedLifetimeBase<VoiceChannelState>? other) => Equals(other as object);
 
 		public static bool operator ==(CreatedVoiceChannel? left, CreatedVoiceChannel? right) =>
 			EqualityComparer<CreatedVoiceChannel>.Default.Equals(left, right);

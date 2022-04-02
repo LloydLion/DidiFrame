@@ -122,6 +122,7 @@ namespace CGZBot3.DSharpAdapter
 					if(Regex.IsMatch(rawStr, @"^<@!?(\d+)>$")) return ConvertArgument(rawStr, UserCommandInfo.Argument.Type.Member, server);
 					else return ConvertArgument(rawStr, UserCommandInfo.Argument.Type.Role, server);
 				case UserCommandInfo.Argument.Type.TimeSpan: return TimeSpan.Parse(rawStr);
+				case UserCommandInfo.Argument.Type.DateTime: return new DateTime(DateTime.Parse(rawStr.Replace('|', ' ')).Ticks, DateTimeKind.Local);
 				default: throw new Exception();
 			}
 		}

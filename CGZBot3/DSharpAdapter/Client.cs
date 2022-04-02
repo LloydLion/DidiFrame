@@ -18,6 +18,8 @@ namespace CGZBot3.DSharpAdapter
 
 		public event MessageSentEventHandler? MessageSent;
 
+		public event MessageDeletedEventHandler? MessageDeleted;
+
 
 		public IReadOnlyCollection<IServer> Servers => servers;
 
@@ -55,6 +57,18 @@ namespace CGZBot3.DSharpAdapter
 			catch (Exception ex)
 			{
 				client?.Logger.Log(LogLevel.Warning, MessageSentHandlerExceptionID, ex, "Execution of event handler for message sent event finished with exception");
+			}
+		}
+
+		public void OnMessageDeleted(Message message)
+		{
+			try
+			{
+				MessageDeleted?.Invoke(this, message);
+			}
+			catch (Exception ex)
+			{
+				client?.Logger.Log(LogLevel.Warning, MessageSentHandlerExceptionID, ex, "Execution of event handler for message deleted event finished with exception");
 			}
 		}
 
@@ -100,6 +114,7 @@ namespace CGZBot3.DSharpAdapter
 			serverListUpdateTask?.Wait();
 			client.Dispose();
 		}
+
 
 		public class Options
 		{

@@ -8,18 +8,33 @@ namespace CGZBot3.Data.Lifetime
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
+		private static readonly EventId BaseChangedEventErrorID = new(33, "BaseChangedEventError");
+
+
 		private readonly TBase baseObj;
 		private ILifetimeStateUpdater<TBase>? updater;
 		private readonly IStateMachineBuilder<TState> smBuilder;
 		private IStateMachine<TState>? machine;
 		private bool hasBuilt = false;
 		private readonly Dictionary<TState, List<Action>> startupHandlers = new();
+		private readonly ILogger logger;
+		private readonly List<Action<TState>> stateHandlers = new();
+
+
+		/// <summary>
+		/// All changed of TBase object will be applied.
+		/// WARNING! Don't call GetBase()!
+		/// </summary>
+		public event Action<TBase>? BaseChanged;
 
 
 		public AbstractStateBasedLifetime(IServiceProvider services, TBase baseObj)
 		{
 			this.baseObj = baseObj;
-			smBuilder = services.GetRequiredService<IStateMachineBuilderFactory<TState>>().Create(GetType().FullName ?? throw new ImpossibleVariantException());
+
+			var tname = GetType().FullName ?? throw new ImpossibleVariantException();
+			smBuilder = services.GetRequiredService<IStateMachineBuilderFactory<TState>>().Create(tname);
+			logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(tname);
 		}
 
 
@@ -29,6 +44,9 @@ namespace CGZBot3.Data.Lifetime
 
 			return new ObjectHolder<TBase>(baseObj, (holder) =>
 			{
+				try { BaseChanged?.Invoke(baseObj); } catch (Exception mex)
+				{ logger.Log(LogLevel.Warning, BaseChangedEventErrorID, mex, "Exception has thrown while BaseChanged event handlers executing"); }
+
 				Exception? ex = null;
 
 				if (!startState.Equals(baseObj.State))
@@ -66,13 +84,16 @@ namespace CGZBot3.Data.Lifetime
 
 		private void Machine_StateChanged(IStateMachine<TState> stateMahcine, TState oldState)
 		{
-			if (stateMahcine.CurrentState.Equals(null))
+			var cs = stateMahcine.CurrentState;
+			if (cs.HasValue == false)
 			{
 				OnDispose();
 				GetUpdater().Finish(this);
 			}
 			else
 			{
+				baseObj.State = cs.Value;
+				foreach (var handler in stateHandlers) handler(oldState);
 				GetUpdater().Update(this);
 			}
 		}
@@ -142,6 +163,9 @@ namespace CGZBot3.Data.Lifetime
 		protected void AddTransit(TState from, TState? to, Func<bool> predicate) =>
 			AddTransit(new PredicateTransitWorker<TState>(from, to, predicate));
 
+		protected void AddTransit(TState from, TState? to, Func<CancellationToken, Task> taskCreator) =>
+			AddTransit(new TaskTransitWorker<TState>(from, to, taskCreator));
+
 		protected void AddStartup(TState state, Action handler)
 		{
 			ThrowIfBuilt();
@@ -152,8 +176,8 @@ namespace CGZBot3.Data.Lifetime
 		protected void AddHandler(TState state, Action<TState> handler)
 		{
 			ThrowIfBuilt();
-			smBuilder.AddStateChangedHandler((sm, old) =>
-				{ if (sm.CurrentState.Equals(state)) handler.Invoke(old); });
+			stateHandlers.Add((old) =>
+				{ if (GetStateMachine().CurrentState.Equals(state)) handler.Invoke(old); });
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using CGZBot3.Data.Model;
+using CGZBot3.Entities.Message;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections;
@@ -8,7 +9,7 @@ namespace CGZBot3.Data.Json.Converters
 {
 	internal class AbstractConveter : JsonConverter
 	{
-		private static readonly Type[] unsupportedTypes = new[] { typeof(IChannel), typeof(IMember), typeof(IServer), typeof(IChannelCategory), typeof(IRole), typeof(IMessage) };
+		private static readonly Type[] unsupportedTypes = new[] { typeof(IChannel), typeof(IMember), typeof(IServer), typeof(IChannelCategory), typeof(IRole), typeof(IMessage), typeof(MessageSendModel) };
 
 
 		public override bool CanConvert(Type objectType)

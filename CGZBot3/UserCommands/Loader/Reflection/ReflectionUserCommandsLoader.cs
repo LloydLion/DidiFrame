@@ -64,6 +64,7 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 									"CGZBot3.Interfaces.IMember" => UserCommandInfo.Argument.Type.Member,
 									"CGZBot3.Interfaces.IRole" => UserCommandInfo.Argument.Type.Role,
 									"System.Object" => UserCommandInfo.Argument.Type.Mentionable,
+									"System.DateTime" => UserCommandInfo.Argument.Type.DateTime,
 									_ => throw new ImpossibleVariantException(),
 								};
 
@@ -100,7 +101,7 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 			if (@params[0].ParameterType != typeof(UserCommandContext)) return false;
 
 			var possibleTypes = new Type[]
-				{ typeof(int), typeof(double), typeof(string), typeof(TimeSpan), typeof(IMember), typeof(IRole), typeof(object) };
+				{ typeof(int), typeof(double), typeof(string), typeof(TimeSpan), typeof(IMember), typeof(IRole), typeof(object), typeof(DateTime) };
 
 			for (int i = 1; i < @params.Length - 1; i++)
 			{

@@ -14,5 +14,7 @@ namespace CGZBot3.Interfaces
 
 
 		public event MessageSentEventHandler? MessageSent;
+
+		public event MessageDeletedEventHandler? MessageDeleted;
 	}
 }

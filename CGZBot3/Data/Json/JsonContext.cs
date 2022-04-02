@@ -1,6 +1,7 @@
 ﻿using CGZBot3.Data.Json.Converters;
 using CGZBot3.Utils;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 namespace CGZBot3.Data.Json
@@ -118,6 +119,7 @@ namespace CGZBot3.Data.Json
 			ret.Converters.Add(new RoleConverter(server));
 			ret.Converters.Add(new MessageConverter(server));
 			ret.Converters.Add(new ServerConveter(server.Client));
+			ret.Converters.Add(new StringEnumConverter());
 
 			ret.Converters.Add(new SafeCollectionConveter(invalidCollectionElementCallback));
 

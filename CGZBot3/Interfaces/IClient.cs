@@ -2,6 +2,8 @@
 {
 	public delegate void MessageSentEventHandler(IClient sender, IMessage message);
 
+	public delegate void MessageDeletedEventHandler(IClient sender, IMessage message);
+
 
 	public interface IClient : IDisposable
 	{
@@ -18,5 +20,7 @@
 
 
 		public event MessageSentEventHandler? MessageSent;
+
+		public event MessageDeletedEventHandler? MessageDeleted;
 	}
 }

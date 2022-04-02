@@ -18,6 +18,8 @@ namespace CGZBot3.DSharpAdapter
 
 		public event MessageSentEventHandler? MessageSent;
 
+		public event MessageDeletedEventHandler? MessageDeleted;
+
 
 		public Server BaseServer => server;
 
@@ -57,9 +59,8 @@ namespace CGZBot3.DSharpAdapter
 		public bool HasMessage(ulong id)
 		{
 			if (messages.Any(m => m.Id == id)) return true;
-			var message = channel.GetMessageAsync(id);
-			message.Wait();
-			return message.Exception is null;
+			var message = channel.GetMessageAsync(id).ContinueWith(s => !s.IsFaulted);
+			return message.Result;
 		}
 
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
@@ -105,6 +106,10 @@ namespace CGZBot3.DSharpAdapter
 				messages.Remove(sor);
 				sor.Dispose();
 			}
+
+			//Bot messages will be ignored
+			MessageDeleted?.Invoke(server.Client, sor);
+			server.SourceClient.OnMessageDeleted(sor);
 		}
 	}
 }

@@ -7,5 +7,7 @@
 		public const string ReputationSystem = "reputation";
 
 		public const string DiscussionSystem = "discussion";
+
+		public const string StreamingSystem = "streaming";
 	}
 }

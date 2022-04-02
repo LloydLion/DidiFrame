@@ -18,7 +18,8 @@ namespace CGZBot3.UserCommands
 				Member,
 				Role,
 				Mentionable,
-				TimeSpan
+				TimeSpan,
+				DateTime
 			}
 		}
 	}

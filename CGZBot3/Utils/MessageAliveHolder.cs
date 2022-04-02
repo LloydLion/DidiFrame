@@ -1,56 +1,118 @@
 ﻿using CGZBot3.Data.Model;
-using CGZBot3.Entities.Message;
 
 namespace CGZBot3.Utils
 {
-	public class MessageAliveHolder
+	public class MessageAliveHolder : IDisposable
 	{
-		public MessageAliveHolder(ulong possibleMessageId, MessageSendModel sendModel, ITextChannel channel)
+		private readonly Func<ITextChannel, Task<IMessage>> messageCreator;
+		private readonly static ThreadLocker<MessageAliveHolder> threadLocker = new();
+		private readonly Model model;
+		private readonly bool active;
+
+
+		public MessageAliveHolder(Model model, bool active, Func<ITextChannel, Task<IMessage>> messageCreator)
 		{
-			PossibleMessageId = possibleMessageId;
-			SendModel = sendModel;
-			Channel = channel;
+			this.model = model;
+			this.messageCreator = messageCreator;
+			this.active = active;
+			if (active) model.Channel.MessageDeleted += OnMessageDeleted;
 		}
 
-		public MessageAliveHolder(IMessage message)
-		{
-			if (message.IsExist == false) throw new InvalidOperationException("Message has not exist");
 
-			Channel = message.TextChannel;
-			PossibleMessageId = message.Id;
-			SendModel = message.SendModel;
-		}
+		public event Action<IMessage>? AutoMessageCreated;
 
 
 		public IMessage Message
 		{
-			get 
+			get
 			{
-				var toSend = !Channel.HasMessage(PossibleMessageId);
-				if (toSend)
+				using (threadLocker.Lock(this))
 				{
-					var message = Channel.SendMessageAsync(SendModel).Result;
-					PossibleMessageId = message.Id;
-					return message;
+					if (Channel.HasMessage(PossibleMessageId) == false) CheckAsync().Wait();
+					return Channel.GetMessage(PossibleMessageId);
 				}
-				else return Channel.GetMessage(PossibleMessageId);
 			}
 		}
 
-		[ConstructorAssignableProperty(0, "possibleMessageId")]
-		public ulong PossibleMessageId { get; private set; }
+		public ulong PossibleMessageId => model.PossibleMessageId;
 
-		[ConstructorAssignableProperty(1, "sendModel")]
-		public MessageSendModel SendModel { get; }
+		public ITextChannel Channel => model.Channel;
 
-		[ConstructorAssignableProperty(2, "channel")]
-		public ITextChannel Channel { get; }
+		public bool ActiveMode => active;
+
+		public bool IsExist => Channel.HasMessage(PossibleMessageId);
 
 
 		public Task DeleteAsync()
 		{
-			if (Channel.HasMessage(PossibleMessageId)) return Channel.GetMessage(PossibleMessageId).DeleteAsync();
-			else return Task.CompletedTask;
+			using (threadLocker.Lock(this))
+			{
+				if (Channel.HasMessage(PossibleMessageId)) return Channel.GetMessage(PossibleMessageId).DeleteAsync();
+				else return Task.CompletedTask;
+			}
+		}
+
+		public async Task Update()
+		{
+			using (threadLocker.Lock(this))
+			{
+				if (Channel.HasMessage(PossibleMessageId)) await Channel.GetMessage(PossibleMessageId).DeleteAsync();
+				var message = await SendMessageAsync();
+				model.PossibleMessageId = message.Id;
+			}
+		}
+
+		private Task<IMessage> SendMessageAsync()
+		{
+			return messageCreator.Invoke(Channel);
+		}
+
+		private void OnMessageDeleted(IClient _, IMessage message)
+		{
+			if (PossibleMessageId != message.Id) return;
+
+			using (threadLocker.Lock(this))
+			{
+				CheckAsync().Wait();
+			}
+		}
+
+		public void Dispose()
+		{
+			if(active) Channel.MessageDeleted -= OnMessageDeleted;
+			GC.SuppressFinalize(this);
+		}
+
+		public async Task CheckAsync()
+		{
+			if (Channel.HasMessage(PossibleMessageId) == false)
+			{
+				var message = await SendMessageAsync();
+				model.PossibleMessageId = message.Id;
+				AutoMessageCreated?.Invoke(message);
+			}
+		}
+
+
+		public class Model
+		{
+			public Model(ulong possibleMessageId, ITextChannel channel)
+			{
+				PossibleMessageId = possibleMessageId;
+				Channel = channel;
+			}
+
+			public Model(ITextChannel channel)
+			{
+				Channel = channel;
+			}
+
+
+			[ConstructorAssignableProperty(0, "possibleMessageId")]
+			public ulong PossibleMessageId { get; set; }
+
+			[ConstructorAssignableProperty(1, "channel")]
+			public ITextChannel Channel { get; }
 		}
 	}
 }
