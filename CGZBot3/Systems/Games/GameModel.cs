@@ -42,13 +42,13 @@ namespace CGZBot3.Systems.Games
 
 		[ConstructorAssignableProperty(4, "inGame")] public ICollection<IMember> InGame { get; }
 
-		[ConstructorAssignableProperty(5, "name")] public string Name { get; }
+		[ConstructorAssignableProperty(5, "name")] public string Name { get; set; }
 
-		[ConstructorAssignableProperty(6, "description")] public string Description { get; }
+		[ConstructorAssignableProperty(6, "description")] public string Description { get; set; }
 
-		[ConstructorAssignableProperty(7, "startAtMembers")] public int StartAtMembers { get; }
+		[ConstructorAssignableProperty(7, "startAtMembers")] public int StartAtMembers { get; set; }
 
-		[ConstructorAssignableProperty(8, "waitEveryoneInvited")] public bool WaitEveryoneInvited { get; }
+		[ConstructorAssignableProperty(8, "waitEveryoneInvited")] public bool WaitEveryoneInvited { get; set; }
 
 
 		public object Clone() => new GameModel(Id, Creator, ReportMessage, Invited, InGame, Name, Description, StartAtMembers, WaitEveryoneInvited) { State = State };

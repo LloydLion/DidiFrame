@@ -107,7 +107,7 @@ namespace CGZBot3.Systems.Games
 
 			ComponentInteractionResult joinHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				using var b = GetBaseProtected();
+				using var b = GetBase(); //It is not bug!! These is musn't be GetBaseProtected()
 
 				if (b.Object.InGame.Contains(ctx.Invoker)) return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyInGame"]));
 				else if (b.Object.Creator == ctx.Invoker) return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorAlreadyInGame"]));
@@ -120,7 +120,7 @@ namespace CGZBot3.Systems.Games
 
 			ComponentInteractionResult exitHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				using var b = GetBaseProtected();
+				using var b = GetBase(); //It is not bug!! These is musn't be GetBaseProtected()
 
 				if (b.Object.Creator == ctx.Invoker) return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorMustBeInGame"]));
 				else if (!b.Object.InGame.Contains(ctx.Invoker)) return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyOutGame"]));

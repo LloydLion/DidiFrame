@@ -25,5 +25,23 @@ namespace CGZBot3.Systems.Games
 
 			return lifetimes.AddLifetime(model);
 		}
+
+		public bool TryGetGame(IMember creator, string name, out GameLifetime? value)
+		{
+			var lts = lifetimes.GetAllLifetimes(creator.Server);
+
+			var sod = lts.SingleOrDefault(s => { var bc = s.GetBaseClone(); return bc.Creator == creator && bc.Name == name; });
+			
+			if (sod is null)
+			{
+				value = null;
+				return false;
+			}
+			else
+			{
+				value = sod;
+				return true;
+			}
+		}
 	}
 }
