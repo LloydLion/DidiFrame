@@ -16,15 +16,17 @@ namespace CGZBot3.UserCommands
 		private readonly ILogger<DefaultUserCommandsHandler> logger;
 		private readonly IServerCultureProvider cultureProvider;
 		private readonly IStringLocalizer<DefaultUserCommandsHandler> localizer;
+		private readonly IServiceProvider services;
 		private readonly ThreadLocker<IServer> threadLocker = new();
 
 
-		public DefaultUserCommandsHandler(IOptions<Options> options, ILogger<DefaultUserCommandsHandler> logger, IServerCultureProvider cultureProvider, IStringLocalizer<DefaultUserCommandsHandler> localizer)
+		public DefaultUserCommandsHandler(IOptions<Options> options, ILogger<DefaultUserCommandsHandler> logger, IServerCultureProvider cultureProvider, IStringLocalizer<DefaultUserCommandsHandler> localizer, IServiceProvider services)
 		{
 			this.options = options.Value;
 			this.logger = logger;
 			this.cultureProvider = cultureProvider;
 			this.localizer = localizer;
+			this.services = services;
 		}
 
 
@@ -58,7 +60,7 @@ namespace CGZBot3.UserCommands
 					{
 						foreach (var validator in argument.Validators)
 						{
-							var tf = validator.Validate(ctx, argument, ctx.Arguments[argument]);
+							var tf = validator.Validate(services, ctx, argument, ctx.Arguments[argument]);
 							if (tf is null) continue;
 							else
 							{
