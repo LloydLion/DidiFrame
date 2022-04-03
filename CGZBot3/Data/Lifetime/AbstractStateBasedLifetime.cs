@@ -19,6 +19,7 @@ namespace CGZBot3.Data.Lifetime
 		private readonly Dictionary<TState, List<Action>> startupHandlers = new();
 		private readonly ILogger logger;
 		private readonly List<Action<TState>> stateHandlers = new();
+		private static readonly ThreadLocker<AbstractStateBasedLifetime<TState, TBase>> baseLocker = new();
 
 
 		/// <summary>
@@ -40,6 +41,8 @@ namespace CGZBot3.Data.Lifetime
 
 		public ObjectHolder<TBase> GetBase()
 		{
+			var lockFree = baseLocker.Lock(this);
+
 			var startState = baseObj.State;
 
 			return new ObjectHolder<TBase>(baseObj, (holder) =>
@@ -55,6 +58,8 @@ namespace CGZBot3.Data.Lifetime
 					baseObj.State = startState;
 				}
 
+				lockFree.Dispose();
+
 				GetUpdater().Update(this);
 
 				if (ex is not null) throw ex;
@@ -63,6 +68,8 @@ namespace CGZBot3.Data.Lifetime
 
 		protected ObjectHolder<TBase> GetBaseProtected()
 		{
+			var lockFree = baseLocker.Lock(this);
+
 			var startState = baseObj.State;
 
 			return new ObjectHolder<TBase>(baseObj, (holder) =>
@@ -75,6 +82,8 @@ namespace CGZBot3.Data.Lifetime
 					baseObj.State = startState;
 				}
 
+				lockFree.Dispose();
+
 				GetUpdater().Update(this);
 
 				if (ex is not null) throw ex;
@@ -83,7 +92,10 @@ namespace CGZBot3.Data.Lifetime
 
 		public TBase GetBaseClone()
 		{
-			return (TBase)baseObj.Clone();
+			using (baseLocker.Lock(this))
+			{
+				return (TBase)baseObj.Clone();
+			}
 		}
 
 		public void Run(ILifetimeStateUpdater<TBase> updater)
@@ -132,7 +144,10 @@ namespace CGZBot3.Data.Lifetime
 		/// <returns></returns>
 		protected TBase GetBaseDirect()
 		{
-			return baseObj;
+			using (baseLocker.Lock(this))
+			{
+				return baseObj;
+			}
 		}
 
 		protected IStateMachine<TState> GetStateMachine()
