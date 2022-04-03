@@ -117,6 +117,8 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 				if (!Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
 			}
 
+			if (info.ReturnType != typeof(Task<UserCommandResult>) || info.ReturnType != typeof(UserCommandResult)) return false;
+
 			return true;
 		}
 
@@ -125,19 +127,23 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 		{
 			private readonly MethodInfo method;
 			private readonly object obj;
+			private readonly bool isSync;
 
 
 			public Handler(MethodInfo method, object obj)
 			{
 				this.method = method;
 				this.obj = obj;
+				isSync = method.ReturnType == typeof(UserCommandResult);
 			}
 
 
 			public Task<UserCommandResult> HandleAsync(UserCommandContext ctx)
 			{
-				return (Task<UserCommandResult>)(method.Invoke(obj, ctx.Arguments.Values.Prepend(ctx).ToArray()) ??
-					throw new NullReferenceException("Handler method's return was null"));
+				var callRes = method.Invoke(obj, ctx.Arguments.Values.Prepend(ctx).ToArray()) ??
+						throw new NullReferenceException("Handler method's return was null");
+
+				return isSync ? Task.FromResult((UserCommandResult)callRes) : (Task<UserCommandResult>)callRes;
 			}
 		}
 	}
