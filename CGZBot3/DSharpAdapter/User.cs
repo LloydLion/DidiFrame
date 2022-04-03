@@ -11,6 +11,8 @@ namespace CGZBot3.DSharpAdapter
 
 		public virtual string UserName => user.Username;
 
+		public string Mention => user.Mention;
+
 		public ulong Id => user.Id;
 
 		public IClient Client => client;

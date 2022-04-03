@@ -7,5 +7,7 @@
 		public ulong Id { get; }
 
 		public IClient Client { get; }
+
+		public string Mention { get; }
 	}
 }

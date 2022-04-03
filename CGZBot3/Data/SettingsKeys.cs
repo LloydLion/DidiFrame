@@ -13,5 +13,7 @@
 		public const string DiscussionSystem = "discussion";
 
 		public const string StreamingSystem = "streaming";
+
+		public const string GamesSystem = "games";
 	}
 }

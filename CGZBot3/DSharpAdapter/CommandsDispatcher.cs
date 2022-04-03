@@ -4,6 +4,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System.Collections;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -17,12 +18,12 @@ namespace CGZBot3.DSharpAdapter
 		private readonly static Dictionary<string, UserCommandInfo.Argument.Type> regexes = new()
 		{
 			{ "^(\\d{2}.\\d{2}\\|\\d{2}:\\d{2}:\\d{2}\\b)", UserCommandInfo.Argument.Type.DateTime },
-			{ "^\\d{2}:\\d{2}:\\d{2}\\b", UserCommandInfo.Argument.Type.TimeSpan },
-			{ "^<@!?(\\d+)>\\b", UserCommandInfo.Argument.Type.Member },
-			{ "^<@&(\\d+)>", UserCommandInfo.Argument.Type.Role },
-			{ "^(<@&(\\d+)>)|(<@!?(\\d+)>)", UserCommandInfo.Argument.Type.Mentionable },
-			{ "^\\d+\\b", UserCommandInfo.Argument.Type.Integer },
-			{ "^(\\d+\\.\\d+)|(\\d+\\b)", UserCommandInfo.Argument.Type.Double },
+			{ "^(\\d{2}:\\d{2}:\\d{2}\\b)", UserCommandInfo.Argument.Type.TimeSpan },
+			{ "^(<@!?(\\d+)>)\\b", UserCommandInfo.Argument.Type.Member },
+			{ "^(<@&(\\d+)>)\\b", UserCommandInfo.Argument.Type.Role },
+			{ "^((<@&(\\d+)>)|(<@!?(\\d+)>))", UserCommandInfo.Argument.Type.Mentionable },
+			{ "^(\\d+)\\b", UserCommandInfo.Argument.Type.Integer },
+			{ "^((\\d+\\.\\d+)|(\\d+\\b))", UserCommandInfo.Argument.Type.Double },
 			{ "^((\"[^\"]*\")|([^\\s]+))", UserCommandInfo.Argument.Type.String },
 		};
 
@@ -136,7 +137,7 @@ namespace CGZBot3.DSharpAdapter
 			switch (ttype)
 			{
 				case UserCommandInfo.Argument.Type.Integer: return int.Parse(rawStr);
-				case UserCommandInfo.Argument.Type.Double: return double.Parse(rawStr);
+				case UserCommandInfo.Argument.Type.Double: return double.Parse(rawStr, new CultureInfo("en-US"));
 				case UserCommandInfo.Argument.Type.String: return rawStr.StartsWith('\"') && rawStr.EndsWith('\"') ? rawStr[1..^1] : rawStr;
 				case UserCommandInfo.Argument.Type.Member:
 					var match = Regex.Match(rawStr, @"^<@!?(\d+)>$").Groups[1].Value;
