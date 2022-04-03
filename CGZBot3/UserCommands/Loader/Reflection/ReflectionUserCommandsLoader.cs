@@ -117,7 +117,7 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 				if (!Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
 			}
 
-			if (info.ReturnType != typeof(Task<UserCommandResult>) || info.ReturnType != typeof(UserCommandResult)) return false;
+			if (info.ReturnType != typeof(Task<UserCommandResult>) && info.ReturnType != typeof(UserCommandResult)) return false;
 
 			return true;
 		}
