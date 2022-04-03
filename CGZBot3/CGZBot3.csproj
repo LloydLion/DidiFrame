@@ -23,15 +23,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Translations\UserCommands\UserCommandsHandler.ru-RU.Designer.cs">
-      <DependentUpon>UserCommandsHandler.ru-RU.resx</DependentUpon>
+    <Compile Update="Translations\UserCommands\DefaultUserCommandsHandler.ru-RU.Designer.cs">
+      <DependentUpon>DefaultUserCommandsHandler.ru-RU.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Translations\UserCommands\UserCommandsHandler.Designer.cs">
+    <Compile Update="Translations\UserCommands\DefaultUserCommandsHandler.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>UserCommandsHandler.resx</DependentUpon>
+      <DependentUpon>DefaultUserCommandsHandler.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -60,6 +60,21 @@
     <EmbeddedResource Update="Translations\Systems\Reputation\UIHelper.resx">
       <Generator></Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Streaming\CommandHandler.ru-RU.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Streaming\CommandHandler.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Streaming\StreamLifetime.ru-RU.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Streaming\StreamLifetime.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Streaming\UIHelper.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Translations\Systems\Test\CommandsHandl;er.resx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -75,13 +90,13 @@
     <EmbeddedResource Update="Translations\Systems\Voice\CommandsHandler.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Update="Translations\UserCommands\UserCommandsHandler.ru-RU.resx">
-      <LastGenOutput>UserCommandsHandler.ru-RU.Designer.cs</LastGenOutput>
+    <EmbeddedResource Update="Translations\UserCommands\DefaultUserCommandsHandler.ru-RU.resx">
+      <LastGenOutput>DefaultUserCommandsHandler.ru-RU.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Translations\UserCommands\UserCommandsHandler.resx">
+    <EmbeddedResource Update="Translations\UserCommands\DefaultUserCommandsHandler.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>UserCommandsHandler.Designer.cs</LastGenOutput>
+      <LastGenOutput>DefaultUserCommandsHandler.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

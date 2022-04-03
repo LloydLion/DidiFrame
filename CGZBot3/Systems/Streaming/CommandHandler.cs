@@ -1,5 +1,6 @@
 ﻿using CGZBot3.Entities.Message;
 using CGZBot3.UserCommands;
+using CGZBot3.UserCommands.ArgumentsValidation.Validators;
 using CGZBot3.UserCommands.Loader.Reflection;
 
 namespace CGZBot3.Systems.Streaming
@@ -18,7 +19,7 @@ namespace CGZBot3.Systems.Streaming
 
 
 		[Command("stream")]
-		public Task<UserCommandResult> CreateStream(UserCommandContext ctx, DateTime plannedStartDate, string place, string[] nameArray)
+		public Task<UserCommandResult> CreateStream(UserCommandContext ctx, [Validator(typeof(GreaterThen), typeof(CommandHandler), nameof(GetNow))] DateTime plannedStartDate, string place, string[] nameArray)
 		{
 			var name = nameArray.JoinWords();
 
@@ -31,7 +32,7 @@ namespace CGZBot3.Systems.Streaming
 		}
 
 		[Command("replanstream")]
-		public Task<UserCommandResult> ReplanStream(UserCommandContext ctx, DateTime plannedStartDate, string[] nameArray)
+		public Task<UserCommandResult> ReplanStream(UserCommandContext ctx, [Validator(typeof(GreaterThen), typeof(CommandHandler), nameof(GetNow))] DateTime plannedStartDate, string[] nameArray)
 		{
 			var name = nameArray.JoinWords();
 
@@ -52,7 +53,7 @@ namespace CGZBot3.Systems.Streaming
 				baseObj.Object.PlanedStartTime = plannedStartDate;
 			}
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamReaplaned", name]) });
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamReplanned", name]) });
 		}
 
 		[Command("renamestream")]
@@ -95,7 +96,10 @@ namespace CGZBot3.Systems.Streaming
 				baseObj.Object.Place = newPlace;
 			}
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamRenamed", name]) });
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamMoved", name]) });
 		}
+
+
+		private static IComparable GetNow(UserCommandContext _) => DateTime.Now + new TimeSpan(0, 5, 0);
 	}
 }

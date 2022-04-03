@@ -15,13 +15,15 @@ namespace CGZBot3.Systems.Streaming
 		}
 
 
-		public MessageSendModel CreateAnnouncedReport(string name, IMember streamer, DateTime plannedStartDate)
+		public MessageSendModel CreateAnnouncedReport(string name, IMember streamer, DateTime utcPlannedStartDate)
 		{
-			var embed = new MessageEmbedBuilder(localizer["AnnouncedTitle"], localizer["AnnouncedDescription"], new Color("#5a9b9f"));
+			var plannedStartDate = utcPlannedStartDate.ToLocalTime();
+
+			var embed = new MessageEmbedBuilder(localizer["EmbedTitle"], localizer["EmbedDescription"], new Color("#cabc12"));
 			embed.AddAuthor(streamer.UserName, null, null);
 
 			embed.AddField(new EmbedField(localizer["NameFieldTitle"], name));
-			embed.AddField(new EmbedField(localizer["PlannedStartDateFieldTitle"], plannedStartDate.ToLongTimeString()));
+			embed.AddField(new EmbedField(localizer["PlannedStartDateFieldTitle"], plannedStartDate.ToString("dd MMMM HH:mm" + (plannedStartDate.Second == 0 ? "" : ":ss"))));
 
 			return new MessageSendModel()
 			{
@@ -29,13 +31,15 @@ namespace CGZBot3.Systems.Streaming
 			};
 		}
 
-		public MessageSendModel CreateWaitingStreamerReport(string name, IMember streamer, DateTime plannedStartDate)
+		public MessageSendModel CreateWaitingStreamerReport(string name, IMember streamer, DateTime utcPlannedStartDate)
 		{
-			var embed = new MessageEmbedBuilder(localizer["AnnouncedTitle"], localizer["AnnouncedDescription"], new Color("#5a9b9f"));
+			var plannedStartDate = utcPlannedStartDate.ToLocalTime();
+
+			var embed = new MessageEmbedBuilder(localizer["EmbedTitle"], localizer["EmbedDescription"], new Color("#5a9b9f"));
 			embed.AddAuthor(streamer.UserName, null, null);
 
 			embed.AddField(new EmbedField(localizer["NameFieldTitle"], name));
-			embed.AddField(new EmbedField(localizer["PlannedStartDateFieldTitle"], plannedStartDate.ToLongTimeString()));
+			embed.AddField(new EmbedField(localizer["PlannedStartDateFieldTitle"], plannedStartDate.ToString("dd MMMM HH:mm" + (plannedStartDate.Second == 0 ? "" : ":ss"))));
 
 			return new MessageSendModel()
 			{
@@ -49,7 +53,7 @@ namespace CGZBot3.Systems.Streaming
 
 		public MessageSendModel CreateRunningReport(string name, IMember streamer, string place)
 		{
-			var embed = new MessageEmbedBuilder(localizer["AnnouncedTitle"], localizer["AnnouncedDescription"], new Color("#9b75ca"));
+			var embed = new MessageEmbedBuilder(localizer["EmbedTitle"], localizer["EmbedDescription"], new Color("#9b75ca"));
 			embed.AddAuthor(streamer.UserName, null, null);
 
 			embed.AddField(new EmbedField(localizer["NameFieldTitle"], name));

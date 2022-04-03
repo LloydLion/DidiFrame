@@ -37,7 +37,7 @@ namespace CGZBot3.DSharpAdapter
 			{
 				embeds = new();
 				foreach (var baseEmbed in message.Embeds)
-					embeds.Add(new MessageEmbed(baseEmbed.Title, baseEmbed.Description, new Color(baseEmbed.Color.Value.R, baseEmbed.Color.Value.G, baseEmbed.Color.Value.B),
+					embeds.Add(new MessageEmbed(baseEmbed.Title, baseEmbed.Description, baseEmbed.Color.HasValue ? new Color(baseEmbed.Color.Value.R, baseEmbed.Color.Value.G, baseEmbed.Color.Value.B) : new Color("#000000"),
 						baseEmbed.Fields?.Select(s => new EmbedField(s.Name, s.Value))?.ToArray() ?? Array.Empty<EmbedField>(), new EmbedMeta()
 						{
 							AuthorIconUrl = baseEmbed.Author?.IconUrl?.ToString(),
