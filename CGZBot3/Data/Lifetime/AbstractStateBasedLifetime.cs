@@ -25,7 +25,7 @@ namespace CGZBot3.Data.Lifetime
 		/// All changed of TBase object will be applied.
 		/// WARNING! Don't call GetBase()!
 		/// </summary>
-		public event Action<TBase>? BaseChanged;
+		public event Action<TBase>? ExternalBaseChanged;
 
 
 		public AbstractStateBasedLifetime(IServiceProvider services, TBase baseObj)
@@ -44,9 +44,29 @@ namespace CGZBot3.Data.Lifetime
 
 			return new ObjectHolder<TBase>(baseObj, (holder) =>
 			{
-				try { BaseChanged?.Invoke(baseObj); } catch (Exception mex)
+				try { ExternalBaseChanged?.Invoke(baseObj); } catch (Exception mex)
 				{ logger.Log(LogLevel.Warning, BaseChangedEventErrorID, mex, "Exception has thrown while BaseChanged event handlers executing"); }
 
+				Exception? ex = null;
+
+				if (!startState.Equals(baseObj.State))
+				{
+					ex = new InvalidOperationException("Enable to change state in base object of lifetime. State reverted and object saved");
+					baseObj.State = startState;
+				}
+
+				GetUpdater().Update(this);
+
+				if (ex is not null) throw ex;
+			});
+		}
+
+		protected ObjectHolder<TBase> GetBaseProtected()
+		{
+			var startState = baseObj.State;
+
+			return new ObjectHolder<TBase>(baseObj, (holder) =>
+			{
 				Exception? ex = null;
 
 				if (!startState.Equals(baseObj.State))

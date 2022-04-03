@@ -4,6 +4,6 @@
 	{
 		public StreamLifetime AnnounceStream(string name, IMember streamer, DateTime plannedStartDate, string place);
 
-		public StreamLifetime GetLifetime(string name, IMember streamer);
+		public bool TryGetLifetime(string name, IMember streamer, out StreamLifetime? value);
 	}
 }

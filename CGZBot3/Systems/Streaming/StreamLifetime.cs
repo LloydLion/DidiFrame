@@ -26,6 +26,7 @@ namespace CGZBot3.Systems.Streaming
 
 			reportHolder = new MessageAliveHolder(baseObj.ReportMessage, true, CreateReportMessage);
 			reportHolder.AutoMessageCreated += OnReportCreated;
+			ExternalBaseChanged += OnExternalBaseChanged;
 
 
 			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseDirect().PlanedStartTime);
@@ -36,6 +37,11 @@ namespace CGZBot3.Systems.Streaming
 			AddHandler(StreamState.Running, OnStateChanged);
 		}
 
+
+		private async void OnExternalBaseChanged(StreamModel obj)
+		{
+			await reportHolder.Update();
+		}
 
 		protected override void OnRun(StreamState state)
 		{
@@ -50,7 +56,7 @@ namespace CGZBot3.Systems.Streaming
 
 		private void OnStateChanged(StreamState state)
 		{
-			using var b = GetBase();
+			using var b = GetBaseProtected();
 			reportHolder.Update().Wait();
 		}
 

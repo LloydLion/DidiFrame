@@ -18,8 +18,10 @@ namespace CGZBot3.Systems.Streaming
 
 
 		[Command("stream")]
-		public Task<UserCommandResult> CreateStream(UserCommandContext ctx, string name, DateTime plannedStartDate, string place)
+		public Task<UserCommandResult> CreateStream(UserCommandContext ctx, DateTime plannedStartDate, string place, string[] nameArray)
 		{
+			var name = nameArray.JoinWords();
+
 			if (place.StartsWith("dc#")) place = localizer["InDiscordPlace", place];
 			else place = localizer["ExternalPlace", place];
 
@@ -29,11 +31,19 @@ namespace CGZBot3.Systems.Streaming
 		}
 
 		[Command("replanstream")]
-		public Task<UserCommandResult> ReplanStream(UserCommandContext ctx, string name, DateTime plannedStartDate)
+		public Task<UserCommandResult> ReplanStream(UserCommandContext ctx, DateTime plannedStartDate, string[] nameArray)
 		{
-			var lt = systemCore.GetLifetime(name, ctx.Invoker);
+			var name = nameArray.JoinWords();
 
-			using var baseObj = lt.GetBase();
+			var has = systemCore.TryGetLifetime(name, ctx.Invoker, out var lt);
+
+			if (!has) return Task.FromResult(new UserCommandResult(UserCommandCode.OtherUserError)
+				{ RespondMessage = new MessageSendModel(localizer["StreamNotFound", name]) });
+
+			lt = lt ?? throw new ImpossibleVariantException();
+
+
+			using (var baseObj = lt.GetBase())
 			{
 				if (baseObj.Object.State == StreamState.Running)
 					return Task.FromResult(new UserCommandResult(UserCommandCode.OtherUserError)
@@ -48,7 +58,13 @@ namespace CGZBot3.Systems.Streaming
 		[Command("renamestream")]
 		public Task<UserCommandResult> RenameStream(UserCommandContext ctx, string name, string newName)
 		{
-			var lt = systemCore.GetLifetime(name, ctx.Invoker);
+			var has = systemCore.TryGetLifetime(name, ctx.Invoker, out var lt);
+
+			if (!has) return Task.FromResult(new UserCommandResult(UserCommandCode.OtherUserError)
+			{ RespondMessage = new MessageSendModel(localizer["StreamNotFound", name]) });
+
+			lt = lt ?? throw new ImpossibleVariantException();
+
 
 			using (var baseObj = lt.GetBase())
 			{
@@ -59,14 +75,22 @@ namespace CGZBot3.Systems.Streaming
 		}
 
 		[Command("movestream")]
-		public Task<UserCommandResult> MoveStream(UserCommandContext ctx, string name, string newPlace)
+		public Task<UserCommandResult> MoveStream(UserCommandContext ctx, string newPlace, string[] nameArray)
 		{
-			var lt = systemCore.GetLifetime(name, ctx.Invoker);
+			var name = nameArray.JoinWords();
+
+			var has = systemCore.TryGetLifetime(name, ctx.Invoker, out var lt);
+
+			if (!has) return Task.FromResult(new UserCommandResult(UserCommandCode.OtherUserError)
+			{ RespondMessage = new MessageSendModel(localizer["StreamNotFound", name]) });
+
+			lt = lt ?? throw new ImpossibleVariantException();
+
 
 			if (newPlace.StartsWith("dc#")) newPlace = localizer["InDiscordPlace", newPlace];
 			else newPlace = localizer["ExternalPlace", newPlace];
 
-			using var baseObj = lt.GetBase();
+			using (var baseObj = lt.GetBase())
 			{
 				baseObj.Object.Place = newPlace;
 			}
