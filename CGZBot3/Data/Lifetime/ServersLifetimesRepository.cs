@@ -27,6 +27,7 @@
 
 		public IReadOnlyCollection<TLifetime> GetAllLifetimes(IServer server)
 		{
+			if (lifetimes.ContainsKey(server) == false) lifetimes.Add(server, new());
 			return lifetimes[server].Values;
 		}
 

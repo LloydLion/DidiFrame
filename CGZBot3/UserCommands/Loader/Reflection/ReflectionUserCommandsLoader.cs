@@ -93,7 +93,7 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 			var attr = info.GetCustomAttribute<CommandAttribute>();
 
 			if (attr == null) return false;
-			if (!Regex.IsMatch(attr.Name, @"^[a-z]+$")) return false;
+			if (!Regex.IsMatch(attr.Name, @"^(([a-z]+\s[a-z-]+)|([a-z-]+))$")) return false;
 
 
 			var @params = info.GetParameters();

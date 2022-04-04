@@ -15,7 +15,7 @@ namespace CGZBot3.UserCommands.Validators
 
 		public CommandInfoValidator(IValidator<UserCommandInfo.Argument> argVal)
 		{
-			RuleFor(s => s.Name).Matches("^[a-z]+$");
+			RuleFor(s => s.Name).Matches("^(([a-z]+\\s[a-z-]+)|([a-z-]+))$");
 
 			RuleForEach(s => s.Arguments).SetValidator(argVal);
 			//All arguments has unique name

@@ -2,6 +2,7 @@
 using CGZBot3.Entities.Message;
 using CGZBot3.Entities.Message.Components;
 using CGZBot3.Utils;
+using CGZBot3.Utils.StateMachine;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CGZBot3.Systems.Games
@@ -16,7 +17,10 @@ namespace CGZBot3.Systems.Games
 
 		private readonly WaitFor waitForStartButton = new();
 		private readonly WaitFor waitForFinishButton = new();
+		private readonly WaitFor waitForCancel = new();
 		private readonly MessageAliveHolder reportHolder;
+
+
 		private readonly UIHelper uiHelper;
 		private readonly IStringLocalizer<GameLifetime> localizer;
 
@@ -31,6 +35,7 @@ namespace CGZBot3.Systems.Games
 			ExternalBaseChanged += OnExternalBaseChanged;
 
 
+			AddTransit(new ResetTransitWorker<GameState>(null, waitForCancel.Await));
 			AddTransit(GameState.WaitingPlayers, GameState.WaitingCreator, WaitingPlayersWaitingCreatorTransit);
 			AddTransit(GameState.WaitingCreator, GameState.WaitingPlayers, () => !WaitingPlayersWaitingCreatorTransit());
 			AddTransit(GameState.WaitingCreator, GameState.Running, waitForStartButton.Await);
@@ -41,6 +46,11 @@ namespace CGZBot3.Systems.Games
 			AddHandler(GameState.Running, OnStateChanged);
 		}
 
+
+		public void Cancel()
+		{
+			waitForCancel.Callback();
+		}
 
 		private async void OnExternalBaseChanged(GameModel _)
 		{

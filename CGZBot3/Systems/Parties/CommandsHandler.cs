@@ -1,9 +1,8 @@
 ﻿using CGZBot3.Entities.Message;
+using CGZBot3.Systems.Parties.Validators;
 using CGZBot3.UserCommands;
-using CGZBot3.UserCommands.ArgumentsValidation;
 using CGZBot3.UserCommands.ArgumentsValidation.Validators;
 using CGZBot3.UserCommands.Loader.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CGZBot3.Systems.Parties
 {
@@ -71,68 +70,6 @@ namespace CGZBot3.Systems.Parties
 		{
 			using var value = systemCore.GetParty(ctx.Invoker.Server, name);
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = uiHelper.CreatePartyTablet(value.Object) };
-		}
-
-
-		private class PartyExistAndInvokerIsOwner : AbstractArgumentValidator<string>
-		{
-			protected override string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, string value)
-			{
-				var system = GetServiceProvider().GetRequiredService<ISystemCore>();
-				if (system.HasParty(context.Invoker.Server, value))
-				{
-					using var party = system.GetParty(context.Invoker.Server, value);
-					if (party.Object.Creator == context.Invoker) return null;
-					else return "Unauthorizated";
-				}
-				else return "PartyNotFound";
-			}
-		}
-
-		private class PartyExist : AbstractArgumentValidator<string>
-		{
-			private readonly bool inverse;
-
-
-			public PartyExist(bool inverse)
-			{
-				this.inverse = inverse;
-			}
-
-
-			protected override string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, string value)
-			{
-				var system = GetServiceProvider().GetRequiredService<ISystemCore>();
-				if (system.HasParty(context.Invoker.Server, value)) return inverse ? "PartyExist" : null;
-				else return inverse ? null : "PartyNotExist";
-			}
-		}
-
-		private class MemberInParty : AbstractArgumentValidator<IMember>
-		{
-			private readonly string partyArgumentName;
-			private readonly bool inverse;
-
-
-			public MemberInParty(string partyArgumentName, bool inverse)
-			{
-				this.partyArgumentName = partyArgumentName;
-				this.inverse = inverse;
-			}
-
-
-			protected override string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, IMember value)
-			{
-				var partyName = (string)context.Arguments[context.Command.Arguments.Single(s => s.Name == partyArgumentName)];
-				var system = GetServiceProvider().GetRequiredService<ISystemCore>();
-
-				using var party = system.GetParty(context.Invoker.Server, partyName);
-
-				var isIn = party.Object.Members.Any(s => s == value);
-
-				if (inverse) return isIn ? "MemberInParty" : null;
-				else return isIn ? null : "NoMemberInParty";
-			}
 		}
 	}
 }

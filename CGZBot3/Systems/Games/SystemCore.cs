@@ -15,9 +15,19 @@ namespace CGZBot3.Systems.Games
 			this.lifetimes = lifetimes.Create<GameLifetime, GameModel>(StatesKeys.GamesSystem);
 		}
 
+		public void CancelGame(IMember creator, string name)
+		{
+			GetGame(creator, name).Cancel();
+		}
 
 		public GameLifetime CreateGame(IMember creator, string name, bool waitEveryoneInvited, string description, IReadOnlyCollection<IMember> invited, int startAtMembers)
 		{
+			if (startAtMembers <= 0) throw new ArgumentOutOfRangeException(nameof(startAtMembers), "Value must be greater ther zero");
+			if (string.IsNullOrWhiteSpace(description)) throw new ArgumentException("String is whitespace", nameof(description));
+			if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("String is whitespace", nameof(name));
+			if (invited.Any(s => s.IsBot)) throw new ArgumentException("No everyone invited must be bot", nameof(description));
+			if (invited.Any(s => s == creator)) throw new ArgumentException("Enable to invite creator", nameof(description));
+
 			var setting = settings.Get(creator.Server);
 
 			var report = new MessageAliveHolder.Model(setting.ReportChannel);
@@ -26,22 +36,14 @@ namespace CGZBot3.Systems.Games
 			return lifetimes.AddLifetime(model);
 		}
 
-		public bool TryGetGame(IMember creator, string name, out GameLifetime? value)
+		public GameLifetime GetGame(IMember creator, string name)
 		{
-			var lts = lifetimes.GetAllLifetimes(creator.Server);
+			return lifetimes.GetAllLifetimes(creator.Server).Single(s => { var b = s.GetBaseClone(); return (b.Name, b.Creator) == (name, creator); });
+		}
 
-			var sod = lts.SingleOrDefault(s => { var bc = s.GetBaseClone(); return bc.Creator == creator && bc.Name == name; });
-			
-			if (sod is null)
-			{
-				value = null;
-				return false;
-			}
-			else
-			{
-				value = sod;
-				return true;
-			}
+		public bool HasGame(IMember creator, string name)
+		{
+			return lifetimes.GetAllLifetimes(creator.Server).Any(s => { var b = s.GetBaseClone(); return (b.Name, b.Creator) == (name, creator); });
 		}
 	}
 }
