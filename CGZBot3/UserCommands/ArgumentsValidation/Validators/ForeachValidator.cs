@@ -12,6 +12,11 @@ namespace CGZBot3.UserCommands.ArgumentsValidation.Validators
 			validator = (IUserCommandArgumentValidator)(Activator.CreateInstance(validatorType, creationArgs) ?? throw new ImpossibleVariantException());
 		}
 
+		public ForeachValidator(Type validatorType)
+		{
+			validator = (IUserCommandArgumentValidator)(Activator.CreateInstance(validatorType) ?? throw new ImpossibleVariantException());
+		}
+
 
 		public string? Validate(IServiceProvider services, UserCommandContext context, UserCommandInfo.Argument argument, object value)
 		{

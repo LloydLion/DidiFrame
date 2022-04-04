@@ -46,59 +46,64 @@ namespace CGZBot3.DSharpAdapter
 			var server = client.Servers.Single(s => s.Id == args.Guild.Id);
 
 			var cmds = repository.GetCommandsFor(server);
-			var regex = $"^[{new string(clientOptions.Prefixes.Select(s => "\\" + s).SelectMany(s => s).ToArray())}]({string.Join('|', cmds.Select(s => $"({s.Name})"))}){"{1}"}";
+			var regex = $"^[{new string(clientOptions.Prefixes.Select(s => "\\" + s).SelectMany(s => s).ToArray())}]({string.Join('|', cmds.Select(s => $"({s.Name})"))}){"{1}"}\\b";
 			var result = Regex.Matches(content, regex);
 
 			if (!result.Any()) return Task.CompletedTask;
 			var command = cmds.Single(s => s.Name == result.Single().Groups[1].Value);
 
-			var cnt = new StringBuilder(content[(command.Name.Length + 2)..]); //space include
-
 			var arguments = new List<object>();
 
-			while (cnt.Length != 0)	
+			//Unless no arguemnts command
+			if (content.Length != command.Name.Length + 1)
 			{
-				var isLast = command.Arguments.Count - 1 == arguments.Count;
-				var lastArg = command.Arguments[command.Arguments.Count - 1];
+				var cnt = new StringBuilder(content[(command.Name.Length + 2)..]); //space include
 
-				if (isLast && lastArg.IsArray)
+
+				while (cnt.Length != 0)
 				{
-					var subArray = (IList)(Activator.CreateInstance(typeof(List<>).MakeGenericType(lastArg.ArgumentType.GetReqObjectType())) ?? throw new ImpossibleVariantException());
+					var isLast = command.Arguments.Count - 1 == arguments.Count;
+					var lastArg = command.Arguments[command.Arguments.Count - 1];
 
-					while (cnt.Length != 0)
+					if (isLast && lastArg.IsArray)
+					{
+						var subArray = (IList)(Activator.CreateInstance(typeof(List<>).MakeGenericType(lastArg.ArgumentType.GetReqObjectType())) ?? throw new ImpossibleVariantException());
+
+						while (cnt.Length != 0)
+						{
+							var val = parse();
+							if (val.HasValue == false) return Task.CompletedTask;
+							subArray.Add(ConvertArgument(val.Value.Item2, val.Value.Item1, server));
+						}
+
+						arguments.Add(subArray.GetType()?.GetMethod("ToArray")?.Invoke(subArray, Array.Empty<object>()) ?? throw new ImpossibleVariantException());
+					}
+					else
 					{
 						var val = parse();
 						if (val.HasValue == false) return Task.CompletedTask;
-						subArray.Add(ConvertArgument(val.Value.Item2, val.Value.Item1, server));
+						arguments.Add(ConvertArgument(val.Value.Item2, val.Value.Item1, server));
 					}
 
-					arguments.Add(subArray.GetType()?.GetMethod("ToArray")?.Invoke(subArray, Array.Empty<object>()) ?? throw new ImpossibleVariantException());
-				}
-				else
-				{
-					var val = parse();
-					if (val.HasValue == false) return Task.CompletedTask;
-					arguments.Add(ConvertArgument(val.Value.Item2, val.Value.Item1, server));
-				}
 
-
-				(UserCommandInfo.Argument.Type, string)? parse()
-				{
-					foreach (var key in regexes.Keys)
+					(UserCommandInfo.Argument.Type, string)? parse()
 					{
-						var macthes = Regex.Matches(cnt.ToString(), key);
-						if (macthes.Any() == false) continue;
-						else
+						foreach (var key in regexes.Keys)
 						{
-							var match = macthes.Single();
-							var rawStr = match.Groups[1].Value;
-							if (cnt.Length == rawStr.Length) cnt.Clear();
-							else cnt.Remove(0, rawStr.Length + 1);
-							return (regexes[key], rawStr);
+							var macthes = Regex.Matches(cnt.ToString(), key);
+							if (macthes.Any() == false) continue;
+							else
+							{
+								var match = macthes.Single();
+								var rawStr = match.Groups[1].Value;
+								if (cnt.Length == rawStr.Length) cnt.Clear();
+								else cnt.Remove(0, rawStr.Length + 1);
+								return (regexes[key], rawStr);
+							}
 						}
-					}
 
-					return null;
+						return null;
+					}
 				}
 			}
 

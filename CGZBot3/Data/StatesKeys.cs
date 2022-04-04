@@ -11,5 +11,7 @@
 		public const string StreamingSystem = "streaming";
 
 		public const string GamesSystem = "games";
+
+		public const string PartiesSystem = "parties";
 	}
 }
