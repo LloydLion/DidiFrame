@@ -45,7 +45,11 @@ namespace CGZBot3.DSharpAdapter
 
 					var inb = new DiscordInteractionResponseBuilder(msgBuilder) { IsEphemeral = true };
 
-					await args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, inb);
+					try
+					{
+						await args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, inb);
+					}
+					catch (Exception) { }
 
 					break;
 				}

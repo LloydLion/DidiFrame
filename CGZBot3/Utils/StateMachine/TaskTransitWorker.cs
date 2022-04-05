@@ -8,7 +8,7 @@ namespace CGZBot3.Utils.StateMachine
 
 
 		private readonly Func<CancellationToken, Task> taskFactory;
-		private readonly CancellationTokenSource source = new();
+		private CancellationTokenSource source = new();
 		private Task? currentTask;
 
 
@@ -50,6 +50,7 @@ namespace CGZBot3.Utils.StateMachine
 			}
 
 			currentTask = null;
+			source = new();
 		}
 	}
 }

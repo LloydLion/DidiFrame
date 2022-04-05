@@ -97,5 +97,16 @@ namespace CGZBot3.Systems.Games
 				}
 			};
 		}
+
+		public MessageSendModel CreateInvitationTablet(IMember gameCreator, string name)
+		{
+			var embed = new MessageEmbedBuilder(localizer["InvitationTabletTitle"], localizer["InvitationTabletDescription"], new Color("#d341ac"));
+
+			embed.AddField(new EmbedField(localizer["ServerFieldTitle"], gameCreator.Server.Name));
+			embed.AddField(new EmbedField(localizer["CreatorFieldTitle"], gameCreator.Mention));
+			embed.AddField(new EmbedField(localizer["GameNameFieldTitle"], name));
+
+			return new MessageSendModel() { MessageEmbeds = new MessageEmbed[] { embed.Build() } };
+		}
 	}
 }

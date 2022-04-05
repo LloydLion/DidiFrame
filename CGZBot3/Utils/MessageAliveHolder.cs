@@ -77,9 +77,10 @@ namespace CGZBot3.Utils
 			}
 		}
 
-		public void Dispose()
+		public async void Dispose()
 		{
 			if(active) Channel.MessageDeleted -= OnMessageDeleted;
+			await DeleteAsync();
 			GC.SuppressFinalize(this);
 		}
 

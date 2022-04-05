@@ -63,9 +63,8 @@ namespace CGZBot3.Systems.Games
 			else reportHolder.CheckAsync().Wait();
 		}
 
-		protected override async void OnDispose()
+		protected override void OnDispose()
 		{
-			await reportHolder.DeleteAsync();
 			reportHolder.Dispose();
 		}
 
@@ -77,16 +76,9 @@ namespace CGZBot3.Systems.Games
 			return cond1 && cond2;
 		}
 
-		private void OnReportCreated(IMessage obj)
-		{
-			GetUpdater().Update(this);
-		}
+		private void OnReportCreated(IMessage obj) => GetUpdater().Update(this);
 
-		private void OnStateChanged(GameState oldState)
-		{
-			using var b = GetBaseProtected();
-			reportHolder.Update().Wait();
-		}
+		private void OnStateChanged(GameState oldState) => reportHolder.Update().Wait();
 
 		private void AttachEvents(IMessage message)
 		{

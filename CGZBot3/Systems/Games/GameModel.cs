@@ -21,6 +21,7 @@ namespace CGZBot3.Systems.Games
 			Description = description;
 			StartAtMembers = startAtMembers;
 			WaitEveryoneInvited = waitEveryoneInvited;
+			nextId = Math.Max(nextId, id);
 		}
 
 		public GameModel(IMember creator, MessageAliveHolder.Model reportMessage, IReadOnlyCollection<IMember> invited,

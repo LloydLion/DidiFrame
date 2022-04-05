@@ -9,7 +9,7 @@ namespace CGZBot3.Utils.StateMachine
 
 		private readonly TState? tstate;
 		private readonly Func<CancellationToken, Task> waitTaskFactory;
-		private readonly CancellationTokenSource cts = new();
+		private CancellationTokenSource cts = new();
 		private Task? currentTask;
 		private IStateMachine<TState>? stateMachine;
 
@@ -52,6 +52,7 @@ namespace CGZBot3.Utils.StateMachine
 			}
 
 			currentTask = null;
+			cts = new();
 		}
 
 		public void Activate(IStateMachine<TState> stateMahcine)

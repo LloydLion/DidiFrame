@@ -47,8 +47,6 @@ namespace CGZBot3.Data.Lifetime
 
 			return new ObjectHolder<TBase>(baseObj, (holder) =>
 			{
-				try { ExternalBaseChanged?.Invoke(baseObj); } catch (Exception mex)
-				{ logger.Log(LogLevel.Warning, BaseChangedEventErrorID, mex, "Exception has thrown while BaseChanged event handlers executing"); }
 
 				Exception? ex = null;
 
@@ -61,6 +59,9 @@ namespace CGZBot3.Data.Lifetime
 				lockFree.Dispose();
 
 				GetUpdater().Update(this);
+
+				try { ExternalBaseChanged?.Invoke(GetBaseClone()); } catch (Exception mex)
+				{ logger.Log(LogLevel.Warning, BaseChangedEventErrorID, mex, "Exception has thrown while BaseChanged event handlers executing"); }
 
 				if (ex is not null) throw ex;
 			});

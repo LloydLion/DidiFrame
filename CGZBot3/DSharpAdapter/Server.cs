@@ -122,7 +122,7 @@ namespace CGZBot3.DSharpAdapter
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
-			var channel = (TextChannel)GetChannel(e.Channel.Id);
+			var channel = (TextChannel)GetChannel(e.Message.ChannelId);
 			channel.OnMessageDelete(e.Message);
 			return Task.CompletedTask;
 		}

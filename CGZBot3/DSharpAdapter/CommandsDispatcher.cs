@@ -42,8 +42,10 @@ namespace CGZBot3.DSharpAdapter
 
 		public Task MessageCreatedHandler(DiscordClient sender, MessageCreateEventArgs args)
 		{
-			var content = args.Message.Content;
+			if (args.Guild is null) return Task.CompletedTask;
+
 			var server = client.Servers.Single(s => s.Id == args.Guild.Id);
+			var content = args.Message.Content;
 
 			var cmds = repository.GetCommandsFor(server);
 			var regex = $"^[{new string(clientOptions.Prefixes.Select(s => "\\" + s).SelectMany(s => s).ToArray())}]({string.Join('|', cmds.Select(s => $"({s.Name})"))}){"{1}"}\\b";

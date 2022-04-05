@@ -22,7 +22,17 @@
 			if (!lifetimes.ContainsKey(baseObject.Server)) lifetimes.Add(baseObject.Server, new());
 			lifetimes[baseObject.Server].Add(baseObject, lt);
 			updater.Update(lt); //Add into state
+			updater.Finished += handler;
 			return lt;
+
+			void handler(ILifetime<TBase> lifetime)
+			{
+				if (lifetime.Equals(lt))
+				{
+					lifetimes[baseObject.Server].Remove(baseObject);
+					updater.Finished -= handler;
+				}
+			}
 		}
 
 		public IReadOnlyCollection<TLifetime> GetAllLifetimes(IServer server)

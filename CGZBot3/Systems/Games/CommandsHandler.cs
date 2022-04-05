@@ -13,13 +13,15 @@ namespace CGZBot3.Systems.Games
 		private readonly PartiesISystemCore partiesSystem;
 		private readonly ISystemCore systemCore;
 		private readonly IStringLocalizer<CommandsHandler> localizer;
+		private readonly UIHelper uiHelper;
 
 
-		public CommandsHandler(PartiesISystemCore partiesSystem, ISystemCore systemCore, IStringLocalizer<CommandsHandler> localizer)
+		public CommandsHandler(PartiesISystemCore partiesSystem, ISystemCore systemCore, IStringLocalizer<CommandsHandler> localizer, UIHelper uiHelper)
 		{
 			this.partiesSystem = partiesSystem;
 			this.systemCore = systemCore;
 			this.localizer = localizer;
+			this.uiHelper = uiHelper;
 		}
 
 
@@ -95,7 +97,7 @@ namespace CGZBot3.Systems.Games
 
 			baseObj.Object.Name = newName;
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameRenamed"]) };
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameHasRenamed"]) };
 		}
 
 		[Command("game redescribe")]
@@ -108,7 +110,7 @@ namespace CGZBot3.Systems.Games
 
 			baseObj.Object.Description = newDescription;
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameDescriptionChanged"]) };
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameDescriptionHasChanged"]) };
 		}
 
 		[Command("game change-cond")]
@@ -129,7 +131,7 @@ namespace CGZBot3.Systems.Games
 			baseObj.Object.WaitEveryoneInvited = req;
 			baseObj.Object.StartAtMembers = startAtMembers;
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameStartConditionChanged"]) };
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameStartConditionHasChanged"]) };
 		}
 
 		[Command("game cancel")]
@@ -137,7 +139,25 @@ namespace CGZBot3.Systems.Games
 			[Validator(typeof(GameExistAndInvokerIsOwner), false)] string name)
 		{
 			systemCore.CancelGame(ctx.Invoker, name);
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameCanceled"]) };
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameHasCanceled"]) };
+		}
+
+		[Command("game send-invites")]
+		public async Task<UserCommandResult> SendGameInvites(UserCommandContext ctx,
+			[Validator(typeof(GameExistAndInvokerIsOwner), false)] string name)
+		{
+			var game = systemCore.GetGame(ctx.Invoker, name);
+			var baseObj = game.GetBaseClone();
+
+			var tasks = new List<Task>();
+			foreach (var member in baseObj.Invited)
+			{
+				tasks.Add(member.SendDirectMessageAsync(uiHelper.CreateInvitationTablet(baseObj.Creator, baseObj.Name)));
+			}
+
+			await Task.WhenAll(tasks);
+
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["InvitationHaveSent"]) };
 		}
 	}
 }
