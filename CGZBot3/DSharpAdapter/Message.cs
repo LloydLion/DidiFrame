@@ -1,19 +1,19 @@
 ﻿using CGZBot3.Entities.Message;
 using DSharpPlus.Entities;
-using DSharpPlus.Exceptions;
 
 namespace CGZBot3.DSharpAdapter
 {
 	internal class Message : IMessage, IDisposable
 	{
-		private readonly DiscordMessage message;
+		private DiscordMessage message;
 		private readonly TextChannel owner;
-		private readonly Lazy<MessageInteractionDispatcher> mid;
+		private Lazy<MessageInteractionDispatcher> mid;
+		private readonly MessageConverter converter = new();
 
 
 		public TextChannel BaseChannel => owner;
 
-		public MessageSendModel SendModel { get; }
+		public MessageSendModel SendModel { get; private set; }
 
 		public ulong Id => message.Id;
 
@@ -33,6 +33,11 @@ namespace CGZBot3.DSharpAdapter
 			mid = new Lazy<MessageInteractionDispatcher>(() => new MessageInteractionDispatcher(this));
 		}
 
+		~Message()
+		{
+			Dispose();
+		}
+
 
 		public bool Equals(IMessage? other) => other is Message msg && msg.Id == Id;
 
@@ -43,6 +48,22 @@ namespace CGZBot3.DSharpAdapter
 		public void Dispose()
 		{
 			if (mid.IsValueCreated) mid.Value.Dispose();
+			GC.SuppressFinalize(this);
+		}
+
+		public async Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
+		{
+			if (resetDispatcher) ResetInteractionDispatcher();
+			message = await message.ModifyAsync(converter.ConvertUp(SendModel = sendModel));
+		}
+
+		public void ResetInteractionDispatcher()
+		{
+			if (mid.IsValueCreated)
+			{
+				mid.Value.Dispose();
+				mid = new Lazy<MessageInteractionDispatcher>(() => new MessageInteractionDispatcher(this));
+			}
 		}
 	}
 }

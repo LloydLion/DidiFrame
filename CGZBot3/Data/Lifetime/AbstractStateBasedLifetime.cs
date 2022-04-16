@@ -8,7 +8,6 @@ namespace CGZBot3.Data.Lifetime
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
-		private static readonly EventId BaseChangedEventErrorID = new(33, "BaseChangedEventError");
 
 
 		private readonly TBase baseObj;
@@ -17,16 +16,8 @@ namespace CGZBot3.Data.Lifetime
 		private IStateMachine<TState>? machine;
 		private bool hasBuilt = false;
 		private readonly Dictionary<TState, List<Action>> startupHandlers = new();
-		private readonly ILogger logger;
 		private readonly List<Action<TState>> stateHandlers = new();
 		private static readonly ThreadLocker<AbstractStateBasedLifetime<TState, TBase>> baseLocker = new();
-
-
-		/// <summary>
-		/// All changed of TBase object will be applied.
-		/// WARNING! Don't call GetBase()!
-		/// </summary>
-		public event Action<TBase>? ExternalBaseChanged;
 
 
 		public AbstractStateBasedLifetime(IServiceProvider services, TBase baseObj)
@@ -35,41 +26,14 @@ namespace CGZBot3.Data.Lifetime
 
 			var tname = GetType().FullName ?? throw new ImpossibleVariantException();
 			smBuilder = services.GetRequiredService<IStateMachineBuilderFactory<TState>>().Create(tname);
-			logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(tname);
 		}
 
 
-		public ObjectHolder<TBase> GetBase()
+		protected ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
 		{
+			var smFreezeIn = GetStateMachine().Freeze();
 			var lockFree = baseLocker.Lock(this);
-
-			var startState = baseObj.State;
-
-			return new ObjectHolder<TBase>(baseObj, (holder) =>
-			{
-
-				Exception? ex = null;
-
-				if (!startState.Equals(baseObj.State))
-				{
-					ex = new InvalidOperationException("Enable to change state in base object of lifetime. State reverted and object saved");
-					baseObj.State = startState;
-				}
-
-				lockFree.Dispose();
-
-				GetUpdater().Update(this);
-
-				try { ExternalBaseChanged?.Invoke(GetBaseClone()); } catch (Exception mex)
-				{ logger.Log(LogLevel.Warning, BaseChangedEventErrorID, mex, "Exception has thrown while BaseChanged event handlers executing"); }
-
-				if (ex is not null) throw ex;
-			});
-		}
-
-		protected ObjectHolder<TBase> GetBaseProtected()
-		{
-			var lockFree = baseLocker.Lock(this);
+			smFreeze = smFreezeIn;
 
 			var startState = baseObj.State;
 
@@ -84,12 +48,15 @@ namespace CGZBot3.Data.Lifetime
 				}
 
 				lockFree.Dispose();
+				smFreezeIn.Dispose();
 
 				GetUpdater().Update(this);
 
 				if (ex is not null) throw ex;
 			});
 		}
+
+		protected ObjectHolder<TBase> GetBase() => GetBase(out _);
 
 		public TBase GetBaseClone()
 		{

@@ -31,8 +31,8 @@ namespace CGZBot3.Systems.Streaming
 			return lt;
 		}
 
-		public bool TryGetLifetime(string name, IMember streamer, out StreamLifetime? value) =>
-			(value = lifetimes.GetAllLifetimes(streamer.Server)
-				.SingleOrDefault(s => { var bc = s.GetBaseClone(); return (bc.Name, bc.Owner) == (name, streamer); })) is not null;
+		public StreamLifetime GetStream(IServer server, string name) => lifetimes.GetAllLifetimes(server).Single(s => s.GetBaseClone().Name == name);
+
+		public bool HasStream(IServer server, string name) => lifetimes.GetAllLifetimes(server).Any(s => s.GetBaseClone().Name == name);
 	}
 }

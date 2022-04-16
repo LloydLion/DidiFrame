@@ -17,8 +17,12 @@ namespace CGZBot3.Interfaces
 		public bool IsExist { get; }
 
 
-		Task DeleteAsync();
+		public Task DeleteAsync();
 
 		public IInteractionDispatcher GetInteractionDispatcher();
+
+		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher);
+
+		public void ResetInteractionDispatcher();
 	}
 }

@@ -6,8 +6,6 @@ namespace CGZBot3.Data.Lifetime
 	{
 		public void Run(ILifetimeStateUpdater<TBase> updater);
 
-		public ObjectHolder<TBase> GetBase();
-
 		public TBase GetBaseClone();
 	}
 }

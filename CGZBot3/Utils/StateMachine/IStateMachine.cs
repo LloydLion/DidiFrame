@@ -13,10 +13,12 @@
 		public ILogger Logger { get; }
 
 
-		public void UpdateState();
+		public StateUpdateResult<TState> UpdateState();
 
 		public void Start(TState startState);
 
 		public Task AwaitForState(TState? state);
+
+		public FreezeModel<TState> Freeze();
 	}
 }

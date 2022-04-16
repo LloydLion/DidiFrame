@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CGZBot3.Systems.Games
 {
-	public class GameLifetime : AbstractStateBasedLifetime<GameState, GameModel>
+	public class GameLifetime : AbstractFullLifetime<GameState, GameModel>
 	{
 		public const string JoinGameButtonId = "join_bnt";
 		public const string ExitGameButtonId = "exit_bnt";
@@ -17,8 +17,6 @@ namespace CGZBot3.Systems.Games
 
 		private readonly WaitFor waitForStartButton = new();
 		private readonly WaitFor waitForFinishButton = new();
-		private readonly WaitFor waitForCancel = new();
-		private readonly MessageAliveHolder reportHolder;
 
 
 		private readonly UIHelper uiHelper;
@@ -27,45 +25,69 @@ namespace CGZBot3.Systems.Games
 
 		public GameLifetime(GameModel baseObj, IServiceProvider services) : base(services, baseObj)
 		{
+			Validate(baseObj);
+
+
 			uiHelper = services.GetRequiredService<UIHelper>();
 			localizer = services.GetRequiredService<IStringLocalizer<GameLifetime>>();
-			reportHolder = new MessageAliveHolder(baseObj.ReportMessage, true, CreateReportMessage);
-			reportHolder.AutoMessageCreated += OnReportCreated;
-
-			ExternalBaseChanged += OnExternalBaseChanged;
 
 
-			AddTransit(new ResetTransitWorker<GameState>(null, waitForCancel.Await));
+			AddReport(new MessageAliveHolder(baseObj.ReportMessage, true, CreateReportMessage, AttachEvents));
+
 			AddTransit(GameState.WaitingPlayers, GameState.WaitingCreator, WaitingPlayersWaitingCreatorTransit);
 			AddTransit(GameState.WaitingCreator, GameState.WaitingPlayers, () => !WaitingPlayersWaitingCreatorTransit());
 			AddTransit(GameState.WaitingCreator, GameState.Running, waitForStartButton.Await);
 			AddTransit(GameState.Running, null, waitForFinishButton.Await);
-
-			AddHandler(GameState.WaitingPlayers, OnStateChanged);
-			AddHandler(GameState.WaitingCreator, OnStateChanged);
-			AddHandler(GameState.Running, OnStateChanged);
 		}
 
 
-		public void Cancel()
+		public void Invite(IReadOnlyCollection<IMember> members)
 		{
-			waitForCancel.Callback();
+			foreach (var member in members)
+				if (member.Server != GetBaseDirect().Server)
+					throw new ArgumentException("Some member from other server", nameof(members));
+
+			using var baseObj = GetBase();
+			foreach (var member in members)
+				if (baseObj.Object.Invited.Contains(member) == false)
+					baseObj.Object.Invited.Add(member);
+
+			if (baseObj.Object.Invited.Contains(baseObj.Object.Creator))
+				baseObj.Object.Invited.Remove(baseObj.Object.Creator);
 		}
 
-		private async void OnExternalBaseChanged(GameModel _)
+		public void ClearInvites()
 		{
-			await reportHolder.Update();
+			using var baseObj = GetBase();
+			baseObj.Object.Invited.Clear();
 		}
 
-		protected override void OnRun(GameState state)
+		public void Rename(string name)
 		{
-			if (reportHolder.IsExist) AttachEvents(reportHolder.Message);
-			else reportHolder.CheckAsync().Wait();
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentException("Name was whitespace", nameof(name));
+
+			using var baseObj = GetBase();
+			baseObj.Object.Name = name;
 		}
 
-		protected override void OnDispose()
+		public void ChangeDescription(string description)
 		{
-			reportHolder.Dispose();
+			if (string.IsNullOrWhiteSpace(description))
+				throw new ArgumentException("Description was whitespace", nameof(description));
+
+			using var baseObj = GetBase();
+			baseObj.Object.Description = description;
+		}
+
+		public void ChangeStartCondition(int startAtMembers, bool waitEveryoneInvited)
+		{
+			if (startAtMembers <= 0)
+				throw new ArgumentException("StartAtMembers was negative or zero", nameof(startAtMembers));
+
+			using var baseObj = GetBase();
+			baseObj.Object.StartAtMembers = startAtMembers;
+			baseObj.Object.WaitEveryoneInvited = waitEveryoneInvited;
 		}
 
 		private bool WaitingPlayersWaitingCreatorTransit()
@@ -75,10 +97,6 @@ namespace CGZBot3.Systems.Games
 			var cond2 = b.WaitEveryoneInvited == false || b.Invited.All(s => b.InGame.Contains(s));
 			return cond1 && cond2;
 		}
-
-		private void OnReportCreated(IMessage obj) => GetUpdater().Update(this);
-
-		private void OnStateChanged(GameState oldState) => reportHolder.Update().Wait();
 
 		private void AttachEvents(IMessage message)
 		{
@@ -158,11 +176,11 @@ namespace CGZBot3.Systems.Games
 			AsyncInteractionCallback<MessageButton> adaptate(Func<ComponentInteractionContext<MessageButton>, ComponentInteractionResult> func) => (ctx) => Task.FromResult(func(ctx));
 		}
 
-		private async Task<IMessage> CreateReportMessage(ITextChannel channel)
+		private MessageSendModel CreateReportMessage()
 		{
 			var b = GetBaseDirect();
 
-			var sendModel = b.State switch
+			return b.State switch
 			{
 				GameState.WaitingPlayers => uiHelper.CreateWatingForPlayersReport(b.Name, b.Creator, (IReadOnlyCollection<IMember>)b.Invited,
 					(IReadOnlyCollection<IMember>)b.InGame, b.WaitEveryoneInvited, b.StartAtMembers, b.Description),
@@ -171,11 +189,26 @@ namespace CGZBot3.Systems.Games
 				GameState.Running => uiHelper.CreateRunningReport(b.Name, b.Creator, (IReadOnlyCollection<IMember>)b.InGame, b.Description),
 				_ => throw new ImpossibleVariantException()
 			};
+		}
 
-			var message = await channel.SendMessageAsync(sendModel);
-			AttachEvents(message);
-
-			return message;
+		private void Validate(GameModel baseObj)
+		{
+			foreach (var member in baseObj.Invited)
+				if (member.Server != baseObj.Server)
+					throw new ArgumentException("Some invited member was from other server", nameof(baseObj));
+				else if (member == baseObj.Creator)
+					throw new ArgumentException("Some invited member was creator", nameof(baseObj));
+			foreach (var member in baseObj.InGame)
+				if (member.Server != GetBaseDirect().Server)
+					throw new ArgumentException("Some in-game member from other server", nameof(baseObj));
+				else if (member == baseObj.Creator)
+					throw new ArgumentException("Some in-game member was creator", nameof(baseObj));
+			if (string.IsNullOrWhiteSpace(baseObj.Name))
+				throw new ArgumentException("Name was whitespace", nameof(baseObj));
+			if (string.IsNullOrWhiteSpace(baseObj.Description))
+				throw new ArgumentException("Description was whitespace", nameof(baseObj));
+			if (baseObj.StartAtMembers <= 0)
+				throw new ArgumentException("StartAtMembers was negative or zero", nameof(baseObj));
 		}
 	}
 }

@@ -7,12 +7,14 @@ namespace CGZBot3.DSharpAdapter
 	internal class TextChannel : Channel, ITextChannel
 	{
 		public const int MessagesLimit = 5;
+		public const int MessagesIdLimit = 70;
 
 
 		private readonly DiscordChannel channel;
 		private readonly Server server;
 		private readonly MessageConverter converter;
 		private readonly List<Message> messages = new();
+		private readonly List<ulong> ids = new();
 		private static readonly ThreadLocker<TextChannel> listLocker = new();
 
 
@@ -28,7 +30,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public TextChannel(DiscordChannel channel, Server server) : base(channel, server)
 		{
-			if(channel.Type.GetAbstract() != ChannelType.TextCompatible )
+			if(channel.Type.GetAbstract() != ChannelType.TextCompatible)
 			{
 				throw new InvalidOperationException("Channel must be text");
 			}
@@ -36,10 +38,16 @@ namespace CGZBot3.DSharpAdapter
 			this.channel = channel;
 			this.server = server;
 			converter = new();
+
+			foreach (var item in channel.GetMessagesAsync(MessagesIdLimit).Result)
+				ids.Add(item.Id);
 		}
 
 		public IMessage GetMessage(ulong id)
 		{
+			if (HasMessage(id) == false)
+				throw new ArgumentException("No such message with same id", nameof(id));
+
 			var msg = messages.SingleOrDefault(s => s.Id == id);
 			if (msg is not null) return msg;
 			else
@@ -56,12 +64,8 @@ namespace CGZBot3.DSharpAdapter
 			return messages.AsEnumerable().Reverse().Take(Math.Min(count, messages.Count)).ToArray();
 		}
 
-		public bool HasMessage(ulong id)
-		{
-			if (messages.Any(m => m.Id == id)) return true;
-			var message = channel.GetMessageAsync(id).ContinueWith(s => !s.IsFaulted);
-			return message.Result;
-		}
+		public bool HasMessage(ulong id) => ids.Contains(id);
+
 
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
@@ -73,6 +77,9 @@ namespace CGZBot3.DSharpAdapter
 			{
 				messages.Add(msg);
 				if (messages.Count > MessagesLimit) messages.RemoveRange(0, messages.Count - MessagesLimit);
+
+				ids.Add(msg.Id);
+				if (ids.Count > MessagesIdLimit) ids.RemoveRange(0, ids.Count - MessagesIdLimit);
 			}
 
 			return msg;
@@ -89,6 +96,9 @@ namespace CGZBot3.DSharpAdapter
 			{
 				messages.Add(model);
 				if(messages.Count > MessagesLimit) messages.RemoveRange(0, messages.Count - MessagesLimit);
+
+				ids.Add(model.Id);
+				if(ids.Count > MessagesIdLimit) ids.RemoveRange(0, ids.Count - MessagesIdLimit);
 			}
 
 			//Bot messages will be ignored
@@ -98,6 +108,8 @@ namespace CGZBot3.DSharpAdapter
 
 		public void OnMessageDelete(DiscordMessage message)
 		{
+			ids.Remove(message.Id);
+
 			var sor = messages.SingleOrDefault(s => s.Id == message.Id);
 			if (sor is null) return;
 

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CGZBot3.Systems.Streaming
 {
-	public class StreamLifetime : AbstractStateBasedLifetime<StreamState, StreamModel>
+	public class StreamLifetime : AbstractFullLifetime<StreamState, StreamModel>
 	{
 		public const string StartStreamButtonId = "start_bnt";
 		public const string FinishStreamButtonId = "finish_bnt";
@@ -16,7 +16,6 @@ namespace CGZBot3.Systems.Streaming
 		private readonly WaitFor waitForFinishButton = new();
 		private readonly IStringLocalizer<StreamLifetime> localizer;
 		private readonly UIHelper uiHelper;
-		private readonly MessageAliveHolder reportHolder;
 
 
 		public StreamLifetime(StreamModel baseObj, IServiceProvider services) : base(services, baseObj)
@@ -24,46 +23,46 @@ namespace CGZBot3.Systems.Streaming
 			localizer = services.GetRequiredService<IStringLocalizer<StreamLifetime>>();
 			uiHelper = services.GetRequiredService<UIHelper>();
 
-			reportHolder = new MessageAliveHolder(baseObj.ReportMessage, true, CreateReportMessage);
-			reportHolder.AutoMessageCreated += OnReportCreated;
-			ExternalBaseChanged += OnExternalBaseChanged;
+			AddReport(new MessageAliveHolder(baseObj.ReportMessage, true, CreateReportMessage, AttachEvents));
 
 
 			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseDirect().PlanedStartTime);
+			AddTransit(StreamState.WaitingForStreamer, StreamState.Announced, () => DateTime.UtcNow < GetBaseDirect().PlanedStartTime);
 			AddTransit(StreamState.WaitingForStreamer, StreamState.Running, (token) => waitForStartButton.Await(token));
 			AddTransit(StreamState.Running, null, (token) => waitForFinishButton.Await(token));
-
-			AddHandler(StreamState.WaitingForStreamer, OnStateChanged);
-			AddHandler(StreamState.Running, OnStateChanged);
 		}
 
 
-		private async void OnExternalBaseChanged(StreamModel obj)
+		public void Replan(DateTime newStartDate)
 		{
-			await reportHolder.Update();
+			if (GetBaseDirect().State == StreamState.Running)
+				throw new InvalidOperationException("Stream already has started");
+
+			using var baseObj = GetBase();
+
+			baseObj.Object.PlanedStartTime = newStartDate;
 		}
 
-		protected override void OnRun(StreamState state)
+		public void Rename(string newName)
 		{
-			if (reportHolder.IsExist) AttachEvents(reportHolder.Message);
-			else reportHolder.CheckAsync().Wait();
+			if (string.IsNullOrWhiteSpace(newName))
+				throw new ArgumentException("Name was white space", nameof(newName));
+
+
+			using var baseObj = GetBase();
+
+			baseObj.Object.Name = newName;
 		}
 
-		private void OnReportCreated(IMessage obj)
+		public void Move(string newPlace)
 		{
-			GetUpdater().Update(this);
-		}
+			if (string.IsNullOrWhiteSpace(newPlace))
+				throw new ArgumentException("Place was white space", nameof(newPlace));
 
-		private void OnStateChanged(StreamState state)
-		{
-			using var b = GetBaseProtected();
-			reportHolder.Update().Wait();
-		}
 
-		protected override void OnDispose()
-		{
-			reportHolder.DeleteAsync().Wait();
-			reportHolder.Dispose();
+			using var baseObj = GetBase();
+
+			baseObj.Object.Place = newPlace;
 		}
 
 		private void AttachEvents(IMessage message)
@@ -101,20 +100,16 @@ namespace CGZBot3.Systems.Streaming
 			}
 		}
 
-		private async Task<IMessage> CreateReportMessage(ITextChannel channel)
+		private MessageSendModel CreateReportMessage()
 		{
 			var b = GetBaseDirect();
-			var report = b.State switch
+			return b.State switch
 			{
 				StreamState.Announced => uiHelper.CreateAnnouncedReport(b.Name, b.Owner, b.PlanedStartTime),
 				StreamState.WaitingForStreamer => uiHelper.CreateWaitingStreamerReport(b.Name, b.Owner, b.PlanedStartTime),
 				StreamState.Running => uiHelper.CreateRunningReport(b.Name, b.Owner, b.Place),
 				_ => throw new ImpossibleVariantException()
 			};
-
-			var message = await channel.SendMessageAsync(report);
-			AttachEvents(message);
-			return message;
 		}
 	}
 }

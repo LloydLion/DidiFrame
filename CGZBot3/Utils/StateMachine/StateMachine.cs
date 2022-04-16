@@ -15,6 +15,7 @@ namespace CGZBot3.Utils.StateMachine
 		private readonly List<IStateTransitWorker<TState>> workers;
 		private readonly List<IStateTransitWorker<TState>> activeWorkers = new();
 		private readonly Task observeTask;
+		private static readonly ThreadLocker<StateMachine<TState>> locker = new();
 
 
 		public StateMachine(IReadOnlyList<IStateTransitWorker<TState>> workers, ILogger logger)
@@ -26,11 +27,11 @@ namespace CGZBot3.Utils.StateMachine
 			{
 				while (CurrentState != null)
 				{
-					try { UpdateState(); }
+					try { UpdateStateInternal(); }
 					catch (Exception ex)
 					{ Logger.Log(LogLevel.Warning, InternalErrorID, ex, "State machine internal error"); }
 
-					Thread.Sleep(100);
+					Thread.Sleep(200);
 				}
 			});
 		}
@@ -45,9 +46,37 @@ namespace CGZBot3.Utils.StateMachine
 		public event StateChangedEventHandler<TState>? StateChanged;
 
 		
-		public void UpdateState()
+		public StateUpdateResult<TState> UpdateState()
 		{
-			lock(this)
+			using(locker.Lock(this)) return UpdateStateNoLock();
+		}
+
+		private StateUpdateResult<TState> UpdateStateNoLock()
+		{
+			var fod = activeWorkers.FirstOrDefault(s => s.CanDoTransit());
+			if (fod == null) return new StateUpdateResult<TState>(false, null);
+
+			Logger.Log(LogLevel.Trace, StateChangingID, "StateTransitWorker which can does transit found. Current state - {CurrentState}", CurrentState);
+
+			var oldState = CurrentState ?? throw new ImpossibleVariantException();
+
+			CurrentState = fod.DoTransit();
+
+			try { StateChanged?.Invoke(this, oldState); }
+			catch (Exception ex) { Logger.Log(LogLevel.Warning, StateChangedHandlerErrorID, ex, "Some StateChanged event handler executed with error"); }
+
+			if (CurrentState is not null) UpdateActiveWorkers();
+			else activeWorkers.Clear();
+
+			Logger.Log(LogLevel.Trace, StateChangedID, "State changed from {OldState} to {State} by {WorkerType} #{Index}",
+				oldState, CurrentState?.ToString() ?? "[NULL]", fod.GetType().ToString(), workers.IndexOf(fod));
+
+			return new StateUpdateResult<TState>(true, CurrentState);
+		}
+		
+		private void UpdateStateInternal()
+		{
+			using (locker.Lock(this))
 			{
 				var fod = activeWorkers.FirstOrDefault(s => s.CanDoTransit());
 				if (fod == null) return;
@@ -103,9 +132,20 @@ namespace CGZBot3.Utils.StateMachine
 		{
 			return Task.Run(() =>
 			{
-				while (!CurrentState.Equals(state))
-					lock(this)
-						Thread.Sleep(100);
+				while (!CurrentState.Equals(state)) Thread.Sleep(100);
+			});
+		}
+
+		public FreezeModel<TState> Freeze()
+		{
+			var lockFree = locker.Lock(this);
+
+			return new FreezeModel<TState>(() =>
+			{
+				//ORDER is important!
+				var result = UpdateStateNoLock();
+				lockFree.Dispose();
+				return result;
 			});
 		}
 	}

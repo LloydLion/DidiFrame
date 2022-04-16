@@ -17,16 +17,12 @@ namespace CGZBot3.Systems.Games
 
 		public void CancelGame(IMember creator, string name)
 		{
-			GetGame(creator, name).Cancel();
+			GetGame(creator, name).Close();
 		}
 
 		public GameLifetime CreateGame(IMember creator, string name, bool waitEveryoneInvited, string description, IReadOnlyCollection<IMember> invited, int startAtMembers)
 		{
-			if (startAtMembers <= 0) throw new ArgumentOutOfRangeException(nameof(startAtMembers), "Value must be greater ther zero");
-			if (string.IsNullOrWhiteSpace(description)) throw new ArgumentException("String is whitespace", nameof(description));
-			if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("String is whitespace", nameof(name));
-			if (invited.Any(s => s.IsBot)) throw new ArgumentException("No everyone invited must be bot", nameof(description));
-			if (invited.Any(s => s == creator)) throw new ArgumentException("Enable to invite creator", nameof(description));
+			if (HasGame(creator, name)) throw new ArgumentException("Game with same name and creator already exist on the server");
 
 			var setting = settings.Get(creator.Server);
 

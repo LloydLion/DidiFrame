@@ -1,19 +1,22 @@
 ﻿using CGZBot3.Data.Model;
+using CGZBot3.Entities.Message;
 
 namespace CGZBot3.Utils
 {
 	public class MessageAliveHolder : IDisposable
 	{
-		private readonly Func<ITextChannel, Task<IMessage>> messageCreator;
+		private readonly Func<MessageSendModel> messageCreator;
+		private readonly Action<IMessage> messageWoker;
 		private readonly static ThreadLocker<MessageAliveHolder> threadLocker = new();
 		private readonly Model model;
 		private readonly bool active;
 
 
-		public MessageAliveHolder(Model model, bool active, Func<ITextChannel, Task<IMessage>> messageCreator)
+		public MessageAliveHolder(Model model, bool active, Func<MessageSendModel> messageCreator, Action<IMessage> messageWorker)
 		{
 			this.model = model;
 			this.messageCreator = messageCreator;
+			this.messageWoker = messageWorker;
 			this.active = active;
 			if (active) model.Channel.MessageDeleted += OnMessageDeleted;
 		}
@@ -32,6 +35,11 @@ namespace CGZBot3.Utils
 					return Channel.GetMessage(PossibleMessageId);
 				}
 			}
+		}
+
+		public void ProcessMessage()
+		{
+			messageWoker(Channel.GetMessage(PossibleMessageId));
 		}
 
 		public ulong PossibleMessageId => model.PossibleMessageId;
@@ -56,15 +64,23 @@ namespace CGZBot3.Utils
 		{
 			using (threadLocker.Lock(this))
 			{
-				if (Channel.HasMessage(PossibleMessageId)) await Channel.GetMessage(PossibleMessageId).DeleteAsync();
-				var message = await SendMessageAsync();
-				model.PossibleMessageId = message.Id;
+				if (Channel.HasMessage(PossibleMessageId) == false)
+					model.PossibleMessageId = (await SendMessageAsync()).Id;
+				else
+				{
+					var message = Channel.GetMessage(model.PossibleMessageId);
+					await message.ModifyAsync(messageCreator(), true);
+					messageWoker(message);
+				}
 			}
 		}
 
-		private Task<IMessage> SendMessageAsync()
+		private async Task<IMessage> SendMessageAsync()
 		{
-			return messageCreator.Invoke(Channel);
+			var send = messageCreator();
+			var msg = await Channel.SendMessageAsync(send);
+			messageWoker(msg);
+			return msg;
 		}
 
 		private void OnMessageDeleted(IClient _, IMessage message)
@@ -80,8 +96,8 @@ namespace CGZBot3.Utils
 		public async void Dispose()
 		{
 			if(active) Channel.MessageDeleted -= OnMessageDeleted;
-			await DeleteAsync();
 			GC.SuppressFinalize(this);
+			await DeleteAsync();
 		}
 
 		public async Task CheckAsync()

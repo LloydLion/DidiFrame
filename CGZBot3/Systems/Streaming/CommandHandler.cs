@@ -1,4 +1,5 @@
 ﻿using CGZBot3.Entities.Message;
+using CGZBot3.Systems.Streaming.Validators;
 using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.ArgumentsValidation.Validators;
 using CGZBot3.UserCommands.Loader.Reflection;
@@ -19,10 +20,9 @@ namespace CGZBot3.Systems.Streaming
 
 
 		[Command("stream")]
-		public Task<UserCommandResult> CreateStream(UserCommandContext ctx, [Validator(typeof(GreaterThen), typeof(CommandHandler), nameof(GetNow))] DateTime plannedStartDate, string place, string[] nameArray)
+		public Task<UserCommandResult> CreateStream(UserCommandContext ctx, [Validator(typeof(GreaterThen), typeof(CommandHandler), nameof(GetNow))] DateTime plannedStartDate,
+			[Validator(typeof(NormalString))] string place, [Validator(typeof(NormalString))][Validator(typeof(StreamExist), true)] string name)
 		{
-			var name = nameArray.JoinWords();
-
 			if (place.StartsWith("dc#")) place = localizer["InDiscordPlace", place];
 			else place = localizer["ExternalPlace", place];
 
@@ -32,69 +32,36 @@ namespace CGZBot3.Systems.Streaming
 		}
 
 		[Command("replanstream")]
-		public Task<UserCommandResult> ReplanStream(UserCommandContext ctx, [Validator(typeof(GreaterThen), typeof(CommandHandler), nameof(GetNow))] DateTime plannedStartDate, string[] nameArray)
+		public Task<UserCommandResult> ReplanStream(UserCommandContext ctx, DateTime plannedStartDate,
+			[Validator(typeof(StreamExistAndInvokerIsOwner))] string name)
 		{
-			var name = nameArray.JoinWords();
+			var stream = systemCore.GetStream(ctx.Invoker.Server, name);
 
-			var has = systemCore.TryGetLifetime(name, ctx.Invoker, out var lt);
-
-			if (!has) return Task.FromResult(new UserCommandResult(UserCommandCode.OtherUserError)
-				{ RespondMessage = new MessageSendModel(localizer["StreamNotFound", name]) });
-
-			lt = lt ?? throw new ImpossibleVariantException();
-
-
-			using (var baseObj = lt.GetBase())
-			{
-				if (baseObj.Object.State == StreamState.Running)
-					return Task.FromResult(new UserCommandResult(UserCommandCode.OtherUserError)
-					{ RespondMessage = new MessageSendModel(localizer["EnableToReplanStream", name]) });
-
-				baseObj.Object.PlanedStartTime = plannedStartDate;
-			}
+			stream.Replan(plannedStartDate);
 
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamReplanned", name]) });
 		}
 
 		[Command("renamestream")]
-		public Task<UserCommandResult> RenameStream(UserCommandContext ctx, string name, string newName)
+		public Task<UserCommandResult> RenameStream(UserCommandContext ctx, [Validator(typeof(StreamExistAndInvokerIsOwner))] string name,
+			[Validator(typeof(NormalString))][Validator(typeof(StreamExist), true)] string newName)
 		{
-			var has = systemCore.TryGetLifetime(name, ctx.Invoker, out var lt);
+			var stream = systemCore.GetStream(ctx.Invoker.Server, name);
 
-			if (!has) return Task.FromResult(new UserCommandResult(UserCommandCode.OtherUserError)
-			{ RespondMessage = new MessageSendModel(localizer["StreamNotFound", name]) });
-
-			lt = lt ?? throw new ImpossibleVariantException();
-
-
-			using (var baseObj = lt.GetBase())
-			{
-				baseObj.Object.Name = newName;
-			}
+			stream.Rename(newName);
 
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamRenamed", name]) });
 		}
 
 		[Command("movestream")]
-		public Task<UserCommandResult> MoveStream(UserCommandContext ctx, string newPlace, string[] nameArray)
+		public Task<UserCommandResult> MoveStream(UserCommandContext ctx, [Validator(typeof(NormalString))] string newPlace, [Validator(typeof(StreamExistAndInvokerIsOwner))] string name)
 		{
-			var name = nameArray.JoinWords();
-
-			var has = systemCore.TryGetLifetime(name, ctx.Invoker, out var lt);
-
-			if (!has) return Task.FromResult(new UserCommandResult(UserCommandCode.OtherUserError)
-			{ RespondMessage = new MessageSendModel(localizer["StreamNotFound", name]) });
-
-			lt = lt ?? throw new ImpossibleVariantException();
-
+			var stream = systemCore.GetStream(ctx.Invoker.Server, name);
 
 			if (newPlace.StartsWith("dc#")) newPlace = localizer["InDiscordPlace", newPlace];
 			else newPlace = localizer["ExternalPlace", newPlace];
 
-			using (var baseObj = lt.GetBase())
-			{
-				baseObj.Object.Place = newPlace;
-			}
+			stream.Move(newPlace);
 
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamMoved", name]) });
 		}

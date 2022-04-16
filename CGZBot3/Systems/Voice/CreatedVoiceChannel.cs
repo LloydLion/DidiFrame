@@ -9,29 +9,26 @@ namespace CGZBot3.Systems.Voice
 		private static int nextId = 0;
 
 
-		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, IMessage report, IMember creator, VoiceChannelState state, int id)
+		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, MessageAliveHolder.Model report, IMember creator, VoiceChannelState state, int id)
 		{
 			Name = name;
 			BaseChannel = baseChannel;
 			Creator = creator;
 			State = state;
-			ReportMessage = new MessageAliveHolder(new MessageAliveHolder.Model(report.TextChannel), true, (channel) => channel.SendMessageAsync(report.SendModel));
+			ReportMessage = report;
 			Id = id;
 			nextId = Math.Max(nextId, id); //if id from saved state
 		}
-		
-		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, IMessage report, IMember creator, VoiceChannelState state)
-			: this(name, baseChannel, report, creator, state, ++nextId)
-		{
 
-		}
+		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, ITextChannel reportChannel, IMember creator)
+			: this(name, baseChannel, new(reportChannel), creator, default, ++nextId) { }
 
 
 		[ConstructorAssignableProperty(0, "name")] public string Name { get; set; }
 
 		[ConstructorAssignableProperty(1, "baseChannel")] public IVoiceChannel BaseChannel { get; set; }
 
-		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolder ReportMessage { get; set; }
+		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolder.Model ReportMessage { get; set; }
 
 		[ConstructorAssignableProperty(3, "creator")] public IMember Creator { get; }
 
@@ -42,7 +39,7 @@ namespace CGZBot3.Systems.Voice
 		public IServer Server => Creator.Server;
 		
 
-		public object Clone() => new CreatedVoiceChannel(Name, BaseChannel, ReportMessage.Message, Creator, State, Id);
+		public object Clone() => new CreatedVoiceChannel(Name, BaseChannel, ReportMessage, Creator, State, Id);
 
 		public override bool Equals(object? obj) =>
 			obj is CreatedVoiceChannel channel && channel.Id == Id;

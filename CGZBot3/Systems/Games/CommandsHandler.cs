@@ -50,9 +50,7 @@ namespace CGZBot3.Systems.Games
 			[Validator(typeof(ForeachValidator), typeof(NoInvoker))][Validator(typeof(ForeachValidator), typeof(NoBot))] IMember[] invited)
 		{
 			var game = systemCore.GetGame(ctx.Invoker, name);
-			using var baseObj = game.GetBase();
-
-			foreach (var item in invited) if (baseObj.Object.Invited.Contains(item) == false) baseObj.Object.Invited.Add(item);
+			game.Invite(invited);
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["MembersHaveInvitedToGame"]) };
 		}
@@ -63,14 +61,10 @@ namespace CGZBot3.Systems.Games
 			[Validator(typeof(PartyExist), false)] string partyName)
 		{
 			var game = systemCore.GetGame(ctx.Invoker, name);
-			using var baseObj = game.GetBase();
 
 			using var party = partiesSystem.GetParty(ctx.Invoker.Server, partyName);
 
-			foreach (var item in party.Object.Members) if (baseObj.Object.Invited.Contains(item) == false) baseObj.Object.Invited.Add(item);
-
-			if (baseObj.Object.Invited.Contains(party.Object.Creator) == false && baseObj.Object.Creator != party.Object.Creator)
-				baseObj.Object.Invited.Add(party.Object.Creator);
+			game.Invite(party.Object.Members.Append(party.Object.Creator).ToArray());
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["PartyHasInvitedToGame"]) };
 		}
@@ -80,9 +74,8 @@ namespace CGZBot3.Systems.Games
 			[Validator(typeof(GameExistAndInvokerIsOwner), false)] string name)
 		{
 			var game = systemCore.GetGame(ctx.Invoker, name);
-			using var baseObj = game.GetBase();
 
-			baseObj.Object.Invited.Clear();
+			game.ClearInvites();
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameInvitesHaveCleared"]) };
 		}
@@ -93,9 +86,8 @@ namespace CGZBot3.Systems.Games
 			[Validator(typeof(NormalString))][Validator(typeof(GameExistAndInvokerIsOwner), true)] string newName)
 		{
 			var game = systemCore.GetGame(ctx.Invoker, name);
-			using var baseObj = game.GetBase();
 
-			baseObj.Object.Name = newName;
+			game.Rename(newName);
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameHasRenamed"]) };
 		}
@@ -106,9 +98,8 @@ namespace CGZBot3.Systems.Games
 			[Validator(typeof(NormalString))] string newDescription)
 		{
 			var game = systemCore.GetGame(ctx.Invoker, name);
-			using var baseObj = game.GetBase();
 
-			baseObj.Object.Description = newDescription;
+			game.ChangeDescription(newDescription);
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameDescriptionHasChanged"]) };
 		}
@@ -126,10 +117,8 @@ namespace CGZBot3.Systems.Games
 			if (int.TryParse(startAtMembersPre, out int startAtMembers) == false) return new UserCommandResult(UserCommandCode.InvalidInputFormat) { RespondMessage = new MessageSendModel(localizer["InvalidStartAtMembersInput"]) };
 
 			var game = systemCore.GetGame(ctx.Invoker, name);
-			using var baseObj = game.GetBase();
 
-			baseObj.Object.WaitEveryoneInvited = req;
-			baseObj.Object.StartAtMembers = startAtMembers;
+			game.ChangeStartCondition(startAtMembers, req);
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameStartConditionHasChanged"]) };
 		}
