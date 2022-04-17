@@ -1,6 +1,5 @@
 ﻿using CGZBot3.UserCommands;
 using DSharpPlus;
-using DSharpPlus.EventArgs;
 
 namespace CGZBot3.DSharpAdapter
 {
@@ -10,7 +9,6 @@ namespace CGZBot3.DSharpAdapter
 
 
 		private readonly DiscordClient client;
-		private readonly MessageConverter converter = new();
 		private readonly List<Server> servers = new();
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();

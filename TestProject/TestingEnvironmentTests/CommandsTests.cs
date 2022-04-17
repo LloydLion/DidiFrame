@@ -108,7 +108,8 @@ namespace TestProject.TestingEnvironmentTests
 		private class CommandsHanlder : ICommandsHandler
 		{
 			[Command("do sth")]
-			public UserCommandResult CommandHandler(UserCommandContext ctx, string theStr)
+			[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822")]
+			public UserCommandResult CommandHandler(UserCommandContext _1, string _2)
 			{
 				return new UserCommandResult(UserCommandCode.Sucssesful);
 			}
