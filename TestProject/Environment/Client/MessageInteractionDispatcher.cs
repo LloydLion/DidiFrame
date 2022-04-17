@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TestProject.Environment.Client
 {
@@ -17,21 +18,24 @@ namespace TestProject.Environment.Client
 		}
 
 
-		public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent
+		public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent
 		{
 			handlers.Add(new Handler(callback, id));
 		}
 
-		public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent
+		public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent
 		{
 			handlers.Remove(new Handler(callback, id));
 		}
 
-		public ComponentInteractionResult CallInteraction<TComponent>(ComponentInteractionContext<TComponent> ctx) where TComponent : IComponent
+		public Task<ComponentInteractionResult> CallInteraction<TComponent>(string componentId, Member invoker, IComponentState<TComponent>? state = null) where TComponent : IInteractionComponent
 		{
-			if (ctx.Message != message) throw new ArgumentException("Invalid message in context", nameof(ctx));
-			var id = (string)(ctx.Component.GetType()?.GetProperty("Id")?.GetValue(ctx.Component) ?? throw new ArgumentException("Enable to call interaction for component in context", nameof(ctx)));
-			return (ComponentInteractionResult)(handlers.Single(s => s.Id == id).Delegate.DynamicInvoke(ctx) ?? throw new NullReferenceException());
+			var component = message.SendModel.ComponentsRows?.SelectMany(s => s.Components).SingleOrDefault(s => s is IInteractionComponent ic && ic.Id == componentId)
+				?? throw new InvalidOperationException($"No component with {componentId} id message");
+
+			var ctx = new ComponentInteractionContext<TComponent>(invoker, message, (TComponent)component, state);
+
+			return (Task<ComponentInteractionResult>)(handlers.Single(s => s.Id == componentId).Delegate.DynamicInvoke(ctx) ?? throw new NullReferenceException());
 		}
 
 

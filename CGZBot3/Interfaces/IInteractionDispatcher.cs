@@ -4,8 +4,8 @@ namespace CGZBot3.Interfaces
 {
 	public interface IInteractionDispatcher
 	{
-		public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent;
+		public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent;
 
-		public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent;
+		public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent;
 	}
 }

@@ -3,7 +3,7 @@
 namespace CGZBot3.UserCommands.Loader.Reflection
 {
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	internal class InvokerFilter : Attribute
+	public class InvokerFilter : Attribute
 	{
 		public InvokerFilter(Type validatorType, params object[] ctorArgs)
 		{

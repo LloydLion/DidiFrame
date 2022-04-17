@@ -1,4 +1,4 @@
-﻿using DSharpPlus;
+﻿using CGZBot3.Entities.Message;
 using DSharpPlus.Entities;
 
 namespace CGZBot3.DSharpAdapter
@@ -28,5 +28,10 @@ namespace CGZBot3.DSharpAdapter
 
 
 		public bool Equals(IUser? other) => other is User user && user.Id == Id;
+
+		public Task SendDirectMessageAsync(MessageSendModel model)
+		{
+			return ((Member)this).SendDirectMessageAsyncInternal(model);
+		}
 	}
 }

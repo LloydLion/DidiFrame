@@ -21,12 +21,12 @@ namespace CGZBot3.DSharpAdapter
 		}
 
 
-		public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent
+		public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent
 		{
 			holders.Add(new EventHolder<TComponent>(message, id, callback));
 		}
 
-		public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IComponent
+		public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent
 		{
 			holders.RemoveAll(s => s is EventHolder<TComponent> ev && (ev.Id, ev.Callback) == (id, callback));
 		}

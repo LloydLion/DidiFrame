@@ -21,8 +21,6 @@ namespace TestProject.Environment.Client
 
 		public ICollection<Role> Roles { get; } = new HashSet<Role>();
 
-		public ICollection<MessageSendModel> DirectMessages { get; } = new HashSet<MessageSendModel>();
-
 		public bool Equals(IServerEntity? other) => other is Member member && member.Id == Id;
 
 
@@ -41,13 +39,7 @@ namespace TestProject.Environment.Client
 
 		public Task RevokeRoleAsync(IRole role)
 		{
-			Roles.Add((Role)role);
-			return Task.CompletedTask;
-		}
-
-		public Task SendDirectMessageAsync(MessageSendModel model)
-		{
-			DirectMessages.Add(model);
+			Roles.Remove((Role)role);
 			return Task.CompletedTask;
 		}
 	}

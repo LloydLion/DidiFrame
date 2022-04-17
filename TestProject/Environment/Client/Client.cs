@@ -30,7 +30,7 @@ namespace TestProject.Environment.Client
 
 		public Client()
 		{
-			BaseSelfAccount = new User(this, "Is's a Me! MARIO!");
+			BaseSelfAccount = new User(this, "Is's a Me! MARIO!", true);
 		}
 
 

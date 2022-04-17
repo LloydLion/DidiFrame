@@ -1,4 +1,6 @@
-﻿using CGZBot3.Interfaces;
+﻿using CGZBot3.Entities.Message;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TestProject.Environment.Client
 {
@@ -14,6 +16,8 @@ namespace TestProject.Environment.Client
 
 		public bool IsBot { get; }
 
+		public ICollection<MessageSendModel> DirectMessages { get; } = new HashSet<MessageSendModel>();
+
 
 		public User(Client client, string userName, bool isBot)
 		{
@@ -25,5 +29,11 @@ namespace TestProject.Environment.Client
 
 
 		public bool Equals(IUser? other) => other is User user && user.Id == Id;
+
+		public Task SendDirectMessageAsync(MessageSendModel model)
+		{
+			DirectMessages.Add(model);
+			return Task.CompletedTask;
+		}
 	}
 }

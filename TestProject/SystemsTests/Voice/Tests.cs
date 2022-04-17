@@ -1,203 +1,203 @@
-﻿using CGZBot3.GlobalEvents;
-using CGZBot3.Systems.Voice;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using TestProject.Environment;
+﻿//using CGZBot3.GlobalEvents;
+//using CGZBot3.Systems.Voice;
+//using System;
+//using System.Linq;
+//using System.Threading;
+//using System.Threading.Tasks;
+//using TestProject.Environment;
 
-namespace TestProject.SystemsTests.Voice
-{
-	public class Tests
-	{
-		[Fact]
-		public void SimpleCreate()
-		{
-			var client = new Client();
+//namespace TestProject.SystemsTests.Voice
+//{
+//	public class Tests
+//	{
+//		[Fact]
+//		public void SimpleCreate()
+//		{
+//			var client = new Client();
 
-			var server = new Server(client, "Some server");
-			client.BaseServers.Add(server);
+//			var server = new Server(client, "Some server");
+//			client.BaseServers.Add(server);
 
-			var people = server.AddMember(new User(client, "The people"), Permissions.All);
+//			var people = server.AddMember(new User(client, "The people"), Permissions.All);
 
-			var gcat = server.Categories.First();
-			var channel = new TextChannel("the-channel", gcat);
-			gcat.BaseChannels.Add(channel);
-
-
-			var setting = new SettingsRepositoryFactory(gcat, channel);
-			var culture = new CultureProvider();
-			culture.SetupCulture(server);
-			var systemCore = new SystemCore(, setting);
-
-			startupEvent.InvokeStartup();
-
-			//-------------------------------------------------------------------------
-			//Act
-			var lt = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name", people)).Result;
-			var voice = (VoiceChannel)lt.BaseObject.BaseChannel;
-
-			//-------------------------------------------------------------------------
-			//Assert
-			Assert.Equal("Correct name", voice.Name);
-
-			//-------------------------------------------------------------------------
-			//Act
-			Thread.Sleep(6000);
-			voice.Connect(people);
-
-			//-------------------------------------------------------------------------
-			//Assert
-			Assert.Contains(voice, gcat.Channels);
-
-			//-------------------------------------------------------------------------
-			//Act
-			Thread.Sleep(11000);
-
-			//-------------------------------------------------------------------------
-			//Assert
-			Assert.Contains(voice, gcat.Channels);
-
-			//-------------------------------------------------------------------------
-			//Act
-			voice.Disconnect(people);
-			Thread.Sleep(100);
-
-			//-------------------------------------------------------------------------
-			//Assert
-			Assert.DoesNotContain(voice, gcat.Channels);
-		}
-
-		[Fact]
-		public void CreateWithInvalidName()
-		{
-			var client = new Client();
-
-			var server = new Server(client, "Some server");
-			client.BaseServers.Add(server);
-
-			var people = server.AddMember(new User(client, "The people"), Permissions.All);
-
-			var gcat = server.Categories.First();
-			var channel = new TextChannel("the-channel", gcat);
-			gcat.BaseChannels.Add(channel);
+//			var gcat = server.Categories.First();
+//			var channel = new TextChannel("the-channel", gcat);
+//			gcat.BaseChannels.Add(channel);
 
 
-			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
-			var setting = new SettingsRepositoryFactory(gcat, channel);
-			var culture = new CultureProvider();
-			var startupEvent = new StartupEvent(client, culture);
-			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
+//			var setting = new SettingsRepositoryFactory(gcat, channel);
+//			var culture = new CultureProvider();
+//			culture.SetupCulture(server);
+//			var systemCore = new SystemCore(, setting);
 
-			startupEvent.InvokeStartup();
+//			startupEvent.InvokeStartup();
 
-			//-------------------------------------------------------------------------
-			//Act and Assert
-			Assert.Throws<AggregateException>(() => systemCore.CreateAsync(new VoiceChannelCreationArgs("   ", people)).Wait());
-		}
+//			//-------------------------------------------------------------------------
+//			//Act
+//			var lt = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name", people)).Result;
+//			var voice = (VoiceChannel)lt.BaseObject.BaseChannel;
 
-		[Fact]
-		public void EnableDeleteVoiceTest()
-		{
-			var client = new Client();
+//			//-------------------------------------------------------------------------
+//			//Assert
+//			Assert.Equal("Correct name", voice.Name);
 
-			var server = new Server(client, "Some server");
-			client.BaseServers.Add(server);
+//			//-------------------------------------------------------------------------
+//			//Act
+//			Thread.Sleep(6000);
+//			voice.Connect(people);
 
-			var people = server.AddMember(new User(client, "The people"), Permissions.All);
+//			//-------------------------------------------------------------------------
+//			//Assert
+//			Assert.Contains(voice, gcat.Channels);
 
-			var gcat = server.Categories.First();
-			var channel = new TextChannel("the-channel", gcat);
-			gcat.BaseChannels.Add(channel);
+//			//-------------------------------------------------------------------------
+//			//Act
+//			Thread.Sleep(11000);
+
+//			//-------------------------------------------------------------------------
+//			//Assert
+//			Assert.Contains(voice, gcat.Channels);
+
+//			//-------------------------------------------------------------------------
+//			//Act
+//			voice.Disconnect(people);
+//			Thread.Sleep(100);
+
+//			//-------------------------------------------------------------------------
+//			//Assert
+//			Assert.DoesNotContain(voice, gcat.Channels);
+//		}
+
+//		[Fact]
+//		public void CreateWithInvalidName()
+//		{
+//			var client = new Client();
+
+//			var server = new Server(client, "Some server");
+//			client.BaseServers.Add(server);
+
+//			var people = server.AddMember(new User(client, "The people"), Permissions.All);
+
+//			var gcat = server.Categories.First();
+//			var channel = new TextChannel("the-channel", gcat);
+//			gcat.BaseChannels.Add(channel);
 
 
-			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
-			var setting = new SettingsRepositoryFactory(gcat, channel);
-			var culture = new CultureProvider();
-			var startupEvent = new StartupEvent(client, culture);
-			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
+//			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
+//			var setting = new SettingsRepositoryFactory(gcat, channel);
+//			var culture = new CultureProvider();
+//			var startupEvent = new StartupEvent(client, culture);
+//			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
 
-			startupEvent.InvokeStartup();
+//			startupEvent.InvokeStartup();
 
-			//-------------------------------------------------------------------------
-			//Act
-			var lt = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name", people)).Result;
-			var voice = (VoiceChannel)lt.BaseObject.BaseChannel;
-			voice.DeleteAsync().Wait();
-			Thread.Sleep(12000);
+//			//-------------------------------------------------------------------------
+//			//Act and Assert
+//			Assert.Throws<AggregateException>(() => systemCore.CreateAsync(new VoiceChannelCreationArgs("   ", people)).Wait());
+//		}
 
-			//-------------------------------------------------------------------------
-			//Assert
-			Assert.Empty(repository.Lifetimes);
-			Assert.Empty(channel.Messages); //check report
-		}
+//		[Fact]
+//		public void EnableDeleteVoiceTest()
+//		{
+//			var client = new Client();
 
-		[Fact]
-		public void DoubleTest()
-		{
-			var client = new Client();
+//			var server = new Server(client, "Some server");
+//			client.BaseServers.Add(server);
 
-			var server = new Server(client, "Some server");
-			client.BaseServers.Add(server);
+//			var people = server.AddMember(new User(client, "The people"), Permissions.All);
 
-			var people = server.AddMember(new User(client, "The people"), Permissions.All);
+//			var gcat = server.Categories.First();
+//			var channel = new TextChannel("the-channel", gcat);
+//			gcat.BaseChannels.Add(channel);
 
-			var gcat = server.Categories.First();
-			var channel = new TextChannel("the-channel", gcat);
-			gcat.BaseChannels.Add(channel);
 
-			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
-			var setting = new SettingsRepositoryFactory(gcat, channel);
-			var culture = new CultureProvider();
-			var startupEvent = new StartupEvent(client, culture);
-			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
+//			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
+//			var setting = new SettingsRepositoryFactory(gcat, channel);
+//			var culture = new CultureProvider();
+//			var startupEvent = new StartupEvent(client, culture);
+//			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
 
-			startupEvent.InvokeStartup();
+//			startupEvent.InvokeStartup();
 
-			//-------------------------------------------------------------------------
-			//Act
-			var lt1 = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name 1", people)).Result;
-			var voice1 = (VoiceChannel)lt1.BaseObject.BaseChannel;
-			voice1.Connect(people);
+//			//-------------------------------------------------------------------------
+//			//Act
+//			var lt = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name", people)).Result;
+//			var voice = (VoiceChannel)lt.BaseObject.BaseChannel;
+//			voice.DeleteAsync().Wait();
+//			Thread.Sleep(12000);
 
-			Thread.Sleep(5000);
+//			//-------------------------------------------------------------------------
+//			//Assert
+//			Assert.Empty(repository.Lifetimes);
+//			Assert.Empty(channel.Messages); //check report
+//		}
 
-			var lt2 = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name 2", people)).Result;
-			var voice2 = (VoiceChannel)lt2.BaseObject.BaseChannel;
-			voice2.Connect(people);
+//		[Fact]
+//		public void DoubleTest()
+//		{
+//			var client = new Client();
 
-			Thread.Sleep(12000);
+//			var server = new Server(client, "Some server");
+//			client.BaseServers.Add(server);
 
-			//-------------------------------------------------------------------------
-			//Assert
-			Assert.Contains(voice1, gcat.Channels);
-			Assert.Contains(voice2, gcat.Channels);
+//			var people = server.AddMember(new User(client, "The people"), Permissions.All);
 
-			Assert.Equal(2, channel.Messages.Count);
+//			var gcat = server.Categories.First();
+//			var channel = new TextChannel("the-channel", gcat);
+//			gcat.BaseChannels.Add(channel);
 
-			//-------------------------------------------------------------------------
-			//Act
-			voice1.Disconnect(people);
-			Thread.Sleep(500);
+//			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
+//			var setting = new SettingsRepositoryFactory(gcat, channel);
+//			var culture = new CultureProvider();
+//			var startupEvent = new StartupEvent(client, culture);
+//			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
 
-			//-------------------------------------------------------------------------
-			//Assert
-			Assert.DoesNotContain(voice1, gcat.Channels);
-			Assert.Contains(voice2, gcat.Channels);
+//			startupEvent.InvokeStartup();
 
-			Assert.Equal(1, channel.Messages.Count);
+//			//-------------------------------------------------------------------------
+//			//Act
+//			var lt1 = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name 1", people)).Result;
+//			var voice1 = (VoiceChannel)lt1.BaseObject.BaseChannel;
+//			voice1.Connect(people);
 
-			//-------------------------------------------------------------------------
-			//Act
-			voice2.Disconnect(people);
-			Thread.Sleep(500);
+//			Thread.Sleep(5000);
 
-			//-------------------------------------------------------------------------
-			//Assert
-			Assert.DoesNotContain(voice1, gcat.Channels);
-			Assert.DoesNotContain(voice2, gcat.Channels);
+//			var lt2 = systemCore.CreateAsync(new VoiceChannelCreationArgs("Correct name 2", people)).Result;
+//			var voice2 = (VoiceChannel)lt2.BaseObject.BaseChannel;
+//			voice2.Connect(people);
 
-			Assert.Equal(0, channel.Messages.Count);
-		}
-	}
-}
+//			Thread.Sleep(12000);
+
+//			//-------------------------------------------------------------------------
+//			//Assert
+//			Assert.Contains(voice1, gcat.Channels);
+//			Assert.Contains(voice2, gcat.Channels);
+
+//			Assert.Equal(2, channel.Messages.Count);
+
+//			//-------------------------------------------------------------------------
+//			//Act
+//			voice1.Disconnect(people);
+//			Thread.Sleep(500);
+
+//			//-------------------------------------------------------------------------
+//			//Assert
+//			Assert.DoesNotContain(voice1, gcat.Channels);
+//			Assert.Contains(voice2, gcat.Channels);
+
+//			Assert.Equal(1, channel.Messages.Count);
+
+//			//-------------------------------------------------------------------------
+//			//Act
+//			voice2.Disconnect(people);
+//			Thread.Sleep(500);
+
+//			//-------------------------------------------------------------------------
+//			//Assert
+//			Assert.DoesNotContain(voice1, gcat.Channels);
+//			Assert.DoesNotContain(voice2, gcat.Channels);
+
+//			Assert.Equal(0, channel.Messages.Count);
+//		}
+//	}
+//}

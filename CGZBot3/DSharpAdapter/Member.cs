@@ -34,7 +34,8 @@ namespace CGZBot3.DSharpAdapter
 		public bool HasPermissionIn(Permissions permissions, IChannel channel) =>
 			member.PermissionsIn(((Channel)channel).BaseChannel).GetAbstract().HasFlag(permissions);
 
-		public async Task SendDirectMessageAsync(MessageSendModel model)
+
+		internal async Task SendDirectMessageAsyncInternal(MessageSendModel model)
 		{
 			var channel = await member.CreateDmChannelAsync();
 			await channel.SendMessageAsync(converter.ConvertUp(model));

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace CGZBot3.UserCommands.Loader.Reflection
 {
-	internal class ReflectionUserCommandsLoader : IUserCommandsLoader
+	public class ReflectionUserCommandsLoader : IUserCommandsLoader
 	{
 		private static readonly EventId LoadingSkipID = new(12, "LoadingSkip");
 		private static readonly EventId LoadingDoneID = new(13, "LoadingDone");
