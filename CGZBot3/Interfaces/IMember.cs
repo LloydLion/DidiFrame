@@ -4,9 +4,6 @@ namespace CGZBot3.Interfaces
 {
 	public interface IMember : IServerEntity, IUser
 	{
-		public bool IsBot { get; }
-
-
 		public IReadOnlyCollection<IRole> GetRoles();
 
 		public Task GrantRoleAsync(IRole role);

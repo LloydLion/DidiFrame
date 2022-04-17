@@ -17,6 +17,8 @@ namespace CGZBot3.DSharpAdapter
 
 		public IClient Client => client;
 
+		public bool IsBot => user.IsBot;
+
 
 		public User(DiscordUser user, Client client)
 		{

@@ -9,5 +9,7 @@
 		public IClient Client { get; }
 
 		public string Mention { get; }
+
+		public bool IsBot { get; }
 	}
 }

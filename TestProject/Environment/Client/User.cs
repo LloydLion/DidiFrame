@@ -10,11 +10,16 @@ namespace TestProject.Environment.Client
 
 		public IClient Client { get; }
 
+		public string Mention => $"<{Id}>";
 
-		public User(Client client, string userName)
+		public bool IsBot { get; }
+
+
+		public User(Client client, string userName, bool isBot)
 		{
 			Client = client;
 			UserName = userName;
+			IsBot = isBot;
 			Id = client.GenerateId();
 		}
 

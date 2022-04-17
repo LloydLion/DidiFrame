@@ -15,8 +15,6 @@ namespace CGZBot3.DSharpAdapter
 
 		public override string UserName => member.DisplayName;
 
-		public bool IsBot => member.IsBot;
-
 
 		public Member(DiscordMember member, Server server) : base(member, (Client)server.Client)
 		{

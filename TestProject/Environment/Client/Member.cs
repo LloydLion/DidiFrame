@@ -9,12 +9,13 @@ namespace TestProject.Environment.Client
 		private readonly Permissions permissions;
 
 
-		public Member(Server server, User baseUser, Permissions permissions) : base(server.BaseClient, baseUser.UserName)
+		public Member(Server server, User baseUser, Permissions permissions) : base(server.BaseClient, baseUser.UserName, baseUser.IsBot)
 		{
 			Server = server;
 			this.permissions = permissions;
 			Id = baseUser.Id;
 		}
+
 
 		public IServer Server { get; }
 
@@ -22,13 +23,10 @@ namespace TestProject.Environment.Client
 
 		public ICollection<MessageSendModel> DirectMessages { get; } = new HashSet<MessageSendModel>();
 
-
 		public bool Equals(IServerEntity? other) => other is Member member && member.Id == Id;
 
-		public Task<IReadOnlyCollection<IRole>> GetRolesAsync()
-		{
-			return Task.FromResult((IReadOnlyCollection<IRole>)Roles);
-		}
+
+		public IReadOnlyCollection<IRole> GetRoles() => (IReadOnlyCollection<IRole>)Roles;
 
 		public Task GrantRoleAsync(IRole role)
 		{
