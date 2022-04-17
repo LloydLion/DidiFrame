@@ -13,7 +13,7 @@ namespace CGZBot3.Data
 		}
 
 
-		public IModelFactory<TModel> GetFactory<TModel>()
+		public IModelFactory<TModel> GetFactory<TModel>() where TModel : class
 		{
 			return provider.GetRequiredService<IModelFactory<TModel>>();
 		}

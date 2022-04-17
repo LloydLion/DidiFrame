@@ -1,8 +1,9 @@
 ﻿using CGZBot3.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TestProject.TestAdapter
+namespace TestProject.Environment.Client
 {
 	internal class Client : IClient
 	{
@@ -10,6 +11,7 @@ namespace TestProject.TestAdapter
 
 
 		public event MessageSentEventHandler? MessageSent;
+		public event MessageDeletedEventHandler? MessageDeleted;
 
 
 		public IReadOnlyCollection<IServer> Servers => (IReadOnlyCollection<IServer>)BaseServers;
@@ -20,9 +22,9 @@ namespace TestProject.TestAdapter
 
 		public IList<Server> BaseServers { get; } = new List<Server>();
 
-		public ICommandsDispatcher CommandsDispatcher => BaseCommandsNotifier;
+		public ICommandsDispatcher CommandsDispatcher => BaseCommandsDispatcher;
 
-		public CommandsDispatcher BaseCommandsNotifier { get; } = new CommandsDispatcher();
+		public CommandsDispatcher BaseCommandsDispatcher { get; } = new CommandsDispatcher();
 
 
 
@@ -42,19 +44,24 @@ namespace TestProject.TestAdapter
 			
 		}
 
-		public bool IsInNamespace(string typeName)
-		{
-			return false;
-		}
-
 		public ulong GenerateId()
 		{
 			return lastId++;
 		}
 
-		public void CallMessageSent(Message message)
+		public void Dispose()
 		{
-			MessageSent?.Invoke(this, message);
+			
+		}
+
+		public void OnMessageCreated(Message msg)
+		{
+			MessageSent?.Invoke(this, msg);
+		}
+
+		public void OnMessageDeleted(Message msg)
+		{
+			MessageDeleted?.Invoke(this, msg);
 		}
 	}
 }

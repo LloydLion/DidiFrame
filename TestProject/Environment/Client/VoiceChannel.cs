@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TestProject.TestAdapter
+namespace TestProject.Environment.Client
 {
 	internal class VoiceChannel : Channel, IVoiceChannel
 	{

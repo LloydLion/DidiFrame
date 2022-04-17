@@ -3,7 +3,7 @@ using CGZBot3.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TestProject.TestAdapter
+namespace TestProject.Environment.Client
 {
 	
 	internal class ChannelCategory : IChannelCategory

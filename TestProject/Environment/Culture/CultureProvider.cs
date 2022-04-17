@@ -3,7 +3,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 
-namespace TestProject.Environment
+namespace TestProject.Environment.Culture
 {
 	internal class CultureProvider : IServerCultureProvider
 	{

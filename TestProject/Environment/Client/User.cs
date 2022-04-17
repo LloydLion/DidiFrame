@@ -1,6 +1,6 @@
 ﻿using CGZBot3.Interfaces;
 
-namespace TestProject.TestAdapter
+namespace TestProject.Environment.Client
 {
 	internal class User : IUser
 	{

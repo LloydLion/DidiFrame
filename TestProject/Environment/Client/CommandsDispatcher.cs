@@ -1,7 +1,7 @@
 ﻿using CGZBot3.Exceptions;
 using CGZBot3.UserCommands;
 
-namespace TestProject.TestAdapter
+namespace TestProject.Environment.Client
 {
 	internal class CommandsDispatcher : ICommandsDispatcher
 	{

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace TestProject.TestAdapter
+namespace TestProject.Environment.Client
 {
 	internal class Member : User, IMember
 	{

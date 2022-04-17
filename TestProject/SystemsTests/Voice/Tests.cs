@@ -25,11 +25,10 @@ namespace TestProject.SystemsTests.Voice
 			gcat.BaseChannels.Add(channel);
 
 
-			var repository = new CreatedVoiceChannelLifetimeRepository(channel);
 			var setting = new SettingsRepositoryFactory(gcat, channel);
 			var culture = new CultureProvider();
-			var startupEvent = new StartupEvent(client, culture);
-			var systemCore = new SystemCore(repository, setting, new ChannelCreationArgsValidator(), startupEvent);
+			culture.SetupCulture(server);
+			var systemCore = new SystemCore(, setting);
 
 			startupEvent.InvokeStartup();
 

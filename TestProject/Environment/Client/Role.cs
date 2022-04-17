@@ -1,7 +1,7 @@
 ﻿using CGZBot3.Entities;
 using CGZBot3.Interfaces;
 
-namespace TestProject.TestAdapter
+namespace TestProject.Environment.Client
 {
 	internal class Role : IRole
 	{

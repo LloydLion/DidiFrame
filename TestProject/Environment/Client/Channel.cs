@@ -1,7 +1,8 @@
 ﻿using CGZBot3.Interfaces;
+using System;
 using System.Threading.Tasks;
 
-namespace TestProject.TestAdapter
+namespace TestProject.Environment.Client
 {
 	internal class Channel : IChannel
 	{
@@ -24,6 +25,23 @@ namespace TestProject.TestAdapter
 		public Server BaseServer => BaseCategory.BaseServer;
 
 		public ChannelCategory BaseCategory { get; }
+
+		public bool IsExist
+		{
+			get
+			{
+				try
+				{
+					BaseServer.GetChannel(Id);
+					return true;
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+		}
+
 
 		public Task DeleteAsync()
 		{

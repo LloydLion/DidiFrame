@@ -2,6 +2,6 @@
 {
 	public interface IModelFactoryProvider
 	{
-		public IModelFactory<TModel> GetFactory<TModel>();
+		public IModelFactory<TModel> GetFactory<TModel>() where TModel : class;
 	}
 }
