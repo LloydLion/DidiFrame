@@ -19,7 +19,7 @@ namespace CGZBot3.Systems.Parties.Validators
 
 		protected override string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, IMember value)
 		{
-			var partyName = (string)context.Arguments[context.Command.Arguments.Single(s => s.Name == partyArgumentName)];
+			var partyName = context.Arguments[context.Command.Arguments.Single(s => s.Name == partyArgumentName)].As<string>();
 			var system = GetServiceProvider().GetRequiredService<ISystemCore>();
 
 			using var party = system.GetParty(context.Invoker.Server, partyName);

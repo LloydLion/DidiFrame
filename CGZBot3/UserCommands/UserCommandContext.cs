@@ -6,7 +6,7 @@ namespace CGZBot3.UserCommands
 		IMember Invoker,
 		ITextChannel Channel,
 		UserCommandInfo Command,
-		IReadOnlyDictionary<UserCommandInfo.Argument, object> Arguments)
+		IReadOnlyDictionary<UserCommandInfo.Argument, UserCommandContext.ArgumentValue> Arguments)
 	{
 		public ILogger? Logger { get; private set; }
 
@@ -14,6 +14,12 @@ namespace CGZBot3.UserCommands
 		public void AddLogger(ILogger logger)
 		{
 			Logger = logger;
+		}
+
+
+		public record ArgumentValue(UserCommandInfo.Argument Argument, object ComplexObject, IReadOnlyList<object> PreObjects)
+		{
+			public T As<T>() => (T)ComplexObject;
 		}
 	}
 }

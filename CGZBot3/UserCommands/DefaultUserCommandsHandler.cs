@@ -60,7 +60,7 @@ namespace CGZBot3.UserCommands
 					{
 						foreach (var validator in argument.Validators)
 						{
-							var tf = validator.Validate(services, ctx, argument, ctx.Arguments[argument]);
+							var tf = validator.Validate(services, ctx, argument, ctx.Arguments[argument].ComplexObject);
 							if (tf is null) continue;
 							else
 							{

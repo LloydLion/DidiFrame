@@ -8,7 +8,7 @@ namespace CGZBot3.UserCommands
 
 	public record UserCommandInfo(string Name, UserCommandHandler Handler, IReadOnlyList<UserCommandInfo.Argument> Arguments, IStringLocalizer Localizer, IReadOnlyCollection<IUserCommandInvokerFilter> InvokerFilters)
 	{
-		public record Argument(bool IsArray, Argument.Type ArgumentType, string Name, IReadOnlyCollection<IUserCommandArgumentValidator> Validators)
+		public record Argument(bool IsArray, IReadOnlyList<Argument.Type> OriginTypes, Type TargetType, string Name, IReadOnlyCollection<IUserCommandArgumentValidator> Validators)
 		{
 			public enum Type
 			{

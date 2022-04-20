@@ -134,7 +134,8 @@ try
 
 
 		var cmdHandler = services.GetService<IUserCommandsHandler>() ?? throw new ImpossibleVariantException();
-		client.CommandsDispatcher.CommandWritten += (ctx, callback) => { cmdHandler.HandleAsync(ctx, callback); };
+		var converter = services.GetRequiredService<IUserCommandContextConverter>();
+		client.CommandsDispatcher.CommandWritten += (ctx, callback) => { cmdHandler.HandleAsync(converter.Convert(ctx), callback); };
 		logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");
 
 

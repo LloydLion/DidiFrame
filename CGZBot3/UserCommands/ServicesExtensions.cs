@@ -9,6 +9,7 @@ namespace CGZBot3.UserCommands
 		{
 			services.Configure<DefaultUserCommandsHandler.Options>(configuration);
 			services.AddTransient<IUserCommandsHandler, DefaultUserCommandsHandler>();
+			services.AddTransient<IUserCommandContextConverter, DefaultUserCommandContextConverter>();
 			return services;
 		}
 

@@ -54,7 +54,8 @@ namespace CGZBot3.DSharpAdapter
 			if (!result.Any()) return Task.CompletedTask;
 			var command = cmds.Single(s => s.Name == result.Single().Groups[1].Value);
 
-			var arguments = new List<object>();
+			var arguments = new List<(UserCommandInfo.Argument, List<object>)>();
+			var preArgs = new List<(UserCommandInfo.Argument.Type, string)>();
 
 			//Unless no arguemnts command
 			if (content.Length != command.Name.Length + 1)
@@ -64,31 +65,10 @@ namespace CGZBot3.DSharpAdapter
 
 				while (cnt.Length != 0)
 				{
-					var isLast = command.Arguments.Count - 1 == arguments.Count;
-					var lastArg = command.Arguments[command.Arguments.Count - 1];
+					try { preArgs.Add(parse(cnt)); }
+					catch (Exception) { return Task.CompletedTask; }
 
-					if (isLast && lastArg.IsArray)
-					{
-						var subArray = (IList)(Activator.CreateInstance(typeof(List<>).MakeGenericType(lastArg.ArgumentType.GetReqObjectType())) ?? throw new ImpossibleVariantException());
-
-						while (cnt.Length != 0)
-						{
-							var val = parse();
-							if (val.HasValue == false) return Task.CompletedTask;
-							subArray.Add(ConvertArgument(val.Value.Item2, val.Value.Item1, server));
-						}
-
-						arguments.Add(subArray.GetType()?.GetMethod("ToArray")?.Invoke(subArray, Array.Empty<object>()) ?? throw new ImpossibleVariantException());
-					}
-					else
-					{
-						var val = parse();
-						if (val.HasValue == false) return Task.CompletedTask;
-						arguments.Add(ConvertArgument(val.Value.Item2, val.Value.Item1, server));
-					}
-
-
-					(UserCommandInfo.Argument.Type, string)? parse()
+					static (UserCommandInfo.Argument.Type, string) parse(StringBuilder cnt)
 					{
 						foreach (var key in regexes.Keys)
 						{
@@ -104,23 +84,34 @@ namespace CGZBot3.DSharpAdapter
 							}
 						}
 
-						return null;
+						throw new InvalidOperationException("Enable to parse some command's argument");
+					}
+				}
+
+				foreach (var argument in command.Arguments)
+				{
+					if (argument.IsArray)
+						arguments.Add((argument, preArgs.Select(s => ConvertArgument(s.Item2, s.Item1, server)).ToList()));
+					else
+					{
+						//order is important (thanks LINQ)
+						var pa = preArgs.Take(argument.OriginTypes.Count);
+						arguments.Add((argument, pa.Select(s => ConvertArgument(s.Item2, s.Item1, server)).ToList()));
+						preArgs.RemoveRange(0, argument.OriginTypes.Count);
 					}
 				}
 			}
 
-			if (arguments.Count != command.Arguments.Count) return Task.CompletedTask;
-			
 
-			var context = new UserCommandContext(server.GetMember(args.Author.Id), server.GetChannel(args.Channel.Id).AsText(), command,
-				command.Arguments.Select((s, i) => (s, i)).Join(arguments.Select((s, i) => (s, i)), s => s.i, s => s.i, (a, b) => (a.s, b.s)).ToDictionary(s => s.Item1, s => s.Item2));
+			var context = new UserCommandPreContext(server.GetMember(args.Author.Id), server.GetChannel(args.Channel.Id).AsText(), command,
+				arguments.ToDictionary(s => s.Item1, s => (IReadOnlyList<object>)s.Item2));
 
 			CommandWritten?.Invoke(context, (result) => CallBack(context, result, args.Message));
 
 			return Task.CompletedTask;
 		}
 
-		private static async void CallBack(UserCommandContext context, UserCommandResult result, DiscordMessage cmdMsg)
+		private static async void CallBack(UserCommandPreContext context, UserCommandResult result, DiscordMessage cmdMsg)
 		{
 			IMessage? msg = null;
 

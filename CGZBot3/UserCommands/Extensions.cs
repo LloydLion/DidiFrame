@@ -19,6 +19,7 @@ namespace CGZBot3.UserCommands
 				UserCommandInfo.Argument.Type.Role => typeof(IRole),
 				UserCommandInfo.Argument.Type.Mentionable => typeof(object),
 				UserCommandInfo.Argument.Type.TimeSpan => typeof(TimeSpan),
+				UserCommandInfo.Argument.Type.DateTime => typeof(DateTime),
 				_ => throw new ImpossibleVariantException(),
 			};
 		}

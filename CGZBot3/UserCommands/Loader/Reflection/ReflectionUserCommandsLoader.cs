@@ -9,17 +9,33 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 		private static readonly EventId LoadingSkipID = new(12, "LoadingSkip");
 		private static readonly EventId LoadingDoneID = new(13, "LoadingDone");
 
+		private static readonly Type[] tuples = new[]
+		{
+			typeof(Tuple<>),
+			typeof(Tuple<,>),
+			typeof(Tuple<,,>),
+			typeof(Tuple<,,,>),
+			typeof(Tuple<,,,,>),
+			typeof(Tuple<,,,,,>),
+			typeof(Tuple<,,,,,,>),
+		};
+
+		private static readonly IReadOnlyDictionary<Type, UserCommandInfo.Argument.Type> argsTypes = Enum.GetValues(typeof(UserCommandInfo.Argument.Type))
+				.OfType<UserCommandInfo.Argument.Type>().ToDictionary(s => s.GetReqObjectType());
+
 
 		private readonly IServiceProvider serviceProvider;
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
 		private readonly IStringLocalizerFactory stringLocalizerFactory;
+		private readonly IUserCommandContextConverter converter;
 
 
-		public ReflectionUserCommandsLoader(IServiceProvider serviceProvider, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory)
+		public ReflectionUserCommandsLoader(IServiceProvider serviceProvider, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter)
 		{
 			this.serviceProvider = serviceProvider;
 			this.logger = logger;
 			this.stringLocalizerFactory = stringLocalizerFactory;
+			this.converter = converter;
 		}
 
 
@@ -53,24 +69,35 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 							for (int i = 1; i < @params.Length; i++)
 							{
 								var ptype = @params[i].ParameterType;
-								var switchOn = ptype.IsArray && i == @params.Length - 1 ? ptype.GetElementType() ?? throw new ImpossibleVariantException() : ptype;
+								UserCommandInfo.Argument.Type[] types;
 
-								var atype = switchOn.FullName switch
+
+								var pet = ptype.GetElementType(); //Null if not array, Not null if array
+								if (argsTypes.ContainsKey(ptype) || (pet is not null && argsTypes.ContainsKey(pet)))
+									types = parseAndConvertType(pet ?? ptype);
+								else
 								{
-									"System.Int32" => UserCommandInfo.Argument.Type.Integer,
-									"System.Double" => UserCommandInfo.Argument.Type.Double,
-									"System.String" => UserCommandInfo.Argument.Type.String,
-									"System.TimeSpan" => UserCommandInfo.Argument.Type.TimeSpan,
-									"CGZBot3.Interfaces.IMember" => UserCommandInfo.Argument.Type.Member,
-									"CGZBot3.Interfaces.IRole" => UserCommandInfo.Argument.Type.Role,
-									"System.Object" => UserCommandInfo.Argument.Type.Mentionable,
-									"System.DateTime" => UserCommandInfo.Argument.Type.DateTime,
-									_ => throw new ImpossibleVariantException(),
-								};
+									//If can get will put into workType var else condition'll enter
+									if (converter.TryGetPreObjectTypes(ptype, out var patypes) == false)
+									{
+										var ota = @params[i].GetCustomAttribute<OriginalTypeAttribute>() ?? throw new NullReferenceException();
+										types = parseAndConvertType(ota.OriginalType);
+									}
+									else types = patypes.ToArray();
+								}
+
 
 								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Select(s => s.Validator).ToArray();
 
-								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, atype, @params[i].Name ?? "no_name", validators);
+								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name", validators);
+
+
+								static UserCommandInfo.Argument.Type[] parseAndConvertType(Type type)
+								{
+									if (type.IsGenericType && tuples.Contains(type.GetGenericTypeDefinition()))
+										return type.GetGenericArguments().Select(s => argsTypes[s]).ToArray();
+									else return new[] { argsTypes[type] };
+								}
 							}
 
 							var filters = method.GetCustomAttributes<InvokerFilter>().Select(s => s.Filter).ToArray();
@@ -140,7 +167,7 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 
 			public Task<UserCommandResult> HandleAsync(UserCommandContext ctx)
 			{
-				var callRes = method.Invoke(obj, ctx.Arguments.Values.Prepend(ctx).ToArray()) ??
+				var callRes = method.Invoke(obj, ctx.Arguments.Values.Select(s => s.ComplexObject).Prepend(ctx).ToArray()) ??
 						throw new NullReferenceException("Handler method's return was null");
 
 				return isSync ? Task.FromResult((UserCommandResult)callRes) : (Task<UserCommandResult>)callRes;

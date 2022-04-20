@@ -2,7 +2,7 @@
 
 namespace CGZBot3.Interfaces
 {
-	public delegate void CommandWrittenHandler(UserCommandContext context, Action<UserCommandResult> callback);
+	public delegate void CommandWrittenHandler(UserCommandPreContext context, Action<UserCommandResult> callback);
 
 
 	public interface ICommandsDispatcher
