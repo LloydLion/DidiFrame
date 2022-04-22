@@ -47,9 +47,9 @@ namespace CGZBot3.UserCommands.ArgumentsValidation.Validators
 		public GreaterThen(Type type, string customSourceName) : this(type, customSourceName, false, false) { }
 
 
-		public string? Validate(IServiceProvider services, UserCommandContext context, UserCommandInfo.Argument argument, object value)
+		public string? Validate(IServiceProvider services, UserCommandContext context, UserCommandInfo.Argument argument, UserCommandContext.ArgumentValue value)
 		{
-			var actualValue = (IComparable)value;
+			var actualValue = (IComparable)value.ComplexObject;
 			var compare = numberSource(context);
 
 			if (actualValue is null)

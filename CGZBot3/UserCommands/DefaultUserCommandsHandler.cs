@@ -16,33 +16,59 @@ namespace CGZBot3.UserCommands
 		private readonly ILogger<DefaultUserCommandsHandler> logger;
 		private readonly IServerCultureProvider cultureProvider;
 		private readonly IStringLocalizer<DefaultUserCommandsHandler> localizer;
+		private readonly IUserCommandContextConverter converter;
 		private readonly IServiceProvider services;
 		private readonly ThreadLocker<IServer> threadLocker = new();
 
 
-		public DefaultUserCommandsHandler(IOptions<Options> options, ILogger<DefaultUserCommandsHandler> logger, IServerCultureProvider cultureProvider, IStringLocalizer<DefaultUserCommandsHandler> localizer, IServiceProvider services)
+		public DefaultUserCommandsHandler(
+			IOptions<Options> options,
+			ILogger<DefaultUserCommandsHandler> logger,
+			IServerCultureProvider cultureProvider,
+			IStringLocalizer<DefaultUserCommandsHandler> localizer,
+			IUserCommandContextConverter converter,
+			IServiceProvider services)
 		{
 			this.options = options.Value;
 			this.logger = logger;
 			this.cultureProvider = cultureProvider;
 			this.localizer = localizer;
+			this.converter = converter;
 			this.services = services;
 		}
 
 
-		public async Task HandleAsync(UserCommandContext ctx, Action<UserCommandResult> callback)
+		public async Task HandleAsync(UserCommandPreContext preCtx, Action<UserCommandResult> callback)
 		{
-			using (threadLocker.Lock(ctx.Channel.Server))
+			using (threadLocker.Lock(preCtx.Channel.Server))
 			{
 				UserCommandResult result;
 
-				using (logger.BeginScope("Command: {CommandName}", ctx.Command.Name))
+				using (logger.BeginScope("Command: {CommandName}", preCtx.Command.Name))
 				{
-					ctx.AddLogger(logger);
+					preCtx.AddLogger(logger);
 
-					cultureProvider.SetupCulture(ctx.Invoker.Server);
+					cultureProvider.SetupCulture(preCtx.Invoker.Server);
 
 					logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
+
+					foreach (var argument in preCtx.Command.Arguments)
+					{
+						foreach (var validator in argument.PreValidators)
+						{
+							var tf = validator.Validate(services, preCtx, argument, preCtx.Arguments[argument]);
+							if (tf is null) continue;
+							else
+							{
+								var content = localizer["ValidationErrorMessage", preCtx.Command.Localizer[$"{preCtx.Command.Name}.{argument.Name}:{tf}", preCtx.Arguments[argument]]];
+								callback(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(content) });
+								return;
+							}
+						}
+					}
+
+					var ctx = converter.Convert(preCtx);
+					ctx.AddLogger(logger);
 
 					foreach (var filter in ctx.Command.InvokerFilters)
 					{
@@ -60,7 +86,7 @@ namespace CGZBot3.UserCommands
 					{
 						foreach (var validator in argument.Validators)
 						{
-							var tf = validator.Validate(services, ctx, argument, ctx.Arguments[argument].ComplexObject);
+							var tf = validator.Validate(services, ctx, argument, ctx.Arguments[argument]);
 							if (tf is null) continue;
 							else
 							{

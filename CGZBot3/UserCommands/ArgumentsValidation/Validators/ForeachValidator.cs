@@ -18,13 +18,13 @@ namespace CGZBot3.UserCommands.ArgumentsValidation.Validators
 		}
 
 
-		public string? Validate(IServiceProvider services, UserCommandContext context, UserCommandInfo.Argument argument, object value)
+		public string? Validate(IServiceProvider services, UserCommandContext context, UserCommandInfo.Argument argument, UserCommandContext.ArgumentValue value)
 		{
-			var array = (IEnumerable)value;
+			var array = (IEnumerable)value.ComplexObject;
 
 			foreach (var item in array)
 			{
-				var tf = validator.Validate(services, context, argument, item);
+				var tf = validator.Validate(services, context, argument, new(argument, item, value.PreObjects));
 				if (tf is not null) return tf;
 			}
 

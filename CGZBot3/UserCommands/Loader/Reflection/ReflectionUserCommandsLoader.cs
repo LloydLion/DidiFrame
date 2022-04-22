@@ -87,9 +87,10 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 								}
 
 
-								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Select(s => s.Validator).ToArray();
+								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Where(s => !s.IsPreValidator).Select(s => s.GetAsValidator()).ToArray();
+								var preValidators = @params[i].GetCustomAttributes<ValidatorAttribute>().Where(s => s.IsPreValidator).Select(s => s.GetAsPreValidator()).ToArray();
 
-								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name", validators);
+								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name", validators, preValidators);
 
 
 								static UserCommandInfo.Argument.Type[] parseAndConvertType(Type type)
