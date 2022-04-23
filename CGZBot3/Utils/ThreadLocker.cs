@@ -1,4 +1,4 @@
-﻿#define DEADLOCK_DETECTOR
+﻿//#define DEADLOCK_DETECTOR
 using System.Diagnostics;
 
 namespace CGZBot3.Utils
@@ -22,26 +22,38 @@ namespace CGZBot3.Utils
 
 		public async Task AwaitUnlock(TLock obj)
 		{
-			while (locked.Contains(obj, comparer)) { await Task.Delay(50); }
+			while (true)
+			{
+				lock (locked) { if (locked.Contains(obj) == false) return; }
+				await Task.Delay(50);
+			}
 		}
 
 		public IDisposable Lock(TLock obj)
 		{
 			AwaitUnlock(obj).Wait();
-			locked.Add(obj);
+
+			lock (locked)
+			{
+				locked.Add(obj);
 #if DEBUG && DEADLOCK_DETECTOR
-			var stack = new StackTrace();
-			debug.Add(obj, new DebugInfo(stack, stack.GetHashCode(), Thread.CurrentThread, Task.CurrentId));
+				var stack = new StackTrace();
+				debug.Add(obj, new DebugInfo(stack, stack.GetHashCode(), Thread.CurrentThread, Task.CurrentId));
 #endif
+			}
+
 			return new Hanlder(this, obj);
 		}
 
 		private void Unlock(TLock obj)
 		{
-			locked.RemoveAll(s => comparer.Equals(obj, s));
+			lock (locked)
+			{
+				locked.RemoveAll(s => comparer.Equals(obj, s));
 #if DEBUG && DEADLOCK_DETECTOR
 			debug.Remove(obj);
 #endif
+			}
 		}
 
 

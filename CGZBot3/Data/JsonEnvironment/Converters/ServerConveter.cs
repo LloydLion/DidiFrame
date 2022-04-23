@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CGZBot3.Data.Json.Converters
+namespace CGZBot3.Data.JsonEnvironment.Converters
 {
 	internal class ServerConveter : JsonConverter<IServer>
 	{

@@ -1,4 +1,4 @@
-﻿using CGZBot3.Data.Json.Converters;
+﻿using CGZBot3.Data.JsonEnvironment.Converters;
 using CGZBot3.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;

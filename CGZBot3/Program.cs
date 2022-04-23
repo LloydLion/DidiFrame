@@ -22,7 +22,7 @@ using CGZBot3.DSharpAdapter;
 using CGZBot3;
 
 using AutoInjector = CGZBot3.AutoInjecting.AutoInjector;
-
+using CGZBot3.Data.MongoDB;
 
 ILogger? logger = null;
 IClient? client = null;
@@ -38,7 +38,9 @@ try
 
 
 	services = new ServiceCollection()
-		.AddDataManagement<DefaultModelFactoryProvider>(config.GetSection("Data"))
+		.AddJsonDataManagement(config.GetSection("Data:Json"), false, true)
+		.AddMongoDataManagement(config.GetSection("Data:Mongo"), true, false)
+		.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
 		.AddDSharpClient(config.GetSection("Discord"))
 		.AddDefaultUserCommandHandler(config.GetSection("Commands:Handling"))
 		.AddSimpleUserCommandsRepository()

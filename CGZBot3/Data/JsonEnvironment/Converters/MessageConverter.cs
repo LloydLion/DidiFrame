@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace CGZBot3.Data.Json.Converters
+namespace CGZBot3.Data.JsonEnvironment.Converters
 {
 	internal class MessageConverter : JsonConverter<IMessage>
 	{

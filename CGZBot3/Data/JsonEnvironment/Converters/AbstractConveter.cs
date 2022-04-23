@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Reflection;
 
-namespace CGZBot3.Data.Json.Converters
+namespace CGZBot3.Data.JsonEnvironment.Converters
 {
 	internal class AbstractConveter : JsonConverter
 	{

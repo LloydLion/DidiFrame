@@ -1,4 +1,4 @@
-﻿namespace CGZBot3.Data.Json
+﻿namespace CGZBot3.Data.MongoDB
 {
 	internal class DataOptions
 	{
@@ -9,7 +9,9 @@
 
 		public class DataOption
 		{
-			public string BaseDirectory { get; set; } = "";
+			public string ConnectionString { get; set; } = "";
+
+			public string DatabaseName { get; set; } = "";
 		}
 	}
 }

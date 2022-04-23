@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Collections;
 
-namespace CGZBot3.Data.Json.Converters
+namespace CGZBot3.Data.JsonEnvironment.Converters
 {
 	internal class SafeCollectionConveter : JsonConverter
 	{

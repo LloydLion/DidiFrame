@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace CGZBot3.Data.Json.Converters
+namespace CGZBot3.Data.JsonEnvironment.Converters
 {
 	internal class RoleConverter : JsonConverter<IRole>
 	{
