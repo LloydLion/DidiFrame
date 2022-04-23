@@ -1,8 +1,9 @@
 ﻿using CGZBot3.Entities.Message;
-using CGZBot3.Systems.Parties.Validators;
+using CGZBot3.Systems.Parties.CommandEvironment;
 using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.ArgumentsValidation.Validators;
 using CGZBot3.UserCommands.Loader.Reflection;
+using CGZBot3.Utils;
 
 namespace CGZBot3.Systems.Parties
 {
@@ -21,55 +22,53 @@ namespace CGZBot3.Systems.Parties
 		}
 
 
-		[Command("party")]
+		[Command("party create")]
 		public UserCommandResult CreateParty(UserCommandContext ctx, [Validator(typeof(PartyExist), true)] string name, [Validator(typeof(ForeachValidator), typeof(NoBot))][Validator(typeof(ForeachValidator), typeof(NoInvoker))] IMember[] members)
 		{
 			systemCore.CreateParty(name, ctx.Invoker, members);
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["PartyCreated"]) };
 		}
 
-		[Command("renameparty")]
-		public UserCommandResult RenameParty(UserCommandContext ctx, [Validator(typeof(PartyExistAndInvokerIsOwner))] string name, [Validator(typeof(PartyExist), true)] string newName)
+		[Command("party rename")]
+		public UserCommandResult RenameParty(UserCommandContext _, [Validator(typeof(PartyExistAndInvokerIsOwner))] ObjectHolder<PartyModel> party, [Validator(typeof(PartyExist), true)] string newName)
 		{
-			var value = systemCore.GetParty(ctx.Invoker.Server, name);
-			value.Object.Name = newName;
-			value.Dispose();
+			party.Object.Name = newName;
+			party.Dispose();
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["PartyRenamed"]) };
 		}
 
-		[Command("joinparty")]
-		public UserCommandResult JoinIntoParty(UserCommandContext ctx, [Validator(typeof(PartyExistAndInvokerIsOwner))] string name, [Validator(typeof(NoInvoker))][Validator(typeof(MemberInParty), "name", true)] IMember member)
+		[Command("party join")]
+		public UserCommandResult JoinIntoParty(UserCommandContext _, [Validator(typeof(PartyExistAndInvokerIsOwner))] ObjectHolder<PartyModel> party, [Validator(typeof(NoInvoker))][Validator(typeof(MemberInParty), "party", true)] IMember member)
 		{
-			var value = systemCore.GetParty(ctx.Invoker.Server, name);
-			value.Object.Members.Add(member);
-			value.Dispose();
+			party.Object.Members.Add(member);
+			party.Dispose();
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["MemberJoined"]) };
 		}
 
-		[Command("kickparty")]
-		public UserCommandResult KickFromParty(UserCommandContext ctx, [Validator(typeof(PartyExistAndInvokerIsOwner))] string name, [Validator(typeof(NoInvoker))][Validator(typeof(MemberInParty), "name", false)] IMember member)
+		[Command("party kick")]
+		public UserCommandResult KickFromParty(UserCommandContext _, [Validator(typeof(PartyExistAndInvokerIsOwner))] ObjectHolder<PartyModel> party, [Validator(typeof(NoInvoker))][Validator(typeof(MemberInParty), "party", false)] IMember member)
 		{
-			var value = systemCore.GetParty(ctx.Invoker.Server, name);
-			using (value) value.Object.Members.Remove(member);
-			value.Dispose();
+			party.Object.Members.Remove(member);
+			party.Dispose();
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["MemberKicked"]) };
 		}
 
-		[Command("myparties")]
+		[Command("party my")]
 		public UserCommandResult ShowMyParties(UserCommandContext ctx)
 		{
 			using var parties = systemCore.GetPartiesWith(ctx.Invoker);
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = uiHelper.CreatePersonalTablet(parties.Object, ctx.Invoker) };
 		}
 
-		[Command("partyinfo")]
-		public UserCommandResult ShowPartyInfo(UserCommandContext ctx, [Validator(typeof(PartyExist), false)] string name)
+		[Command("party info")]
+		public UserCommandResult ShowPartyInfo(UserCommandContext _, [Validator(typeof(PartyExist), false)] ObjectHolder<PartyModel> party)
 		{
-			using var value = systemCore.GetParty(ctx.Invoker.Server, name);
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = uiHelper.CreatePartyTablet(value.Object) };
+			var report = uiHelper.CreatePartyTablet(party.Object);
+			party.Dispose();
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = report };
 		}
 	}
 }

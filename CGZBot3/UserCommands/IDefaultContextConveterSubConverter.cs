@@ -7,6 +7,6 @@
 		public IReadOnlyList<UserCommandInfo.Argument.Type> PreObjectTypes { get; }
 
 
-		public object Convert(IReadOnlyList<object> preObjects);
+		public object Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects);
 	}
 }

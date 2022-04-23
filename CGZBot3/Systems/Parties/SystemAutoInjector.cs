@@ -1,4 +1,6 @@
 ﻿using CGZBot3.AutoInjecting;
+using CGZBot3.Systems.Parties.CommandEvironment;
+using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.Loader.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +16,7 @@ namespace CGZBot3.Systems.Parties
 			services.AddSingleton<ICommandsHandler, CommandsHandler>();
 			services.AddTransient<IModelFactory<ICollection<PartyModel>>, DefaultCtorModelFactory<List<PartyModel>>>();
 			services.AddTransient<UIHelper>();
+			services.AddTransient<IDefaultContextConveterSubConverter, PartyConverter>();
 		}
 	}
 }

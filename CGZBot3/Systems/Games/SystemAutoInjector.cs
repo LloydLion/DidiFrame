@@ -1,5 +1,7 @@
 ﻿using CGZBot3.AutoInjecting;
 using CGZBot3.Data.Lifetime;
+using CGZBot3.Systems.Games.CommandEvironment;
+using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.Loader.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +18,7 @@ namespace CGZBot3.Systems.Games
 			services.AddTransient<ICommandsHandler, CommandsHandler>();
 			services.AddTransient<IModelFactory<ICollection<GameModel>>, DefaultCtorModelFactory<List<GameModel>>>();
 			services.AddLifetime<GameLifetime, GameModel>(StatesKeys.GamesSystem);
+			services.AddTransient<IDefaultContextConveterSubConverter, GameConverter>();
 		}
 	}
 }

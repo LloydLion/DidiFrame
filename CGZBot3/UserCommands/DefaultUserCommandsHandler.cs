@@ -10,6 +10,7 @@ namespace CGZBot3.UserCommands
 		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
 		private static readonly EventId CallbackDoneID = new (35, "CallbackDone");
 		private static readonly EventId MessageSentID = new(34, "MessageSent");
+		private static readonly EventId InternalErrorID = new(36, "InternalError");
 
 
 		private readonly Options options;
@@ -40,115 +41,122 @@ namespace CGZBot3.UserCommands
 
 		public async Task HandleAsync(UserCommandPreContext preCtx, Action<UserCommandResult> callback)
 		{
-			using (threadLocker.Lock(preCtx.Channel.Server))
+			try
 			{
-				UserCommandResult result;
-
-				using (logger.BeginScope("Command: {CommandName}", preCtx.Command.Name))
+				using (threadLocker.Lock(preCtx.Channel.Server))
 				{
-					preCtx.AddLogger(logger);
+					UserCommandResult result;
 
-					cultureProvider.SetupCulture(preCtx.Invoker.Server);
-
-					logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
-
-					foreach (var argument in preCtx.Command.Arguments)
+					using (logger.BeginScope("Command: {CommandName}", preCtx.Command.Name))
 					{
-						foreach (var validator in argument.PreValidators)
+						preCtx.AddLogger(logger);
+
+						cultureProvider.SetupCulture(preCtx.Invoker.Server);
+
+						logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
+
+						foreach (var argument in preCtx.Command.Arguments)
 						{
-							var tf = validator.Validate(services, preCtx, argument, preCtx.Arguments[argument]);
+							foreach (var validator in argument.PreValidators)
+							{
+								var tf = validator.Validate(services, preCtx, argument, preCtx.Arguments[argument]);
+								if (tf is null) continue;
+								else
+								{
+									var content = localizer["ValidationErrorMessage", preCtx.Command.Localizer[$"{preCtx.Command.Name}.{argument.Name}:{tf}", preCtx.Arguments[argument]]];
+									callback(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(content) });
+									return;
+								}
+							}
+						}
+
+						var ctx = converter.Convert(preCtx);
+						ctx.AddLogger(logger);
+
+						foreach (var filter in ctx.Command.InvokerFilters)
+						{
+							var tf = filter.Filter(ctx);
 							if (tf is null) continue;
 							else
 							{
-								var content = localizer["ValidationErrorMessage", preCtx.Command.Localizer[$"{preCtx.Command.Name}.{argument.Name}:{tf}", preCtx.Arguments[argument]]];
-								callback(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(content) });
+								var content = localizer["ByFilterBlockedMessage", ctx.Command.Localizer[$"{ctx.Command.Name}:{tf.LocaleKey}"]];
+								callback(new UserCommandResult(tf.Code) { RespondMessage = new MessageSendModel(content) });
 								return;
 							}
 						}
-					}
 
-					var ctx = converter.Convert(preCtx);
-					ctx.AddLogger(logger);
-
-					foreach (var filter in ctx.Command.InvokerFilters)
-					{
-						var tf = filter.Filter(ctx);
-						if (tf is null) continue;
-						else
+						foreach (var argument in ctx.Command.Arguments)
 						{
-							var content = localizer["ByFilterBlockedMessage", ctx.Command.Localizer[$"{ctx.Command.Name}:{tf.LocaleKey}"]];
-							callback(new UserCommandResult(tf.Code) { RespondMessage = new MessageSendModel(content) });
-							return;
-						}
-					}
-
-					foreach (var argument in ctx.Command.Arguments)
-					{
-						foreach (var validator in argument.Validators)
-						{
-							var tf = validator.Validate(services, ctx, argument, ctx.Arguments[argument]);
-							if (tf is null) continue;
-							else
+							foreach (var validator in argument.Validators)
 							{
-								var content = localizer["ValidationErrorMessage", ctx.Command.Localizer[$"{ctx.Command.Name}.{argument.Name}:{tf}", ctx.Arguments[argument]]];
-								callback(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(content) });
-								return;
+								var tf = validator.Validate(services, ctx, argument, ctx.Arguments[argument]);
+								if (tf is null) continue;
+								else
+								{
+									var content = localizer["ValidationErrorMessage", ctx.Command.Localizer[$"{ctx.Command.Name}.{argument.Name}:{tf}", ctx.Arguments[argument]]];
+									callback(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(content) });
+									return;
+								}
 							}
 						}
-					}
 
-					try
-					{
-						using (logger.BeginScope("Internal"))
-							result = await ctx.Command.Handler.Invoke(ctx);
-					}
-					catch (Exception ex)
-					{
-						result = new UserCommandResult(UserCommandCode.UnspecifiedError)
+						try
 						{
-							RespondMessage = createExcetionMessage(ex)
-						};
+							using (logger.BeginScope("Internal"))
+								result = await ctx.Command.Handler.Invoke(ctx);
+						}
+						catch (Exception ex)
+						{
+							result = new UserCommandResult(UserCommandCode.UnspecifiedError)
+							{
+								RespondMessage = createExcetionMessage(ex)
+							};
+						}
+
+						logger.Log(LogLevel.Debug, CommandCompliteID, "Command executed with code {ResultCode}", result.Code);
+
+						callback(result);
+
+						logger.Log(LogLevel.Trace, CallbackDoneID, "Callback done");
+
+						if (result.RespondMessage is not null)
+							logger.Log(LogLevel.Trace, MessageSentID, "Message sent with content: {Content}", result.RespondMessage.Content);
 					}
 
-					logger.Log(LogLevel.Debug, CommandCompliteID, "Command executed with code {ResultCode}", result.Code);
 
-					callback(result);
-
-					logger.Log(LogLevel.Trace, CallbackDoneID, "Callback done");
-
-					if (result.RespondMessage is not null)
-						logger.Log(LogLevel.Trace, MessageSentID, "Message sent with content: {Content}", result.RespondMessage.Content);
-				}
-
-
-				MessageSendModel? createExcetionMessage(Exception ex)
-				{
-					string text;
-					switch (options.UnspecifiedErrorMessage)
+					MessageSendModel? createExcetionMessage(Exception ex)
 					{
-						case Options.UnspecifiedErrorMessageBehavior.Disable:
-							return null;
-						case Options.UnspecifiedErrorMessageBehavior.EnableWithoutDebugInfo:
-							text = "Command excecution finished with error\nCode: " + nameof(UserCommandCode.UnspecifiedError);
-							break;
-						case Options.UnspecifiedErrorMessageBehavior.EnableWithExceptionsTypeAndMessage:
-							text = "Command excecution finished with error\n" +
-									$"Error: {ex}\n" +
-									"Code: " + nameof(UserCommandCode.UnspecifiedError);
-							break;
-						case Options.UnspecifiedErrorMessageBehavior.EnableWithFullExceptionInfo:
-							text = "Command excecution finished with error\n" +
-									$"Error: {ex}\n" +
-									$"Stack: {ex.StackTrace}" +
-									$"InnerException: {ex.InnerException?.ToString() ?? "No inner exception"}\n" +
-									$"InnerExceptionStack: {ex.InnerException?.StackTrace ?? "No inner exception"}\n" +
-									"Code: " + nameof(UserCommandCode.UnspecifiedError);
-							break;
-						default: throw new Exception(); //Never be
-					}
+						string text;
+						switch (options.UnspecifiedErrorMessage)
+						{
+							case Options.UnspecifiedErrorMessageBehavior.Disable:
+								return null;
+							case Options.UnspecifiedErrorMessageBehavior.EnableWithoutDebugInfo:
+								text = "Command excecution finished with error\nCode: " + nameof(UserCommandCode.UnspecifiedError);
+								break;
+							case Options.UnspecifiedErrorMessageBehavior.EnableWithExceptionsTypeAndMessage:
+								text = "Command excecution finished with error\n" +
+										$"Error: {ex}\n" +
+										"Code: " + nameof(UserCommandCode.UnspecifiedError);
+								break;
+							case Options.UnspecifiedErrorMessageBehavior.EnableWithFullExceptionInfo:
+								text = "Command excecution finished with error\n" +
+										$"Error: {ex}\n" +
+										$"Stack: {ex.StackTrace}" +
+										$"InnerException: {ex.InnerException?.ToString() ?? "No inner exception"}\n" +
+										$"InnerExceptionStack: {ex.InnerException?.StackTrace ?? "No inner exception"}\n" +
+										"Code: " + nameof(UserCommandCode.UnspecifiedError);
+								break;
+							default: throw new Exception(); //Never be
+						}
 
-					return new MessageSendModel(text);
+						return new MessageSendModel(text);
+					}
 				}
+			}
+			catch (Exception ex)
+			{
+				logger.Log(LogLevel.Error, InternalErrorID, ex, "Exception while handling the command (Internal)");
 			}
 		}
 

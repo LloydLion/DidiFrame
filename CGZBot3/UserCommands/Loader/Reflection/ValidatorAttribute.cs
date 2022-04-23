@@ -13,7 +13,7 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 			validator = Activator.CreateInstance(validatorType, ctorArgs) ?? throw new ImpossibleVariantException();
 
 			if (validator is IUserCommandArgumentValidator) IsPreValidator = false;
-			else if (validator is IUserCommandArgumentValidator) IsPreValidator = true;
+			else if (validator is IUserCommandArgumentPreValidator) IsPreValidator = true;
 			else throw new ArgumentException("Transmited type is not validator", nameof(validatorType));
 		}
 

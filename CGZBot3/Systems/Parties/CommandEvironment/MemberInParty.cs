@@ -1,8 +1,8 @@
 ﻿using CGZBot3.UserCommands;
 using CGZBot3.UserCommands.ArgumentsValidation;
-using Microsoft.Extensions.DependencyInjection;
+using CGZBot3.Utils;
 
-namespace CGZBot3.Systems.Parties.Validators
+namespace CGZBot3.Systems.Parties.CommandEvironment
 {
 	internal class MemberInParty : AbstractArgumentValidator<IMember>
 	{
@@ -19,10 +19,7 @@ namespace CGZBot3.Systems.Parties.Validators
 
 		protected override string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, IMember value)
 		{
-			var partyName = context.Arguments[context.Command.Arguments.Single(s => s.Name == partyArgumentName)].As<string>();
-			var system = GetServiceProvider().GetRequiredService<ISystemCore>();
-
-			using var party = system.GetParty(context.Invoker.Server, partyName);
+			var party = context.Arguments[context.Command.Arguments.Single(s => s.Name == partyArgumentName)].As<ObjectHolder<PartyModel>>();
 
 			var isIn = party.Object.Members.Any(s => s == value);
 

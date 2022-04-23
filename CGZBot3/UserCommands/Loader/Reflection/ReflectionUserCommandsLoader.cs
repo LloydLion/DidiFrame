@@ -128,22 +128,15 @@ namespace CGZBot3.UserCommands.Loader.Reflection
 
 			if (@params[0].ParameterType != typeof(UserCommandContext)) return false;
 
-			var possibleTypes = new Type[]
-				{ typeof(int), typeof(double), typeof(string), typeof(TimeSpan), typeof(IMember), typeof(IRole), typeof(object), typeof(DateTime) };
 
 			for (int i = 1; i < @params.Length - 1; i++)
 			{
-				if (!possibleTypes.Contains(@params[i].ParameterType)) return false;
+				if (@params[i].ParameterType.IsArray) return false;
 				if (!Regex.IsMatch(@params[i].Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
 			}
 
 			if (@params.Length > 1)
-			{
-				var lastParamType = @params.Last().ParameterType;
-				lastParamType = lastParamType.IsArray ? lastParamType.GetElementType() : lastParamType;
-				if (!possibleTypes.Contains(lastParamType)) return false;
 				if (!Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
-			}
 
 			if (info.ReturnType != typeof(Task<UserCommandResult>) && info.ReturnType != typeof(UserCommandResult)) return false;
 

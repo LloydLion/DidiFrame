@@ -2,13 +2,14 @@
 using CGZBot3.UserCommands.ArgumentsValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Parties.Validators
+namespace CGZBot3.Systems.Parties.CommandEvironment
 {
-	internal class PartyExistAndInvokerIsOwner : AbstractArgumentValidator<string>
+	internal class PartyExistAndInvokerIsOwner : IUserCommandArgumentPreValidator
 	{
-		protected override string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, string value)
+		public string? Validate(IServiceProvider services, UserCommandPreContext context, UserCommandInfo.Argument argument, IReadOnlyList<object> values)
 		{
-			var system = GetServiceProvider().GetRequiredService<ISystemCore>();
+			var value = (string)values[0];
+			var system = services.GetRequiredService<ISystemCore>();
 			if (system.HasParty(context.Invoker.Server, value))
 			{
 				using var party = system.GetParty(context.Invoker.Server, value);

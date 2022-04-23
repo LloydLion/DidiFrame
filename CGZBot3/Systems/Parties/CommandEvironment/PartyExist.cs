@@ -2,9 +2,9 @@
 using CGZBot3.UserCommands.ArgumentsValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Parties.Validators
+namespace CGZBot3.Systems.Parties.CommandEvironment
 {
-	internal class PartyExist : AbstractArgumentValidator<string>
+	internal class PartyExist : IUserCommandArgumentPreValidator
 	{
 		private readonly bool inverse;
 
@@ -15,9 +15,10 @@ namespace CGZBot3.Systems.Parties.Validators
 		}
 
 
-		protected override string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, string value)
+		public string? Validate(IServiceProvider services, UserCommandPreContext context, UserCommandInfo.Argument argument, IReadOnlyList<object> values)
 		{
-			var system = GetServiceProvider().GetRequiredService<ISystemCore>();
+			var value = (string)values[0];
+			var system = services.GetRequiredService<ISystemCore>();
 			if (system.HasParty(context.Invoker.Server, value)) return inverse ? "PartyExist" : null;
 			else return inverse ? null : "PartyNotExist";
 		}
