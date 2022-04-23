@@ -41,7 +41,7 @@ namespace CGZBot3.DSharpAdapter
 
 		public bool Equals(IMessage? other) => other is Message msg && msg.Id == Id;
 
-		public Task DeleteAsync() => message.DeleteAsync();
+		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => message.DeleteAsync());
 
 		public IInteractionDispatcher GetInteractionDispatcher() => mid.Value;
 
@@ -51,10 +51,13 @@ namespace CGZBot3.DSharpAdapter
 			GC.SuppressFinalize(this);
 		}
 
-		public async Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
+		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
 		{
-			if (resetDispatcher) ResetInteractionDispatcher();
-			message = await message.ModifyAsync(converter.ConvertUp(SendModel = sendModel));
+			return owner.BaseServer.SourceClient.DoSafeOperationAsync(async () =>
+			{
+				if (resetDispatcher) ResetInteractionDispatcher();
+				message = await message.ModifyAsync(converter.ConvertUp(SendModel = sendModel));
+			});
 		}
 
 		public void ResetInteractionDispatcher()

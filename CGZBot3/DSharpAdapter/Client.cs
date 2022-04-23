@@ -1,17 +1,21 @@
 ﻿using CGZBot3.UserCommands;
 using DSharpPlus;
+using DSharpPlus.Exceptions;
 
 namespace CGZBot3.DSharpAdapter
 {
 	internal class Client : IClient
 	{
 		private readonly static EventId MessageSentHandlerExceptionID = new(44, "MessageSentHandlerException");
+		private readonly static EventId SafeOperationErrorID = new(23, "SafeOperationError");
+		private readonly static EventId SafeOperationCriticalErrorID = new(22, "SafeOperationCriticalError");
 
 
 		private readonly DiscordClient client;
 		private readonly List<Server> servers = new();
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
+		private readonly ILogger<Client> logger;
 
 
 		public event MessageSentEventHandler? MessageSent;
@@ -31,6 +35,7 @@ namespace CGZBot3.DSharpAdapter
 		public Client(IOptions<Options> options, IUserCommandsRepository repository, ILoggerFactory factory)
 		{
 			var opt = options.Value;
+			logger = factory.CreateLogger<Client>();
 
 			client = new DiscordClient(new DiscordConfiguration
 			{
@@ -111,6 +116,133 @@ namespace CGZBot3.DSharpAdapter
 			cts.Cancel();
 			serverListUpdateTask?.Wait();
 			client.Dispose();
+		}
+
+		public async Task CheckAndAwaitConnectionAsync()
+		{
+		reset:
+			try
+			{
+				//Demo operation
+				await client.GetUserAsync(SelfAccount.Id);
+			}
+			catch (Exception)
+			{
+				await Task.Delay(450);
+				goto reset;
+			}
+		}
+
+		public void DoSafeOperation(Action operation)
+		{
+		reset:
+			CheckAndAwaitConnectionAsync().Wait();
+
+			try
+			{
+				operation();
+			}
+			catch (Exception ex)
+			{
+				var pex = ex;
+				if (ex is AggregateException ar) pex = ar.InnerException;
+
+				if (pex is ServerErrorException || pex is RateLimitException)
+				{
+					logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
+					if (pex is RateLimitException) Thread.Sleep(250);
+					goto reset;
+				}
+				else
+				{
+					logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
+					throw;
+				}
+			}
+		}
+
+		public TReturn DoSafeOperation<TReturn>(Func<TReturn> operation)
+		{
+		reset:
+			CheckAndAwaitConnectionAsync().Wait();
+
+			try
+			{
+				return operation();
+			}
+			catch (Exception ex)
+			{
+				var pex = ex;
+				if (ex is AggregateException ar) pex = ar.InnerException;
+
+				if (pex is ServerErrorException || pex is RateLimitException)
+				{
+					logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
+					if (pex is RateLimitException) Thread.Sleep(250);
+					goto reset;
+				}
+				else
+				{
+					logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
+					throw;
+				}
+			}
+		}
+		
+		public async Task DoSafeOperationAsync(Func<Task> operation)
+		{
+		reset:
+			await CheckAndAwaitConnectionAsync();
+
+			try
+			{
+				await operation();
+			}
+			catch (Exception ex)
+			{
+				var pex = ex;
+				if (ex is AggregateException ar) pex = ar.InnerException;
+
+				if (pex is ServerErrorException || pex is RateLimitException)
+				{
+					logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
+					if (pex is RateLimitException) Thread.Sleep(250);
+					goto reset;
+				}
+				else
+				{
+					logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
+					throw;
+				}
+			}
+		}
+
+		public async Task<TReturn> DoSafeOperationAsync<TReturn>(Func<Task<TReturn>> operation)
+		{
+		reset:
+			await CheckAndAwaitConnectionAsync();
+
+			try
+			{
+				return await operation();
+			}
+			catch (Exception ex)
+			{
+				var pex = ex;
+				if (ex is AggregateException ar) pex = ar.InnerException;
+
+				if (pex is ServerErrorException || pex is RateLimitException)
+				{
+					logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
+					if (pex is RateLimitException) Thread.Sleep(250);
+					goto reset;
+				}
+				else
+				{
+					logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
+					throw;
+				}
+			}
 		}
 
 

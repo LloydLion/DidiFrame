@@ -174,38 +174,39 @@ namespace CGZBot3.DSharpAdapter
 			while (token.IsCancellationRequested)
 			{
 				await update();
-				await Task.Delay(new TimeSpan(0, 0, 30), token);
+				await Task.Delay(new TimeSpan(0, 5, 0), token);
 			}
 
-			async Task update()
-			{
-				using (cacheUpdateLocker.Lock(members))
-				{
-					members.Clear();
-					members.AddRange((await guild.GetAllMembersAsync()).Select(s => new Member(s, this)));
-				}
 
-				using (cacheUpdateLocker.Lock(roles))
+			Task update() => client.DoSafeOperationAsync(async () =>
 				{
-					roles.Clear();
-					roles.AddRange(guild.Roles.Select(s => new Role(s.Value, this)));
-				}
-
-				using (cacheUpdateLocker.Lock(channels))
-				{
-					using (cacheUpdateLocker.Lock(categories))
+					using (cacheUpdateLocker.Lock(members))
 					{
-						var chs = await guild.GetChannelsAsync();
-						channels.Clear();
-						categories.Clear();
-						foreach (var ch in chs)
+						members.Clear();
+						members.AddRange((await guild.GetAllMembersAsync()).Select(s => new Member(s, this)));
+					}
+
+					using (cacheUpdateLocker.Lock(roles))
+					{
+						roles.Clear();
+						roles.AddRange(guild.Roles.Select(s => new Role(s.Value, this)));
+					}
+
+					using (cacheUpdateLocker.Lock(channels))
+					{
+						using (cacheUpdateLocker.Lock(categories))
 						{
-							if (ch.IsCategory) categories.Add(new ChannelCategory(ch, this));
-							else channels.Add(Channel.Construct(ch, this));
+							var chs = await guild.GetChannelsAsync();
+							channels.Clear();
+							categories.Clear();
+							foreach (var ch in chs)
+							{
+								if (ch.IsCategory) categories.Add(new ChannelCategory(ch, this));
+								else channels.Add(Channel.Construct(ch, this));
+							}
 						}
 					}
-				}
-			}
+				});
 		}
 	}
 }

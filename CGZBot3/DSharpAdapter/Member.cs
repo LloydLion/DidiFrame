@@ -27,18 +27,21 @@ namespace CGZBot3.DSharpAdapter
 
 		public IReadOnlyCollection<IRole> GetRoles() => member.Roles.Select(s => new Role(s, BaseServer)).ToArray();
 
-		public Task GrantRoleAsync(IRole role) => member.GrantRoleAsync(((Role)role).BaseRole);
+		public Task GrantRoleAsync(IRole role) => BaseServer.SourceClient.DoSafeOperationAsync(() => member.GrantRoleAsync(((Role)role).BaseRole));
 
-		public Task RevokeRoleAsync(IRole role) => member.RevokeRoleAsync(((Role)role).BaseRole);
+		public Task RevokeRoleAsync(IRole role) => BaseServer.SourceClient.DoSafeOperationAsync(() => member.RevokeRoleAsync(((Role)role).BaseRole));
 
 		public bool HasPermissionIn(Permissions permissions, IChannel channel) =>
 			member.PermissionsIn(((Channel)channel).BaseChannel).GetAbstract().HasFlag(permissions);
 
 
-		internal async Task SendDirectMessageAsyncInternal(MessageSendModel model)
+		public Task SendDirectMessageAsyncInternal(MessageSendModel model)
 		{
-			var channel = await member.CreateDmChannelAsync();
-			await channel.SendMessageAsync(converter.ConvertUp(model));
+			return BaseServer.SourceClient.DoSafeOperationAsync(async () =>
+			{
+				var channel = await member.CreateDmChannelAsync();
+				await channel.SendMessageAsync(converter.ConvertUp(model));
+			});
 		}
 	}
 }

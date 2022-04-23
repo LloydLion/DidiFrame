@@ -71,7 +71,8 @@ namespace CGZBot3.DSharpAdapter
 		{
 			var builder = converter.ConvertUp(messageSendModel);
 
-			var msg = new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder));
+			var msg = await server.SourceClient.DoSafeOperationAsync(async () =>
+				new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder)));
 
 			using (listLocker.Lock(this))
 			{
