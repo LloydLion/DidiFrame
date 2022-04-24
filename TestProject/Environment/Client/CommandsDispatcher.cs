@@ -1,5 +1,5 @@
-﻿using CGZBot3.Exceptions;
-using CGZBot3.UserCommands;
+﻿using DidiFrame.Exceptions;
+using DidiFrame.UserCommands;
 
 namespace TestProject.Environment.Client
 {

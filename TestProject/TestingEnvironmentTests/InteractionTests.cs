@@ -1,5 +1,5 @@
-﻿using CGZBot3.Entities.Message;
-using CGZBot3.Entities.Message.Components;
+﻿using DidiFrame.Entities.Message;
+using DidiFrame.Entities.Message.Components;
 using System.Linq;
 using System.Threading.Tasks;
 using TestProject.Environment.Client;

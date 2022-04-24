@@ -1,8 +1,8 @@
-﻿using CGZBot3.UserCommands;
-using CGZBot3.UserCommands.ArgumentsValidation;
-using CGZBot3.UserCommands.InvokerFiltartion;
-using CGZBot3.UserCommands.Loader.Reflection;
-using CGZBot3.UserCommands.Validators;
+﻿using DidiFrame.UserCommands;
+using DidiFrame.UserCommands.ArgumentsValidation;
+using DidiFrame.UserCommands.InvokerFiltartion;
+using DidiFrame.UserCommands.Loader.Reflection;
+using DidiFrame.UserCommands.Validators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -101,7 +101,7 @@ namespace TestProject.TestingEnvironmentTests
 
 		private Task<UserCommandResult> CommandHandler(UserCommandContext ctx)
 		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new CGZBot3.Entities.Message.MessageSendModel($"Hello {ctx.Invoker.Mention}!") });
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new DidiFrame.Entities.Message.MessageSendModel($"Hello {ctx.Invoker.Mention}!") });
 		}
 
 

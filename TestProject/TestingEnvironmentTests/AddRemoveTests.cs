@@ -1,4 +1,4 @@
-﻿using CGZBot3.Entities.Message;
+﻿using DidiFrame.Entities.Message;
 using System.Linq;
 using TestProject.Environment.Client;
 

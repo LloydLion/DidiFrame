@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CGZBot3\CGZBot3.csproj" />
+    <Folder Include="SystemsTests\Test\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="SystemsTests\Test\" />
+    <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
   </ItemGroup>
 
 </Project>

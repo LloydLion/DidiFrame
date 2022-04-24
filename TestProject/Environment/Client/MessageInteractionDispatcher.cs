@@ -1,4 +1,4 @@
-﻿using CGZBot3.Entities.Message.Components;
+﻿using DidiFrame.Entities.Message.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;

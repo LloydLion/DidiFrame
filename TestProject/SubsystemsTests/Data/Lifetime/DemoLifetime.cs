@@ -1,4 +1,4 @@
-﻿using CGZBot3.Data.Lifetime;
+﻿using DidiFrame.Data.Lifetime;
 using System;
 using System.Threading.Tasks;
 

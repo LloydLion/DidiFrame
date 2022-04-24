@@ -1,4 +1,4 @@
-﻿using CGZBot3.Data;
+﻿using DidiFrame.Data;
 using System.Collections.Generic;
 
 namespace TestProject.Environment.Data

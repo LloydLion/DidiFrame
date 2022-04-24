@@ -1,6 +1,6 @@
-﻿using CGZBot3.Entities;
-using CGZBot3.Entities.Message;
-using CGZBot3.Interfaces;
+﻿using DidiFrame.Entities;
+using DidiFrame.Entities.Message;
+using DidiFrame.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

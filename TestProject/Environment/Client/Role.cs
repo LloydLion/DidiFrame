@@ -1,5 +1,5 @@
-﻿using CGZBot3.Entities;
-using CGZBot3.Interfaces;
+﻿using DidiFrame.Entities;
+using DidiFrame.Interfaces;
 
 namespace TestProject.Environment.Client
 {

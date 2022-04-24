@@ -1,5 +1,5 @@
-﻿using CGZBot3.Data;
-using CGZBot3.Utils;
+﻿using DidiFrame.Data;
+using DidiFrame.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

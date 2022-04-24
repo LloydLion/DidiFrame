@@ -1,5 +1,5 @@
-﻿using CGZBot3.Data;
-using CGZBot3.Data.Lifetime;
+﻿using DidiFrame.Data;
+using DidiFrame.Data.Lifetime;
 using System.Collections.Generic;
 using System.Linq;
 

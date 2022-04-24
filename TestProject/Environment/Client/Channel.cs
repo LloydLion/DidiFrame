@@ -1,4 +1,4 @@
-﻿using CGZBot3.Interfaces;
+﻿using DidiFrame.Interfaces;
 using System;
 using System.Threading.Tasks;
 

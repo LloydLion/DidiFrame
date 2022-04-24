@@ -1,4 +1,4 @@
-﻿using CGZBot3.Culture;
+﻿using DidiFrame.Culture;
 using System;
 using System.Globalization;
 using System.Threading;
