@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Data.Lifetime;
 
-namespace CGZBot3.Systems.Streaming
+namespace TestBot.Systems.Streaming
 {
 	internal class SystemCore : ISystemCore, ISystemNotifier
 	{

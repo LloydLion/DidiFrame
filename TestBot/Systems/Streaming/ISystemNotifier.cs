@@ -1,4 +1,4 @@
-﻿namespace CGZBot3.Systems.Streaming
+﻿namespace TestBot.Systems.Streaming
 {
 	public interface ISystemNotifier
 	{

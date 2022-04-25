@@ -2,7 +2,7 @@
 using DidiFrame.Entities.Message.Components;
 using DidiFrame.Entities.Message.Embed;
 
-namespace CGZBot3.Systems.Streaming
+namespace TestBot.Systems.Streaming
 {
 	public class UIHelper
 	{

@@ -4,7 +4,7 @@ using DidiFrame.Entities.Message.Components;
 using DidiFrame.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Streaming
+namespace TestBot.Systems.Streaming
 {
 	public class StreamLifetime : AbstractFullLifetime<StreamState, StreamModel>
 	{

@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Data.Lifetime;
 
-namespace CGZBot3.Systems.Voice
+namespace TestBot.Systems.Voice
 {
 	public class SystemCore : ISystemCore, ISystemNotifier
 	{

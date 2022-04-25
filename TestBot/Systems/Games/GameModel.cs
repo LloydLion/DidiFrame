@@ -2,7 +2,7 @@
 using DidiFrame.Data.Model;
 using DidiFrame.Utils;
 
-namespace CGZBot3.Systems.Games
+namespace TestBot.Systems.Games
 {
 	public class GameModel : IStateBasedLifetimeBase<GameState>
 	{

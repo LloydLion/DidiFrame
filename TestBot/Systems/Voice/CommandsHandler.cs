@@ -3,7 +3,7 @@ using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.ArgumentsValidation.Validators;
 using DidiFrame.UserCommands.Loader.Reflection;
 
-namespace CGZBot3.Systems.Voice
+namespace TestBot.Systems.Voice
 {
 	public class CommandsHandler : ICommandsHandler
 	{

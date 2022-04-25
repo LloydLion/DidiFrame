@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Utils;
 
-namespace CGZBot3.Systems.Parties
+namespace TestBot.Systems.Parties
 {
 	public class SystemCore : ISystemCore, ISystemNotifier
 	{

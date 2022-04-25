@@ -1,4 +1,4 @@
-﻿namespace CGZBot3.Systems.Reputation
+﻿namespace TestBot.Systems.Reputation
 {
 	public class ReputationDispatcher : IReputationDispatcher, IDisposable
 	{

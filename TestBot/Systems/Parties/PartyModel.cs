@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Data.Model;
 
-namespace CGZBot3.Systems.Parties
+namespace TestBot.Systems.Parties
 {
 	public class PartyModel
 	{

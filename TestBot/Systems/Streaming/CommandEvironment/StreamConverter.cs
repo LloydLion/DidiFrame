@@ -1,7 +1,7 @@
 ﻿using DidiFrame.UserCommands;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Streaming.CommandEvironment
+namespace TestBot.Systems.Streaming.CommandEvironment
 {
 	internal class StreamConverter : IDefaultContextConveterSubConverter
 	{

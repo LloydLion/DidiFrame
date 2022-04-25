@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Utils;
 
-namespace CGZBot3.Systems.Reputation
+namespace TestBot.Systems.Reputation
 {
 	public interface IMembersReputationRepository
 	{

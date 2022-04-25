@@ -4,7 +4,7 @@ using DidiFrame.Entities.Message.Components;
 using DidiFrame.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Discussion
+namespace TestBot.Systems.Discussion
 {
 	internal class DiscussionChannelLifetime : ILifetime<DiscussionChannel>
 	{

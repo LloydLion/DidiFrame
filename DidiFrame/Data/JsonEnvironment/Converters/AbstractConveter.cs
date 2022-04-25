@@ -14,11 +14,12 @@ namespace DidiFrame.Data.JsonEnvironment.Converters
 
 		public override bool CanConvert(Type objectType)
 		{
-			return !(objectType.Assembly != (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()) ||
-				objectType.Assembly != Assembly.GetExecutingAssembly() ||
+			var result = !((objectType.Assembly != (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()) &&
+				objectType.Assembly != Assembly.GetExecutingAssembly()) ||
 				objectType.IsValueType ||
 				typeof(IEnumerable).IsAssignableFrom(objectType) ||
 				unsupportedTypes.Any(s => s.IsAssignableFrom(objectType)));
+			return result;
 		}
 
 		public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)

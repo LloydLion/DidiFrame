@@ -1,7 +1,7 @@
 ﻿using DidiFrame.Data.Lifetime;
 using DidiFrame.Data.Model;
 
-namespace CGZBot3.Systems.Discussion
+namespace TestBot.Systems.Discussion
 {
 	internal class DiscussionChannel : ILifetimeBase
 	{

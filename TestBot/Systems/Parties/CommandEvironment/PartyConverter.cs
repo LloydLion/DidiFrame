@@ -2,7 +2,7 @@
 using DidiFrame.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Parties.CommandEvironment
+namespace TestBot.Systems.Parties.CommandEvironment
 {
 	internal class PartyConverter : IDefaultContextConveterSubConverter
 	{

@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Data.Model;
 
-namespace CGZBot3.Systems.Test
+namespace TestBot.Systems.Test
 {
 	internal class TestSettings
 	{

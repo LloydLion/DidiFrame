@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Data.Model;
 
-namespace CGZBot3.Systems.Reputation
+namespace TestBot.Systems.Reputation
 {
 	public class ReputationSettings
 	{

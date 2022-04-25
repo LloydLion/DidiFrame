@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CGZBot3.Systems.Discussion
+namespace TestBot.Systems.Discussion
 {
 	internal class UIHelper
 	{

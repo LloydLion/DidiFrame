@@ -1,11 +1,11 @@
-﻿using CGZBot3.Systems.Games.CommandEvironment;
+﻿using TestBot.Systems.Games.CommandEvironment;
 using DidiFrame.AutoInjecting;
 using DidiFrame.Data.Lifetime;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Loader.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Games
+namespace TestBot.Systems.Games
 {
 	internal class SystemAutoInjector : IAutoSubinjector
 	{

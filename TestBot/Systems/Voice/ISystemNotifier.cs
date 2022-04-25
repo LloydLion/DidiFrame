@@ -1,4 +1,4 @@
-﻿namespace CGZBot3.Systems.Voice
+﻿namespace TestBot.Systems.Voice
 {
 	public interface ISystemNotifier
 	{

@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Data.Model;
 
-namespace CGZBot3.Systems.Voice
+namespace TestBot.Systems.Voice
 {
 	public class VoiceSettings
 	{

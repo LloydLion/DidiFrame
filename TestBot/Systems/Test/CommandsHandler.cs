@@ -2,7 +2,7 @@
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Loader.Reflection;
 
-namespace CGZBot3.Systems.Test
+namespace TestBot.Systems.Test
 {
 	internal class CommandsHandler : ICommandsHandler
 	{

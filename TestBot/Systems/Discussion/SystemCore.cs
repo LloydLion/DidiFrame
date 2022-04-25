@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Data.Lifetime;
 
-namespace CGZBot3.Systems.Discussion
+namespace TestBot.Systems.Discussion
 {
 	internal class SystemCore
 	{

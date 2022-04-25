@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CGZBot3.Systems.Reputation
+namespace TestBot.Systems.Reputation
 {
 	internal class MemberLegalLevelChangeOperationArgsValidator : AbstractValidator<MemberLegalLevelChangeOperationArgs>
 	{

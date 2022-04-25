@@ -1,4 +1,4 @@
-﻿namespace CGZBot3
+﻿namespace TestBot
 {
 	internal class SettingsKeys
 	{
@@ -14,6 +14,6 @@
 
 		public const string VoiceSystem = "voice";
 
-		public const string StreamingSystem = "voice";
+		public const string StreamingSystem = "streaming";
 	}
 }

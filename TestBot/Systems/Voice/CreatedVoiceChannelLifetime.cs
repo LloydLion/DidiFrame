@@ -3,7 +3,7 @@ using DidiFrame.Entities.Message;
 using DidiFrame.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Voice
+namespace TestBot.Systems.Voice
 {
 	public class CreatedVoiceChannelLifetime : AbstractFullLifetime<VoiceChannelState, CreatedVoiceChannel>
 	{

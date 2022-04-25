@@ -1,10 +1,10 @@
-﻿using CGZBot3.Systems.Streaming.CommandEvironment;
+﻿using TestBot.Systems.Streaming.CommandEvironment;
 using DidiFrame.Entities.Message;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.ArgumentsValidation.Validators;
 using DidiFrame.UserCommands.Loader.Reflection;
 
-namespace CGZBot3.Systems.Streaming
+namespace TestBot.Systems.Streaming
 {
 	internal class CommandHandler : ICommandsHandler
 	{

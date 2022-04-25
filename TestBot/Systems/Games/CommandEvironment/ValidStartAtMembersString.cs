@@ -1,7 +1,7 @@
 ﻿using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.ArgumentsValidation;
 
-namespace CGZBot3.Systems.Games.CommandEvironment
+namespace TestBot.Systems.Games.CommandEvironment
 {
 	internal class ValidStartAtMembersString : AbstractArgumentValidator<string>
 	{

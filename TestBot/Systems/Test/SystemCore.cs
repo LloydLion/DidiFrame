@@ -1,7 +1,7 @@
 ﻿using DidiFrame.Data;
 using DidiFrame.Entities.Message;
 
-namespace CGZBot3.Systems.Test
+namespace TestBot.Systems.Test
 {
 	internal class SystemCore
 	{

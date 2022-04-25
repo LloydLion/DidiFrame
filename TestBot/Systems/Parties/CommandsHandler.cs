@@ -1,11 +1,11 @@
-﻿using CGZBot3.Systems.Parties.CommandEvironment;
+﻿using TestBot.Systems.Parties.CommandEvironment;
 using DidiFrame.Entities.Message;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.ArgumentsValidation.Validators;
 using DidiFrame.UserCommands.Loader.Reflection;
 using DidiFrame.Utils;
 
-namespace CGZBot3.Systems.Parties
+namespace TestBot.Systems.Parties
 {
 	internal class CommandsHandler : ICommandsHandler
 	{

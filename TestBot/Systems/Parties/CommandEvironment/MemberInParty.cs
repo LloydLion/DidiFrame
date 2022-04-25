@@ -2,7 +2,7 @@
 using DidiFrame.UserCommands.ArgumentsValidation;
 using DidiFrame.Utils;
 
-namespace CGZBot3.Systems.Parties.CommandEvironment
+namespace TestBot.Systems.Parties.CommandEvironment
 {
 	internal class MemberInParty : AbstractArgumentValidator<IMember>
 	{

@@ -1,6 +1,6 @@
 ﻿using DidiFrame.GlobalEvents;
 
-namespace CGZBot3.Systems.Reputation
+namespace TestBot.Systems.Reputation
 {
 	public class SystemCore : IDisposable
 	{

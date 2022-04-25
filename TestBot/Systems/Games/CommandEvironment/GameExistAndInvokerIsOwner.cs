@@ -2,7 +2,7 @@
 using DidiFrame.UserCommands.ArgumentsValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Games.CommandEvironment
+namespace TestBot.Systems.Games.CommandEvironment
 {
 	internal class GameExistAndInvokerIsOwner : IUserCommandArgumentPreValidator
 	{

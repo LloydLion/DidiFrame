@@ -1,4 +1,4 @@
-﻿namespace CGZBot3.Systems.Parties
+﻿namespace TestBot.Systems.Parties
 {
 	internal interface ISystemNotifier
 	{

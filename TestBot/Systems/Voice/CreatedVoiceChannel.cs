@@ -2,7 +2,7 @@
 using DidiFrame.Data.Model;
 using DidiFrame.Utils;
 
-namespace CGZBot3.Systems.Voice
+namespace TestBot.Systems.Voice
 {
 	public class CreatedVoiceChannel : IStateBasedLifetimeBase<VoiceChannelState>
 	{

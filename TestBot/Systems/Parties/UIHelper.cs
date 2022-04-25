@@ -1,7 +1,7 @@
 ﻿using DidiFrame.Entities.Message;
 using DidiFrame.Entities.Message.Embed;
 
-namespace CGZBot3.Systems.Parties
+namespace TestBot.Systems.Parties
 {
 	internal class UIHelper
 	{

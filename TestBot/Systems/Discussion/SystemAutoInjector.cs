@@ -2,7 +2,7 @@
 using DidiFrame.AutoInjecting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Discussion
+namespace TestBot.Systems.Discussion
 {
 	internal class SystemAutoInjector : IAutoSubinjector
 	{

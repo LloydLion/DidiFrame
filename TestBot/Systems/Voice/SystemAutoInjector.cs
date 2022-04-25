@@ -2,7 +2,7 @@
 using DidiFrame.AutoInjecting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Voice
+namespace TestBot.Systems.Voice
 {
 	internal class SystemAutoInjector : IAutoSubinjector
 	{

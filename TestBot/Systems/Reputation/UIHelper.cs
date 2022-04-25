@@ -1,7 +1,7 @@
 ﻿using DidiFrame.Entities.Message;
 using DidiFrame.Entities.Message.Embed;
 
-namespace CGZBot3.Systems.Reputation
+namespace TestBot.Systems.Reputation
 {
 	internal class UIHelper
 	{

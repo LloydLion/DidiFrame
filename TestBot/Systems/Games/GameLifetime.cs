@@ -5,7 +5,7 @@ using DidiFrame.Utils;
 using DidiFrame.Utils.StateMachine;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Games
+namespace TestBot.Systems.Games
 {
 	public class GameLifetime : AbstractFullLifetime<GameState, GameModel>
 	{

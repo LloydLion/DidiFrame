@@ -5,7 +5,7 @@ using DidiFrame.UserCommands.ArgumentsValidation.Validators;
 using DidiFrame.UserCommands.InvokerFiltartion.Filters;
 using DidiFrame.UserCommands.Loader.Reflection;
 
-namespace CGZBot3.Systems.Reputation
+namespace TestBot.Systems.Reputation
 {
 	internal class CommandsHandler : ICommandsHandler
 	{

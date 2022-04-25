@@ -2,7 +2,7 @@
 using DidiFrame.UserCommands.ArgumentsValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CGZBot3.Systems.Parties.CommandEvironment
+namespace TestBot.Systems.Parties.CommandEvironment
 {
 	internal class PartyExist : IUserCommandArgumentPreValidator
 	{
