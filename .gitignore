@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#My overrides
+TestBot/settings.json
+TestBot/settings/
+
 # User-specific files
 *.rsuser
 *.suo
@@ -362,5 +366,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/TestBot/settings.json
-/TestBot/settings
