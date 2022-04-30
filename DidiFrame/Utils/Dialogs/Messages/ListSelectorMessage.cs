@@ -10,9 +10,9 @@ namespace DidiFrame.Utils.Dialogs.Messages
 
 		protected async override Task<IMessage> CreateMessageAsync()
 		{
-			var objs = Require<IReadOnlyList<TList>>("list");
-			var stringifier = RequireNullable<Func<TList, string>>("toString") ?? new((obj) => obj.ToString() ?? throw new ArgumentNullException());
-			var output = Require<IDialogOutputParameter<TList>>("output");
+			var objs = Require<IReadOnlyList<TList>>("List");
+			var stringifier = RequireNullable<Func<TList, string>>("ToString") ?? new((obj) => obj.ToString() ?? throw new ArgumentNullException());
+			var output = Require<IDialogOutputParameter<TList>>("Output");
 			var localizer = Context.LocalizerFactory.Create(typeof(ListSelectorMessage<>));
 
 
@@ -37,7 +37,7 @@ namespace DidiFrame.Utils.Dialogs.Messages
 				var selectedOption = ((MessageSelectMenuState)(ctx.ComponentState ?? throw new ImpossibleVariantException())).SelectedValues.Single();
 				output.SetValue(objs[int.Parse(selectedOption)]);
 
-				NavigateToDynamic("nextMessage");
+				NavigateToDynamic("NextMessage");
 
 				return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["MenuClickMessage"])));
 			});
