@@ -3,8 +3,6 @@ using DidiFrame.Entities.Message;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.ArgumentsValidation.Validators;
 using DidiFrame.UserCommands.Loader.Reflection;
-using DidiFrame.Utils.Dialogs;
-using DidiFrame.Utils.Dialogs.Messages;
 
 namespace TestBot.Systems.Streaming
 {
@@ -12,55 +10,25 @@ namespace TestBot.Systems.Streaming
 	{
 		private readonly ISystemCore systemCore;
 		private readonly IStringLocalizer<CommandHandler> localizer;
-		private readonly IStringLocalizerFactory localizerFactory;
-		private readonly MessageCollection fond;
 
 
-		public CommandHandler(ISystemCore systemCore, IStringLocalizer<CommandHandler> localizer, IStringLocalizerFactory localizerFactory)
+		public CommandHandler(ISystemCore systemCore, IStringLocalizer<CommandHandler> localizer)
 		{
 			this.systemCore = systemCore;
 			this.localizer = localizer;
-			this.localizerFactory = localizerFactory;
-			fond = new MessageCollection(new Dictionary<string, IDialogMessageFactory>()
-			{
-				{ "selectStream", new DirectMessageFactory<ListSelectorMessage<StreamLifetime>>() },
-				{ "textInput", new DirectMessageFactory<TextInputMessage<string>>() },
-				{ "placeInput", new DirectMessageFactory<TextInputMessage<string>>() },
-				{ "dateInput", new DirectMessageFactory<TextInputMessage<DateTime>>() },
-			});
 		}
 
 
 		[Command("stream create")]
-		public Task<UserCommandResult> CreateStream(UserCommandContext ctx)
+		public Task<UserCommandResult> CreateStream(UserCommandContext ctx, [Validator(typeof(GreaterThen), typeof(CommandHandler), nameof(GetNow))] DateTime plannedStartDate,
+			[Validator(typeof(NormalString))] string place, [Validator(typeof(NormalString))][Validator(typeof(StreamExist), true)] string name)
 		{
-			var dialog = new Dialog(fond, new DialogCreationArgs(ctx.Channel, ctx.Invoker, localizerFactory), new Dictionary<string, object>()
-			{
-				{ "textInput", new { Text = (string)localizer["EnterName"],
-					Controller = new Func<string, bool>((str) => !string.IsNullOrWhiteSpace(str)),
-					Output = new DialogInterMessageOutput<string>("name", true), NextMessage = "placeInput" } },
-				{ "placeInput", new { Text = (string)localizer["EnterPlace"],
-					Controller = new Func<string, bool>((str) => !string.IsNullOrWhiteSpace(str)),
-					Output = new DialogInterMessageOutput<string>("place", true), NextMessage = "dateInput" } },
-				{ "dateInput", new { Text = (string)localizer["EnterPlannedDate"],
-					Controller = new Func<string, bool>((str) => !string.IsNullOrWhiteSpace(str) && DateTime.TryParse(str, out _)),
-					Parser = new Func<string, DateTime>((str) => DateTime.Parse(str)), Output = new DialogInterMessageOutput<DateTime>("date", true), NextMessage = (string?)null } },
-			});
+			if (place.StartsWith("dc#")) place = localizer["InDiscordPlace", place];
+			else place = localizer["ExternalPlace", place];
 
-			dialog.AddFinalizer(async () =>
-			{
-				var name = dialog.Context.MessageLink.GetGlobalVariable<string>("name");
-				var place = dialog.Context.MessageLink.GetGlobalVariable<string>("place");
-				var plannedStartDate = dialog.Context.MessageLink.GetGlobalVariable<DateTime>("date");
+			systemCore.AnnounceStream(name, ctx.Invoker, plannedStartDate.ToUniversalTime(), place);
 
-				systemCore.AnnounceStream(name, ctx.Invoker, plannedStartDate, place);
-
-				await ctx.Channel.SendMessageAsync(new MessageSendModel(localizer["StreamCreated", name]));
-			});
-
-			dialog.Start("textInput");
-
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful));
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamCreated", name]) });
 		}
 
 		[Command("stream replan")]

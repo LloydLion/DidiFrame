@@ -2,7 +2,7 @@
 
 namespace DidiFrame.Utils.Dialogs.Messages
 {
-	public class TextInputMessage<TOutput> : AbstractMessage where TOutput : notnull
+	public class TextInputMessage<TOutput> : AbstractMessage
 	{
 		public TextInputMessage(DialogContext ctx, IReadOnlyDictionary<string, object?> dynamicParamters) : base(ctx, dynamicParamters) { }
 
@@ -11,8 +11,8 @@ namespace DidiFrame.Utils.Dialogs.Messages
 		{
 			MessageSendModel model;
 
-			if (DynamicParamters.ContainsKey("Text") == false) model = Require<MessageSendModel>("Model");
-			else model = new(Require<string>("Text"));
+			if (DynamicParamters.ContainsKey("text") == false) model = Require<MessageSendModel>("model");
+			else model = new(Require<string>("text"));
 
 
 			var msg = await Context.Channel.SendMessageAsync(model);
@@ -25,8 +25,8 @@ namespace DidiFrame.Utils.Dialogs.Messages
 
 		private void TextChannel_MessageSent(IClient sender, IMessage message)
 		{
-			var parser = typeof(TOutput) == typeof(string) ? new Func<string, TOutput>((str) => (TOutput)(object)str) : Require<Func<string, TOutput>>("Parser");
-			var controller = Require<Func<string, bool>>("Controller");
+			var parser = typeof(TOutput) == typeof(string) ? new Func<string, TOutput>((str) => (TOutput)(object)str) : Require<Func<string, TOutput>>("parser");
+			var controller = Require<Func<string, bool>>("controller");
 
 			if (message.Content is not null && controller(message.Content))
 			{
@@ -34,9 +34,9 @@ namespace DidiFrame.Utils.Dialogs.Messages
 
 				var obj = parser(message.Content);
 
-				Require<IDialogOutputParameter<TOutput>>("Output").SetValue(obj);
+				Require<IDialogOutputParameter<TOutput>>("output").SetValue(obj);
 
-				NavigateToDynamic("NextMessage");
+				NavigateToDynamic("nextMessage");
 			}
 		}
 	}

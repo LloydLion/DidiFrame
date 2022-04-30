@@ -36,11 +36,10 @@
 			using (locker.Lock(this))
 			{
 				//We must set CurrentMessage property in SYNC mode
-				var oldKey = CurrentMessage;
 				CurrentMessage = key;
 				MessageSwitched?.Invoke();
 
-				await msgs[oldKey].DeleteAsync();
+				await msgs[CurrentMessage].DeleteAsync();
 				await msgs[CurrentMessage].ShowAsync();
 			}
 		}
@@ -56,11 +55,10 @@
 			using (locker.Lock(this))
 			{
 				//We must set CurrentMessage property in SYNC mode
-				var oldKey = CurrentMessage;
 				CurrentMessage = string.Empty;
 				DialogFinished?.Invoke();
 
-				await msgs[oldKey].DeleteAsync();
+				await msgs[CurrentMessage].DeleteAsync();
 			}
 		}
 	}
