@@ -4,9 +4,8 @@ namespace DidiFrame.UserCommands.Pipeline.Building
 {
 	internal class UserCommandPipelineBuilder : IUserCommandPipelineBuilder
 	{
-		private Func<IServiceProvider, IUserCommandPipelineOrigin<object>>? origin;
+		private Func<IServiceProvider, IUserCommandPipelineDispatcher<object>>? origin;
 		private List<Func<IServiceProvider, IUserCommandPipelineMiddleware>>? prev;
-		private Func<IServiceProvider, IUserCommandPipelineFinalizer>? finalizer;
 
 
 		public IServiceCollection Services { get; }
@@ -18,24 +17,23 @@ namespace DidiFrame.UserCommands.Pipeline.Building
 		}
 
 
-		public IUserCommandPipelineMiddlewareBuilder<TSource> SetSource<TSource>(Func<IServiceProvider, IUserCommandPipelineOrigin<TSource>> origin) where TSource : notnull
+		public IUserCommandPipelineMiddlewareBuilder<TSource> SetSource<TSource>(Func<IServiceProvider, IUserCommandPipelineDispatcher<TSource>> origin) where TSource : notnull
 		{
-			this.origin = (Func<IServiceProvider, IUserCommandPipelineOrigin<object>>)origin;
+			this.origin = (Func<IServiceProvider, IUserCommandPipelineDispatcher<object>>)origin;
 			return new MiddwareBuilder<TSource>(this);
 		}
 
-		private void SetResult(List<Func<IServiceProvider, IUserCommandPipelineMiddleware>> prev, Func<IServiceProvider, IUserCommandPipelineFinalizer> finalizer)
+		private void SetResult(List<Func<IServiceProvider, IUserCommandPipelineMiddleware>> prev)
 		{
 			this.prev = prev;
-			this.finalizer = finalizer;
 		}
 
 		public UserCommandPipeline Build(IServiceProvider provider)
 		{
-			if (origin is null || prev is null || finalizer is null)
+			if (origin is null || prev is null)
 				throw new InvalidOperationException("Please finish init with SetSource method before building");
 
-			return new(origin(provider), prev.Select(s => s(provider)).ToArray(), finalizer(provider));
+			return new(origin(provider), prev.Select(s => s(provider)).ToArray());
 		}
 
 
@@ -67,11 +65,11 @@ namespace DidiFrame.UserCommands.Pipeline.Building
 				return new MiddwareBuilder<TNext>(owner, prev);
 			}
 
-			public void Finalize(Func<IServiceProvider, IUserCommandPipelineFinalizer> finalizer)
+			public void Build()
 			{
 				if (typeof(TInput) != typeof(UserCommandResult))
 					throw new InvalidOperationException("Can finalize pipeline only if Tin is UserCommandResult");
-				else owner.SetResult(prev, finalizer);
+				else owner.SetResult(prev);
 			}
 		}
 	}

@@ -2,6 +2,6 @@
 {
 	public interface IUserCommandPipelineExecutor
 	{
-		public UserCommandResult? Process<TInput>(TInput input) where TInput : notnull;
+		public UserCommandResult? Process<TInput>(TInput input, UserCommandSendData sendData) where TInput : notnull;
 	}
 }

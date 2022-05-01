@@ -1,10 +1,11 @@
 ﻿using DidiFrame.Culture;
+using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.PreProcessing;
 using DidiFrame.Utils;
 
 namespace DidiFrame.UserCommands.Executing
 {
-	public class DefaultUserCommandsExecutor : IUserCommandsExecutor
+	public class DefaultUserCommandsExecutor : AbstractUserCommandPipelineMiddleware<ValidatedUserCommandContext, UserCommandResult>
 	{
 		private static readonly EventId CommandStartID = new (32, "CommandStart");
 		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
@@ -16,79 +17,36 @@ namespace DidiFrame.UserCommands.Executing
 		private readonly Options options;
 		private readonly ILogger<DefaultUserCommandsExecutor> logger;
 		private readonly IServerCultureProvider cultureProvider;
-		private readonly IStringLocalizer<DefaultUserCommandsExecutor> localizer;
-		private readonly IUserCommandContextConverter converter;
-		private readonly IServiceProvider services;
 		private readonly ThreadLocker<IServer> threadLocker = new();
 
 
-		public DefaultUserCommandsExecutor(
-			IOptions<Options> options,
-			ILogger<DefaultUserCommandsExecutor> logger,
-			IServerCultureProvider cultureProvider,
-			IStringLocalizer<DefaultUserCommandsExecutor> localizer,
-			IUserCommandContextConverter converter,
-			IServiceProvider services)
+		public DefaultUserCommandsExecutor(IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IServerCultureProvider cultureProvider)
 		{
 			this.options = options.Value;
 			this.logger = logger;
 			this.cultureProvider = cultureProvider;
-			this.localizer = localizer;
-			this.converter = converter;
-			this.services = services;
 		}
 
 
-		public async Task HandleAsync(UserCommandPreContext preCtx, Action<UserCommandResult> callback)
+		public override UserCommandResult? Process(ValidatedUserCommandContext ctx, UserCommandPipelineContext pipelineContext)
 		{
 			try
 			{
-				using (threadLocker.Lock(preCtx.Channel.Server))
+				using (threadLocker.Lock(ctx.Channel.Server))
 				{
 					UserCommandResult result;
 
-					using (logger.BeginScope("Command: {CommandName}", preCtx.Command.Name))
+					using (logger.BeginScope("Command: {CommandName}", ctx.Command.Name))
 					{
-						preCtx.AddLogger(logger);
-
-						cultureProvider.SetupCulture(preCtx.Invoker.Server);
+						ctx.AddLogger(logger);
+						cultureProvider.SetupCulture(ctx.Invoker.Server);
 
 						logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
-
-						var ctx = converter.Convert(preCtx);
-						ctx.AddLogger(logger);
-
-						foreach (var filter in ctx.Command.InvokerFilters)
-						{
-							var tf = filter.Filter(ctx);
-							if (tf is null) continue;
-							else
-							{
-								var content = localizer["ByFilterBlockedMessage", ctx.Command.Localizer[$"{ctx.Command.Name}:{tf.LocaleKey}"]];
-								callback(new UserCommandResult(tf.Code) { RespondMessage = new MessageSendModel(content) });
-								return;
-							}
-						}
-
-						foreach (var argument in ctx.Command.Arguments)
-						{
-							foreach (var validator in argument.Validators)
-							{
-								var tf = validator.Validate(services, ctx, argument, ctx.Arguments[argument]);
-								if (tf is null) continue;
-								else
-								{
-									var content = localizer["ValidationErrorMessage", ctx.Command.Localizer[$"{ctx.Command.Name}.{argument.Name}:{tf}", ctx.Arguments[argument]]];
-									callback(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(content) });
-									return;
-								}
-							}
-						}
 
 						try
 						{
 							using (logger.BeginScope("Internal"))
-								result = await ctx.Command.Handler.Invoke(ctx);
+								result = ctx.Command.Handler.Invoke(ctx).Result;
 						}
 						catch (Exception ex)
 						{
@@ -100,12 +58,7 @@ namespace DidiFrame.UserCommands.Executing
 
 						logger.Log(LogLevel.Debug, CommandCompliteID, "Command executed with code {ResultCode}", result.Code);
 
-						callback(result);
-
-						logger.Log(LogLevel.Trace, CallbackDoneID, "Callback done");
-
-						if (result.RespondMessage is not null)
-							logger.Log(LogLevel.Trace, MessageSentID, "Message sent with content: {Content}", result.RespondMessage.Content);
+						return result;
 					}
 
 
@@ -142,9 +95,10 @@ namespace DidiFrame.UserCommands.Executing
 			catch (Exception ex)
 			{
 				logger.Log(LogLevel.Error, InternalErrorID, ex, "Exception while handling the command (Internal)");
+				pipelineContext.DropPipeline();
+				return null;
 			}
 		}
-
 
 		public class Options
 		{

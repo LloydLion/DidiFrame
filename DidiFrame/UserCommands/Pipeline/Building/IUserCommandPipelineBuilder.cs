@@ -7,7 +7,7 @@ namespace DidiFrame.UserCommands.Pipeline.Building
 		public IServiceCollection Services { get; }
 
 
-		public IUserCommandPipelineMiddlewareBuilder<TSource> SetSource<TSource>(Func<IServiceProvider, IUserCommandPipelineOrigin<TSource>> origin) where TSource : notnull;
+		public IUserCommandPipelineMiddlewareBuilder<TSource> SetSource<TSource>(Func<IServiceProvider, IUserCommandPipelineDispatcher<TSource>> origin) where TSource : notnull;
 
 		public UserCommandPipeline Build(IServiceProvider provider);
 	}

@@ -11,13 +11,13 @@
 		}
 
 
-		public UserCommandResult? Process<TInput>(TInput input) where TInput : notnull
+		public UserCommandResult? Process<TInput>(TInput input, UserCommandSendData sendData) where TInput : notnull
 		{
 			object currentValue = input;
 
 			foreach (var middleware in pipeline)
 			{
-				var context = new UserCommandPipelineContext();
+				var context = new UserCommandPipelineContext(sendData);
 
 				var newValue = middleware.Process(currentValue, context);
 

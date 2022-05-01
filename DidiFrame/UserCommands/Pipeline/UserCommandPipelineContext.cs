@@ -6,6 +6,14 @@
 
 		public UserCommandResult? ExecutionResult { get; private set; } = null;
 
+		public UserCommandSendData SendData { get; }
+
+
+		public UserCommandPipelineContext(UserCommandSendData sendData)
+		{
+			SendData = sendData;
+		}
+
 
 		public void DropPipeline()
 		{

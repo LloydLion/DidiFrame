@@ -10,6 +10,6 @@
 		/// <summary>
 		/// Call only if TInput is DidiFrame.UserCommands.Models.UserCommandResult
 		/// </summary>
-		public void Finalize(Func<IServiceProvider, IUserCommandPipelineFinalizer> finalizer);
+		public void Build();
 	}
 }

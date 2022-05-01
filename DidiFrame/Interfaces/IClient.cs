@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.Interfaces
+﻿using DidiFrame.UserCommands.Pipeline;
+
+namespace DidiFrame.Interfaces
 {
 	public delegate void MessageSentEventHandler(IClient sender, IMessage message);
 
@@ -10,8 +12,6 @@
 		public IReadOnlyCollection<IServer> Servers { get; }
 
 		public IUser SelfAccount { get; }
-
-		public ICommandsDispatcher CommandsDispatcher { get; }
 
 
 		public Task AwaitForExit();

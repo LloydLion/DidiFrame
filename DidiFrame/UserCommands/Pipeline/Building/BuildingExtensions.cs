@@ -5,17 +5,17 @@ namespace DidiFrame.UserCommands.Pipeline.Building
 	public static class BuildingExtensions
 	{
 		public static IUserCommandPipelineMiddlewareBuilder<TSource> SetSource<TSource, TSourceService>(this IUserCommandPipelineBuilder builder, ServiceLifetime? integrate = null)
-			where TSource : notnull where TSourceService : IUserCommandPipelineOrigin<TSource>
+			where TSource : notnull where TSourceService : IUserCommandPipelineDispatcher<TSource>
 		{
 			if (integrate is not null)
 				builder.Services.Add(new ServiceDescriptor(typeof(TSourceService), typeof(TSourceService), integrate.Value));
 
 			return builder.SetSource(getOrigin);
-			static IUserCommandPipelineOrigin<TSource> getOrigin(IServiceProvider sp) => sp.GetRequiredService<TSourceService>();
+			static IUserCommandPipelineDispatcher<TSource> getOrigin(IServiceProvider sp) => sp.GetRequiredService<TSourceService>();
 		}
 
 		public static IUserCommandPipelineMiddlewareBuilder<TSource> SetSource<TSource, TSourceService>(this IUserCommandPipelineBuilder builder, bool integrate)
-			where TSource : notnull where TSourceService : IUserCommandPipelineOrigin<TSource> => builder.SetSource<TSource, TSourceService>(integrate ? ServiceLifetime.Singleton : null);
+			where TSource : notnull where TSourceService : IUserCommandPipelineDispatcher<TSource> => builder.SetSource<TSource, TSourceService>(integrate ? ServiceLifetime.Singleton : null);
 
 		public static IUserCommandPipelineMiddlewareBuilder<TOutput> AddMiddleware<TInput, TOutput, TService>(this IUserCommandPipelineMiddlewareBuilder<TInput> builder, ServiceLifetime? integrate = null)
 			where TInput : notnull where TOutput : notnull where TService : IUserCommandPipelineMiddleware<TInput, TOutput>

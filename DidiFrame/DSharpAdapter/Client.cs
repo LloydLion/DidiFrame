@@ -29,8 +29,6 @@ namespace DidiFrame.DSharpAdapter
 
 		public DiscordClient BaseClient => client;
 
-		public ICommandsDispatcher CommandsDispatcher { get; }
-
 
 		public Client(IOptions<Options> options, IUserCommandsRepository repository, ILoggerFactory factory)
 		{

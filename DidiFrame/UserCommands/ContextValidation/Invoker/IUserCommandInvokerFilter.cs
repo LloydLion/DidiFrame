@@ -2,6 +2,6 @@
 {
 	public interface IUserCommandInvokerFilter
 	{
-		public ValidationFailResult? Filter(UserCommandContext ctx);
+		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx);
 	}
 }
