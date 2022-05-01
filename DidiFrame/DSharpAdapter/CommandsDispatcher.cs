@@ -15,16 +15,16 @@ namespace DidiFrame.DSharpAdapter
 		private readonly Client client;
 		private readonly IUserCommandsRepository repository;
 		private readonly Client.Options clientOptions;
-		private readonly static Dictionary<string, UserCommandInfo.Argument.Type> regexes = new()
+		private readonly static Dictionary<string, UserCommandArgument.Type> regexes = new()
 		{
-			{ "^(\\d{2}.\\d{2}\\|\\d{2}:\\d{2}:\\d{2}\\b)", UserCommandInfo.Argument.Type.DateTime },
-			{ "^(\\d{2}:\\d{2}:\\d{2}\\b)", UserCommandInfo.Argument.Type.TimeSpan },
-			{ "^(<@!?(\\d+)>)\\b", UserCommandInfo.Argument.Type.Member },
-			{ "^(<@&(\\d+)>)\\b", UserCommandInfo.Argument.Type.Role },
-			{ "^((<@&(\\d+)>)|(<@!?(\\d+)>))", UserCommandInfo.Argument.Type.Mentionable },
-			{ "^(\\d+)\\b", UserCommandInfo.Argument.Type.Integer },
-			{ "^((\\d+\\.\\d+)|(\\d+\\b))", UserCommandInfo.Argument.Type.Double },
-			{ "^((\"[^\"]*\")|([^\\s]+))", UserCommandInfo.Argument.Type.String },
+			{ "^(\\d{2}.\\d{2}\\|\\d{2}:\\d{2}:\\d{2}\\b)", UserCommandArgument.Type.DateTime },
+			{ "^(\\d{2}:\\d{2}:\\d{2}\\b)", UserCommandArgument.Type.TimeSpan },
+			{ "^(<@!?(\\d+)>)\\b", UserCommandArgument.Type.Member },
+			{ "^(<@&(\\d+)>)\\b", UserCommandArgument.Type.Role },
+			{ "^((<@&(\\d+)>)|(<@!?(\\d+)>))", UserCommandArgument.Type.Mentionable },
+			{ "^(\\d+)\\b", UserCommandArgument.Type.Integer },
+			{ "^((\\d+\\.\\d+)|(\\d+\\b))", UserCommandArgument.Type.Double },
+			{ "^((\"[^\"]*\")|([^\\s]+))", UserCommandArgument.Type.String },
 		};
 
 
@@ -54,8 +54,8 @@ namespace DidiFrame.DSharpAdapter
 			if (!result.Any()) return Task.CompletedTask;
 			var command = cmds.Single(s => s.Name == result.Single().Groups[1].Value);
 
-			var arguments = new List<(UserCommandInfo.Argument, List<object>)>();
-			var preArgs = new List<(UserCommandInfo.Argument.Type, string)>();
+			var arguments = new List<(UserCommandArgument, List<object>)>();
+			var preArgs = new List<(UserCommandArgument.Type, string)>();
 
 			//Unless no arguemnts command
 			if (content.Length != command.Name.Length + 1)
@@ -68,7 +68,7 @@ namespace DidiFrame.DSharpAdapter
 					try { preArgs.Add(parse(cnt)); }
 					catch (Exception) { return Task.CompletedTask; }
 
-					static (UserCommandInfo.Argument.Type, string) parse(StringBuilder cnt)
+					static (UserCommandArgument.Type, string) parse(StringBuilder cnt)
 					{
 						foreach (var key in regexes.Keys)
 						{
@@ -130,23 +130,23 @@ namespace DidiFrame.DSharpAdapter
 			try { await cmdMsg.DeleteAsync(); } catch (Exception) { }
 		}
 
-		private object ConvertArgument(string rawStr, UserCommandInfo.Argument.Type ttype, IServer server)
+		private object ConvertArgument(string rawStr, UserCommandArgument.Type ttype, IServer server)
 		{
 			switch (ttype)
 			{
-				case UserCommandInfo.Argument.Type.Integer: return int.Parse(rawStr);
-				case UserCommandInfo.Argument.Type.Double: return double.Parse(rawStr, new CultureInfo("en-US"));
-				case UserCommandInfo.Argument.Type.String: return rawStr.StartsWith('\"') && rawStr.EndsWith('\"') ? rawStr[1..^1] : rawStr;
-				case UserCommandInfo.Argument.Type.Member:
+				case UserCommandArgument.Type.Integer: return int.Parse(rawStr);
+				case UserCommandArgument.Type.Double: return double.Parse(rawStr, new CultureInfo("en-US"));
+				case UserCommandArgument.Type.String: return rawStr.StartsWith('\"') && rawStr.EndsWith('\"') ? rawStr[1..^1] : rawStr;
+				case UserCommandArgument.Type.Member:
 					var match = Regex.Match(rawStr, @"^<@!?(\d+)>$").Groups[1].Value;
 					var id = ulong.Parse(match);
 					return server.GetMember(id); //NOTE mention struct: <@USERID> or <@!USERID>
-				case UserCommandInfo.Argument.Type.Role: return server.GetRole(ulong.Parse(rawStr[2..^1])); //NOTE mention struct: <@&ROLEID>
-				case UserCommandInfo.Argument.Type.Mentionable:
-					if(Regex.IsMatch(rawStr, @"^<@!?(\d+)>$")) return ConvertArgument(rawStr, UserCommandInfo.Argument.Type.Member, server);
-					else return ConvertArgument(rawStr, UserCommandInfo.Argument.Type.Role, server);
-				case UserCommandInfo.Argument.Type.TimeSpan: return TimeSpan.Parse(rawStr);
-				case UserCommandInfo.Argument.Type.DateTime:
+				case UserCommandArgument.Type.Role: return server.GetRole(ulong.Parse(rawStr[2..^1])); //NOTE mention struct: <@&ROLEID>
+				case UserCommandArgument.Type.Mentionable:
+					if(Regex.IsMatch(rawStr, @"^<@!?(\d+)>$")) return ConvertArgument(rawStr, UserCommandArgument.Type.Member, server);
+					else return ConvertArgument(rawStr, UserCommandArgument.Type.Role, server);
+				case UserCommandArgument.Type.TimeSpan: return TimeSpan.Parse(rawStr);
+				case UserCommandArgument.Type.DateTime:
 					var split = rawStr.Split('|');
 					return new DateTime(DateTime.Parse(split[0] + '.' + DateTime.Now.Year + ' ' + split[1]).Ticks, DateTimeKind.Local);
 				default: throw new Exception();

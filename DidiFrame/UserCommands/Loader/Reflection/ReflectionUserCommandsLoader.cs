@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DidiFrame.UserCommands.PreProcessing;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -20,8 +21,8 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 			typeof(Tuple<,,,,,,>),
 		};
 
-		private static readonly IReadOnlyDictionary<Type, UserCommandInfo.Argument.Type> argsTypes = Enum.GetValues(typeof(UserCommandInfo.Argument.Type))
-				.OfType<UserCommandInfo.Argument.Type>().ToDictionary(s => s.GetReqObjectType());
+		private static readonly IReadOnlyDictionary<Type, UserCommandArgument.Type> argsTypes = Enum.GetValues(typeof(UserCommandArgument.Type))
+				.OfType<UserCommandArgument.Type>().ToDictionary(s => s.GetReqObjectType());
 
 
 		private readonly IServiceProvider serviceProvider;
@@ -65,11 +66,11 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 							var commandName = ((CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), false)[0]).Name;
 
 							var @params = method.GetParameters();
-							var args = new UserCommandInfo.Argument[@params.Length - 1];
+							var args = new UserCommandArgument[@params.Length - 1];
 							for (int i = 1; i < @params.Length; i++)
 							{
 								var ptype = @params[i].ParameterType;
-								UserCommandInfo.Argument.Type[] types;
+								UserCommandArgument.Type[] types;
 
 
 								var pet = ptype.GetElementType(); //Null if not array, Not null if array
@@ -87,13 +88,12 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 								}
 
 
-								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Where(s => !s.IsPreValidator).Select(s => s.GetAsValidator()).ToArray();
-								var preValidators = @params[i].GetCustomAttributes<ValidatorAttribute>().Where(s => s.IsPreValidator).Select(s => s.GetAsPreValidator()).ToArray();
+								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Select(s => s.Validator).ToArray();
 
-								args[i - 1] = new UserCommandInfo.Argument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name", validators, preValidators);
+								args[i - 1] = new UserCommandArgument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name", validators);
 
 
-								static UserCommandInfo.Argument.Type[] parseAndConvertType(Type type)
+								static UserCommandArgument.Type[] parseAndConvertType(Type type)
 								{
 									if (type.IsGenericType && tuples.Contains(type.GetGenericTypeDefinition()))
 										return type.GetGenericArguments().Select(s => argsTypes[s]).ToArray();

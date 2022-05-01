@@ -14,7 +14,7 @@ namespace DidiFrame.UserCommands
 
 		public static IServiceCollection AddUserCommandPipeline(this IServiceCollection services, Action<IUserCommandPipelineBuilder> buildAction)
 		{
-			var builder = new UserCommandPipelineBuilder();
+			var builder = new UserCommandPipelineBuilder(services);
 
 			buildAction(builder);
 

@@ -55,21 +55,6 @@ namespace DidiFrame.UserCommands.Executing
 
 						logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
 
-						foreach (var argument in preCtx.Command.Arguments)
-						{
-							foreach (var validator in argument.PreValidators)
-							{
-								var tf = validator.Validate(services, preCtx, argument, preCtx.Arguments[argument]);
-								if (tf is null) continue;
-								else
-								{
-									var content = localizer["ValidationErrorMessage", preCtx.Command.Localizer[$"{preCtx.Command.Name}.{argument.Name}:{tf}", preCtx.Arguments[argument]]];
-									callback(new UserCommandResult(UserCommandCode.InvalidInput) { RespondMessage = new MessageSendModel(content) });
-									return;
-								}
-							}
-						}
-
 						var ctx = converter.Convert(preCtx);
 						ctx.AddLogger(logger);
 

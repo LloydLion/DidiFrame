@@ -1,6 +1,4 @@
-﻿using DidiFrame.UserCommands.InvokerFiltartion;
-
-namespace DidiFrame.UserCommands.Loader.Reflection
+﻿namespace DidiFrame.UserCommands.Loader.Reflection
 {
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class InvokerFilter : Attribute
