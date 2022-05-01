@@ -29,17 +29,5 @@ namespace DidiFrame.UserCommands.Pipeline.Building
 
 		public static IUserCommandPipelineMiddlewareBuilder<TOutput> AddMiddleware<TInput, TOutput, TService>(this IUserCommandPipelineMiddlewareBuilder<TInput> builder, bool integrate)
 			where TInput : notnull where TOutput : notnull where TService : IUserCommandPipelineMiddleware<TInput, TOutput> => builder.AddMiddleware<TInput, TOutput, TService>(integrate ? ServiceLifetime.Singleton : null);
-
-		public static void Finalize<TService>(this IUserCommandPipelineMiddlewareBuilder<UserCommandResult> builder, ServiceLifetime? integrate = null) where TService : IUserCommandPipelineFinalizer
-		{
-			if (integrate is not null)
-				builder.Owner.Services.Add(new ServiceDescriptor(typeof(TService), typeof(TService), integrate.Value));
-
-			builder.Finalize(getFinalizer);
-			static IUserCommandPipelineFinalizer getFinalizer(IServiceProvider sp) => sp.GetRequiredService<TService>();
-		}
-
-		public static void Finalize<TService>(this IUserCommandPipelineMiddlewareBuilder<UserCommandResult> builder, bool integrate) where TService : IUserCommandPipelineFinalizer =>
-			builder.Finalize<TService>(integrate ? ServiceLifetime.Singleton : null);
 	}
 }

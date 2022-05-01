@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using DidiFrame.UserCommands.Pipeline;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DidiFrame.UserCommands.PreProcessing
 {
-	public class DefaultUserCommandContextConverter : IUserCommandContextConverter
+	public class DefaultUserCommandContextConverter : AbstractUserCommandPipelineMiddleware<UserCommandPreContext, UserCommandContext>, IUserCommandContextConverter
 	{
 		private readonly IReadOnlyCollection<IDefaultContextConveterSubConverter> subConverters;
 		private readonly IServiceProvider services;
@@ -16,7 +17,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 		}
 
 
-		public UserCommandContext Convert(UserCommandPreContext preCtx)
+		public override UserCommandContext? Process(UserCommandPreContext preCtx, UserCommandPipelineContext pipelineContext)
 		{
 			return new UserCommandContext(preCtx.Invoker, preCtx.Channel, preCtx.Command, preCtx.Arguments.ToDictionary(s => s.Key, s =>
 			{

@@ -11,7 +11,7 @@
 		}
 
 
-		public UserCommandResult? Process<TInput>(TInput input, UserCommandSendData sendData) where TInput : notnull
+		public UserCommandResult? Process(object input, UserCommandSendData sendData)
 		{
 			object currentValue = input;
 

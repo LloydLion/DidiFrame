@@ -30,7 +30,7 @@ namespace DidiFrame.DSharpAdapter
 		public DiscordClient BaseClient => client;
 
 
-		public Client(IOptions<Options> options, IUserCommandsRepository repository, ILoggerFactory factory)
+		public Client(IOptions<Options> options, ILoggerFactory factory)
 		{
 			var opt = options.Value;
 			logger = factory.CreateLogger<Client>();
@@ -44,8 +44,6 @@ namespace DidiFrame.DSharpAdapter
 				LoggerFactory = factory,
 				Intents = DiscordIntents.All
 			});
-
-			CommandsDispatcher = new CommandsDispatcher(this, repository, opt);
 		}
 
 		//Must be invoked from TextChannel objects

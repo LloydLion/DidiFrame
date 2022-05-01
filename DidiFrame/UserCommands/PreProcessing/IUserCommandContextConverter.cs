@@ -1,11 +1,10 @@
+using DidiFrame.UserCommands.Pipeline;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DidiFrame.UserCommands.PreProcessing
 {
-    public interface IUserCommandContextConverter
+    public interface IUserCommandContextConverter : IUserCommandPipelineMiddleware<UserCommandPreContext, UserCommandContext>
     {
-        public UserCommandContext Convert(UserCommandPreContext preCtx);
-
         /// <summary>
         /// Return true and value only if complex type has single pretype
         /// </summary>

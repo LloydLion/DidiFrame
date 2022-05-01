@@ -2,7 +2,7 @@
 {
 	public class Disable : IUserCommandInvokerFilter
 	{
-		public ValidationFailResult? Filter(UserCommandContext ctx)
+		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx)
 		{
 			return new ValidationFailResult("CommandDisabled", UserCommandCode.InternalError);
 		}

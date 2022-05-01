@@ -3,6 +3,8 @@ using DidiFrame.GlobalEvents;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Executing;
 using DidiFrame.UserCommands.Loader.Reflection;
+using DidiFrame.UserCommands.Pipeline;
+using DidiFrame.UserCommands.Pipeline.Building;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Application
@@ -84,8 +86,14 @@ namespace DidiFrame.Application
 			logger.Log(LogLevel.Debug, LifetimeRegistrationDoneID, "Every lifetime loaded and started");
 
 
-			var cmdHandler = services.GetService<IUserCommandsExecutor>() ?? throw new ImpossibleVariantException();
-			client.CommandsDispatcher.CommandWritten += (ctx, callback) => { cmdHandler.HandleAsync(ctx, callback); };
+			var pipelineBuilder = services.GetRequiredService<IUserCommandPipelineBuilder>();
+			var executor = services.GetRequiredService<IUserCommandPipelineExecutor>();
+			var pipeline = pipelineBuilder.Build(services);
+			pipeline.Origin.SetSyncCallback((obj, sendData, callback) =>
+			{
+				var result = executor.Process(obj, sendData);
+				if (result is not null) callback(result);
+			});
 			logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");
 		}
 

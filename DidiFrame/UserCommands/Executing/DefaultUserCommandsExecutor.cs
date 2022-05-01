@@ -9,8 +9,6 @@ namespace DidiFrame.UserCommands.Executing
 	{
 		private static readonly EventId CommandStartID = new (32, "CommandStart");
 		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
-		private static readonly EventId CallbackDoneID = new (35, "CallbackDone");
-		private static readonly EventId MessageSentID = new(34, "MessageSent");
 		private static readonly EventId InternalErrorID = new(36, "InternalError");
 
 
