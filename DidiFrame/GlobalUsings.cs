@@ -6,3 +6,7 @@ global using FluentValidation;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Localization;
+global using DidiFrame.UserCommands.Models;
+global using DidiFrame.Entities.Message;
+global using DidiFrame.Entities.Message.Components;
+global using DidiFrame.Entities.Message.Embed;

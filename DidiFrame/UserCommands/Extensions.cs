@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DidiFrame.UserCommands.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,18 +9,18 @@ namespace DidiFrame.UserCommands
 {
 	internal static class Extensions
 	{
-		public static Type GetReqObjectType(this UserCommandInfo.Argument.Type type)
+		public static Type GetReqObjectType(this UserCommandArgument.Type type)
 		{
 			return type switch
 			{
-				UserCommandInfo.Argument.Type.Integer => typeof(int),
-				UserCommandInfo.Argument.Type.Double => typeof(double),
-				UserCommandInfo.Argument.Type.String => typeof(string),
-				UserCommandInfo.Argument.Type.Member => typeof(IMember),
-				UserCommandInfo.Argument.Type.Role => typeof(IRole),
-				UserCommandInfo.Argument.Type.Mentionable => typeof(object),
-				UserCommandInfo.Argument.Type.TimeSpan => typeof(TimeSpan),
-				UserCommandInfo.Argument.Type.DateTime => typeof(DateTime),
+				UserCommandArgument.Type.Integer => typeof(int),
+				UserCommandArgument.Type.Double => typeof(double),
+				UserCommandArgument.Type.String => typeof(string),
+				UserCommandArgument.Type.Member => typeof(IMember),
+				UserCommandArgument.Type.Role => typeof(IRole),
+				UserCommandArgument.Type.Mentionable => typeof(object),
+				UserCommandArgument.Type.TimeSpan => typeof(TimeSpan),
+				UserCommandArgument.Type.DateTime => typeof(DateTime),
 				_ => throw new ImpossibleVariantException(),
 			};
 		}
