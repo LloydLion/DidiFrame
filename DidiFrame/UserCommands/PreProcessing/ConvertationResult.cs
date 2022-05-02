@@ -2,9 +2,9 @@
 {
 	public class ConvertationResult
 	{
-		private object? result;
-		private string? localeKey;
-		private UserCommandCode code;
+		private readonly object? result;
+		private readonly string? localeKey;
+		private readonly UserCommandCode code;
 
 
 		public bool IsSuccessful { get; }

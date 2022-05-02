@@ -1,9 +1,9 @@
-﻿using TestBot.Systems.Streaming.CommandEvironment;
-using DidiFrame.AutoInjecting;
+﻿using DidiFrame.AutoInjecting;
 using DidiFrame.Data.Lifetime;
-using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Loader.Reflection;
+using DidiFrame.UserCommands.PreProcessing;
 using Microsoft.Extensions.DependencyInjection;
+using TestBot.Systems.Streaming.CommandEvironment;
 
 namespace TestBot.Systems.Streaming
 {

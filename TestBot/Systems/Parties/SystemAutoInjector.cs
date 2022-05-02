@@ -1,8 +1,8 @@
 ﻿using TestBot.Systems.Parties.CommandEvironment;
 using DidiFrame.AutoInjecting;
-using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Loader.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using DidiFrame.UserCommands.PreProcessing;
 
 namespace TestBot.Systems.Parties
 {

@@ -1,5 +1,4 @@
-﻿using DidiFrame.UserCommands;
-using DidiFrame.UserCommands.PreProcessing;
+﻿using DidiFrame.UserCommands.PreProcessing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Games.CommandEvironment
@@ -11,9 +10,12 @@ namespace TestBot.Systems.Games.CommandEvironment
 		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes => new[] { UserCommandArgument.Type.String };
 
 
-		public object Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)
+		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)
 		{
-			return services.GetRequiredService<ISystemCore>().GetGame(preCtx.Invoker, (string)preObjects[0]);
+			var sysCore = services.GetRequiredService<ISystemCore>();
+			var name = (string)preObjects[0];
+			if (sysCore.HasGame(preCtx.Invoker, name)) return ConvertationResult.Success(sysCore.GetGame(preCtx.Invoker, name));
+			else return ConvertationResult.Failture("NoGameExist", UserCommandCode.InvalidInput);
 		}
 	}
 }

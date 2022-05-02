@@ -10,9 +10,12 @@ namespace TestBot.Systems.Streaming.CommandEvironment
 		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes => new[] { UserCommandArgument.Type.String };
 
 
-		public object Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)
+		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)
 		{
-			return services.GetRequiredService<ISystemCore>().GetStream(preCtx.Invoker.Server, (string)preObjects[0]);
+			var sysCore = services.GetRequiredService<ISystemCore>();
+			var name = (string)preObjects[0];
+			if (sysCore.HasStream(preCtx.Invoker.Server, name)) return ConvertationResult.Success(sysCore.GetStream(preCtx.Invoker.Server, name));
+			else return ConvertationResult.Failture("StreamNotFound", UserCommandCode.InvalidInput);
 		}
 	}
 }

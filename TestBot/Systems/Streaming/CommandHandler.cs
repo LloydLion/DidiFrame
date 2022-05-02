@@ -1,7 +1,4 @@
 ﻿using TestBot.Systems.Streaming.CommandEvironment;
-using DidiFrame.Entities.Message;
-using DidiFrame.UserCommands;
-using DidiFrame.UserCommands.ArgumentsValidation.Validators;
 using DidiFrame.UserCommands.Loader.Reflection;
 
 namespace TestBot.Systems.Streaming
@@ -21,7 +18,7 @@ namespace TestBot.Systems.Streaming
 
 		[Command("stream create")]
 		public Task<UserCommandResult> CreateStream(UserCommandContext ctx, [Validator(typeof(GreaterThen), typeof(CommandHandler), nameof(GetNow))] DateTime plannedStartDate,
-			[Validator(typeof(NormalString))] string place, [Validator(typeof(NormalString))][Validator(typeof(StreamExist), true)] string name)
+			[Validator(typeof(NormalString))] string place, [Validator(typeof(NormalString))][Validator(typeof(NoStreamExist))] string name)
 		{
 			if (place.StartsWith("dc#")) place = localizer["InDiscordPlace", place];
 			else place = localizer["ExternalPlace", place];
@@ -33,7 +30,7 @@ namespace TestBot.Systems.Streaming
 
 		[Command("stream replan")]
 		public Task<UserCommandResult> ReplanStream(UserCommandContext _, DateTime plannedStartDate,
-			[Validator(typeof(StreamExistAndInvokerIsOwner))] StreamLifetime stream)
+			[Validator(typeof(InvokerIsStreamOwner))] StreamLifetime stream)
 		{
 			stream.Replan(plannedStartDate);
 
@@ -41,8 +38,8 @@ namespace TestBot.Systems.Streaming
 		}
 
 		[Command("stream rename")]
-		public Task<UserCommandResult> RenameStream(UserCommandContext _, [Validator(typeof(StreamExistAndInvokerIsOwner))] StreamLifetime stream,
-			[Validator(typeof(NormalString))][Validator(typeof(StreamExist), true)] string newName)
+		public Task<UserCommandResult> RenameStream(UserCommandContext _, [Validator(typeof(InvokerIsStreamOwner))] StreamLifetime stream,
+			[Validator(typeof(NormalString))][Validator(typeof(NoStreamExist))] string newName)
 		{
 			stream.Rename(newName);
 
@@ -50,7 +47,7 @@ namespace TestBot.Systems.Streaming
 		}
 
 		[Command("stream move")]
-		public Task<UserCommandResult> MoveStream(UserCommandContext _, [Validator(typeof(NormalString))] string newPlace, [Validator(typeof(StreamExistAndInvokerIsOwner))] StreamLifetime stream)
+		public Task<UserCommandResult> MoveStream(UserCommandContext _, [Validator(typeof(NormalString))] string newPlace, [Validator(typeof(InvokerIsStreamOwner))] StreamLifetime stream)
 		{
 			if (newPlace.StartsWith("dc#")) newPlace = localizer["InDiscordPlace", newPlace];
 			else newPlace = localizer["ExternalPlace", newPlace];

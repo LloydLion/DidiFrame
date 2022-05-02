@@ -1,9 +1,6 @@
 ﻿using TestBot.Systems.Games.CommandEvironment;
 using TestBot.Systems.Parties;
 using TestBot.Systems.Parties.CommandEvironment;
-using DidiFrame.Entities.Message;
-using DidiFrame.UserCommands;
-using DidiFrame.UserCommands.ArgumentsValidation.Validators;
 using DidiFrame.UserCommands.Loader.Reflection;
 using DidiFrame.Utils;
 
@@ -26,7 +23,7 @@ namespace TestBot.Systems.Games
 
 		[Command("game create")]
 		public UserCommandResult CreateGame(UserCommandContext ctx,
-			[Validator(typeof(NormalString))][Validator(typeof(GameExistAndInvokerIsOwner), true)] string name,
+			[Validator(typeof(NormalString))][Validator(typeof(NoGameExist))] string name,
 			[Validator(typeof(NormalString))] string description,
 			[Validator(typeof(ValidStartAtMembersString))] string startAtMembersPre,
 			[Validator(typeof(ForeachValidator), typeof(NoInvoker))][Validator(typeof(ForeachValidator), typeof(NoBot))] IMember[] invited)
@@ -42,8 +39,7 @@ namespace TestBot.Systems.Games
 		}
 
 		[Command("game invite-members")]
-		public UserCommandResult InviteMembersToGame(UserCommandContext _,
-			[Validator(typeof(GameExistAndInvokerIsOwner), false)] GameLifetime game,
+		public UserCommandResult InviteMembersToGame(UserCommandContext _, GameLifetime game,
 			[Validator(typeof(ForeachValidator), typeof(NoInvoker))][Validator(typeof(ForeachValidator), typeof(NoBot))] IMember[] invited)
 		{
 			game.Invite(invited);
@@ -52,9 +48,8 @@ namespace TestBot.Systems.Games
 		}
 
 		[Command("game invite-party")]
-		public UserCommandResult InvitePartyToGame(UserCommandContext _,
-			[Validator(typeof(GameExistAndInvokerIsOwner), false)] GameLifetime game,
-			[Validator(typeof(PartyExist), false)] ObjectHolder<PartyModel> party)
+		public UserCommandResult InvitePartyToGame(UserCommandContext _, GameLifetime game,
+			[Validator(typeof(NoPartyExist), false)] ObjectHolder<PartyModel> party)
 		{
 			game.Invite(party.Object.Members.Append(party.Object.Creator).ToArray());
 
@@ -64,8 +59,7 @@ namespace TestBot.Systems.Games
 		}
 
 		[Command("game clear-invites")]
-		public UserCommandResult ClearGameInvite(UserCommandContext _,
-			[Validator(typeof(GameExistAndInvokerIsOwner), false)] GameLifetime game)
+		public UserCommandResult ClearGameInvite(UserCommandContext _, GameLifetime game)
 		{
 			game.ClearInvites();
 
@@ -73,9 +67,8 @@ namespace TestBot.Systems.Games
 		}
 
 		[Command("game rename")]
-		public UserCommandResult RenameGame(UserCommandContext _,
-			[Validator(typeof(GameExistAndInvokerIsOwner), false)] GameLifetime game,
-			[Validator(typeof(NormalString))][Validator(typeof(GameExistAndInvokerIsOwner), true)] string newName)
+		public UserCommandResult RenameGame(UserCommandContext _, GameLifetime game,
+			[Validator(typeof(NormalString))][Validator(typeof(NoGameExist))] string newName)
 		{
 			game.Rename(newName);
 
@@ -83,8 +76,7 @@ namespace TestBot.Systems.Games
 		}
 
 		[Command("game redescribe")]
-		public UserCommandResult ChangeDescriptionGame(UserCommandContext _,
-			[Validator(typeof(GameExistAndInvokerIsOwner), false)] GameLifetime game,
+		public UserCommandResult ChangeDescriptionGame(UserCommandContext _, GameLifetime game,
 			[Validator(typeof(NormalString))] string newDescription)
 		{
 			game.ChangeDescription(newDescription);
@@ -93,8 +85,7 @@ namespace TestBot.Systems.Games
 		}
 
 		[Command("game change-cond")]
-		public UserCommandResult ChangeGameStartCondition(UserCommandContext _,
-			[Validator(typeof(GameExistAndInvokerIsOwner), false)] GameLifetime game,
+		public UserCommandResult ChangeGameStartCondition(UserCommandContext _, GameLifetime game,
 			[Validator(typeof(ValidStartAtMembersString))] string startAtMembersPre)
 		{
 			bool req = true;
@@ -108,8 +99,7 @@ namespace TestBot.Systems.Games
 		}
 
 		[Command("game cancel")]
-		public UserCommandResult CancelGame(UserCommandContext _,
-			[Validator(typeof(GameExistAndInvokerIsOwner), false)] GameLifetime game)
+		public UserCommandResult CancelGame(UserCommandContext _, GameLifetime game)
 		{
 			game.Close();
 
@@ -117,8 +107,7 @@ namespace TestBot.Systems.Games
 		}
 
 		[Command("game send-invites")]
-		public async Task<UserCommandResult> SendGameInvites(UserCommandContext _,
-			[Validator(typeof(GameExistAndInvokerIsOwner), false)] GameLifetime game)
+		public async Task<UserCommandResult> SendGameInvites(UserCommandContext _, GameLifetime game)
 		{
 			var baseObj = game.GetBaseClone();
 
