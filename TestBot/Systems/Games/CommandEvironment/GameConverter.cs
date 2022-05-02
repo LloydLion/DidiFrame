@@ -1,4 +1,5 @@
 ﻿using DidiFrame.UserCommands;
+using DidiFrame.UserCommands.PreProcessing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Games.CommandEvironment
@@ -7,7 +8,7 @@ namespace TestBot.Systems.Games.CommandEvironment
 	{
 		public Type WorkType => typeof(GameLifetime);
 
-		public IReadOnlyList<UserCommandInfo.Argument.Type> PreObjectTypes => new[] { UserCommandInfo.Argument.Type.String };
+		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes => new[] { UserCommandArgument.Type.String };
 
 
 		public object Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)

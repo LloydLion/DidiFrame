@@ -1,4 +1,4 @@
-﻿using DidiFrame.UserCommands;
+﻿using DidiFrame.UserCommands.PreProcessing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Streaming.CommandEvironment
@@ -7,7 +7,7 @@ namespace TestBot.Systems.Streaming.CommandEvironment
 	{
 		public Type WorkType => typeof(StreamLifetime);
 
-		public IReadOnlyList<UserCommandInfo.Argument.Type> PreObjectTypes => new[] { UserCommandInfo.Argument.Type.String };
+		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes => new[] { UserCommandArgument.Type.String };
 
 
 		public object Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)

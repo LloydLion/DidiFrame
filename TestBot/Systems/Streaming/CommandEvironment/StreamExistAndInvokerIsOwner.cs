@@ -6,7 +6,7 @@ namespace TestBot.Systems.Streaming.CommandEvironment
 {
 	internal class StreamExistAndInvokerIsOwner : IUserCommandArgumentPreValidator
 	{
-		public string? Validate(IServiceProvider services, UserCommandPreContext context, UserCommandInfo.Argument argument, IReadOnlyList<object> values)
+		public string? Validate(IServiceProvider services, UserCommandPreContext context, UserCommandArgument argument, IReadOnlyList<object> values)
 		{
 			var value = (string)values[0];
 			var core = services.GetRequiredService<ISystemCore>();

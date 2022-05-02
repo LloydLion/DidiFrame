@@ -4,8 +4,16 @@ global using DidiFrame.Interfaces;
 global using DidiFrame.Data;
 global using FluentValidation;
 global using Microsoft.Extensions.Logging;
-global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Localization;
+global using DidiFrame.UserCommands.Models;
+global using DidiFrame.UserCommands.ContextValidation.Arguments;
+global using DidiFrame.UserCommands.ContextValidation.Arguments.Validators;
+global using DidiFrame.UserCommands.ContextValidation.Invoker;
+global using DidiFrame.UserCommands.ContextValidation.Invoker.Filters;
+global using DidiFrame.UserCommands.Repository;
+global using DidiFrame.Entities.Message;
+global using DidiFrame.Entities.Message.Components;
+global using DidiFrame.Entities.Message.Embed;
 
 using DidiFrame.Logging;
 using DidiFrame.UserCommands;
@@ -36,7 +44,7 @@ appBuilder.AddServices((services, config) => services
 	.AddMongoDataManagement(config.GetSection("Data:Mongo"), true, false)
 	.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
 	.AddDSharpClient(config.GetSection("Discord"))
-	.AddDefaultUserCommandHandler(config.GetSection("Commands:Handling"))
+	.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
 	.AddSimpleUserCommandsRepository()
 	.AddReflectionUserCommandsLoader()
 	.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)

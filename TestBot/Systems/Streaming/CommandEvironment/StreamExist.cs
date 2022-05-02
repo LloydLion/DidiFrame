@@ -1,6 +1,4 @@
-﻿using DidiFrame.UserCommands;
-using DidiFrame.UserCommands.ArgumentsValidation;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Streaming.CommandEvironment
 {
@@ -15,7 +13,7 @@ namespace TestBot.Systems.Streaming.CommandEvironment
 		}
 
 
-		public string? Validate(IServiceProvider services, UserCommandPreContext context, UserCommandInfo.Argument argument, IReadOnlyList<object> values)
+		public string? Validate(IServiceProvider services, UserCommandPreContext context, UserCommandArgument argument, IReadOnlyList<object> values)
 		{
 			var has = services.GetRequiredService<ISystemCore>().HasStream(context.Invoker.Server, (string)values[0]);
 

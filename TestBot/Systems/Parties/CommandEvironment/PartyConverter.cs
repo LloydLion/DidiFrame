@@ -8,7 +8,7 @@ namespace TestBot.Systems.Parties.CommandEvironment
 	{
 		public Type WorkType => typeof(ObjectHolder<PartyModel>);
 
-		public IReadOnlyList<UserCommandInfo.Argument.Type> PreObjectTypes => new[] { UserCommandInfo.Argument.Type.String };
+		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes => new[] { UserCommandArgument.Type.String };
 
 
 		public object Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)

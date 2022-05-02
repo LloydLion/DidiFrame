@@ -245,8 +245,6 @@ namespace DidiFrame.DSharpAdapter
 		public class Options
 		{
 			public string Token { get; set; } = "";
-
-			public string Prefixes { get; set; } = "/";
 		}
 	}
 }

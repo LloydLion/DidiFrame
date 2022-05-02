@@ -3,6 +3,7 @@ using DidiFrame.UserCommands.Executing;
 using DidiFrame.UserCommands.Pipeline.Building;
 using DidiFrame.UserCommands.Pipeline.Utils;
 using DidiFrame.UserCommands.PreProcessing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.UserCommands
@@ -24,8 +25,11 @@ namespace DidiFrame.UserCommands
 			return services;
 		}
 
-		public static IServiceCollection AddClassicMessageUserCommandPipeline(this IServiceCollection services)
+		public static IServiceCollection AddClassicMessageUserCommandPipeline(this IServiceCollection services, IConfiguration textCommandParserConfig, IConfiguration defaultCommandsExecutorConfig)
 		{
+			services.Configure<TextCommandParser.Options>(textCommandParserConfig);
+			services.Configure<DefaultUserCommandsExecutor.Options>(defaultCommandsExecutorConfig);
+
 			return services.AddUserCommandPipeline(builder =>
 			{
 				builder

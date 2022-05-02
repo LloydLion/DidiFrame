@@ -17,7 +17,7 @@ namespace TestBot.Systems.Parties.CommandEvironment
 		}
 
 
-		protected override string? Validate(UserCommandContext context, UserCommandInfo.Argument argument, IMember value)
+		protected override string? Validate(UserCommandContext context, UserCommandArgument argument, IMember value)
 		{
 			var party = context.Arguments[context.Command.Arguments.Single(s => s.Name == partyArgumentName)].As<ObjectHolder<PartyModel>>();
 
