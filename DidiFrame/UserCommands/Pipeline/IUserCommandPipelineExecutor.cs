@@ -2,6 +2,6 @@
 {
 	public interface IUserCommandPipelineExecutor
 	{
-		public UserCommandResult? Process(object input, UserCommandSendData sendData);
+		public UserCommandResult? Process(UserCommandPipeline pipeline, object input, UserCommandSendData sendData);
 	}
 }

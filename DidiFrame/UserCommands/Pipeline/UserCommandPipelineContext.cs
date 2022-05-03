@@ -41,9 +41,9 @@
 
 		public enum Status
 		{
+			ContinuePipeline = default,
 			BeginDrop,
 			BeginFinalize,
-			ContinuePipeline
 		}
 	}
 }

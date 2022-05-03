@@ -87,11 +87,11 @@ namespace DidiFrame.Application
 
 
 			var pipelineBuilder = services.GetRequiredService<IUserCommandPipelineBuilder>();
-			var executor = services.GetRequiredService<IUserCommandPipelineExecutor>();
 			var pipeline = pipelineBuilder.Build(services);
+			var executor = services.GetRequiredService<IUserCommandPipelineExecutor>();
 			pipeline.Origin.SetSyncCallback((obj, sendData, callback) =>
 			{
-				var result = executor.Process(obj, sendData);
+				var result = executor.Process(pipeline, obj, sendData);
 				if (result is not null) callback(result);
 			});
 			logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");

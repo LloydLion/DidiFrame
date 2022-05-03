@@ -2,20 +2,11 @@
 {
 	public class UserCommandPipelineExecutor : IUserCommandPipelineExecutor
 	{
-		private readonly IReadOnlyList<IUserCommandPipelineMiddleware> pipeline;
-
-
-		public UserCommandPipelineExecutor(UserCommandPipeline pipeline)
-		{
-			this.pipeline = pipeline.Middlewares;
-		}
-
-
-		public UserCommandResult? Process(object input, UserCommandSendData sendData)
+		public UserCommandResult? Process(UserCommandPipeline pipeline, object input, UserCommandSendData sendData)
 		{
 			object currentValue = input;
 
-			foreach (var middleware in pipeline)
+			foreach (var middleware in pipeline.Middlewares)
 			{
 				var context = new UserCommandPipelineContext(sendData);
 

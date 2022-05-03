@@ -20,14 +20,14 @@ namespace TestBot.Systems.Parties
 
 
 		[Command("party create")]
-		public UserCommandResult CreateParty(UserCommandContext ctx, [Validator(typeof(NoPartyExist), true)] string name, [Validator(typeof(ForeachValidator), typeof(NoBot))][Validator(typeof(ForeachValidator), typeof(NoInvoker))] IMember[] members)
+		public UserCommandResult CreateParty(UserCommandContext ctx, [Validator(typeof(NoPartyExist))] string name, [Validator(typeof(ForeachValidator), typeof(NoBot))][Validator(typeof(ForeachValidator), typeof(NoInvoker))] IMember[] members)
 		{
 			systemCore.CreateParty(name, ctx.Invoker, members);
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["PartyCreated"]) };
 		}
 
 		[Command("party rename")]
-		public UserCommandResult RenameParty(UserCommandContext _, [Validator(typeof(InvokerIsPartyOwner))] ObjectHolder<PartyModel> party, [Validator(typeof(NoPartyExist), true)] string newName)
+		public UserCommandResult RenameParty(UserCommandContext _, [Validator(typeof(InvokerIsPartyOwner))] ObjectHolder<PartyModel> party, [Validator(typeof(NoPartyExist))] string newName)
 		{
 			party.Object.Name = newName;
 			party.Dispose();
@@ -61,7 +61,7 @@ namespace TestBot.Systems.Parties
 		}
 
 		[Command("party info")]
-		public UserCommandResult ShowPartyInfo(UserCommandContext _, [Validator(typeof(NoPartyExist), false)] ObjectHolder<PartyModel> party)
+		public UserCommandResult ShowPartyInfo(UserCommandContext _, ObjectHolder<PartyModel> party)
 		{
 			var report = uiHelper.CreatePartyTablet(party.Object);
 			party.Dispose();

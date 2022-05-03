@@ -1,5 +1,6 @@
 ﻿using DidiFrame.UserCommands.ContextValidation;
 using DidiFrame.UserCommands.Executing;
+using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.Pipeline.Building;
 using DidiFrame.UserCommands.Pipeline.Utils;
 using DidiFrame.UserCommands.PreProcessing;
@@ -20,6 +21,9 @@ namespace DidiFrame.UserCommands
 		{
 			var builder = new UserCommandPipelineBuilder(services);
 
+			services.AddSingleton<IUserCommandPipelineBuilder>(builder);
+			services.AddTransient<IUserCommandPipelineExecutor, UserCommandPipelineExecutor>();
+
 			buildAction(builder);
 
 			return services;
@@ -30,13 +34,15 @@ namespace DidiFrame.UserCommands
 			services.Configure<TextCommandParser.Options>(textCommandParserConfig);
 			services.Configure<DefaultUserCommandsExecutor.Options>(defaultCommandsExecutorConfig);
 
+			services.AddTransient<IUserCommandContextConverter, DefaultUserCommandContextConverter>();
+
 			return services.AddUserCommandPipeline(builder =>
 			{
 				builder
 					.SetSource<IMessage, MessageUserCommandDispatcher>(true)
-					.AddMiddleware(_ => new DelegateMiddleware<IMessage, string>((msg) => msg.Content))
+					.AddMiddleware(_ => new DelegateMiddleware<IMessage, string>(msg => msg.Content))
 					.AddMiddleware<string, UserCommandPreContext, TextCommandParser>(true)
-					.AddMiddleware<UserCommandPreContext, UserCommandContext, DefaultUserCommandContextConverter>(true)
+					.AddMiddleware(prov => prov.GetRequiredService<IUserCommandContextConverter>())
 					.AddMiddleware<UserCommandContext, ValidatedUserCommandContext, ContextValidator>(true)
 					.AddMiddleware<ValidatedUserCommandContext, UserCommandResult, DefaultUserCommandsExecutor>(true)
 					.Build();

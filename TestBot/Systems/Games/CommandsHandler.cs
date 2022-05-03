@@ -49,7 +49,7 @@ namespace TestBot.Systems.Games
 
 		[Command("game invite-party")]
 		public UserCommandResult InvitePartyToGame(UserCommandContext _, GameLifetime game,
-			[Validator(typeof(NoPartyExist), false)] ObjectHolder<PartyModel> party)
+			[Validator(typeof(NoPartyExist))] ObjectHolder<PartyModel> party)
 		{
 			game.Invite(party.Object.Members.Append(party.Object.Creator).ToArray());
 
