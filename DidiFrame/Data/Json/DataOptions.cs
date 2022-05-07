@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.Data.Json
 {
-	internal class DataOptions
+	public class DataOptions
 	{
 		public DataOption? States { get; set; } = new();
 

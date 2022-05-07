@@ -1,5 +1,7 @@
-﻿using DidiFrame.Data.JsonEnvironment.Converters;
+﻿using DidiFrame.Data.ContextBased;
+using DidiFrame.Data.JsonEnvironment.Converters;
 using DidiFrame.Utils;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
@@ -10,7 +12,7 @@ using System.Text;
 
 namespace DidiFrame.Data.MongoDB
 {
-	internal class MongoDBContext
+	internal class MongoDBContext : IDataContext
 	{
 		private readonly EventId CollectionElementParseErrorID = new(41, "CollectionElementParseError");
 
@@ -23,12 +25,16 @@ namespace DidiFrame.Data.MongoDB
 		private readonly IClient client;
 
 
-		public MongoDBContext(ILogger logger, IClient client, string connectionString, string dbName)
+		public MongoDBContext(DataOptions options, ContextBased.ContextType contextType, ILogger logger, IServiceProvider services)
 		{
-			var dbClient = new MongoClient(connectionString);
-			db = dbClient.GetDatabase(dbName);
+			DataOptions.DataOption? option = contextType == ContextBased.ContextType.States ? options.States : options.Settings;
+
+			if (option is null) throw new ArgumentNullException(nameof(options));
+
+			var dbClient = new MongoClient(option.ConnectionString);
+			db = dbClient.GetDatabase(option.DatabaseName);
 			this.logger = logger;
-			this.client = client;
+			client = services.GetRequiredService<IClient>();
 		}
 
 
@@ -47,13 +53,15 @@ namespace DidiFrame.Data.MongoDB
 			PushChangesAsync(server, key);
 		}
 
-		public TModel Load<TModel>(IServer server, string key) where TModel : class
+		private TModel Load<TModel>(IServer server, string key) where TModel : class
 		{
 			return (TModel)cache[server][key];
 		}
 
-		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel> factory) where TModel : class
+		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class
 		{
+			if (factory is null) return Load<TModel>(server, key);
+
 			if (cache.ContainsKey(server) == false) cache.Add(server, new());
 			var serverCache = cache[server];
 			if (serverCache.ContainsKey(key) == false) serverCache.Add(key, factory.CreateDefault());
@@ -83,7 +91,7 @@ namespace DidiFrame.Data.MongoDB
 			}
 		}
 
-		public async Task LoadAllAsync()
+		public async Task PreloadDataAsync()
 		{
 			var cursor = db.ListCollectionNames();
 			foreach (var colName in await cursor.ToListAsync())

@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.Data.MongoDB
 {
-	internal class DataOptions
+	public class DataOptions
 	{
 		public DataOption? States { get; set; } = new();
 

@@ -1,4 +1,5 @@
-﻿using DidiFrame.Data.JsonEnvironment.Converters;
+﻿using DidiFrame.Data.ContextBased;
+using DidiFrame.Data.JsonEnvironment.Converters;
 using DidiFrame.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -6,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace DidiFrame.Data.Json
 {
-	internal class JsonContext
+	internal class JsonContext : IDataContext
 	{
 		private readonly EventId CollectionElementParseErrorID = new(41, "CollectionElementParseError");
 		private readonly EventId FileSaveErrorID = new(21, "FileSaveError");
@@ -16,15 +17,17 @@ namespace DidiFrame.Data.Json
 		private readonly ILogger logger;
 
 
-		public JsonContext(string directoryPath, ILogger logger)
+		public JsonContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider _)
 		{
-			cache = new JsonCache(directoryPath);
+			cache = new JsonCache((contextType == ContextType.Settings ? options.Settings?.BaseDirectory : options.States?.BaseDirectory) ?? throw new ArgumentNullException(nameof(options)));
 			this.logger = logger;
 		}
 
 
-		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel> factory) where TModel : class
+		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class
 		{
+			if (factory is null) return Load<TModel>(server, key);
+
 			using (locker.Lock(server))
 			{
 				var path = GetFileForServer(server);
@@ -55,7 +58,7 @@ namespace DidiFrame.Data.Json
 			}
 		}
 		
-		public TModel Load<TModel>(IServer server, string key) where TModel : class
+		private TModel Load<TModel>(IServer server, string key) where TModel : class
 		{
 			using (locker.Lock(server))
 			{
@@ -97,7 +100,7 @@ namespace DidiFrame.Data.Json
 			}
 		}
 
-		public Task LoadAllAsync()
+		public Task PreloadDataAsync()
 		{
 			return cache.LoadAllAsync();
 		}
