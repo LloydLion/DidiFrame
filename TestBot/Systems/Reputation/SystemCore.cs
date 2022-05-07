@@ -1,4 +1,5 @@
-﻿using DidiFrame.GlobalEvents;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.GlobalEvents;
 
 namespace TestBot.Systems.Reputation
 {
@@ -16,14 +17,14 @@ namespace TestBot.Systems.Reputation
 
 
 		public SystemCore(
-			IServersSettingsRepositoryFactory settingsFactory,
+			IServersSettingsRepository<ReputationSettings> settings,
 			IMembersReputationRepository repository,
 			IValidator<MemberLegalLevelChangeOperationArgs> argsValidator,
 			IReputationDispatcher dispatcher,
 			ILogger<SystemCore> logger,
 			StartupEvent startup)
 		{
-			settings = settingsFactory.Create<ReputationSettings>(SettingsKeys.ReputationSystem);
+			this.settings = settings;
 			this.repository = repository;
 			this.argsValidator = argsValidator;
 			this.dispatcher = dispatcher;

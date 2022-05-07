@@ -8,9 +8,7 @@ global using Microsoft.Extensions.Localization;
 global using DidiFrame.UserCommands.Models;
 global using DidiFrame.UserCommands.ContextValidation.Arguments;
 global using DidiFrame.UserCommands.ContextValidation.Arguments.Validators;
-global using DidiFrame.UserCommands.ContextValidation.Invoker;
 global using DidiFrame.UserCommands.ContextValidation.Invoker.Filters;
-global using DidiFrame.UserCommands.Repository;
 global using DidiFrame.Entities.Message;
 global using DidiFrame.Entities.Message.Components;
 global using DidiFrame.Entities.Message.Embed;
@@ -31,7 +29,7 @@ using DidiFrame.Application;
 using DidiFrame.Data.MongoDB;
 
 using AutoInjector = DidiFrame.AutoInjecting.AutoInjector;
-
+using DidiFrame.Data.AutoKeys;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -42,6 +40,7 @@ appBuilder.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddMyCo
 appBuilder.AddServices((services, config) => services
 	.AddJsonDataManagement(config.GetSection("Data:Json"), false, true)
 	.AddMongoDataManagement(config.GetSection("Data:Mongo"), true, false)
+	.AddAutoDataRepositories()
 	.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
 	.AddDSharpClient(config.GetSection("Discord"))
 	.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))

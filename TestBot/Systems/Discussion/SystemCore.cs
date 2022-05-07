@@ -9,10 +9,10 @@ namespace TestBot.Systems.Discussion
 		private readonly UIHelper uiHelper;
 
 
-		public SystemCore(IServersSettingsRepositoryFactory settings, IServersLifetimesRepositoryFactory lifetimes, UIHelper uiHelper)
+		public SystemCore(IServersSettingsRepository<DiscussionSettings> settings, IServersLifetimesRepository<DiscussionChannelLifetime, DiscussionChannel> lifetimes, UIHelper uiHelper)
 		{
-			this.settings = settings.Create<DiscussionSettings>(SettingsKeys.DiscussionSystem);
-			this.lifetimes = lifetimes.Create<DiscussionChannelLifetime, DiscussionChannel>(StatesKeys.DiscussionSystem);
+			this.settings = settings;
+			this.lifetimes = lifetimes;
 			this.uiHelper = uiHelper;
 		}
 

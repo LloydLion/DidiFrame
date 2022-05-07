@@ -1,7 +1,9 @@
-﻿using DidiFrame.Data.Model;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Model;
 
 namespace TestBot.Systems.Streaming
 {
+	[DataKey(SettingsKeys.StreamingSystem)]
 	internal class StreamingSettings
 	{
 		public StreamingSettings(ITextChannel reportChannel)

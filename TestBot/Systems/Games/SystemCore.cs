@@ -1,4 +1,5 @@
-﻿using DidiFrame.Data.Lifetime;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Lifetime;
 using DidiFrame.Utils;
 
 namespace TestBot.Systems.Games
@@ -9,10 +10,10 @@ namespace TestBot.Systems.Games
 		private readonly IServersLifetimesRepository<GameLifetime, GameModel> lifetimes;
 
 
-		public SystemCore(IServersSettingsRepositoryFactory settings, IServersLifetimesRepositoryFactory lifetimes)
+		public SystemCore(IServersSettingsRepository<GamesSettings> settings, IServersLifetimesRepository<GameLifetime, GameModel> lifetimes)
 		{
-			this.settings = settings.Create<GamesSettings>(SettingsKeys.GamesSystem);
-			this.lifetimes = lifetimes.Create<GameLifetime, GameModel>(StatesKeys.GamesSystem);
+			this.settings = settings;
+			this.lifetimes = lifetimes;
 		}
 
 		public void CancelGame(IMember creator, string name)

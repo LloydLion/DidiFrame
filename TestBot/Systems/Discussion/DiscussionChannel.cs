@@ -1,8 +1,10 @@
-﻿using DidiFrame.Data.Lifetime;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Lifetime;
 using DidiFrame.Data.Model;
 
 namespace TestBot.Systems.Discussion
 {
+	[DataKey(StatesKeys.DiscussionSystem)]
 	internal class DiscussionChannel : ILifetimeBase
 	{
 		public DiscussionChannel(ITextChannel channel, IMessage askMessage)

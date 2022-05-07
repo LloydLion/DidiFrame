@@ -1,7 +1,9 @@
-﻿using DidiFrame.Data.Model;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Model;
 
 namespace TestBot.Systems.Discussion
 {
+	[DataKey(SettingsKeys.DiscussionSystem)]
 	internal class DiscussionSettings
 	{
 		public DiscussionSettings(IReadOnlyCollection<IChannelCategory> disscussionCategories)

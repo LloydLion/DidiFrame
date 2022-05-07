@@ -1,4 +1,5 @@
-﻿using DidiFrame.Data.Lifetime;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Lifetime;
 
 namespace TestBot.Systems.Streaming
 {
@@ -8,10 +9,10 @@ namespace TestBot.Systems.Streaming
 		private readonly IServersLifetimesRepository<StreamLifetime, StreamModel> lifetimes;
 
 
-		public SystemCore(IServersSettingsRepositoryFactory settings, IServersLifetimesRepositoryFactory lifetimes)
+		public SystemCore(IServersSettingsRepository<StreamingSettings> settings, IServersLifetimesRepository<StreamLifetime, StreamModel> lifetimes)
 		{
-			this.settings = settings.Create<StreamingSettings>(SettingsKeys.StreamingSystem);
-			this.lifetimes = lifetimes.Create<StreamLifetime, StreamModel>(StatesKeys.StreamingSystem);
+			this.settings = settings;
+			this.lifetimes = lifetimes;
 		}
 
 

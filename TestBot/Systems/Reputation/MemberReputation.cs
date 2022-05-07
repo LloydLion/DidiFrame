@@ -1,7 +1,9 @@
-﻿using DidiFrame.Data.Model;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Model;
 
 namespace TestBot.Systems.Reputation
 {
+	[DataKey(StatesKeys.ReputationSystem)]
 	public class MemberReputation
 	{
 		private readonly Dictionary<ReputationType, int> rp = new();

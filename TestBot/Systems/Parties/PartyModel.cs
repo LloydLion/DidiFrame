@@ -1,7 +1,9 @@
-﻿using DidiFrame.Data.Model;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Model;
 
 namespace TestBot.Systems.Parties
 {
+	[DataKey(StatesKeys.PartiesSystem)]
 	public class PartyModel
 	{
 		private static int nextId = 0;

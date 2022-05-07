@@ -1,4 +1,5 @@
-﻿using DidiFrame.Utils;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Utils;
 
 namespace TestBot.Systems.Parties
 {
@@ -7,9 +8,9 @@ namespace TestBot.Systems.Parties
 		private readonly IServersStatesRepository<ICollection<PartyModel>> states;
 
 
-		public SystemCore(IServersStatesRepositoryFactory states)
+		public SystemCore(IServersStatesRepository<ICollection<PartyModel>> states)
 		{
-			this.states = states.Create<ICollection<PartyModel>>(StatesKeys.PartiesSystem);
+			this.states = states;
 		}
 
 

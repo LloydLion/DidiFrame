@@ -1,9 +1,11 @@
-﻿using DidiFrame.Data.Lifetime;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Lifetime;
 using DidiFrame.Data.Model;
 using DidiFrame.Utils;
 
 namespace TestBot.Systems.Games
 {
+	[DataKey(StatesKeys.GamesSystem)]
 	public class GameModel : IStateBasedLifetimeBase<GameState>
 	{
 		private static int nextId = 0;

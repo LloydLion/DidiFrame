@@ -1,7 +1,9 @@
-﻿using DidiFrame.Data.Model;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Model;
 
 namespace TestBot.Systems.Reputation
 {
+	[DataKey(SettingsKeys.ReputationSystem)]
 	public class ReputationSettings
 	{
 		public ReputationSettings(IReadOnlyCollection<GrantRole> grants, Source sources, int banThreshold = -50, int globalLegalLevelIncrease = 2, int globalServerActivityDecrease = 2)

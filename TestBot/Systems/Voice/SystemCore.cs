@@ -1,4 +1,5 @@
-﻿using DidiFrame.Data.Lifetime;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Lifetime;
 
 namespace TestBot.Systems.Voice
 {
@@ -9,11 +10,11 @@ namespace TestBot.Systems.Voice
 
 
 		public SystemCore(
-			IServersLifetimesRepositoryFactory factory,
-			IServersSettingsRepositoryFactory settingsFactory)
+			IServersLifetimesRepository<CreatedVoiceChannelLifetime, CreatedVoiceChannel> repository,
+			IServersSettingsRepository<VoiceSettings> settings)
 		{
-			repository = factory.Create<CreatedVoiceChannelLifetime, CreatedVoiceChannel>(StatesKeys.VoiceSystem);
-			settings = settingsFactory.Create<VoiceSettings>(SettingsKeys.VoiceSystem);
+			this.repository = repository;
+			this.settings = settings;
 		}
 
 
