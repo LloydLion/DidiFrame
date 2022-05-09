@@ -16,7 +16,7 @@ namespace DidiFrame.Application
 		private readonly EventId DataPreloadCompliteID = new(53, "DataPreloadComplite");
 		private readonly EventId StartEventFiredID = new(54, "StartEventFired");
 		private readonly EventId LifetimeRegistrationDoneID = new(55, "LifetimeRegistrationDone");
-		private readonly EventId UserCommandsHandlerDoneID = new(56, "UserCommandsHandlerDone");
+		private readonly EventId UserCommandsPipelineDoneID = new(56, "UserCommandsPipelineDone");
 		private readonly EventId ClientExitID = new(80, "ClientExit");
 		private readonly EventId LoadingStartID = new(45, "LoadingStart");
 		private readonly EventId LoaderStartID = new(46, "LoaderStart");
@@ -94,7 +94,7 @@ namespace DidiFrame.Application
 				var result = executor.Process(pipeline, obj, sendData);
 				if (result is not null) callback(result);
 			});
-			logger.Log(LogLevel.Debug, UserCommandsHandlerDoneID, "UserCommandsHandler instance created and event handler registrated");
+			logger.Log(LogLevel.Debug, UserCommandsPipelineDoneID, "UserCommandPipeline created and event handler for executor registrated");
 		}
 
 

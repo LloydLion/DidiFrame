@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DidiFrame.Data.JsonEnvironment.Converters
+namespace DidiFrame.Utils.Json.Converters
 {
 	internal class ServerConveter : JsonConverter<IServer>
 	{

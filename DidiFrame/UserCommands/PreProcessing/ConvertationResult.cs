@@ -27,8 +27,7 @@
 
 		public void DeconstructAsFailture(out string localeKey, out UserCommandCode code)
 		{
-			if (result is null)
-				throw new InvalidOperationException("Result is success");
+			if (IsSuccessful) throw new InvalidOperationException("Result is success");
 			localeKey = this.localeKey ?? throw new ImpossibleVariantException();
 			code = this.code;
 		}

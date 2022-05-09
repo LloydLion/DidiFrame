@@ -1,16 +1,12 @@
 ﻿using DidiFrame.Data.ContextBased;
-using DidiFrame.Data.JsonEnvironment.Converters;
 using DidiFrame.Utils;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
+using DidiFrame.Utils.Json;
 
 namespace DidiFrame.Data.Json
 {
 	internal class JsonContext : IDataContext
 	{
-		private readonly EventId CollectionElementParseErrorID = new(41, "CollectionElementParseError");
-		private readonly EventId FileSaveErrorID = new(21, "FileSaveError");
+		private static readonly EventId FileSaveErrorID = new(21, "FileSaveError");
 
 		private readonly ThreadLocker<IServer> locker = new();
 		private readonly JsonCache cache;
@@ -32,7 +28,7 @@ namespace DidiFrame.Data.Json
 			{
 				var path = GetFileForServer(server);
 				bool isRepatchCollection = false;
-				var serializer = CreateSerializer(server, (obj, str, ex) => { isRepatchCollection = true; });
+				var serializer = JsonSerializerFactory.CreateWithConverters(server, logger, (obj, str, ex) => { isRepatchCollection = true; });
 
 				TModel model;
 
@@ -64,7 +60,7 @@ namespace DidiFrame.Data.Json
 			{
 				var path = GetFileForServer(server);
 				bool isRepatchCollection = false;
-				var serializer = CreateSerializer(server, (obj, str, ex) => { isRepatchCollection = true; });
+				var serializer = JsonSerializerFactory.CreateWithConverters(server, logger, (obj, str, ex) => { isRepatchCollection = true; });
 
 				var model = cache.Get<TModel>(path, key, serializer, out var task);
 				if (task is not null) task.ContinueWith(s =>
@@ -84,7 +80,7 @@ namespace DidiFrame.Data.Json
 		{
 			try
 			{
-				await cache.PutAsync(GetFileForServer(server), key, model, CreateSerializer(server));
+				await cache.PutAsync(GetFileForServer(server), key, model, JsonSerializerFactory.CreateWithConverters(server, logger));
 			}
 			catch (Exception ex)
 			{
@@ -106,44 +102,5 @@ namespace DidiFrame.Data.Json
 		}
 
 		private static string GetFileForServer(IServer server) => $"{server.Id}.json";
-
-		private static JsonSerializer CreateSerializerInternal(IServer server, Action<JContainer, string, Exception> invalidCollectionElementCallback)
-		{
-			var ret = new JsonSerializer()
-			{
-				Formatting = Formatting.Indented,
-			};
-
-			ret.Converters.Add(new AbstractConveter());
-
-			ret.Converters.Add(new CategoryConveter(server));
-			ret.Converters.Add(new ChannelConverter(server));
-			ret.Converters.Add(new MemberConveter(server));
-			ret.Converters.Add(new RoleConverter(server));
-			ret.Converters.Add(new MessageConverter(server));
-			ret.Converters.Add(new ServerConveter(server.Client));
-			ret.Converters.Add(new StringEnumConverter());
-
-			ret.Converters.Add(new SafeCollectionConveter(invalidCollectionElementCallback));
-
-			return ret;
-		}
-
-		private JsonSerializer CreateSerializer(IServer server)
-		{
-			return CreateSerializerInternal(server, DefaultInvalidCollectionElementCallback);
-		}
-		
-		private JsonSerializer CreateSerializer(IServer server, Action<JContainer, string, Exception> invalidCollectionElementCallback)
-		{
-			var deleg = new Action<JContainer, string, Exception>(invalidCollectionElementCallback);
-			deleg += DefaultInvalidCollectionElementCallback;
-			return CreateSerializerInternal(server, deleg);
-		}
-
-		private void DefaultInvalidCollectionElementCallback(JContainer root, string str, Exception ex)
-		{
-			logger.Log(LogLevel.Warning, CollectionElementParseErrorID, ex, "Enable to convert object:\n{Json}", root.SelectToken(str));
-		}
 	}
 }

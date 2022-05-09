@@ -20,10 +20,5 @@ namespace DidiFrame.Culture
 		{
 			return repository.Get(server).CultureInfo;
 		}
-
-		public void SetupCulture(IServer server)
-		{
-			Thread.CurrentThread.CurrentUICulture = GetCulture(server);
-		}
 	}
 }

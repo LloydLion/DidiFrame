@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Collections;
 
-namespace DidiFrame.Data.JsonEnvironment.Converters
+namespace DidiFrame.Utils.Json.Converters
 {
 	internal class SafeCollectionConveter : JsonConverter
 	{

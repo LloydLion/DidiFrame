@@ -1,11 +1,11 @@
-﻿using DidiFrame.Data.Model;
+﻿using DidiFrame.Utils.Model;
 using DidiFrame.Entities.Message;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Reflection;
 
-namespace DidiFrame.Data.JsonEnvironment.Converters
+namespace DidiFrame.Utils.Json.Converters
 {
 	internal class AbstractConveter : JsonConverter
 	{

@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Data.ContextBased;
-using DidiFrame.Data.JsonEnvironment.Converters;
 using DidiFrame.Utils;
+using DidiFrame.Utils.Json;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
@@ -14,9 +14,6 @@ namespace DidiFrame.Data.MongoDB
 {
 	internal class MongoDBContext : IDataContext
 	{
-		private readonly EventId CollectionElementParseErrorID = new(41, "CollectionElementParseError");
-
-
 		private readonly IMongoDatabase db;
 		private readonly Dictionary<IServer, Dictionary<string, object>> cache = new();
 		private readonly ThreadLocker<IServer> dbLocker = new();
@@ -79,7 +76,7 @@ namespace DidiFrame.Data.MongoDB
 				var collection = db.GetCollection<BsonDocument>(server.Id.ToString());
 
 				var obj = cache[server][key];
-				var ser = CreateSerializer(server);
+				var ser = JsonSerializerFactory.CreateWithConverters(server, logger);
 				var jcont = JToken.FromObject(obj, ser);
 				var model = new SaveModel(key, obj.GetType(), (JContainer)jcont);
 				var json = new StringBuilder();
@@ -111,7 +108,7 @@ namespace DidiFrame.Data.MongoDB
 					var clone = document.ToBsonDocument();
 					clone.Remove("_id");
 					var json = clone.ToJson(new JsonWriterSettings() { OutputMode = JsonOutputMode.RelaxedExtendedJson });
-					var ser = CreateSerializer(server, (_1, _2, _3) => { isRepatchJson = true; });
+					var ser = JsonSerializerFactory.CreateWithConverters(server, logger, (_1, _2, _3) => { isRepatchJson = true; });
 					var model = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveModel>(json);
 					if (model is null) continue;
 
@@ -125,42 +122,6 @@ namespace DidiFrame.Data.MongoDB
 			}
 
 			cursor.Dispose();
-		}
-
-		private static JsonSerializer CreateSerializerInternal(IServer server, Action<JContainer, string, Exception> invalidCollectionElementCallback)
-		{
-			var ret = new JsonSerializer();
-
-			ret.Converters.Add(new AbstractConveter());
-
-			ret.Converters.Add(new CategoryConveter(server));
-			ret.Converters.Add(new ChannelConverter(server));
-			ret.Converters.Add(new MemberConveter(server));
-			ret.Converters.Add(new RoleConverter(server));
-			ret.Converters.Add(new MessageConverter(server));
-			ret.Converters.Add(new ServerConveter(server.Client));
-			ret.Converters.Add(new StringEnumConverter());
-
-			ret.Converters.Add(new SafeCollectionConveter(invalidCollectionElementCallback));
-
-			return ret;
-		}
-
-		private JsonSerializer CreateSerializer(IServer server)
-		{
-			return CreateSerializerInternal(server, DefaultInvalidCollectionElementCallback);
-		}
-
-		private JsonSerializer CreateSerializer(IServer server, Action<JContainer, string, Exception> invalidCollectionElementCallback)
-		{
-			var deleg = new Action<JContainer, string, Exception>(invalidCollectionElementCallback);
-			deleg += DefaultInvalidCollectionElementCallback;
-			return CreateSerializerInternal(server, deleg);
-		}
-
-		private void DefaultInvalidCollectionElementCallback(JContainer root, string str, Exception ex)
-		{
-			logger.Log(LogLevel.Warning, CollectionElementParseErrorID, ex, "Enable to convert object:\n{Json}", root.SelectToken(str));
 		}
 
 
