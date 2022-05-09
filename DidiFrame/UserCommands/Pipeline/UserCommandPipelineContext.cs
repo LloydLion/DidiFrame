@@ -8,9 +8,12 @@
 
 		public UserCommandSendData SendData { get; }
 
+		public IServiceProvider LocalServices { get; }
 
-		public UserCommandPipelineContext(UserCommandSendData sendData)
+
+		public UserCommandPipelineContext(IServiceProvider localServices, UserCommandSendData sendData)
 		{
+			LocalServices = localServices;
 			SendData = sendData;
 		}
 

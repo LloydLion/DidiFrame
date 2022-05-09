@@ -1,6 +1,5 @@
 ﻿using DidiFrame.Culture;
 using DidiFrame.UserCommands.Pipeline;
-using DidiFrame.UserCommands.PreProcessing;
 using DidiFrame.Utils;
 
 namespace DidiFrame.UserCommands.Executing
@@ -37,6 +36,7 @@ namespace DidiFrame.UserCommands.Executing
 					using (logger.BeginScope("Command: {CommandName}", ctx.Command.Name))
 					{
 						ctx.AddLogger(logger);
+						ctx.AddLocalServices(pipelineContext.LocalServices);
 						cultureProvider.SetupCulture(ctx.Invoker.Server);
 
 						logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");

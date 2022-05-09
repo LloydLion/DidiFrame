@@ -2,6 +2,7 @@
 using DidiFrame.UserCommands.Executing;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.Pipeline.Building;
+using DidiFrame.UserCommands.Pipeline.Services;
 using DidiFrame.UserCommands.Pipeline.Utils;
 using DidiFrame.UserCommands.PreProcessing;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,8 @@ namespace DidiFrame.UserCommands
 			services.Configure<DefaultUserCommandsExecutor.Options>(defaultCommandsExecutorConfig);
 
 			services.AddTransient<IUserCommandContextConverter, DefaultUserCommandContextConverter>();
+
+			services.AddUserCommandLocalService<Disposer>();
 
 			return services.AddUserCommandPipeline(builder =>
 			{

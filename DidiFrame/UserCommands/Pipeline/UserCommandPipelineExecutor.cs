@@ -2,13 +2,27 @@
 {
 	public class UserCommandPipelineExecutor : IUserCommandPipelineExecutor
 	{
+		private readonly IReadOnlyCollection<IUserCommandLocalServiceDescriptor> descriptors;
+		private readonly IServiceProvider sp;
+
+
+		public UserCommandPipelineExecutor(IEnumerable<IUserCommandLocalServiceDescriptor> descriptors, IServiceProvider sp)
+		{
+			this.descriptors = descriptors.ToArray();
+			this.sp = sp;
+		}
+
+
+
 		public UserCommandResult? Process(UserCommandPipeline pipeline, object input, UserCommandSendData sendData)
 		{
+			using var services = new UserCommandLocalServicesProvider(descriptors.Select(s => s.CreateInstance(sp)).ToArray());
+
 			object currentValue = input;
 
 			foreach (var middleware in pipeline.Middlewares)
 			{
-				var context = new UserCommandPipelineContext(sendData);
+				var context = new UserCommandPipelineContext(services, sendData);
 
 				var newValue = middleware.Process(currentValue, context);
 

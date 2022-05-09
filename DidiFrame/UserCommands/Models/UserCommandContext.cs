@@ -8,12 +8,25 @@ namespace DidiFrame.UserCommands.Models
 		UserCommandInfo Command,
 		IReadOnlyDictionary<UserCommandArgument, UserCommandContext.ArgumentValue> Arguments)
 	{
+		private IServiceProvider? localSp;
+
+
 		public ILogger? Logger { get; private set; }
 
 
 		public void AddLogger(ILogger logger)
 		{
 			Logger = logger;
+		}
+
+		public void AddLocalServices(IServiceProvider services)
+		{
+			localSp = services;
+		}
+
+		public IServiceProvider GetLocalServices()
+		{
+			return localSp ?? throw new NullReferenceException("No local services have provided");
 		}
 
 
