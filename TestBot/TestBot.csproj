@@ -12,6 +12,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Translations\Systems\Test\CommandsHandler.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Voice\CommandsHandler.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Voice\UIHelper.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Translations\Systems\Voice\UIHelper.ru-RU.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

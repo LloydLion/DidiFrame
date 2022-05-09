@@ -1,7 +1,9 @@
-﻿using DidiFrame.Data.Model;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Model;
 
 namespace TestBot.Systems.Voice
 {
+	[DataKey(StatesKeys.VoiceSystem)]
 	public class VoiceSettings
 	{
 		public VoiceSettings(IChannelCategory creationCategory, ITextChannel reportChannel)

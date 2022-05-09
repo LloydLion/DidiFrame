@@ -1,5 +1,4 @@
-﻿using DidiFrame.Utils.Model;
-using DidiFrame.Entities.Message;
+﻿using DidiFrame.Data.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections;

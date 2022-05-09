@@ -1,6 +1,7 @@
 ﻿using DidiFrame.Data.Lifetime;
 using DidiFrame.AutoInjecting;
 using Microsoft.Extensions.DependencyInjection;
+using DidiFrame.UserCommands.Loader.Reflection;
 
 namespace TestBot.Systems.Voice
 {
@@ -11,7 +12,7 @@ namespace TestBot.Systems.Voice
 			services.AddSingleton<SystemCore>();
 			services.AddSingleton<ISystemNotifier, SystemCore>(services => services.GetRequiredService<SystemCore>());
 			services.AddSingleton<ISystemCore, SystemCore>(services => services.GetRequiredService<SystemCore>());
-			services.AddSingleton<CommandsHandler>();
+			services.AddSingleton<ICommandsHandler, CommandsHandler>();
 			services.AddTransient<UIHelper>();
 
 			//States

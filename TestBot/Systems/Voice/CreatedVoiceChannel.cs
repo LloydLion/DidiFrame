@@ -1,9 +1,11 @@
-﻿using DidiFrame.Data.Lifetime;
+﻿using DidiFrame.Data.AutoKeys;
+using DidiFrame.Data.Lifetime;
 using DidiFrame.Data.Model;
 using DidiFrame.Utils;
 
 namespace TestBot.Systems.Voice
 {
+	[DataKey(SettingsKeys.VoiceSystem)]
 	public class CreatedVoiceChannel : IStateBasedLifetimeBase<VoiceChannelState>
 	{
 		private static int nextId = 0;
