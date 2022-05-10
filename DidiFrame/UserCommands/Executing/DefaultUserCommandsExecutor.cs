@@ -100,7 +100,7 @@ namespace DidiFrame.UserCommands.Executing
 
 		public class Options
 		{
-			public UnspecifiedErrorMessageBehavior UnspecifiedErrorMessage { get; } = UnspecifiedErrorMessageBehavior.EnableWithExceptionsTypeAndMessage;
+			public UnspecifiedErrorMessageBehavior UnspecifiedErrorMessage { get; set; } = UnspecifiedErrorMessageBehavior.EnableWithExceptionsTypeAndMessage;
 
 
 			public enum UnspecifiedErrorMessageBehavior

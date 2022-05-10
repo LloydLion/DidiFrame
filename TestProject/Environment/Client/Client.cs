@@ -22,10 +22,6 @@ namespace TestProject.Environment.Client
 
 		public IList<Server> BaseServers { get; } = new List<Server>();
 
-		public ICommandsDispatcher CommandsDispatcher => BaseCommandsDispatcher;
-
-		public CommandsDispatcher BaseCommandsDispatcher { get; } = new CommandsDispatcher();
-
 
 
 		public Client()
