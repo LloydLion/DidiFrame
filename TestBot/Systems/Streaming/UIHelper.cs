@@ -1,8 +1,4 @@
-﻿using DidiFrame.Entities.Message;
-using DidiFrame.Entities.Message.Components;
-using DidiFrame.Entities.Message.Embed;
-
-namespace TestBot.Systems.Streaming
+﻿namespace TestBot.Systems.Streaming
 {
 	public class UIHelper
 	{

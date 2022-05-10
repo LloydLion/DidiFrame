@@ -4,7 +4,7 @@
 	{
 		public static void SetupCulture(this IServerCultureProvider provider, IServer server)
 		{
-			Thread.CurrentThread.CurrentUICulture = provider.GetCulture(server);
+			Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = provider.GetCulture(server);
 		}
 	}
 }

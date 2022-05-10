@@ -1,4 +1,5 @@
-﻿using DidiFrame.UserCommands;
+﻿using DidiFrame.Culture;
+using DidiFrame.UserCommands;
 using DSharpPlus;
 using DSharpPlus.Exceptions;
 
@@ -29,8 +30,10 @@ namespace DidiFrame.DSharpAdapter
 
 		public DiscordClient BaseClient => client;
 
+		public IServerCultureProvider CultureProvider { get; }
 
-		public Client(IOptions<Options> options, ILoggerFactory factory)
+
+		public Client(IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider cultureProvider)
 		{
 			var opt = options.Value;
 			logger = factory.CreateLogger<Client>();
@@ -44,6 +47,7 @@ namespace DidiFrame.DSharpAdapter
 				LoggerFactory = factory,
 				Intents = DiscordIntents.All
 			});
+			CultureProvider = cultureProvider;
 		}
 
 		//Must be invoked from TextChannel objects

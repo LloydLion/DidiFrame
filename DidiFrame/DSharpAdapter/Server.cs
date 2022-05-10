@@ -1,4 +1,5 @@
-﻿using DidiFrame.Utils;
+﻿using DidiFrame.Culture;
+using DidiFrame.Utils;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -10,7 +11,6 @@ namespace DidiFrame.DSharpAdapter
 	{
 		private readonly DiscordGuild guild;
 		private readonly Client client;
-
 		private readonly Task globalCacheUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 
@@ -123,6 +123,7 @@ namespace DidiFrame.DSharpAdapter
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			var channel = (TextChannel)GetChannel(e.Message.ChannelId);
+			client.CultureProvider.SetupCulture(this);
 			channel.OnMessageDelete(e.Message);
 			return Task.CompletedTask;
 		}
@@ -163,6 +164,7 @@ namespace DidiFrame.DSharpAdapter
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			var channel = (TextChannel)GetChannel(e.Channel.Id);
+			client.CultureProvider.SetupCulture(this);
 			channel.OnMessageCreate(e.Message);
 			return Task.CompletedTask;
 		}
