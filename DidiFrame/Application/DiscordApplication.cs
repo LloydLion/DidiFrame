@@ -89,9 +89,9 @@ namespace DidiFrame.Application
 			var pipelineBuilder = services.GetRequiredService<IUserCommandPipelineBuilder>();
 			var pipeline = pipelineBuilder.Build(services);
 			var executor = services.GetRequiredService<IUserCommandPipelineExecutor>();
-			pipeline.Origin.SetSyncCallback((obj, sendData, callback) =>
+			pipeline.Origin.SetSyncCallback(async (obj, sendData, callback) =>
 			{
-				var result = executor.Process(pipeline, obj, sendData);
+				var result = await executor.ProcessAsync(pipeline, obj, sendData);
 				if (result is not null) callback(result);
 			});
 			logger.Log(LogLevel.Debug, UserCommandsPipelineDoneID, "UserCommandPipeline created and event handler for executor registrated");

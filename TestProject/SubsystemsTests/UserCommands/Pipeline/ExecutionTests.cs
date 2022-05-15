@@ -62,7 +62,7 @@ namespace TestProject.SubsystemsTests.UserCommands.Pipeline
 
 			var ctx = new UserCommandContext(member, channel, command, new Dictionary<UserCommandArgument, UserCommandContext.ArgumentValue>() { { argument, new(argument, member2, new[] { member2 }) } });
 			var executor = services.GetRequiredService<IUserCommandPipelineExecutor>();
-			var ucr = executor.Process(services.GetRequiredService<IUserCommandPipelineBuilder>().Build(services), new ValidatedUserCommandContext(ctx), new(member, channel));
+			var ucr = executor.ProcessAsync(services.GetRequiredService<IUserCommandPipelineBuilder>().Build(services), new ValidatedUserCommandContext(ctx), new(member, channel)).Result;
 
 			//-----------------
 

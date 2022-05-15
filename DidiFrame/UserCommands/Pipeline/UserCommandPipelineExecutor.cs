@@ -14,28 +14,31 @@
 
 
 
-		public UserCommandResult? Process(UserCommandPipeline pipeline, object input, UserCommandSendData sendData)
+		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData)
 		{
-			using var services = new UserCommandLocalServicesProvider(descriptors.Select(s => s.CreateInstance(sp)).ToArray());
-
-			object currentValue = input;
-
-			foreach (var middleware in pipeline.Middlewares)
+			return Task.Run(() =>
 			{
-				var context = new UserCommandPipelineContext(services, sendData);
+				using var services = new UserCommandLocalServicesProvider(descriptors.Select(s => s.CreateInstance(sp)).ToArray());
 
-				var newValue = middleware.Process(currentValue, context);
+				object currentValue = input;
 
-				if (newValue is null)
+				foreach (var middleware in pipeline.Middlewares)
 				{
-					if (context.CurrentStatus == UserCommandPipelineContext.Status.BeginDrop) return null;
-					else if (context.CurrentStatus == UserCommandPipelineContext.Status.BeginFinalize) return context.GetExecutionResult();
-					else throw new InvalidOperationException("Enable to return null and don't set any status in context");
-				}
-				else currentValue = newValue;
-			}
+					var context = new UserCommandPipelineContext(services, sendData);
 
-			return (UserCommandResult)currentValue;
+					var newValue = middleware.Process(currentValue, context);
+
+					if (newValue is null)
+					{
+						if (context.CurrentStatus == UserCommandPipelineContext.Status.BeginDrop) return null;
+						else if (context.CurrentStatus == UserCommandPipelineContext.Status.BeginFinalize) return context.GetExecutionResult();
+						else throw new InvalidOperationException("Enable to return null and don't set any status in context");
+					}
+					else currentValue = newValue;
+				}
+
+				return (UserCommandResult)currentValue;
+			});
 		}
 	}
 }
