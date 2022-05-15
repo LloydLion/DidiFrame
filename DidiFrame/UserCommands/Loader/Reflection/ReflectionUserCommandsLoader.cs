@@ -1,4 +1,5 @@
 ﻿using DidiFrame.UserCommands.PreProcessing;
+using DidiFrame.Utils.ExtendableModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -90,7 +91,8 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 
 								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Select(s => s.Validator).ToArray();
 
-								args[i - 1] = new UserCommandArgument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name", validators);
+								args[i - 1] = new UserCommandArgument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name",
+									new SimpleModelAdditionalInfoProvider((validators, typeof(IReadOnlyCollection<IUserCommandArgumentValidator>))));
 
 
 								static UserCommandArgument.Type[] parseAndConvertType(Type type)
@@ -103,7 +105,10 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 
 							var filters = method.GetCustomAttributes<InvokerFilter>().Select(s => s.Filter).ToArray();
 
-							rp.AddCommand(new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args, handlerLocalizer, filters));
+							var readyInfo = new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args,
+								new SimpleModelAdditionalInfoProvider((handlerLocalizer, typeof(IStringLocalizer)), (filters, typeof(IReadOnlyCollection<IUserCommandInvokerFilter>))));
+
+							rp.AddCommand(instance.ReprocessCommand(readyInfo));
 
 							logger.Log(LogLevel.Trace, LoadingDoneID, "Method sucssesfully registrated as command {CommandName}", commandName);
 						}

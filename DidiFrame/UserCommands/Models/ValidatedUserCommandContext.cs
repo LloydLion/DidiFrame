@@ -2,6 +2,6 @@
 {
 	public record ValidatedUserCommandContext : UserCommandContext
 	{
-		public ValidatedUserCommandContext(UserCommandContext ctx) : base(ctx.Invoker, ctx.Channel, ctx.Command, ctx.Arguments) { }
+		public ValidatedUserCommandContext(UserCommandContext ctx) : base(ctx) { }
 	}
 }

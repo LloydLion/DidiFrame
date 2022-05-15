@@ -4,14 +4,5 @@ namespace DidiFrame.UserCommands.Models
 		IMember Invoker,
 		ITextChannel Channel,
 		UserCommandInfo Command,
-		IReadOnlyDictionary<UserCommandArgument, IReadOnlyList<object>> Arguments)
-	{
-		public ILogger? Logger { get; private set; }
-
-
-		public void AddLogger(ILogger logger)
-		{
-			Logger = logger;
-		}
-	}
+		IReadOnlyDictionary<UserCommandArgument, IReadOnlyList<object>> Arguments) { }
 }

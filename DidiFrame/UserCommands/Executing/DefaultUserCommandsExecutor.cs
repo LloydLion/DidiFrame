@@ -35,16 +35,13 @@ namespace DidiFrame.UserCommands.Executing
 
 					using (logger.BeginScope("Command: {CommandName}", ctx.Command.Name))
 					{
-						ctx.AddLogger(logger);
-						ctx.AddLocalServices(pipelineContext.LocalServices);
 						cultureProvider.SetupCulture(ctx.Invoker.Server);
 
 						logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
 
 						try
 						{
-							using (logger.BeginScope("Internal"))
-								result = ctx.Command.Handler.Invoke(ctx).Result;
+							result = ctx.Command.Handler.Invoke(ctx).Result;
 						}
 						catch (Exception ex)
 						{

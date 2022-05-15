@@ -1,6 +1,7 @@
 ﻿using DidiFrame.UserCommands.ContextValidation.Invoker;
 using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Repository;
+using DidiFrame.Utils.ExtendableModels;
 using System;
 using System.Collections.Generic;
 using TestProject.Environment.Locale;
@@ -13,9 +14,9 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 		[Fact]
 		public void Construction()
 		{
-			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd2 = new UserCommandInfo("the cmd-b", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd3 = new UserCommandInfo("the cmd-c", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
+			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd2 = new UserCommandInfo("the cmd-b", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd3 = new UserCommandInfo("the cmd-c", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
 
 			var baseCollection = new[] { cmd1, cmd2, cmd3 };
 
@@ -28,9 +29,9 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 		public void FailtureConstruction()
 		{
 			//Same name
-			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd2 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd3 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
+			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd2 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd3 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
 
 			var baseCollection = new[] { cmd1, cmd2, cmd3 };
 
@@ -42,9 +43,9 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 		[Fact]
 		public void Getting()
 		{
-			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd2 = new UserCommandInfo("the cmd-b", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd3 = new UserCommandInfo("the cmd-c", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
+			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd2 = new UserCommandInfo("the cmd-b", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd3 = new UserCommandInfo("the cmd-c", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
 
 			var baseCollection = new[] { cmd1, cmd2, cmd3 };
 
@@ -62,9 +63,9 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 		[Fact]
 		public void FailtureGetting()
 		{
-			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd2 = new UserCommandInfo("the cmd-b", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd3 = new UserCommandInfo("the cmd-c", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
+			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd2 = new UserCommandInfo("the cmd-b", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd3 = new UserCommandInfo("the cmd-c", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
 
 			var baseCollection = new[] { cmd1, cmd2, cmd3 };
 

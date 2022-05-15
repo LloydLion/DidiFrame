@@ -2,6 +2,7 @@
 using DidiFrame.UserCommands.ContextValidation.Invoker;
 using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Repository;
+using DidiFrame.Utils.ExtendableModels;
 using System;
 using System.Linq;
 using TestProject.Environment.Locale;
@@ -20,8 +21,8 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 
 			var rep = (IUserCommandsRepository)new SimpleUserCommandsRepository();
 
-			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
-			var cmd2 = new UserCommandInfo("the cmd-b", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
+			var cmd1 = new UserCommandInfo("the cmd-a", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+			var cmd2 = new UserCommandInfo("the cmd-b", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
 
 			//-------------------
 
@@ -80,7 +81,7 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 
 			var rep = (IUserCommandsRepository)new SimpleUserCommandsRepository();
 
-			var cmd = new UserCommandInfo("the cmd", NoHandler.Handler, Array.Empty<UserCommandArgument>(), new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
+			var cmd = new UserCommandInfo("the cmd", NoHandler.Handler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
 
 			//-------------------
 

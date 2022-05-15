@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DidiFrame.Utils.ExtendableModels;
 
 namespace DidiFrame.UserCommands.Models
 {
@@ -6,28 +6,10 @@ namespace DidiFrame.UserCommands.Models
 		IMember Invoker,
 		ITextChannel Channel,
 		UserCommandInfo Command,
-		IReadOnlyDictionary<UserCommandArgument, UserCommandContext.ArgumentValue> Arguments)
+		IReadOnlyDictionary<UserCommandArgument, UserCommandContext.ArgumentValue> Arguments,
+		IModelAdditionalInfoProvider AdditionalInfo)
 	{
-		private IServiceProvider? localSp;
-
-
-		public ILogger? Logger { get; private set; }
-
-
-		public void AddLogger(ILogger logger)
-		{
-			Logger = logger;
-		}
-
-		public void AddLocalServices(IServiceProvider services)
-		{
-			localSp = services;
-		}
-
-		public IServiceProvider GetLocalServices()
-		{
-			return localSp ?? throw new NullReferenceException("No local services have provided");
-		}
+		public IServiceProvider GetLocalServices() => AdditionalInfo.GetRequiredExtension<IServiceProvider>();
 
 
 		public record ArgumentValue(UserCommandArgument Argument, object ComplexObject, IReadOnlyList<object> PreObjects)

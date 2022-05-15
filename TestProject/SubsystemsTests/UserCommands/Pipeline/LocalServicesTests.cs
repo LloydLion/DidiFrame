@@ -6,6 +6,7 @@ using DidiFrame.UserCommands.Executing;
 using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.Pipeline.Building;
+using DidiFrame.Utils.ExtendableModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
@@ -54,8 +55,8 @@ namespace TestProject.SubsystemsTests.UserCommands.Pipeline
 
 			var pipeline = services.GetRequiredService<IUserCommandPipelineBuilder>().Build(services);
 
-			var argument = new UserCommandArgument(false, new[] { UserCommandArgument.Type.Member }, typeof(IMember), "argument", Array.Empty<IUserCommandArgumentValidator>());
-			var command = new UserCommandInfo("command with-no-standart-name", CommandHandler, new UserCommandArgument[] { argument }, new TestLocalizer(), Array.Empty<IUserCommandInvokerFilter>());
+			var argument = new UserCommandArgument(false, new[] { UserCommandArgument.Type.Member }, typeof(IMember), "argument", SimpleModelAdditionalInfoProvider.Empty);
+			var command = new UserCommandInfo("command with-no-standart-name", CommandHandler, new UserCommandArgument[] { argument }, SimpleModelAdditionalInfoProvider.Empty);
 
 			//----------------
 
@@ -64,7 +65,8 @@ namespace TestProject.SubsystemsTests.UserCommands.Pipeline
 
 			//----------------
 
-			var ctx = new UserCommandContext(member, channel, command, new Dictionary<UserCommandArgument, UserCommandContext.ArgumentValue>() { { argument, new(argument, member2, new[] { member2 }) } });
+			var ctx = new UserCommandContext(member, channel, command, new Dictionary<UserCommandArgument, UserCommandContext.ArgumentValue>()
+				{ { argument, new(argument, member2, new[] { member2 }) } }, SimpleModelAdditionalInfoProvider.Empty);
 			services.GetRequiredService<IUserCommandPipelineExecutor>().ProcessAsync(pipeline, new ValidatedUserCommandContext(ctx), new(ctx.Invoker, ctx.Channel)).Wait();
 
 			//----------------

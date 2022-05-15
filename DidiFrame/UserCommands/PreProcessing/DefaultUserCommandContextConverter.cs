@@ -1,4 +1,5 @@
 ﻿using DidiFrame.UserCommands.Pipeline;
+using DidiFrame.Utils.ExtendableModels;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
@@ -54,7 +55,11 @@ namespace DidiFrame.UserCommands.PreProcessing
 					if (convertationResult.IsSuccessful == false)
 					{
 						convertationResult.DeconstructAsFailture(out var localeKey, out var code);
-						var msgContent = localizer["ConvertationErrorMessage", preCtx.Command.Localizer[$"{preCtx.Command.Name}.{s.Key.Name}:{localeKey}"]];
+
+						var cmdLocalizer = preCtx.Command.AdditionalInfo.GetExtension<IStringLocalizer>();
+						var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{preCtx.Command.Name}.{s.Key.Name}:{localeKey}"];
+						var msgContent = localizer["ConvertationErrorMessage", arg];
+
 						pipelineContext.FinalizePipeline(new UserCommandResult(code) { RespondMessage = new MessageSendModel(msgContent) });
 						failture = true;
 						return null;
@@ -70,7 +75,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 			if (failture) return null;
 
 #pragma warning disable CS8620
-			return new UserCommandContext(preCtx.Invoker, preCtx.Channel, preCtx.Command, arguments);
+			return new UserCommandContext(preCtx.Invoker, preCtx.Channel, preCtx.Command, arguments, new SimpleModelAdditionalInfoProvider((pipelineContext.LocalServices, typeof(IServiceProvider))));
 #pragma warning restore CS8620
 		}
 

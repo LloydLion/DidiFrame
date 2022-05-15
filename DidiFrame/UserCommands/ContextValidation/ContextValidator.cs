@@ -1,4 +1,5 @@
 ﻿using DidiFrame.UserCommands.Pipeline;
+using DidiFrame.Utils.ExtendableModels;
 
 namespace DidiFrame.UserCommands.ContextValidation
 {
@@ -20,19 +21,35 @@ namespace DidiFrame.UserCommands.ContextValidation
 			var cmd = input.Command;
 			ValidationFailResult? failResult;
 
+			var filters = cmd.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandInvokerFilter>>();
+			var cmdLocalizer = cmd.AdditionalInfo.GetExtension<IStringLocalizer>();
 
-			foreach (var filter in cmd.InvokerFilters)
+			if (filters is not null)
+			foreach (var filter in filters)
 			{
 				failResult = filter.Filter(services, input);
-				if (failResult is not null) return fail(localizer["ByFilterBlockedMessage", cmd.Localizer[$"{cmd.Name}:{failResult.LocaleKey}"]]);
+					if (failResult is not null)
+					{
+						var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}:{failResult.LocaleKey}"];
+						return fail(localizer["ByFilterBlockedMessage", arg]);
+					}
 			}
 
 			foreach (var argument in input.Arguments)
-				foreach (var validator in argument.Key.Validators)
-				{
-					failResult = validator.Validate(services, input, argument.Key, argument.Value);
-					if (failResult is not null) return fail(localizer["ValidationErrorMessage", cmd.Localizer[$"{cmd.Name}.{argument.Key.Name}:{failResult.LocaleKey}", argument.Value]]);
-				}
+			{
+				var validators = argument.Key.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandArgumentValidator>>();
+
+				if (validators is not null)
+					foreach (var validator in validators)
+					{
+						failResult = validator.Validate(services, input, argument.Key, argument.Value);
+						if (failResult is not null)
+						{
+							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}.{argument.Key.Name}:{failResult.LocaleKey}", argument.Value];
+							return fail(localizer["ValidationErrorMessage", arg]);
+						}
+					}
+			}
 			
 			return new(input);
 
