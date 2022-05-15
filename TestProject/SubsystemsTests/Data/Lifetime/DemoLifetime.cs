@@ -9,13 +9,13 @@ namespace TestProject.SubsystemsTests.Data.Lifetime
 		private readonly DemoLifetimeBase baseObj;
 
 
-		public DemoLifetime(IServiceProvider _, DemoLifetimeBase baseObj)
+		public DemoLifetime(DemoLifetimeBase baseObj, IServiceProvider _)
 		{
 			this.baseObj = baseObj;
 		}
 
 
-		public DemoLifetimeBase GetBaseClone() => new(baseObj.Server, baseObj.UsefulData);
+		public DemoLifetimeBase GetBaseClone() => new(baseObj.Server, baseObj.UsefulData) { Finished = baseObj.Finished };
 
 		public async void Run(ILifetimeStateUpdater<DemoLifetimeBase> updater)
 		{
@@ -24,12 +24,12 @@ namespace TestProject.SubsystemsTests.Data.Lifetime
 
 			for (int i = 0; i < 3; i++)
 			{
-				await Task.Delay(1000);
+				await Task.Delay(100);
 				baseObj.UsefulData += "[Up]";
 				updater.Update(this);
 			}
 
-			await Task.Delay(1000);
+			await Task.Delay(100);
 			baseObj.Finished = true;
 			updater.Finish(this);
 		}
