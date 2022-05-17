@@ -48,7 +48,6 @@ appBuilder.AddServices((services, config) => services
 	.AddReflectionUserCommandsLoader()
 	.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
 	.AddColorfy()
-	.AddStateMachineUtility()
 	.AddCultureMachine()
 	.AddConfiguratedLocalization()
 	.AddLifetimes()

@@ -25,7 +25,7 @@ namespace DidiFrame.Data.Lifetime
 			this.baseObj = baseObj;
 
 			var tname = GetType().FullName ?? throw new ImpossibleVariantException();
-			smBuilder = services.GetRequiredService<IStateMachineBuilderFactory<TState>>().Create(tname);
+			smBuilder = new StateMachineBuilder<TState>(services.GetRequiredService<ILoggerProvider>().CreateLogger(tname));
 		}
 
 
