@@ -1,5 +1,4 @@
-﻿using DidiFrame.Entities.Message;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 
 namespace DidiFrame.DSharpAdapter
 {
@@ -23,7 +22,11 @@ namespace DidiFrame.DSharpAdapter
 		}
 
 
-		public bool Equals(IServerEntity? other) => other is Member member && member.Id == Id;
+		public bool Equals(IServerEntity? other) => other is Member member && base.Equals(member) && member.Server == Server;
+
+		public override bool Equals(object? obj) => Equals(obj as Member);
+
+		public override int GetHashCode() => HashCode.Combine(Id, Server);
 
 		public IReadOnlyCollection<IRole> GetRoles() => member.Roles.Select(s => new Role(s, BaseServer)).ToArray();
 

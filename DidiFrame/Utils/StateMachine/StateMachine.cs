@@ -109,6 +109,7 @@ namespace DidiFrame.Utils.StateMachine
 
 		public void Dispose()
 		{
+			GC.SuppressFinalize(this);
 			if (observeTask.IsCompleted == false) throw new InvalidOperationException("Can't dispose working state machine");
 		}
 

@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.Interfaces
 {
-	public interface IRole : IServerEntity
+	public interface IRole : IServerEntity, IEquatable<IRole>
 	{
 		public Permissions Permissions { get; }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DidiFrame.DSharpAdapter
 {
-	internal class Role : IRole, IEquatable<Role?>
+	internal class Role : IRole
 	{
 		private readonly DiscordRole role;
 		private readonly Server server;
@@ -31,11 +31,11 @@ namespace DidiFrame.DSharpAdapter
 		public DiscordRole BaseRole => role;
 
 
-		public bool Equals(IServerEntity? other) => other is Role role && role?.Id == Id;
+		public bool Equals(IServerEntity? other) => Equals(other as Role);
 
-		public bool Equals(Role? other) => other is Role role && role?.Id == Id;
+		public bool Equals(IRole? other) => other is Role role && role.Id == Id && role.Server == Server;
 
-		public override bool Equals(object? obj) => obj is Role role && role?.Id == Id;
+		public override bool Equals(object? obj) => Equals(obj as Role);
 
 		public override int GetHashCode() => Id.GetHashCode();
 

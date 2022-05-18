@@ -49,6 +49,10 @@ namespace DidiFrame.DSharpAdapter
 
 		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
 
+		public override bool Equals(object? obj) => Equals(obj as Server);
+
+		public override int GetHashCode() => Id.GetHashCode();
+
 		public void Dispose()
 		{
 			//Detatch events

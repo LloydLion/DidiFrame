@@ -24,5 +24,7 @@ namespace TestProject.Environment.Client
 
 
 		public bool Equals(IServerEntity? other) => other is Role role && role.Id == Id;
+
+		public bool Equals(IRole? other) => Equals((IServerEntity?)other);
 	}
 }

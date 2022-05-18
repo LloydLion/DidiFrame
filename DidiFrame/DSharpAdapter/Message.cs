@@ -39,7 +39,7 @@ namespace DidiFrame.DSharpAdapter
 		}
 
 
-		public bool Equals(IMessage? other) => other is Message msg && msg.Id == Id;
+		public bool Equals(IMessage? other) => other is Message msg && msg.Id == Id && msg.TextChannel == TextChannel;
 
 		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => message.DeleteAsync());
 

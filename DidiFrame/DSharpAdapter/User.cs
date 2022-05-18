@@ -29,9 +29,13 @@ namespace DidiFrame.DSharpAdapter
 
 		public bool Equals(IUser? other) => other is User user && user.Id == Id;
 
+		public override bool Equals(object? obj) => Equals(obj as User);
+
 		public Task SendDirectMessageAsync(MessageSendModel model)
 		{
 			return ((Member)this).SendDirectMessageAsyncInternal(model);
 		}
+
+		public override int GetHashCode() => Id.GetHashCode();
 	}
 }
