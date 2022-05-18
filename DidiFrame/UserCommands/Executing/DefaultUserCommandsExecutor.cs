@@ -136,6 +136,8 @@ namespace DidiFrame.UserCommands.Executing
 					}
 				});
 
+				thread.Start();
+
 				executionThreads.Add(server, new ThreadExecutionUnit(thread, queue));
 			}
 

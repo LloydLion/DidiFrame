@@ -20,9 +20,18 @@ namespace DidiFrame.UserCommands.Executing
 
 		public override void Send(SendOrPostCallback d, object? state)
 		{
-			var wf = new WaitFor();
-			unit.Tasks.Enqueue(new ExecutionUnitTask(d, state, wf.Callback, this));
-			wf.Await().Wait();
+			if (Thread.CurrentThread == unit.Thread)
+			{
+				//Internal call
+				d(state);
+			}
+			else
+			{
+				//External call
+				var wf = new WaitFor();
+				unit.Tasks.Enqueue(new ExecutionUnitTask(d, state, wf.Callback, this));
+				wf.Await().Wait();
+			}
 		}
 	}
 }
