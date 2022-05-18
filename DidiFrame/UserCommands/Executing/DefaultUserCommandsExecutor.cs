@@ -1,10 +1,11 @@
 ﻿using DidiFrame.Culture;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.Utils;
+using System.Collections.Concurrent;
 
 namespace DidiFrame.UserCommands.Executing
 {
-	public class DefaultUserCommandsExecutor : AbstractUserCommandPipelineMiddleware<ValidatedUserCommandContext, UserCommandResult>
+	public class DefaultUserCommandsExecutor : AbstractUserCommandPipelineMiddleware<ValidatedUserCommandContext, UserCommandResult>, IDisposable
 	{
 		private static readonly EventId CommandStartID = new (32, "CommandStart");
 		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
@@ -14,7 +15,9 @@ namespace DidiFrame.UserCommands.Executing
 		private readonly Options options;
 		private readonly ILogger<DefaultUserCommandsExecutor> logger;
 		private readonly IServerCultureProvider cultureProvider;
-		private readonly ThreadLocker<IServer> threadLocker = new();
+		private readonly ThreadLocker<IMember> memberLocker = new();
+		private readonly Dictionary<IServer, ThreadExecutionUnit> executionThreads = new();
+		private bool abortThreads = false;
 
 
 		public DefaultUserCommandsExecutor(IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IServerCultureProvider cultureProvider)
@@ -25,11 +28,18 @@ namespace DidiFrame.UserCommands.Executing
 		}
 
 
+		public void Dispose()
+		{
+			GC.SuppressFinalize(this);
+			abortThreads = true;
+			foreach (var thread in executionThreads.Values) thread.Thread.Join();
+		}
+
 		public override UserCommandResult? Process(ValidatedUserCommandContext ctx, UserCommandPipelineContext pipelineContext)
 		{
 			try
 			{
-				using (threadLocker.Lock(ctx.Channel.Server))
+				using (memberLocker.Lock(ctx.Invoker))
 				{
 					UserCommandResult result;
 
@@ -41,7 +51,18 @@ namespace DidiFrame.UserCommands.Executing
 
 						try
 						{
-							result = ctx.Command.Handler.Invoke(ctx).Result;
+							var synCtx = new CommandSynchronizationContext(GetExecutionUnitFor(ctx.Channel.Server));
+
+							Task<UserCommandResult>? task = null;
+
+							synCtx.Send((o) =>
+							{
+								task = ctx.Command.Handler(ctx);
+							}, null);
+
+							if (task is null) throw new ImpossibleVariantException();
+
+							result = task.Result;
 						}
 						catch (Exception ex)
 						{
@@ -94,6 +115,33 @@ namespace DidiFrame.UserCommands.Executing
 				return null;
 			}
 		}
+
+		private ThreadExecutionUnit GetExecutionUnitFor(IServer server)
+		{
+			if (!executionThreads.ContainsKey(server))
+			{
+				var queue = new ConcurrentQueue<ExecutionUnitTask>();
+				var thread = new Thread(() =>
+				{
+					while (!abortThreads)
+					{
+						while (queue.TryDequeue(out var task))
+						{
+							SynchronizationContext.SetSynchronizationContext(task.Caller);
+							task.Action(task.State);
+							task.OnCompletedCallback?.Invoke();
+						}
+
+						Thread.Sleep(50);
+					}
+				});
+
+				executionThreads.Add(server, new ThreadExecutionUnit(thread, queue));
+			}
+
+			return executionThreads[server];
+		}
+
 
 		public class Options
 		{
