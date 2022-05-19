@@ -12,10 +12,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "TestProject\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB4DD5F7-24E1-4E9F-BC90-C3A36290B1A5}"
 	ProjectSection(SolutionItems) = preProject
+		DidFrameIcon.png = DidFrameIcon.png
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBot", "TestBot\TestBot.csproj", "{661B2CDA-0907-4CF8-BEF7-E623895005FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBot", "TestBot\TestBot.csproj", "{661B2CDA-0907-4CF8-BEF7-E623895005FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
