@@ -15,7 +15,6 @@ global using DidiFrame.Entities.Message.Embed;
 
 using DidiFrame.Logging;
 using DidiFrame.UserCommands;
-using DidiFrame.Utils.StateMachine;
 using Microsoft.Extensions.DependencyInjection;
 using DidiFrame.AutoInjecting;
 using DidiFrame.Data.Json;
@@ -30,6 +29,7 @@ using DidiFrame.Data.MongoDB;
 
 using AutoInjector = DidiFrame.AutoInjecting.AutoInjector;
 using DidiFrame.Data.AutoKeys;
+using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -46,6 +46,7 @@ appBuilder.AddServices((services, config) => services
 	.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
 	.AddSimpleUserCommandsRepository()
 	.AddReflectionUserCommandsLoader()
+	.AddHelpCommands()
 	.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
 	.AddColorfy()
 	.AddCultureMachine()

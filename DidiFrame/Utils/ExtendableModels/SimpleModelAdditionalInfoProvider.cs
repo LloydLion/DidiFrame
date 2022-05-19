@@ -35,9 +35,9 @@
 			return Objects;
 		}
 
-		public object GetExtension(Type type)
+		public object? GetExtension(Type type)
 		{
-			return Objects[type];
+			return Objects.ContainsKey(type) ? Objects[type] : null;
 		}
 	}
 }

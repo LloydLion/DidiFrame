@@ -88,11 +88,16 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 									else types = patypes.ToArray();
 								}
 
+								var argAdditionalInfo = new List<(object, Type)>();
 
 								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Select(s => s.Validator).ToArray();
+								argAdditionalInfo.Add((validators, typeof(IReadOnlyCollection<IUserCommandArgumentValidator>)));
+
+								var argDescription = @params[i].GetCustomAttribute<ArgDescriptionAttribute>()?.CreateModel();
+								if(argDescription is not null) argAdditionalInfo.Add((argDescription, argDescription.GetType()));
 
 								args[i - 1] = new UserCommandArgument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name",
-									new SimpleModelAdditionalInfoProvider((validators, typeof(IReadOnlyCollection<IUserCommandArgumentValidator>))));
+									new SimpleModelAdditionalInfoProvider(argAdditionalInfo.ToArray()));
 
 
 								static UserCommandArgument.Type[] parseAndConvertType(Type type)
@@ -103,7 +108,13 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 								}
 							}
 
+							var additionalInfo = new List<(object, Type)> { (handlerLocalizer, typeof(IStringLocalizer)) };
+
 							var filters = method.GetCustomAttributes<InvokerFilter>().Select(s => s.Filter).ToArray();
+							additionalInfo.Add((filters, typeof(IReadOnlyCollection<IUserCommandInvokerFilter>)));
+
+							var description = method.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
+							if (description is not null) additionalInfo.Add((description, description.GetType()));
 
 							var readyInfo = new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args,
 								new SimpleModelAdditionalInfoProvider((handlerLocalizer, typeof(IStringLocalizer)), (filters, typeof(IReadOnlyCollection<IUserCommandInvokerFilter>))));
