@@ -5,6 +5,11 @@ namespace DidiFrame.Data.AutoKeys
 {
 	public static class ServicesExtensions
 	{
+		/// <summary>
+		/// Adds the auto-key data repository factories for states and settings
+		/// </summary>
+		/// <param name="services">Target service collection</param>
+		/// <returns>Given collection to be chained</returns>
 		public static IServiceCollection AddAutoDataRepositories(this IServiceCollection services)
 		{
 			services.AddTransient(typeof(IServersStatesRepository<>), typeof(AutoKeyStatesRepository<>));

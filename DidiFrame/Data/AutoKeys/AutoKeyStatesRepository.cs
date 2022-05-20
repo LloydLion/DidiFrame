@@ -14,7 +14,5 @@ namespace DidiFrame.Data.AutoKeys
 
 
 		public ObjectHolder<TModel> GetState(IServer server) => repository.GetState(server);
-
-		public Task PreloadDataAsync() => repository.PreloadDataAsync();
 	}
 }

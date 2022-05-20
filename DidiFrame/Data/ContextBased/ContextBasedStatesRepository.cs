@@ -31,7 +31,5 @@ namespace DidiFrame.Data.ContextBased
 				lockFree.Dispose();
 			});
 		}
-
-		public Task PreloadDataAsync() => throw new NotImplementedException();
 	}
 }

@@ -6,13 +6,15 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System.Text;
 
 namespace DidiFrame.Data.MongoDB
 {
-	internal class MongoDBContext : IDataContext
+	/// <summary>
+	/// Context for mongo database data management
+	/// </summary>
+	public class MongoDBContext : IDataContext
 	{
 		private readonly IMongoDatabase db;
 		private readonly Dictionary<IServer, Dictionary<string, object>> cache = new();
@@ -22,6 +24,14 @@ namespace DidiFrame.Data.MongoDB
 		private readonly IClient client;
 
 
+		/// <summary>
+		/// Creates new DidiFrame.Data.MongoDB.MongoDBContext using parameters that context-based approach require
+		/// </summary>
+		/// <param name="options">Creation options</param>
+		/// <param name="contextType">Type of context: state or settings</param>
+		/// <param name="logger">Logger</param>
+		/// <param name="services">Service provider to provide addititional data</param>
+		/// <exception cref="ArgumentNullException">If required option is null</exception>
 		public MongoDBContext(DataOptions options, ContextBased.ContextType contextType, ILogger logger, IServiceProvider services)
 		{
 			DataOptions.DataOption? option = contextType == ContextBased.ContextType.States ? options.States : options.Settings;

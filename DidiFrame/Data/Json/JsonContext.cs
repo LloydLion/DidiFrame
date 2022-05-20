@@ -4,7 +4,10 @@ using DidiFrame.Utils.Json;
 
 namespace DidiFrame.Data.Json
 {
-	internal class JsonContext : IDataContext
+	/// <summary>
+	/// Context for json files based data management
+	/// </summary>
+	public class JsonContext : IDataContext
 	{
 		private static readonly EventId FileSaveErrorID = new(21, "FileSaveError");
 
@@ -13,6 +16,14 @@ namespace DidiFrame.Data.Json
 		private readonly ILogger logger;
 
 
+		/// <summary>
+		/// Creates new DidiFrame.Data.Json.JsonContext using parameters that context-based approach require
+		/// </summary>
+		/// <param name="options">Creation options</param>
+		/// <param name="contextType">Type of context: state or settings</param>
+		/// <param name="logger">Logger</param>
+		/// <param name="_">Won't be used, is here only because that context based factories require</param>
+		/// <exception cref="ArgumentNullException">If required option is null</exception>
 		public JsonContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider _)
 		{
 			cache = new JsonCache((contextType == ContextType.Settings ? options.Settings?.BaseDirectory : options.States?.BaseDirectory) ?? throw new ArgumentNullException(nameof(options)));

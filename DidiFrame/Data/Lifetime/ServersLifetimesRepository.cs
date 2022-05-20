@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.Data.Lifetime
 {
-	public class ServersLifetimesRepository<TLifetime, TBase> : IServersLifetimesRepository<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
+	internal class ServersLifetimesRepository<TLifetime, TBase> : IServersLifetimesRepository<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
 		private readonly ILifetimeFactory<TLifetime, TBase> factory;
 		private readonly Dictionary<IServer, Dictionary<TBase, TLifetime>> lifetimes = new();

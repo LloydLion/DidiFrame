@@ -4,12 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Data.Lifetime
 {
-	public class AbstractStateBasedLifetime<TState, TBase> : ILifetime<TBase>
+	/// <summary>
+	/// Base class of statemachine-based lifetime
+	/// </summary>
+	/// <typeparam name="TState">Internal statemachine state type</typeparam>
+	/// <typeparam name="TBase">Type of base object of that lifetime </typeparam>
+	public abstract class AbstractStateBasedLifetime<TState, TBase> : ILifetime<TBase>
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
-
-
 		private readonly TBase baseObj;
 		private ILifetimeStateUpdater<TBase>? updater;
 		private readonly IStateMachineBuilder<TState> smBuilder;
@@ -20,15 +23,25 @@ namespace DidiFrame.Data.Lifetime
 		private static readonly ThreadLocker<AbstractStateBasedLifetime<TState, TBase>> baseLocker = new();
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Data.Lifetime.AbstractStateBasedLifetime`2
+		/// </summary>
+		/// <param name="services">Serivces that will be available in the future</param>
+		/// <param name="baseObj">Base object of that lifetime</param>
 		public AbstractStateBasedLifetime(IServiceProvider services, TBase baseObj)
 		{
 			this.baseObj = baseObj;
 
 			var tname = GetType().FullName ?? throw new ImpossibleVariantException();
-			smBuilder = new StateMachineBuilder<TState>(services.GetRequiredService<ILoggerProvider>().CreateLogger(tname));
+			smBuilder = new StateMachineBuilder<TState>(services.GetRequiredService<ILoggerFactory>().CreateLogger(tname));
 		}
 
 
+		/// <summary>
+		/// Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed
+		/// </summary>
+		/// <param name="smFreeze">Statemachine freeze information, it will be automaticly disposed</param>
+		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
 		protected ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
 		{
 			var smFreezeIn = GetStateMachine().Freeze();
@@ -56,6 +69,10 @@ namespace DidiFrame.Data.Lifetime
 			});
 		}
 
+		/// <summary>
+		/// Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed
+		/// </summary>
+		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
 		protected ObjectHolder<TBase> GetBase() => GetBase(out _);
 
 		public TBase GetBaseClone()
@@ -98,6 +115,11 @@ namespace DidiFrame.Data.Lifetime
 			}
 		}
 
+		/// <summary>
+		/// Gets a cached lifetime updater instance. No manual updates required
+		/// </summary>
+		/// <returns>The cached updater</returns>
+		/// <exception cref="InvalidOperationException">If invoked before Run() call (example in ctor)</exception>
 		protected ILifetimeStateUpdater<TBase> GetUpdater()
 		{
 			if (!hasBuilt)
@@ -106,10 +128,12 @@ namespace DidiFrame.Data.Lifetime
 		}
 
 		/// <summary>
+		/// Gets base object directly.
 		/// WARNING! Returned object is readonly!
-		/// If changed changed will not writen to state
+		/// If changed changed will be not writen to state.
+		/// This operation is thread-safe
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Base object itself</returns>
 		protected TBase GetBaseDirect()
 		{
 			using (baseLocker.Lock(this))
@@ -118,6 +142,11 @@ namespace DidiFrame.Data.Lifetime
 			}
 		}
 
+		/// <summary>
+		/// Gets internal statemahcine
+		/// </summary>
+		/// <returns>Statemachine</returns>
+		/// <exception cref="InvalidOperationException">If invoked before Run() call (example in ctor)</exception>
 		protected IStateMachine<TState> GetStateMachine()
 		{
 			if (!hasBuilt)
@@ -125,11 +154,18 @@ namespace DidiFrame.Data.Lifetime
 			return machine ?? throw new ImpossibleVariantException();
 		}
 
+		/// <summary>
+		/// Event handler. Calls on start. You mustn't call base.OnRun(TState)
+		/// </summary>
+		/// <param name="state">Initial statemachine state</param>
 		protected virtual void OnRun(TState state)
 		{
 
 		}
 
+		/// <summary>
+		/// Event handler. Calls on lifetime's lifecycle end. You mustn't call base.OnDispose(TState)
+		/// </summary>
 		protected virtual void OnDispose()
 		{
 
@@ -151,24 +187,59 @@ namespace DidiFrame.Data.Lifetime
 		}
 
 		//Constructing methods
+		/// <summary>
+		/// Must be invoked only in ctor! Directly adds transit worker into building statemachine
+		/// </summary>
+		/// <param name="worker">Transit worker itself</param>
+		/// <exception cref="InvalidOperationException">If invoked outside ctor (after Run() calling)</exception>
 		protected void AddTransit(IStateTransitWorker<TState> worker)
 		{
 			ThrowIfBuilt();
 			smBuilder.AddStateTransitWorker(worker);
 		}
 
+		/// <summary>
+		/// Must be invoked only in ctor! Adds transit worker into building statemachine that will do transit after given timeout
+		/// </summary>
+		/// <param name="from">Start state</param>
+		/// <param name="to">Target state</param>
+		/// <param name="delay">Transit timeout</param>
+		/// <exception cref="InvalidOperationException">If invoked outside ctor (after Run() calling)</exception>
 		protected void AddTransit(TState from, TState? to, int delay) =>
 			AddTransit(new TaskTransitWorker<TState>(from, to, (token) => Task.Delay(delay, token)));
 
+		/// <summary>
+		/// Must be invoked only in ctor! Adds transit worker into building statemachine that will do transit when created task returns true
+		/// </summary>
+		/// <param name="from">Start state</param>
+		/// <param name="to">Target state</param>
+		/// <param name="taskCreator">Delegate that will create tasks using CancellationToken</param>
 		protected void AddTransit(TState from, TState? to, Func<CancellationToken, Task<bool>> taskCreator) =>
 			AddTransit(new TaskTransitWorker<TState>(from, to, AwaitCycleTask(taskCreator)));
 
+		/// <summary>
+		/// Must be invoked only in ctor! Adds transit worker into building statemachine that will do transit when predicate returns true
+		/// </summary>
+		/// <param name="from">Start state</param>
+		/// <param name="to">Target state</param>
+		/// <param name="predicate">Predicate itself</param>
 		protected void AddTransit(TState from, TState? to, Func<bool> predicate) =>
 			AddTransit(new PredicateTransitWorker<TState>(from, to, predicate));
 
+		/// <summary>
+		/// Must be invoked only in ctor! Adds transit worker into building statemachine that will do transit when task will complited
+		/// </summary>
+		/// <param name="from">Start state</param>
+		/// <param name="to">Target state</param>
+		/// <param name="taskCreator">Delegate that will create tasks using CancellationToken</param>
 		protected void AddTransit(TState from, TState? to, Func<CancellationToken, Task> taskCreator) =>
 			AddTransit(new TaskTransitWorker<TState>(from, to, taskCreator));
 
+		/// <summary>
+		/// Registers handler for event that fired on startup and call handler if initial state equals given
+		/// </summary>
+		/// <param name="state">Target initial state</param>
+		/// <param name="handler">Handler to register</param>
 		protected void AddStartup(TState state, Action handler)
 		{
 			ThrowIfBuilt();
@@ -176,6 +247,11 @@ namespace DidiFrame.Data.Lifetime
 			startupHandlers[state].Add(handler);
 		}
 
+		/// <summary>
+		/// Register handler for event that fired on statemachine state changing and call handler if state equals given. It don't work with inital state on startup
+		/// </summary>
+		/// <param name="state">Target state</param>
+		/// <param name="handler">Handler to register</param>
 		protected void AddHandler(TState state, Action<TState> handler)
 		{
 			ThrowIfBuilt();

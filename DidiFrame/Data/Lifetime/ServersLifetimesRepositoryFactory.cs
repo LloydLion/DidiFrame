@@ -2,13 +2,21 @@
 
 namespace DidiFrame.Data.Lifetime
 {
-	internal class ServersLifetimesRepositoryFactory : IServersLifetimesRepositoryFactory
+	/// <summary>
+	/// Simple implementation of DidiFrame.Data.Lifetime.IServersLifetimesRepositoryFactory
+	/// </summary>
+	public class ServersLifetimesRepositoryFactory : IServersLifetimesRepositoryFactory
 	{
 		private readonly IServersStatesRepositoryFactory factory;
 		private readonly IServiceProvider provider;
 		private readonly List<object> lifetimeRepositories = new();
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Data.Lifetime.ServersLifetimesRepositoryFactory
+		/// </summary>
+		/// <param name="factory">Servers' states repository factory to provide state objects</param>
+		/// <param name="provider">Services to provide lifetimes factories</param>
 		public ServersLifetimesRepositoryFactory(IServersStatesRepositoryFactory factory, IServiceProvider provider)
 		{
 			this.factory = factory;
