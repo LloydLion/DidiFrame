@@ -51,7 +51,7 @@ namespace DidiFrame.Application
 		/// <summary>
 		/// Adds logging into services. It can be replaced by calling AddLogging(Action<ILoggingBuilder>) extension method at services object
 		/// </summary>
-		/// <param name="buildAction"></param>
+		/// <param name="buildAction">Action under Microsoft.Extensions.Logging.ILoggingBuilder</param>
 		public void AddLogging(Action<ILoggingBuilder> buildAction);
 	}
 }

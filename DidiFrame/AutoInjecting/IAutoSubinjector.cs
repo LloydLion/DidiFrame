@@ -2,8 +2,15 @@
 
 namespace DidiFrame.AutoInjecting
 {
-	public interface IAutoSubinjector
+	/// <summary>
+	/// A help interface for DidiFrame.AutoInjecting.ReflectionAutoInjector
+	/// </summary>
+	public interface IAutoSubInjector
 	{
+		/// <summary>
+		/// Adds dependencies into collection
+		/// </summary>
+		/// <param name="services">Service collection</param>
 		public void InjectDependencies(IServiceCollection services);
 	}
 }

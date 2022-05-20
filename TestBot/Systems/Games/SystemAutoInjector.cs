@@ -7,7 +7,7 @@ using DidiFrame.UserCommands.PreProcessing;
 
 namespace TestBot.Systems.Games
 {
-	internal class SystemAutoInjector : IAutoSubinjector
+	internal class SystemAutoInjector : IAutoSubInjector
 	{
 		public void InjectDependencies(IServiceCollection services)
 		{

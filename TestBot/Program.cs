@@ -27,7 +27,7 @@ using DidiFrame;
 using DidiFrame.Application;
 using DidiFrame.Data.MongoDB;
 
-using AutoInjector = DidiFrame.AutoInjecting.AutoInjector;
+using AutoInjector = DidiFrame.AutoInjecting.ReflectionAutoInjector;
 using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
 

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Discussion
 {
-	internal class SystemAutoInjector : IAutoSubinjector
+	internal class SystemAutoInjector : IAutoSubInjector
 	{
 		public void InjectDependencies(IServiceCollection services)
 		{

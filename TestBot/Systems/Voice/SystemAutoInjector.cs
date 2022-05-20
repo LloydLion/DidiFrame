@@ -5,7 +5,7 @@ using DidiFrame.UserCommands.Loader.Reflection;
 
 namespace TestBot.Systems.Voice
 {
-	internal class SystemAutoInjector : IAutoSubinjector
+	internal class SystemAutoInjector : IAutoSubInjector
 	{
 		public void InjectDependencies(IServiceCollection services)
 		{

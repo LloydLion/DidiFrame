@@ -6,7 +6,7 @@ using DidiFrame.UserCommands.PreProcessing;
 
 namespace TestBot.Systems.Parties
 {
-	internal class SystemAutoInjector : IAutoSubinjector
+	internal class SystemAutoInjector : IAutoSubInjector
 	{
 		public void InjectDependencies(IServiceCollection services)
 		{

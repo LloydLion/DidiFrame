@@ -19,7 +19,7 @@
 		/// <summary>
 		/// Does final proporation for bot work
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Wait task</returns>
 		public Task PrepareAsync();
 
 

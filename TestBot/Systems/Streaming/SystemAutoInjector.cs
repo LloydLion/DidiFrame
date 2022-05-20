@@ -7,7 +7,7 @@ using TestBot.Systems.Streaming.CommandEvironment;
 
 namespace TestBot.Systems.Streaming
 {
-	internal class SystemAutoInjector : IAutoSubinjector
+	internal class SystemAutoInjector : IAutoSubInjector
 	{
 		public void InjectDependencies(IServiceCollection services)
 		{
