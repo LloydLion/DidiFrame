@@ -1,8 +1,11 @@
 ﻿//#define DEADLOCK_DETECTOR
-using System.Diagnostics;
 
 namespace DidiFrame.Utils
 {
+	/// <summary>
+	/// Thread synchronization tool
+	/// </summary>
+	/// <typeparam name="TLock">Type of synch root objects</typeparam>
 	public class ThreadLocker<TLock> where TLock : class
 	{
 		private readonly List<TLock> locked = new();
@@ -12,14 +15,26 @@ namespace DidiFrame.Utils
 #endif
 
 
+		/// <summary>
+		/// Creates DidiFrame.Utils.ThreadLocker`1 using default equality comparer for TLock
+		/// </summary>
 		public ThreadLocker() : this(EqualityComparer<TLock>.Default) { }
 
+		/// <summary>
+		/// Creates DidiFrame.Utils.ThreadLocker`1 using given equality comparer
+		/// </summary>
+		/// <param name="comparer">Some equality comparer for TLock</param>
 		public ThreadLocker(IEqualityComparer<TLock> comparer)
 		{
 			this.comparer = comparer;
 		}
 
 
+		/// <summary>
+		/// Wait for object unlock
+		/// </summary>
+		/// <param name="obj">Object that need wait</param>
+		/// <returns>Wait task</returns>
 		public async Task AwaitUnlock(TLock obj)
 		{
 			while (true)
@@ -29,6 +44,11 @@ namespace DidiFrame.Utils
 			}
 		}
 
+		/// <summary>
+		/// Locks objects if it has already locked waits for unlock
+		/// </summary>
+		/// <param name="obj">Object that need lock</param>
+		/// <returns>Disposable object that should dispose when need to release object</returns>
 		public IDisposable Lock(TLock obj)
 		{
 			AwaitUnlock(obj).Wait();

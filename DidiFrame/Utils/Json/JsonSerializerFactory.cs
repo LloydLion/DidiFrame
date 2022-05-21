@@ -5,11 +5,20 @@ using Newtonsoft.Json.Linq;
 
 namespace DidiFrame.Utils.Json
 {
+	/// <summary>
+	/// Tool to create configurated json serializers from discord servers
+	/// </summary>
 	public static class JsonSerializerFactory
 	{
 		private static readonly EventId CollectionElementParseErrorID = new(41, "CollectionElementParseError");
 
 
+		/// <summary>
+		/// Creates configurated json serializer for given server and callback
+		/// </summary>
+		/// <param name="server">Server for that need to create serializer</param>
+		/// <param name="invalidCollectionElementCallback">Error callback for safe collection convertation</param>
+		/// <returns>New serializer</returns>
 		public static JsonSerializer CreateWithConverters(IServer server, Action<JContainer, string, Exception>? invalidCollectionElementCallback = null)
 		{
 			var ret = new JsonSerializer()
@@ -35,6 +44,13 @@ namespace DidiFrame.Utils.Json
 			static void noCall(JContainer _1, string _2, Exception _3) { };
 		}
 
+		/// <summary>
+		/// Creates configurated json serializer for given server, callback and logger
+		/// </summary>
+		/// <param name="server">Server for that need to create serializer</param>
+		/// <param name="invalidCollectionElementLogger">Logger for errors while collections convertations</param>
+		/// <param name="invalidCollectionElementCallback">Error callback for safe collection convertation</param>
+		/// <returns>New serializer</returns>
 		public static JsonSerializer CreateWithConverters(IServer server, ILogger invalidCollectionElementLogger, Action<JContainer, string, Exception>? invalidCollectionElementCallback = null)
 		{
 			var callback = defCall;

@@ -2,6 +2,10 @@
 
 namespace DidiFrame.Utils.StateMachine
 {
+	/// <summary>
+	/// Statemachine transit that based on tasks, but always active
+	/// </summary>
+	/// <typeparam name="TState">Type of statemachine state</typeparam>
 	public class ResetTransitWorker<TState> : IStateTransitWorker<TState> where TState : struct
 	{
 		private static readonly EventId TaskErrorID = new(12, "TaskError");
@@ -14,6 +18,11 @@ namespace DidiFrame.Utils.StateMachine
 		private IStateMachine<TState>? stateMachine;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Utils.StateMachine.ResetTransitWorker`1 using task factory
+		/// </summary>
+		/// <param name="tstate">Target state of transit (if not null reset transit stays active)</param>
+		/// <param name="waitTaskFactory">Factory that will produce tasks for transit</param>
 		public ResetTransitWorker(TState? tstate, Func<CancellationToken, Task> waitTaskFactory)
 		{
 			this.tstate = tstate;

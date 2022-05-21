@@ -15,7 +15,7 @@ namespace DidiFrame.Data.Lifetime
 	{
 		private readonly TBase baseObj;
 		private ILifetimeStateUpdater<TBase>? updater;
-		private readonly IStateMachineBuilder<TState> smBuilder;
+		private readonly StateMachineBuilder<TState> smBuilder;
 		private IStateMachine<TState>? machine;
 		private bool hasBuilt = false;
 		private readonly Dictionary<TState, List<Action>> startupHandlers = new();

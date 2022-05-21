@@ -1,27 +1,46 @@
 ﻿namespace DidiFrame.Utils.StateMachine
 {
-	public class StateMachineBuilder<TState> : IStateMachineBuilder<TState> where TState : struct
+	/// <summary>
+	/// Builder for DidiFrame.Utils.StateMachine.StateMachine`1
+	/// </summary>
+	/// <typeparam name="TState">Type of statemachine state</typeparam>
+	public class StateMachineBuilder<TState> where TState : struct
 	{
 		private readonly ILogger logger;
-		private readonly StateMachineProfile<TState>.Builder profile = new();
+		private readonly List<IStateTransitWorker<TState>> workers = new();
+		private readonly List<StateChangedEventHandler<TState>> handlers = new();
 
 
+		/// <summary>
+		/// Creates DidiFrame.Utils.StateMachine.StateMachineBuilder`1 instance
+		/// </summary>
+		/// <param name="logger">Logger for statemachine</param>
 		public StateMachineBuilder(ILogger logger)
 		{
 			this.logger = logger;
 		}
 
 
-		public void AddStateTransitWorker(IStateTransitWorker<TState> worker) => profile.AddStateTransitWorker(worker);
+		/// <summary>
+		/// Adds transit worker into machine
+		/// </summary>
+		/// <param name="worker"></param>
+		public void AddStateTransitWorker(IStateTransitWorker<TState> worker) => workers.Add(worker);
 
-		public void AddStateChangedHandler(StateChangedEventHandler<TState> handler) =>	profile.AddStateChangedHandler(handler);
+		/// <summary>
+		/// Adds state changed event handler into machine
+		/// </summary>
+		/// <param name="handler">Handler itself</param>
+		public void AddStateChangedHandler(StateChangedEventHandler<TState> handler) => handlers.Add(handler);
 
-		public IStateMachine<TState> Build()
+		/// <summary>
+		/// Builds statemahcine
+		/// </summary>
+		/// <returns>New statemachine instance</returns>
+		public StateMachine<TState> Build()
 		{
-			var pf = profile.Build();
-
-			var sm = new StateMachine<TState>(pf.StateWorkers, logger);
-			foreach (var handler in pf.StateChangedHandlers) sm.StateChanged += handler;
+			var sm = new StateMachine<TState>(workers, logger);
+			foreach (var handler in handlers) sm.StateChanged += handler;
 
 			return sm;
 		}

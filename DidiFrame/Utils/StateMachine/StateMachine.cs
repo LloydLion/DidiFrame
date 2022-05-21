@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace DidiFrame.Utils.StateMachine
+﻿namespace DidiFrame.Utils.StateMachine
 {
 	public class StateMachine<TState> : IStateMachine<TState> where TState : struct
 	{
