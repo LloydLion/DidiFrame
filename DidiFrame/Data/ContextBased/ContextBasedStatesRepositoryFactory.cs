@@ -1,7 +1,7 @@
 ﻿namespace DidiFrame.Data.ContextBased
 {
 	/// <summary>
-	/// Represent a context-based states repository factory in context-based approach
+	/// Represents a context-based states repository factory in context-based approach
 	/// </summary>
 	/// <typeparam name="TContext">Type of context</typeparam>
 	/// <typeparam name="TOptions">Type of option for context</typeparam>

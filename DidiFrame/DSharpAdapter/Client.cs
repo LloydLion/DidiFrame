@@ -1,11 +1,13 @@
 ﻿using DidiFrame.Culture;
-using DidiFrame.UserCommands;
 using DSharpPlus;
 using DSharpPlus.Exceptions;
 
 namespace DidiFrame.DSharpAdapter
 {
-	internal class Client : IClient
+	/// <summary>
+	/// Discord client based on DSharpPlus library
+	/// </summary>
+	public class Client : IClient
 	{
 		private readonly static EventId MessageSentHandlerExceptionID = new(44, "MessageSentHandlerException");
 		private readonly static EventId SafeOperationErrorID = new(23, "SafeOperationError");
@@ -28,11 +30,20 @@ namespace DidiFrame.DSharpAdapter
 
 		public IUser SelfAccount => new User(client.CurrentUser, this);
 
+		/// <summary>
+		/// Base client from DSharpPlus library
+		/// </summary>
 		public DiscordClient BaseClient => client;
 
-		public IServerCultureProvider CultureProvider { get; }
+		internal IServerCultureProvider CultureProvider { get; }
 
 
+		/// <summary>
+		/// Creates instance of DidiFrame.DSharpAdapter.Client
+		/// </summary>
+		/// <param name="options">Configuration of DSharp client</param>
+		/// <param name="factory">Loggers for DSharp client</param>
+		/// <param name="cultureProvider">Culture provider for event thread culture</param>
 		public Client(IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider cultureProvider)
 		{
 			var opt = options.Value;
@@ -51,7 +62,7 @@ namespace DidiFrame.DSharpAdapter
 		}
 
 		//Must be invoked from TextChannel objects
-		public void OnMessageCreated(Message message)
+		internal void OnMessageCreated(Message message)
 		{
 			try
 			{
@@ -63,7 +74,7 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
-		public void OnMessageDeleted(Message message)
+		internal void OnMessageDeleted(Message message)
 		{
 			try
 			{
@@ -113,11 +124,16 @@ namespace DidiFrame.DSharpAdapter
 
 		public void Dispose()
 		{
+			GC.SuppressFinalize(this);
 			cts.Cancel();
 			serverListUpdateTask?.Wait();
 			client.Dispose();
 		}
 
+		/// <summary>
+		/// Checks connection to discord server and if fail awaits it
+		/// </summary>
+		/// <returns>Wait task that will be complited only when connection will be alive</returns>
 		public async Task CheckAndAwaitConnectionAsync()
 		{
 		reset:
@@ -133,6 +149,10 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
+		/// <summary>
+		/// Do safe opration under discord client
+		/// </summary>
+		/// <param name="operation">Operation delegate</param>
 		public void DoSafeOperation(Action operation)
 		{
 		reset:
@@ -161,6 +181,12 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
+		/// <summary>
+		/// Do safe opration under discord client with result
+		/// </summary>
+		/// <typeparam name="TReturn">Type of result</typeparam>
+		/// <param name="operation">Operation delegate</param>
+		/// <returns>Operation result</returns>
 		public TReturn DoSafeOperation<TReturn>(Func<TReturn> operation)
 		{
 		reset:
@@ -188,7 +214,12 @@ namespace DidiFrame.DSharpAdapter
 				}
 			}
 		}
-		
+
+		/// <summary>
+		/// Do safe async opration under discord client
+		/// </summary>
+		/// <param name="operation">Async operation delegate</param>
+		/// <returns>Wait task</returns>
 		public async Task DoSafeOperationAsync(Func<Task> operation)
 		{
 		reset:
@@ -217,6 +248,12 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
+		/// <summary>
+		/// Do safe async opration under discord client with result
+		/// </summary>
+		/// <typeparam name="TReturn">Type of result</typeparam>
+		/// <param name="operation">Async operation delegate</param>
+		/// <returns>Async operation result</returns>
 		public async Task<TReturn> DoSafeOperationAsync<TReturn>(Func<Task<TReturn>> operation)
 		{
 		reset:
@@ -246,6 +283,9 @@ namespace DidiFrame.DSharpAdapter
 		}
 
 
+		/// <summary>
+		/// Options of DSharp client
+		/// </summary>
 		public class Options
 		{
 			public string Token { get; set; } = "";
