@@ -31,7 +31,7 @@ namespace DidiFrame.Data.Json
 
 			foreach (var result in results) initialData.Add(result.Item1, result.Item2);
 
-			async Task<(string, Dictionary<string, JContainer>)> load(string file)
+			static async Task<(string, Dictionary<string, JContainer>)> load(string file)
 			{
 				var content = await File.ReadAllTextAsync(file);
 				var obj = JsonConvert.DeserializeObject<Dictionary<string, JContainer?>>(content)

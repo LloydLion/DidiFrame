@@ -1,5 +1,4 @@
-﻿using DidiFrame.Logging;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame
 {
@@ -18,10 +17,8 @@ namespace DidiFrame
 
 		public static IServiceCollection AddConfiguratedLocalization(this IServiceCollection services)
 		{
-
 			services.AddLocalization(options => options.ResourcesPath = "Translations");
-			services.AddSingleton(new LoggingFilterOption((category) => category.StartsWith("Microsoft.Extensions.Localization.")
-				? LogLevel.None : LogLevel.Trace));
+			services.Configure<LoggerFilterOptions>(options => options.AddFilter("Microsoft.Extensions.Localization.", LogLevel.None));
 			return services;
 		}
 	}

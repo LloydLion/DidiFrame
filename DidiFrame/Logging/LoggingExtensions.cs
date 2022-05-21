@@ -4,13 +4,16 @@ namespace DidiFrame.Logging
 {
 	public static class LoggingExtensions
 	{
-		public static ILoggingBuilder AddMyConsole(this ILoggingBuilder builder, DateTime start)
+		/// <summary>
+		/// Adds fancy logging 
+		/// </summary>
+		/// <param name="builder">Logging builder from AddLogging() extension method</param>
+		/// <param name="start">Date and time of bot start that will be displayed</param>
+		/// <returns>Given builder to be chained</returns>
+		public static ILoggingBuilder AddFacnyConsoleLogging(this ILoggingBuilder builder, DateTime start)
 		{
-			builder.Services.AddTransient<ILoggerProvider, ConsoleLoggerProvider>((services) =>
-				new ConsoleLoggerProvider(services.GetRequiredService<Colorify.Format>(), start,
-					services.GetRequiredService<ILoggingFilter>()));
-
-			builder.Services.AddTransient<ILoggingFilter, LoggingFilter>();
+			builder.Services.AddTransient<ILoggerProvider, FancyConsoleLoggerProvider>((services) =>
+				new FancyConsoleLoggerProvider(services.GetRequiredService<Colorify.Format>(), start));
 			return builder;
 		}
 	}

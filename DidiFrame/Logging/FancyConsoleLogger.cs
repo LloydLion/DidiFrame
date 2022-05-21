@@ -1,25 +1,18 @@
 ﻿using Colorify;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DidiFrame.Logging
 {
-	internal class ConsoleLogger : ILogger
+	internal class FancyConsoleLogger : ILogger
 	{
 		private readonly string categoryName;
 		private readonly Format console;
 		private readonly Stack<ScopeHandler> scopeStack = new();
-		private readonly ILoggingFilter filter;
 		private static DateOnly start;
 		private static bool init;
 		private static readonly object syncRoot = new();
 
 
-		public ConsoleLogger(string categoryName, Format format, DateTime start, ILoggingFilter filter)
+		public FancyConsoleLogger(string categoryName, Format format, DateTime start)
 		{
 			lock (syncRoot)
 			{
@@ -29,12 +22,10 @@ namespace DidiFrame.Logging
 				if (init == false)
 				{
 					console.WriteLine($"Startup - now: {start}", Colors.txtInfo);
-					ConsoleLogger.start = DateOnly.FromDateTime(start);
+					FancyConsoleLogger.start = DateOnly.FromDateTime(start);
 					init = true;
 				}
 			}
-
-			this.filter = filter;
 		}
 
 
@@ -52,8 +43,6 @@ namespace DidiFrame.Logging
 
 		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 		{
-			if(filter.Filter(typeof(ConsoleLoggerProvider).FullName ?? throw new ImpossibleVariantException(), categoryName, logLevel) == false) return;
-
 			var msg = formatter(state, exception);
 
 			var scope = string.Join('/', scopeStack.Select(s => s.State));
@@ -96,10 +85,10 @@ namespace DidiFrame.Logging
 
 		private class ScopeHandler : IDisposable
 		{
-			private readonly ConsoleLogger owner;
+			private readonly FancyConsoleLogger owner;
 
 
-			public ScopeHandler(ConsoleLogger owner, object? state)
+			public ScopeHandler(FancyConsoleLogger owner, object? state)
 			{
 				this.owner = owner;
 				State = state;

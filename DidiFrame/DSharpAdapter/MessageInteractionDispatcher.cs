@@ -59,7 +59,7 @@ namespace DidiFrame.DSharpAdapter
 		}
 
 
-		private class EventHolder<TComponent> : EventHolder where TComponent : IComponent
+		private class EventHolder<TComponent> : EventHolder where TComponent : IInteractionComponent
 		{
 			private readonly Message message;
 			private readonly string id;

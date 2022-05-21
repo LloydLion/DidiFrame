@@ -35,7 +35,7 @@ var appBuilder = DiscordApplicationBuilder.Create();
 
 appBuilder.AddJsonConfiguration("settings.json");
 
-appBuilder.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddMyConsole(appBuilder.GetStartupTime()));
+appBuilder.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddFacnyConsoleLogging(appBuilder.GetStartupTime()));
 
 appBuilder.AddServices((services, config) => services
 	.AddJsonDataManagement(config.GetSection("Data:Json"), false, true)
