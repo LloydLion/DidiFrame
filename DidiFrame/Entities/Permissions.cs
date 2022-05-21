@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DidiFrame.Entities
+﻿namespace DidiFrame.Entities
 {
+	/// <summary>
+	/// Repesents discord permissions
+	/// </summary>
 	[Flags]
 	public enum Permissions : long
 	{
