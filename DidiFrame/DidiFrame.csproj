@@ -24,6 +24,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="api\**" />
+    <Compile Remove="articles\**" />
+    <Compile Remove="_site\**" />
+    <EmbeddedResource Remove="api\**" />
+    <EmbeddedResource Remove="articles\**" />
+    <EmbeddedResource Remove="_site\**" />
+    <None Remove="api\**" />
+    <None Remove="articles\**" />
+    <None Remove="_site\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="index.md" />
+    <None Remove="log.txt" />
+    <None Remove="toc.yml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\DidFrameIcon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -36,6 +54,10 @@
 
   <ItemGroup>
     <PackageReference Include="dein.Colorify" Version="2.7.0" />
+    <PackageReference Include="docfx.console" Version="2.59.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="DSharpPlus" Version="4.2.0" />
     <PackageReference Include="FluentValidation" Version="10.4.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.4.0" />
