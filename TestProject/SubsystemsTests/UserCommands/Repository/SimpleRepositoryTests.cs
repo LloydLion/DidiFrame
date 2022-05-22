@@ -29,7 +29,7 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 			rep.AddCommand(cmd1);
 			rep.AddCommand(cmd2);
 
-			rep.Bulk();
+			rep.Fix();
 
 			//-------------------
 
@@ -85,7 +85,7 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 
 			//-------------------
 
-			rep.Bulk();
+			rep.Fix();
 
 			Assert.Throws<InvalidOperationException>(() => rep.AddCommand(cmd));
 		}

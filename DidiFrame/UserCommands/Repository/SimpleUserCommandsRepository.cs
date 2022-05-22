@@ -1,9 +1,18 @@
 ﻿namespace DidiFrame.UserCommands.Repository
 {
+	/// <summary>
+	/// Simple implementation of DidiFrame.UserCommands.Repository.IUserCommandsRepository
+	/// </summary>
 	public class SimpleUserCommandsRepository : IUserCommandsRepository
 	{
 		private readonly List<UserCommandInfo> infos = new();
 		private bool built = false;
+
+
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository
+		/// </summary>
+		public SimpleUserCommandsRepository() { }
 
 
 		public IUserCommandsCollection GetCommandsFor(IServer server)
@@ -24,7 +33,7 @@
 			throw new NotImplementedException();
 		}
 
-		public void Bulk()
+		public void Fix()
 		{
 			built = true;
 		}

@@ -2,11 +2,18 @@
 
 namespace DidiFrame.UserCommands.Repository
 {
+	/// <summary>
+	/// Simple implementation of DidiFrame.UserCommands.Repository.IUserCommandsCollection
+	/// </summary>
 	public class UserCommandsCollection : IUserCommandsCollection
 	{
 		private readonly Dictionary<string, UserCommandInfo> cmds;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Repository.UserCommandsCollection
+		/// </summary>
+		/// <param name="baseColl">Base collection of commands</param>
 		public UserCommandsCollection(IReadOnlyCollection<UserCommandInfo> baseColl)
 		{
 			cmds = baseColl.ToDictionary(obj => obj.Name);

@@ -41,7 +41,7 @@ namespace TestProject.SubsystemsTests.UserCommands.Pipeline
 			var command = new UserCommandInfo("command with-no-standart-name", CommandHandler, new UserCommandArgument[] { argument }, SimpleModelAdditionalInfoProvider.Empty);
 			rep.AddCommand(command);
 
-			rep.Bulk();
+			rep.Fix();
 
 
 			var services = new ServiceCollection()
