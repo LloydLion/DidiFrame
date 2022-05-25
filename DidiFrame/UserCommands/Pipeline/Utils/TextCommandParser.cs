@@ -4,6 +4,9 @@ using System.Text.RegularExpressions;
 
 namespace DidiFrame.UserCommands.Pipeline.Utils
 {
+	/// <summary>
+	/// Parser for text commands
+	/// </summary>
 	public class TextCommandParser : AbstractUserCommandPipelineMiddleware<string, UserCommandPreContext>
 	{
 		private readonly Options options;
@@ -21,6 +24,11 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		};
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser
+		/// </summary>
+		/// <param name="options">Option for DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser</param>
+		/// <param name="repository">Command repository to detect commands</param>
 		public TextCommandParser(IOptions<Options> options, IUserCommandsRepository repository)
 		{
 			this.options = options.Value;
@@ -122,8 +130,14 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		}
 
 
+		/// <summary>
+		/// Options for DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser
+		/// </summary>
 		public class Options
 		{
+			/// <summary>
+			/// Char array of prefixes by that command can start
+			/// </summary>
 			public string Prefixes { get; set; } = "";
 		}
 	}

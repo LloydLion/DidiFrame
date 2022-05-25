@@ -2,7 +2,7 @@
 
 namespace TestBot.Systems.Voice
 {
-	public class CommandsHandler : ICommandsHandler
+	public class CommandsHandler : ICommandsModule
 	{
 		private readonly ISystemCore core;
 		private readonly IStringLocalizer<CommandsHandler> localizer;

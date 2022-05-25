@@ -5,6 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace DidiFrame.UserCommands.PreProcessing
 {
+	/// <summary>
+	/// Simple implementation of DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter interface using exteranl sub converters
+	/// </summary>
 	public class DefaultUserCommandContextConverter : AbstractUserCommandPipelineMiddleware<UserCommandPreContext, UserCommandContext>, IUserCommandContextConverter
 	{
 		private readonly IReadOnlyCollection<IDefaultContextConveterSubConverter> subConverters;
@@ -12,6 +15,12 @@ namespace DidiFrame.UserCommands.PreProcessing
 		private readonly IStringLocalizer<DefaultUserCommandContextConverter> localizer;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter
+		/// </summary>
+		/// <param name="services">Services that will be provided to sub converters</param>
+		/// <param name="subConverters">Sub converters that converts raw arguments to ready-to-use</param>
+		/// <param name="localizer">Localizer that will be used for print error messages</param>
 		public DefaultUserCommandContextConverter(IServiceProvider services, IEnumerable<IDefaultContextConveterSubConverter> subConverters, IStringLocalizer<DefaultUserCommandContextConverter> localizer)
 		{
 			this.subConverters = subConverters.ToArray();

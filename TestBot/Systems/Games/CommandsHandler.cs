@@ -6,7 +6,7 @@ using DidiFrame.Utils;
 
 namespace TestBot.Systems.Games
 {
-	internal class CommandsHandler : ICommandsHandler
+	internal class CommandsHandler : ICommandsModule
 	{
 		private readonly ISystemCore systemCore;
 		private readonly IStringLocalizer<CommandsHandler> localizer;

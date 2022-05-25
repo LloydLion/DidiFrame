@@ -4,7 +4,7 @@ using DidiFrame.Utils;
 
 namespace TestBot.Systems.Parties
 {
-	internal class CommandsHandler : ICommandsHandler
+	internal class CommandsHandler : ICommandsModule
 	{
 		private readonly ISystemCore systemCore;
 		private readonly IStringLocalizer<CommandsHandler> localizer;

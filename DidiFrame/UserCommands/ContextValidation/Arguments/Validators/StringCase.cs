@@ -1,10 +1,17 @@
 ﻿namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 {
+	/// <summary>
+	/// Validator that requires specified case from string
+	/// </summary>
 	public class StringCase : AbstractArgumentValidator<string>
 	{
 		private readonly bool onlyUpperNotLower;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.StringCase
+		/// </summary>
+		/// <param name="onlyUpperNotLower">If string must contains only upper case chars else only lower case chars</param>
 		public StringCase(bool onlyUpperNotLower)
 		{
 			this.onlyUpperNotLower = onlyUpperNotLower;

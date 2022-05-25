@@ -6,6 +6,11 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 {
 	public static class ServicesExtensions
 	{
+		/// <summary>
+		/// Adds help and cmd commands into repository from services
+		/// </summary>
+		/// <param name="services">Service collection</param>
+		/// <returns>Given collection to be chained</returns>
 		public static IServiceCollection AddHelpCommands(this IServiceCollection services)
 		{
 			services.AddTransient<IUserCommandsLoader, HelpCommandLoader>();

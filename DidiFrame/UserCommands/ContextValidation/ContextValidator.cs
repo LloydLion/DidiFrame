@@ -3,12 +3,20 @@ using DidiFrame.Utils.ExtendableModels;
 
 namespace DidiFrame.UserCommands.ContextValidation
 {
+	/// <summary>
+	/// Middleware for context validation
+	/// </summary>
 	public class ContextValidator : AbstractUserCommandPipelineMiddleware<UserCommandContext, ValidatedUserCommandContext>
 	{
 		private readonly IStringLocalizer<ContextValidator> localizer;
 		private readonly IServiceProvider services;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.ContextValidator
+		/// </summary>
+		/// <param name="localizer">Localizer to print error messages</param>
+		/// <param name="services">Serivce to be used in filters and validators</param>
 		public ContextValidator(IStringLocalizer<ContextValidator> localizer, IServiceProvider services)
 		{
 			this.localizer = localizer;

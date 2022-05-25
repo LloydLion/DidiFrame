@@ -1,14 +1,21 @@
-﻿using DidiFrame.UserCommands.Loader.Reflection;
-using DidiFrame.Utils.ExtendableModels;
+﻿using DidiFrame.Utils.ExtendableModels;
 
 namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 {
+	/// <summary>
+	/// Help and cmd commands loader
+	/// </summary>
 	public class HelpCommandLoader : IUserCommandsLoader
 	{
 		private readonly IStringLocalizer<HelpCommandLoader> localizer;
 		private readonly IUserCommandsRepository repository;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Loader.EmbededCommands.Help.HelpCommandLoader
+		/// </summary>
+		/// <param name="localizer">Localizer for commands</param>
+		/// <param name="repository">Commands repositroy to get commands</param>
 		public HelpCommandLoader(IStringLocalizer<HelpCommandLoader> localizer, IUserCommandsRepository repository)
 		{
 			this.localizer = localizer;

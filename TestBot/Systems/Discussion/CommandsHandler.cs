@@ -4,7 +4,7 @@ using DidiFrame.UserCommands.Loader.Reflection;
 
 namespace TestBot.Systems.Discussion
 {
-	internal class CommandsHandler : ICommandsHandler
+	internal class CommandsHandler : ICommandsModule
 	{
 		private readonly SystemCore system;
 		private readonly IStringLocalizer<CommandsHandler> localizer;

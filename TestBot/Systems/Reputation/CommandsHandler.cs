@@ -5,7 +5,7 @@ using DidiFrame.UserCommands.Loader.Reflection;
 
 namespace TestBot.Systems.Reputation
 {
-	internal class CommandsHandler : ICommandsHandler
+	internal class CommandsHandler : ICommandsModule
 	{
 		private readonly SystemCore system;
 		private readonly UIHelper uiHelper;

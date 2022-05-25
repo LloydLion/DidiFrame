@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 
 namespace DidiFrame.UserCommands.Loader.Reflection
 {
+	/// <summary>
+	/// Commands loader that using reflection mechanism to get commands
+	/// </summary>
 	public class ReflectionUserCommandsLoader : IUserCommandsLoader
 	{
 		private static readonly EventId LoadingSkipID = new(12, "LoadingSkip");
@@ -25,16 +28,22 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		private static readonly IReadOnlyDictionary<Type, UserCommandArgument.Type> argsTypes = Enum.GetValues(typeof(UserCommandArgument.Type))
 				.OfType<UserCommandArgument.Type>().ToDictionary(s => s.GetReqObjectType());
 
-
-		private readonly IServiceProvider serviceProvider;
+		private readonly IEnumerable<ICommandsModule> modules;
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
 		private readonly IStringLocalizerFactory stringLocalizerFactory;
 		private readonly IUserCommandContextConverter converter;
 
 
-		public ReflectionUserCommandsLoader(IServiceProvider serviceProvider, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter)
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader
+		/// </summary>
+		/// <param name="modules">Modules that contains commands to load</param>
+		/// <param name="logger">Logger for loader</param>
+		/// <param name="stringLocalizerFactory">Localizer factory to provide localizers for commands</param>
+		/// <param name="converter">Converter to resolve complex arguments</param>
+		public ReflectionUserCommandsLoader(IEnumerable<ICommandsModule> modules, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter)
 		{
-			this.serviceProvider = serviceProvider;
+			this.modules = modules;
 			this.logger = logger;
 			this.stringLocalizerFactory = stringLocalizerFactory;
 			this.converter = converter;
@@ -43,7 +52,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 
 		public void LoadTo(IUserCommandsRepository rp)
 		{
-			foreach (var instance in serviceProvider.GetServices<ICommandsHandler>())
+			foreach (var instance in modules)
 			{
 				var type = instance.GetType();
 				var handlerLocalizer = stringLocalizerFactory.Create(type);

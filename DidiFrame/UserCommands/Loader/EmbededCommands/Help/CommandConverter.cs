@@ -3,8 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 {
+	/// <summary>
+	/// Sub converter for DidiFrame.UserCommands.Models.UserCommandInfo type
+	/// </summary>
 	public class CommandConverter : IDefaultContextConveterSubConverter
 	{
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter
+		/// </summary>
+		public CommandConverter() { }
+
+
 		public Type WorkType => typeof(UserCommandInfo);
 
 		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes { get; } = new[] { UserCommandArgument.Type.String };

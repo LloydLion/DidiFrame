@@ -13,7 +13,7 @@ namespace TestBot.Systems.Parties
 			services.AddSingleton<SystemCore>();
 			services.AddSingleton<ISystemCore>(s => s.GetRequiredService<SystemCore>());
 			services.AddSingleton<ISystemNotifier>(s => s.GetRequiredService<SystemCore>());
-			services.AddSingleton<ICommandsHandler, CommandsHandler>();
+			services.AddSingleton<ICommandsModule, CommandsHandler>();
 			services.AddTransient<IModelFactory<ICollection<PartyModel>>, DefaultCtorModelFactory<List<PartyModel>>>();
 			services.AddTransient<UIHelper>();
 			services.AddTransient<IDefaultContextConveterSubConverter, PartyConverter>();

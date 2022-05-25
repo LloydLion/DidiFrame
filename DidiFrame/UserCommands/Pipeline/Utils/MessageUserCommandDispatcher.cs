@@ -1,13 +1,18 @@
-﻿using DidiFrame.UserCommands.Pipeline;
-
-namespace DidiFrame.UserCommands.Pipeline.Utils
+﻿namespace DidiFrame.UserCommands.Pipeline.Utils
 {
+	/// <summary>
+	/// Dispatcher that based on simple discord messages
+	/// </summary>
 	public class MessageUserCommandDispatcher : IUserCommandPipelineDispatcher<IMessage>, IDisposable
 	{
 		private readonly IClient client;
 		private Action<IMessage, UserCommandSendData, Action<UserCommandResult>>? action = null;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher
+		/// </summary>
+		/// <param name="client">Discord clint to access to discord</param>
 		public MessageUserCommandDispatcher(IClient client)
 		{
 			this.client = client;

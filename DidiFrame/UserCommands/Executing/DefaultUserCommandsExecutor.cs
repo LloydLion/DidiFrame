@@ -5,6 +5,9 @@ using System.Collections.Concurrent;
 
 namespace DidiFrame.UserCommands.Executing
 {
+	/// <summary>
+	/// Executor of user commands, main element of command pipeline
+	/// </summary>
 	public class DefaultUserCommandsExecutor : AbstractUserCommandPipelineMiddleware<ValidatedUserCommandContext, UserCommandResult>, IDisposable
 	{
 		private static readonly EventId CommandStartID = new (32, "CommandStart");
@@ -20,6 +23,12 @@ namespace DidiFrame.UserCommands.Executing
 		private bool abortThreads = false;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor
+		/// </summary>
+		/// <param name="options">Option for executor</param>
+		/// <param name="logger">Logger to log command operations</param>
+		/// <param name="cultureProvider">Culture provider to provide culture into commands' handlers</param>
 		public DefaultUserCommandsExecutor(IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IServerCultureProvider cultureProvider)
 		{
 			this.options = options.Value;
@@ -145,11 +154,20 @@ namespace DidiFrame.UserCommands.Executing
 		}
 
 
+		/// <summary>
+		/// Options for DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor
+		/// </summary>
 		public class Options
 		{
+			/// <summary>
+			/// Message type when command's handler throws a exception
+			/// </summary>
 			public UnspecifiedErrorMessageBehavior UnspecifiedErrorMessage { get; set; } = UnspecifiedErrorMessageBehavior.EnableWithExceptionsTypeAndMessage;
 
 
+			/// <summary>
+			/// Type of behavior to exception throwing by command's handler
+			/// </summary>
 			public enum UnspecifiedErrorMessageBehavior
 			{
 				Disable,

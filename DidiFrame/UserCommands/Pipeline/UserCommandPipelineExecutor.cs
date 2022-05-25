@@ -1,11 +1,19 @@
 ﻿namespace DidiFrame.UserCommands.Pipeline
 {
+	/// <summary>
+	/// Simple implementation for DidiFrame.UserCommands.Pipeline.IUserCommandPipelineExecutor
+	/// </summary>
 	public class UserCommandPipelineExecutor : IUserCommandPipelineExecutor
 	{
 		private readonly IReadOnlyCollection<IUserCommandLocalServiceDescriptor> descriptors;
 		private readonly IServiceProvider sp;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor with local services
+		/// </summary>
+		/// <param name="descriptors">Enumerable of local services' descriptors</param>
+		/// <param name="sp">Global service provider</param>
 		public UserCommandPipelineExecutor(IEnumerable<IUserCommandLocalServiceDescriptor> descriptors, IServiceProvider sp)
 		{
 			this.descriptors = descriptors.ToArray();

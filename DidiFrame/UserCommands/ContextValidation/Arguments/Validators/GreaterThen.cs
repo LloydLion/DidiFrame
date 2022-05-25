@@ -2,6 +2,9 @@
 
 namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 {
+	/// <summary>
+	/// Validator that requires more then something number
+	/// </summary>
 	public class GreaterThen : IUserCommandArgumentValidator
 	{
 		private readonly Func<UserCommandContext, IComparable> numberSource;
@@ -9,6 +12,12 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 		private readonly bool allowEquals;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen
+		/// </summary>
+		/// <param name="number">Number that need to compare</param>
+		/// <param name="inverse">If need "less then" validator</param>
+		/// <param name="allowEquals">If allow equals with number</param>
 		public GreaterThen(IComparable number, bool inverse, bool allowEquals)
 		{
 			numberSource = (ctx) => number;
@@ -16,11 +25,25 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 			this.allowEquals = allowEquals;
 		}
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen that disallows equals
+		/// </summary>
+		/// <param name="number">Number that need to compare</param>
+		/// <param name="inverse">If need "less then" validator</param>
 		public GreaterThen(IComparable number, bool inverse) : this(number, inverse, false) { }
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen that disallows equals
+		/// </summary>
+		/// <param name="number">Number that need to compare</param>
 		public GreaterThen(IComparable number) : this(number, false, false) { }
 
-
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen
+		/// </summary>
+		/// <param name="argumentName">Argument that will provide number that need to compare</param>
+		/// <param name="inverse">If need "less then" validator</param>
+		/// <param name="allowEquals">If allow equals with number</param>
 		public GreaterThen(string argumentName, bool inverse, bool allowEquals)
 		{
 			numberSource = (ctx) => (IComparable)ctx.Arguments[ctx.Command.Arguments.Single(s => s.Name == argumentName)];
@@ -28,11 +51,27 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 			this.allowEquals = allowEquals;
 		}
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen that disallows equals
+		/// </summary>
+		/// <param name="argumentName">Argument that will provide number that need to compare</param>
+		/// <param name="inverse">If need "less then" validator</param>
 		public GreaterThen(string argumentName, bool inverse) : this(argumentName, inverse, false) { }
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen that disallows equals
+		/// </summary>
+		/// <param name="argumentName">Argument that will provide number that need to compare</param>
 		public GreaterThen(string argumentName) : this(argumentName, false, false) { }
 
-
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen
+		/// </summary>
+		/// <param name="type">Type that provides custom source</param>
+		/// <param name="customSourceName">Custom source method name that provides a number to compare</param>
+		/// <param name="inverse">If need "less then" validator</param>
+		/// <param name="allowEquals">If allow equals with number</param>
+		/// <exception cref="ArgumentException">If method not found (it can be private)</exception>
 		public GreaterThen(Type type, string customSourceName, bool inverse, bool allowEquals)
 		{
 			var method = type.GetMethod(customSourceName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic) ??
@@ -42,8 +81,21 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 			this.allowEquals = allowEquals;
 		}
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen that disallows equals
+		/// </summary>
+		/// <param name="type">Type that provides custom source</param>
+		/// <param name="customSourceName">Custom source method name that provides a number to compare</param>
+		/// <param name="inverse">If need "less then" validator</param>
+		/// <exception cref="ArgumentException">If method not found (it can be private)</exception>
 		public GreaterThen(Type type, string customSourceName, bool inverse) : this(type, customSourceName, inverse, false) { }
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen that disallows equals
+		/// </summary>
+		/// <param name="type">Type that provides custom source</param>
+		/// <param name="customSourceName">Custom source method name that provides a number to compare</param>
+		/// <exception cref="ArgumentException">If method not found (it can be private)</exception>
 		public GreaterThen(Type type, string customSourceName) : this(type, customSourceName, false, false) { }
 
 

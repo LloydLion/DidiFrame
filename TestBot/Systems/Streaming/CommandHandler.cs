@@ -3,7 +3,7 @@ using DidiFrame.UserCommands.Loader.Reflection;
 
 namespace TestBot.Systems.Streaming
 {
-	internal class CommandHandler : ICommandsHandler
+	internal class CommandHandler : ICommandsModule
 	{
 		private readonly ISystemCore systemCore;
 		private readonly IStringLocalizer<CommandHandler> localizer;

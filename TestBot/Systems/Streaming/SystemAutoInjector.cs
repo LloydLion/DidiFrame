@@ -15,7 +15,7 @@ namespace TestBot.Systems.Streaming
 			services.AddSingleton<ISystemCore, SystemCore>(prov => prov.GetRequiredService<SystemCore>());
 			services.AddSingleton<ISystemNotifier, SystemCore>(prov => prov.GetRequiredService<SystemCore>());
 			services.AddTransient<UIHelper>();
-			services.AddTransient<ICommandsHandler, CommandHandler>();
+			services.AddTransient<ICommandsModule, CommandHandler>();
 			services.AddTransient<IModelFactory<ICollection<StreamModel>>, DefaultCtorModelFactory<List<StreamModel>>>();
 			services.AddLifetime<StreamLifetime, StreamModel>(StatesKeys.StreamingSystem);
 			services.AddTransient<IDefaultContextConveterSubConverter, StreamConverter>();
