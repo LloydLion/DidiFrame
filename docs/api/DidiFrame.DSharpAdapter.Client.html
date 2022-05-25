@@ -1,0 +1,567 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Client
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Client
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.DSharpAdapter.Client">
+  
+  
+  <h1 id="DidiFrame_DSharpAdapter_Client" data-uid="DidiFrame.DSharpAdapter.Client" class="text-break">Class Client
+  </h1>
+  <div class="markdown level0 summary"><p>Discord client based on DSharpPlus library</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">Client</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.DSharpAdapter.html">DidiFrame.DSharpAdapter</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h5 id="DidiFrame_DSharpAdapter_Client_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Client : IClient</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client__ctor_" data-uid="DidiFrame.DSharpAdapter.Client.#ctor*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client__ctor_IOptions_DidiFrame_DSharpAdapter_Client_Options__ILoggerFactory_DidiFrame_Culture_IServerCultureProvider_" data-uid="DidiFrame.DSharpAdapter.Client.#ctor(IOptions{DidiFrame.DSharpAdapter.Client.Options},ILoggerFactory,DidiFrame.Culture.IServerCultureProvider)">Client(IOptions&lt;Client.Options&gt;, ILoggerFactory, IServerCultureProvider)</h4>
+  <div class="markdown level1 summary"><p>Creates instance of DidiFrame.DSharpAdapter.Client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Client(IOptions&lt;Client.Options&gt; options, ILoggerFactory factory, IServerCultureProvider cultureProvider)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IOptions</span>&lt;<a class="xref" href="DidiFrame.DSharpAdapter.Client.Options.html">Client.Options</a>&gt;</td>
+        <td><span class="parametername">options</span></td>
+        <td><p>Configuration of DSharp client</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">ILoggerFactory</span></td>
+        <td><span class="parametername">factory</span></td>
+        <td><p>Loggers for DSharp client</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Culture.IServerCultureProvider.html">IServerCultureProvider</a></td>
+        <td><span class="parametername">cultureProvider</span></td>
+        <td><p>Culture provider for event thread culture</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_BaseClient_" data-uid="DidiFrame.DSharpAdapter.Client.BaseClient*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_BaseClient" data-uid="DidiFrame.DSharpAdapter.Client.BaseClient">BaseClient</h4>
+  <div class="markdown level1 summary"><p>Base client from DSharpPlus library</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DiscordClient BaseClient { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.DiscordClient</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_SelfAccount_" data-uid="DidiFrame.DSharpAdapter.Client.SelfAccount*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_SelfAccount" data-uid="DidiFrame.DSharpAdapter.Client.SelfAccount">SelfAccount</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IUser SelfAccount { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IUser</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_Servers_" data-uid="DidiFrame.DSharpAdapter.Client.Servers*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_Servers" data-uid="DidiFrame.DSharpAdapter.Client.Servers">Servers</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;IServer&gt; Servers { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">IServer</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_AwaitForExit_" data-uid="DidiFrame.DSharpAdapter.Client.AwaitForExit*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_AwaitForExit" data-uid="DidiFrame.DSharpAdapter.Client.AwaitForExit">AwaitForExit()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task AwaitForExit()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_CheckAndAwaitConnectionAsync_" data-uid="DidiFrame.DSharpAdapter.Client.CheckAndAwaitConnectionAsync*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_CheckAndAwaitConnectionAsync" data-uid="DidiFrame.DSharpAdapter.Client.CheckAndAwaitConnectionAsync">CheckAndAwaitConnectionAsync()</h4>
+  <div class="markdown level1 summary"><p>Checks connection to discord server and if fail awaits it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public async Task CheckAndAwaitConnectionAsync()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td><p>Wait task that will be complited only when connection will be alive</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_Connect_" data-uid="DidiFrame.DSharpAdapter.Client.Connect*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_Connect" data-uid="DidiFrame.DSharpAdapter.Client.Connect">Connect()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Connect()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_Dispose_" data-uid="DidiFrame.DSharpAdapter.Client.Dispose*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_Dispose" data-uid="DidiFrame.DSharpAdapter.Client.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_DoSafeOperation_" data-uid="DidiFrame.DSharpAdapter.Client.DoSafeOperation*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_DoSafeOperation_Action_" data-uid="DidiFrame.DSharpAdapter.Client.DoSafeOperation(Action)">DoSafeOperation(Action)</h4>
+  <div class="markdown level1 summary"><p>Do safe opration under discord client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DoSafeOperation(Action operation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Action</span></td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>Operation delegate</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_DoSafeOperation_" data-uid="DidiFrame.DSharpAdapter.Client.DoSafeOperation*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_DoSafeOperation__1_Func___0__" data-uid="DidiFrame.DSharpAdapter.Client.DoSafeOperation``1(Func{``0})">DoSafeOperation&lt;TReturn&gt;(Func&lt;TReturn&gt;)</h4>
+  <div class="markdown level1 summary"><p>Do safe opration under discord client with result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TReturn DoSafeOperation&lt;TReturn&gt;(Func&lt;TReturn&gt; operation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Func</span>&lt;TReturn&gt;</td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>Operation delegate</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TReturn</span></td>
+        <td><p>Operation result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TReturn</span></td>
+        <td><p>Type of result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_DoSafeOperationAsync_" data-uid="DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_DoSafeOperationAsync_Func_Task__" data-uid="DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync(Func{Task})">DoSafeOperationAsync(Func&lt;Task&gt;)</h4>
+  <div class="markdown level1 summary"><p>Do safe async opration under discord client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public async Task DoSafeOperationAsync(Func&lt;Task&gt; operation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>Async operation delegate</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td><p>Wait task</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_DSharpAdapter_Client_DoSafeOperationAsync_" data-uid="DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync*"></a>
+  <h4 id="DidiFrame_DSharpAdapter_Client_DoSafeOperationAsync__1_Func_Task___0___" data-uid="DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync``1(Func{Task{``0}})">DoSafeOperationAsync&lt;TReturn&gt;(Func&lt;Task&lt;TReturn&gt;&gt;)</h4>
+  <div class="markdown level1 summary"><p>Do safe async opration under discord client with result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public async Task&lt;TReturn&gt; DoSafeOperationAsync&lt;TReturn&gt;(Func&lt;Task&lt;TReturn&gt;&gt; operation)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TReturn&gt;&gt;</td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>Async operation delegate</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;TReturn&gt;</td>
+        <td><p>Async operation result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TReturn</span></td>
+        <td><p>Type of result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+  </h3>
+  
+  
+  <h4 id="DidiFrame_DSharpAdapter_Client_MessageDeleted" data-uid="DidiFrame.DSharpAdapter.Client.MessageDeleted">MessageDeleted</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event MessageDeletedEventHandler? MessageDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">MessageDeletedEventHandler</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_DSharpAdapter_Client_MessageSent" data-uid="DidiFrame.DSharpAdapter.Client.MessageSent">MessageSent</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event MessageSentEventHandler? MessageSent</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">MessageSentEventHandler</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

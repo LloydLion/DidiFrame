@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class UserCommandPipelineContext
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class UserCommandPipelineContext
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext">
+  
+  
+  <h1 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext" class="text-break">Class UserCommandPipelineContext
+  </h1>
+  <div class="markdown level0 summary"><p>Context for item that executing in user command pipeline</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">UserCommandPipelineContext</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Pipeline.html">DidiFrame.UserCommands.Pipeline</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h5 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class UserCommandPipelineContext</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext__ctor_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.#ctor*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext__ctor_IServiceProvider_UserCommandSendData_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.#ctor(IServiceProvider,UserCommandSendData)">UserCommandPipelineContext(IServiceProvider, UserCommandSendData)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserCommandPipelineContext(IServiceProvider localServices, UserCommandSendData sendData)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServiceProvider</span></td>
+        <td><span class="parametername">localServices</span></td>
+        <td><p>Local services</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">UserCommandSendData</span></td>
+        <td><span class="parametername">sendData</span></td>
+        <td><p>Send data from dispatcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_CurrentStatus_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.CurrentStatus*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_CurrentStatus" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.CurrentStatus">CurrentStatus</h4>
+  <div class="markdown level1 summary"><p>Status of pipeline</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserCommandPipelineContext.Status CurrentStatus { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.Status.html">UserCommandPipelineContext.Status</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_ExecutionResult_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.ExecutionResult*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_ExecutionResult" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.ExecutionResult">ExecutionResult</h4>
+  <div class="markdown level1 summary"><p>Execution result if pipeline begins finalize. Not recomended use GetExecutionResult() method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserCommandResult? ExecutionResult { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">UserCommandResult</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_LocalServices_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.LocalServices*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_LocalServices" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.LocalServices">LocalServices</h4>
+  <div class="markdown level1 summary"><p>Provided local services</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IServiceProvider LocalServices { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServiceProvider</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_SendData_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.SendData*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_SendData" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.SendData">SendData</h4>
+  <div class="markdown level1 summary"><p>Send data from dispatcher</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserCommandSendData SendData { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">UserCommandSendData</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_DropPipeline_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.DropPipeline*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_DropPipeline" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.DropPipeline">DropPipeline()</h4>
+  <div class="markdown level1 summary"><p>Sets status to BeginDrop</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DropPipeline()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_FinalizePipeline_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.FinalizePipeline*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_FinalizePipeline_UserCommandResult_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.FinalizePipeline(UserCommandResult)">FinalizePipeline(UserCommandResult)</h4>
+  <div class="markdown level1 summary"><p>Sets status to BeginFinalize and command result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void FinalizePipeline(UserCommandResult result)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">UserCommandResult</span></td>
+        <td><span class="parametername">result</span></td>
+        <td><p>Command result for dispatcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_GetExecutionResult_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.GetExecutionResult*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_GetExecutionResult" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.GetExecutionResult">GetExecutionResult()</h4>
+  <div class="markdown level1 summary"><p>Gets execution result if pipeline begins finalize</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserCommandResult GetExecutionResult()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">UserCommandResult</span></td>
+        <td><p>Execution result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

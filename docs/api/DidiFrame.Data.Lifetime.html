@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Namespace DidiFrame.Data.Lifetime
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Namespace DidiFrame.Data.Lifetime
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Data.Lifetime">
+  
+  <h1 id="DidiFrame_Data_Lifetime" data-uid="DidiFrame.Data.Lifetime" class="text-break">Namespace DidiFrame.Data.Lifetime
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="markdown level0 remarks"></div>
+    <h3 id="classes">Classes
+  </h3>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.AbstractFullLifetime-2.html">AbstractFullLifetime&lt;TState, TBase&gt;</a></h4>
+      <section><p>Useful extension for DidiFrame.Data.Lifetime.AbstractStateBasedLifetime`2</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.AbstractStateBasedLifetime-2.html">AbstractStateBasedLifetime&lt;TState, TBase&gt;</a></h4>
+      <section><p>Base class of statemachine-based lifetime</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.DefaultLTFactory-2.html">DefaultLTFactory&lt;TLifetime, TBase&gt;</a></h4>
+      <section><p>Default factory for lifetimes that uses them ctors, requires singnature: TBase, IServiceProvider</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.LifetimeRegistry-2.html">LifetimeRegistry&lt;TLifetime, TBase&gt;</a></h4>
+      <section><p>Simple implementation of DidiFrame.Data.Lifetime.ILifetimesRegistry`2</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.LifetimeStateUpdater-1.html">LifetimeStateUpdater&lt;TBase&gt;</a></h4>
+      <section><p>Simple implementation of DidiFrame.Data.Lifetime.ILifetimeStateUpdater`1</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.ServersLifetimesRepositoryFactory.html">ServersLifetimesRepositoryFactory</a></h4>
+      <section><p>Simple implementation of DidiFrame.Data.Lifetime.IServersLifetimesRepositoryFactory</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.ServicesExtensions.html">ServicesExtensions</a></h4>
+      <section></section>
+    <h3 id="interfaces">Interfaces
+  </h3>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.ILifetime-1.html">ILifetime&lt;TBase&gt;</a></h4>
+      <section><p>The lifeitme object of bot that can be &quot;alive&quot; outside of any commands and events handlers</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.ILifetimeBase.html">ILifetimeBase</a></h4>
+      <section><p>Lifetime state object that represents all lifetime's state and can be saved to a server state</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.ILifetimeFactory-2.html">ILifetimeFactory&lt;TLifetime, TBase&gt;</a></h4>
+      <section><p>Need to create lifetimes from them state objects</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.ILifetimesRegistry.html">ILifetimesRegistry</a></h4>
+      <section><p>Need to restore all lifetime at bot startup from them state objects in servers' states</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.ILifetimeStateUpdater-1.html">ILifetimeStateUpdater&lt;TBase&gt;</a></h4>
+      <section><p>Object that lifetime must notify about state object changings</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.IServersLifetimesRepository-2.html">IServersLifetimesRepository&lt;TLifetime, TBase&gt;</a></h4>
+      <section><p>Repository that provides the servers' lifetimes</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.IServersLifetimesRepositoryFactory.html">IServersLifetimesRepositoryFactory</a></h4>
+      <section><p>Creates repositories that provide the servers' lifetimes</p>
+</section>
+      <h4><a class="xref" href="DidiFrame.Data.Lifetime.IStateBasedLifetimeBase-1.html">IStateBasedLifetimeBase&lt;TState&gt;</a></h4>
+      <section><p>Statemachine-based lifetime state object that represents all lifetime's state and can be saved to a server state</p>
+</section>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
