@@ -15,9 +15,9 @@ namespace DidiFrame.Statistic
 		/// Creates new instance of DidiFrame.Statistic.StateBasedStatisticCollector
 		/// </summary>
 		/// <param name="repository">Base repository to store stats data</param>
-		public StateBasedStatisticCollector(IServersStatesRepository<ICollection<StatisticDictionaryItem>> repository)
+		public StateBasedStatisticCollector(IServersStatesRepositoryFactory repository)
 		{
-			this.repository = repository;
+			this.repository = repository.Create<ICollection<StatisticDictionaryItem>>("stats");
 		}
 
 

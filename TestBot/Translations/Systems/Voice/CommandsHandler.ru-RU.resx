@@ -120,6 +120,9 @@
   <data name="ChannelCreated" xml:space="preserve">
     <value>Канал {0} создан</value>
   </data>
+  <data name="ChannelCreatedCount" xml:space="preserve">
+    <value>Каналов за всё время было создано {0} штук</value>
+  </data>
   <data name="voice.name:OnlyInLowerCase" xml:space="preserve">
     <value>Название должно быть в нижнем регистре ({0})</value>
   </data>

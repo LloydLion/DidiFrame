@@ -1,6 +1,7 @@
 ﻿using DidiFrame.Culture;
 using DSharpPlus;
 using DSharpPlus.Exceptions;
+using System.Globalization;
 
 namespace DidiFrame.DSharpAdapter
 {
@@ -44,7 +45,7 @@ namespace DidiFrame.DSharpAdapter
 		/// <param name="options">Configuration of DSharp client</param>
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>
-		public Client(IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider cultureProvider)
+		public Client(IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null)
 		{
 			var opt = options.Value;
 			logger = factory.CreateLogger<Client>();
@@ -58,7 +59,8 @@ namespace DidiFrame.DSharpAdapter
 				LoggerFactory = factory,
 				Intents = DiscordIntents.All
 			});
-			CultureProvider = cultureProvider;
+
+			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
 		}
 
 		//Must be invoked from TextChannel objects

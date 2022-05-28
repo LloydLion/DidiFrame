@@ -120,6 +120,9 @@
   <data name="ChannelCreated" xml:space="preserve">
     <value>Channel {0} created</value>
   </data>
+  <data name="ChannelCreatedCount" xml:space="preserve">
+    <value>Channels for all time were created {0} pieces</value>
+  </data>
   <data name="voice.name:OnlyInLowerCase" xml:space="preserve">
     <value>Name must be in lower case ({0})</value>
   </data>

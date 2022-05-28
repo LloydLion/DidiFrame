@@ -13,6 +13,7 @@ namespace DidiFrame.Application
 		private readonly EventId ClientReadyID = new(52, "ClientReady");
 		private readonly EventId DataPreloadCompliteID = new(53, "DataPreloadComplite");
 		private readonly EventId StartEventFiredID = new(54, "StartEventFired");
+		private readonly EventId StartEventSkippedID = new(57, "StartEventSkipped");
 		private readonly EventId LifetimeRegistrationDoneID = new(55, "LifetimeRegistrationDone");
 		private readonly EventId UserCommandsPipelineDoneID = new(56, "UserCommandsPipelineDone");
 		private readonly EventId ClientExitID = new(80, "ClientExit");
@@ -75,8 +76,13 @@ namespace DidiFrame.Application
 			logger.Log(LogLevel.Debug, DataPreloadCompliteID, "Servers data preloaded (states and settings)");
 
 
-			services.GetRequiredService<StartupEvent>().InvokeStartup();
-			logger.Log(LogLevel.Debug, StartEventFiredID, "Startup event fired and finished with sucsess");
+			var se = services.GetService<StartupEvent>();
+			if (se is not null)
+			{
+				se.InvokeStartup();
+				logger.Log(LogLevel.Debug, StartEventFiredID, "Startup event fired and finished with sucsess");
+			}
+			else logger.Log(LogLevel.Debug, StartEventSkippedID, "Startup event skipped because hasn't been added");
 
 
 			foreach (var registry in services.GetServices<ILifetimesRegistry>())

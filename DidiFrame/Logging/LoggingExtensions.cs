@@ -12,6 +12,7 @@ namespace DidiFrame.Logging
 		/// <returns>Given builder to be chained</returns>
 		public static ILoggingBuilder AddFacnyConsoleLogging(this ILoggingBuilder builder, DateTime start)
 		{
+			builder.Services.AddTransient(s => new Colorify.Format(Colorify.UI.Theme.Dark));
 			builder.Services.AddTransient<ILoggerProvider, FancyConsoleLoggerProvider>((services) =>
 				new FancyConsoleLoggerProvider(services.GetRequiredService<Colorify.Format>(), start));
 			return builder;

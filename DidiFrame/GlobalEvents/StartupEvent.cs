@@ -1,4 +1,5 @@
 ﻿using DidiFrame.Culture;
+using System.Globalization;
 
 namespace DidiFrame.GlobalEvents
 {
@@ -16,10 +17,10 @@ namespace DidiFrame.GlobalEvents
 		/// </summary>
 		/// <param name="client">Discord client</param>
 		/// <param name="cultureProvider">Culture provider for handlers</param>
-		public StartupEvent(IClient client, IServerCultureProvider cultureProvider)
+		public StartupEvent(IClient client, IServerCultureProvider? cultureProvider = null)
 		{
 			this.client = client;
-			this.cultureProvider = cultureProvider;
+			this.cultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
 		}
 
 

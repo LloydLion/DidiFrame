@@ -15,17 +15,6 @@ namespace DidiFrame
 		}
 
 		/// <summary>
-		/// Adds Colorify library into collection
-		/// </summary>
-		/// <param name="services">Service collection</param>
-		/// <returns>Given collection to be chained</returns>
-		public static IServiceCollection AddColorfy(this IServiceCollection services)
-		{
-			services.AddTransient(s => new Colorify.Format(Colorify.UI.Theme.Dark));
-			return services;
-		}
-
-		/// <summary>
 		/// Adds localization module with logging configuration into collection using given action
 		/// </summary>
 		/// <param name="services">Service collection</param>

@@ -30,6 +30,7 @@ using DidiFrame.Data.MongoDB;
 using AutoInjector = DidiFrame.AutoInjecting.ReflectionAutoInjector;
 using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
+using DidiFrame.Statistic;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -48,11 +49,11 @@ appBuilder.AddServices((services, config) => services
 	.AddReflectionUserCommandsLoader()
 	.AddHelpCommands()
 	.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
-	.AddColorfy()
 	.AddCultureMachine()
 	.AddConfiguratedLocalization()
 	.AddLifetimes()
 	.AddGlobalEvents()
+	.AddStatisticTools()
 	.InjectAutoDependencies(new AutoInjector()));
 
 
