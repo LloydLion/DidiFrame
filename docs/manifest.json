@@ -2904,7 +2904,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/first_project.html",
-          "hash": "nZKtn/sSsXhBok23C/vkjMx7r3LIIfiARRbmi35/HcE="
+          "hash": "T1+wYEBP1Su6SHrd89b5Sf8ArKFpmiqcIZW44ZH3M1w="
         }
       },
       "is_incremental": false,
@@ -2922,7 +2922,7 @@
           "hash": "9iv8zOUY+TckpL7jWdvRlwdD7cVpCyhsu5q5Y442g2Q="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -2998,7 +2998,7 @@
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 4,
-          "skipped_file_count": 2
+          "skipped_file_count": 3
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,

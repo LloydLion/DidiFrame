@@ -73,7 +73,7 @@
 <h2 id="step-1---preporations">Step 1 - Preporations</h2>
 <p>Create new console application and download <a href="https://www.nuget.org/packages/LloydLion.DidiFrame/">DidiFrame nuget package</a>.
 Then you need use application builder to create discord bot.
-Now only one: <a href="/api/DidiFrame.Application.DiscordApplicationBuilder.html">DiscordApplicationBuilder</a> exist.
+Now only one: <a href="../api/DidiFrame.Application.DiscordApplicationBuilder.html">DiscordApplicationBuilder</a> exist.
 Create it using <code>Create()</code> method and save into var.</p>
 <h2 id="step-2---configuration">Step 2 - Configuration</h2>
 <p>We using the Microsoft.Extensions.Configuration library to manage configs.
@@ -136,6 +136,10 @@ public UserCommandResult SayHello(UserCommandContext ctx, string word, IMember t
 <p>Write handler in method then return <a href="../api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a> object.
 I you want use states, settings or other services request it from ctor (module is di collection element).
 Commands module is done. Don't forget add it into service collection using simple <code>AddSingletone</code> or <code>AddTransient</code> methods</p>
+<h2 id="final-words">Final words</h2>
+<p>You created your first bot on DidiFrame framework!</p>
+<p>No? You can download <a href="../examples/FirstProject.zip">example</a> to research it or ask us using Github issues.</p>
+<p>Thank you for choosing DidiFrame.</p>
 </article>
           </div>
           

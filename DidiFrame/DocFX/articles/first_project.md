@@ -6,7 +6,7 @@ Here we create first project on DidiFrame framework step by step and write first
 
 Create new console application and download [DidiFrame nuget package](https://www.nuget.org/packages/LloydLion.DidiFrame/).
 Then you need use application builder to create discord bot.
-Now only one: [DiscordApplicationBuilder](/api/DidiFrame.Application.DiscordApplicationBuilder.html) exist.
+Now only one: [DiscordApplicationBuilder](../api/DidiFrame.Application.DiscordApplicationBuilder.html) exist.
 Create it using `Create()` method and save into var.
 
 ## Step 2 - Configuration
@@ -100,3 +100,11 @@ public UserCommandResult SayHello(UserCommandContext ctx, string word, IMember t
 Write handler in method then return [UserCommandResult](../api/DidiFrame.UserCommands.Models.UserCommandResult.html) object.
 I you want use states, settings or other services request it from ctor (module is di collection element).
 Commands module is done. Don't forget add it into service collection using simple `AddSingletone` or `AddTransient` methods
+
+## Final words
+
+You created your first bot on DidiFrame framework!
+
+No? You can download [example](../examples/FirstProject.zip) to research it or ask us using Github issues.
+
+Thank you for choosing DidiFrame.
