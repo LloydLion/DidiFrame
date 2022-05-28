@@ -94,25 +94,25 @@ About each module further in the text</p>
 <p>We sometimes need to save some data &quot;in server&quot; (for example reputaion point or created voice channels) or get server's configuration (for example report channel), Data management subsystem solves this problem.
 From di container we can request IServersSettingsRepositoryFactory for settings and IServersStatesRepositoryFactory for states then call <code>Create&lt;TModel&gt;(string dataKey)</code> method to get repository that can provide state or settings for specific server.
 Repositories methods are simple and intuitive and in first project guide we won't stop on it.</p>
-<p>Tip 1: use <a href="/api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html">ConstructorAssignablePropertyAttribute</a> to create readonly property that will be assignable from constructor</p>
+<p>Tip 1: use <a href="../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html">ConstructorAssignablePropertyAttribute</a> to create readonly property that will be assignable from constructor</p>
 <p>Tip 2: create Id property to indentitify models</p>
-<p>Tip 3: You can use c# records as models, but don't forget apply <a href="/api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html">ConstructorAssignablePropertyAttribute</a></p>
+<p>Tip 3: You can use c# records as models, but don't forget apply <a href="../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html">ConstructorAssignablePropertyAttribute</a></p>
 <p>Framework by default has two Data management subsystems: Json based and MongoDb based, to add Json based call <code>AddJsonDataManagement(IConfiguration, bool, bool)</code> extension method on service collection,
 to add MongoDb based call <code>AddMongoDataManagement(IConfiguration, bool, bool)</code> extension method. See documentation for details.</p>
 <h3 id="model-factory-provider">Model factory provider</h3>
-<p>Each server's state must have default value that value for a type provides <a href="/api/DidiFrame.Data.IModelFactory-1.html">IModelFactory</a>, but somebody must provide model factories that somebody is Model factory provider.
-Default provider is <a href="/api/DidiFrame.Data.DefaultModelFactoryProvider.html">DefaultModelFactoryProvider</a> (that can be added by <code>.AddTransient&lt;IModelFactoryProvider, DefaultModelFactoryProvider&gt;()</code> method on service collection) that takes factories from di container.
-Don't forget add your models' factories into di, framework provides factory that using default model's ctor: <a href="/api/DidiFrame.Data.DefaultCtorModelFactory-1.html">DefaultCtorModelFactory</a></p>
+<p>Each server's state must have default value that value for a type provides <a href="../api/DidiFrame.Data.IModelFactory-1.html">IModelFactory</a>, but somebody must provide model factories that somebody is Model factory provider.
+Default provider is <a href="../api/DidiFrame.Data.DefaultModelFactoryProvider.html">DefaultModelFactoryProvider</a> (that can be added by <code>.AddTransient&lt;IModelFactoryProvider, DefaultModelFactoryProvider&gt;()</code> method on service collection) that takes factories from di container.
+Don't forget add your models' factories into di, framework provides factory that using default model's ctor: <a href="../api/DidiFrame.Data.DefaultCtorModelFactory-1.html">DefaultCtorModelFactory</a></p>
 <h3 id="auto-repositories">Auto repositories</h3>
 <p>As stated above data repositories can be creates by data repository factories, but it isn't convenient: we have to request factory then call <code>Create</code> method and assign repository into var.
-We have a solution: Auto repositories! We should mark model with <a href="/api/DidiFrame.Data.AutoKeys.DataKeyAttribute.html">DataKeyAttribute</a> and request <code>IServers...Repository&lt;TModel&gt;</code> (without Auto repositories component, it throws ecxeption).
+We have a solution: Auto repositories! We should mark model with <a href="../api/DidiFrame.Data.AutoKeys.DataKeyAttribute.html">DataKeyAttribute</a> and request <code>IServers...Repository&lt;TModel&gt;</code> (without Auto repositories component, it throws ecxeption).
 To add Auto repositories into di call <code>AddAutoDataRepositories()</code> extension method on service collection</p>
 <h3 id="command-repository">Command repository</h3>
-<p>Here all are simple, simple store for your user commands. To add <a href="/api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html">SimpleUserCommandsRepository</a> use <code>AddSimpleUserCommandsRepository()</code> extension method on service collection.</p>
+<p>Here all are simple, simple store for your user commands. To add <a href="../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html">SimpleUserCommandsRepository</a> use <code>AddSimpleUserCommandsRepository()</code> extension method on service collection.</p>
 <h3 id="command-loader">Command loader</h3>
 <p>Repository is cool thing, but who will fill it? Command loaders! answer we, command loader is module that loads commands on bot startup from some sources.
-We will use <a href="/api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.html">ReflectionUserCommandsLoader</a>, this loader loads command from classes - commands modules.
-It takes them from di by <a href="/api/DidiFrame.UserCommands.Loader.Reflection.ICommandsModule.html">ICommandsModule</a> interface.
+We will use <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.html">ReflectionUserCommandsLoader</a>, this loader loads command from classes - commands modules.
+It takes them from di by <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ICommandsModule.html">ICommandsModule</a> interface.
 To add reflection loader call <code>AddReflectionUserCommandsLoader()</code> extension method on service collection.</p>
 <h3 id="command-pipeline">Command pipeline</h3>
 <p>Previous component only stores and loads commands, but somebody must execute them, for this purpose Command pipeline has been created.
@@ -133,7 +133,7 @@ public UserCommandResult SayHello(UserCommandContext ctx, string word, IMember t
 	...
 }
 </code></pre>
-<p>Write handler in method then return <a href="/api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a> object.
+<p>Write handler in method then return <a href="../api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a> object.
 I you want use states, settings or other services request it from ctor (module is di collection element).
 Commands module is done. Don't forget add it into service collection using simple <code>AddSingletone</code> or <code>AddTransient</code> methods</p>
 </article>

@@ -36,36 +36,36 @@ We sometimes need to save some data "in server" (for example reputaion point or 
 From di container we can request IServersSettingsRepositoryFactory for settings and IServersStatesRepositoryFactory for states then call `Create<TModel>(string dataKey)` method to get repository that can provide state or settings for specific server.
 Repositories methods are simple and intuitive and in first project guide we won't stop on it.
 
-Tip 1: use [ConstructorAssignablePropertyAttribute](/api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html) to create readonly property that will be assignable from constructor
+Tip 1: use [ConstructorAssignablePropertyAttribute](../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html) to create readonly property that will be assignable from constructor
 
 Tip 2: create Id property to indentitify models
 
-Tip 3: You can use c# records as models, but don't forget apply [ConstructorAssignablePropertyAttribute](/api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html)
+Tip 3: You can use c# records as models, but don't forget apply [ConstructorAssignablePropertyAttribute](../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html)
 
 Framework by default has two Data management subsystems: Json based and MongoDb based, to add Json based call `AddJsonDataManagement(IConfiguration, bool, bool)` extension method on service collection,
 to add MongoDb based call `AddMongoDataManagement(IConfiguration, bool, bool)` extension method. See documentation for details.
 
 ### Model factory provider
 
-Each server's state must have default value that value for a type provides [IModelFactory](/api/DidiFrame.Data.IModelFactory-1.html), but somebody must provide model factories that somebody is Model factory provider.
-Default provider is [DefaultModelFactoryProvider](/api/DidiFrame.Data.DefaultModelFactoryProvider.html) (that can be added by `.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()` method on service collection) that takes factories from di container.
-Don't forget add your models' factories into di, framework provides factory that using default model's ctor: [DefaultCtorModelFactory](/api/DidiFrame.Data.DefaultCtorModelFactory-1.html)
+Each server's state must have default value that value for a type provides [IModelFactory](../api/DidiFrame.Data.IModelFactory-1.html), but somebody must provide model factories that somebody is Model factory provider.
+Default provider is [DefaultModelFactoryProvider](../api/DidiFrame.Data.DefaultModelFactoryProvider.html) (that can be added by `.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()` method on service collection) that takes factories from di container.
+Don't forget add your models' factories into di, framework provides factory that using default model's ctor: [DefaultCtorModelFactory](../api/DidiFrame.Data.DefaultCtorModelFactory-1.html)
 
 ### Auto repositories
 
 As stated above data repositories can be creates by data repository factories, but it isn't convenient: we have to request factory then call `Create` method and assign repository into var.
-We have a solution: Auto repositories! We should mark model with [DataKeyAttribute](/api/DidiFrame.Data.AutoKeys.DataKeyAttribute.html) and request `IServers...Repository<TModel>` (without Auto repositories component, it throws ecxeption).
+We have a solution: Auto repositories! We should mark model with [DataKeyAttribute](../api/DidiFrame.Data.AutoKeys.DataKeyAttribute.html) and request `IServers...Repository<TModel>` (without Auto repositories component, it throws ecxeption).
 To add Auto repositories into di call `AddAutoDataRepositories()` extension method on service collection
 
 ### Command repository
 
-Here all are simple, simple store for your user commands. To add [SimpleUserCommandsRepository](/api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html) use `AddSimpleUserCommandsRepository()` extension method on service collection.
+Here all are simple, simple store for your user commands. To add [SimpleUserCommandsRepository](../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html) use `AddSimpleUserCommandsRepository()` extension method on service collection.
 
 ### Command loader
 
 Repository is cool thing, but who will fill it? Command loaders! answer we, command loader is module that loads commands on bot startup from some sources.
-We will use [ReflectionUserCommandsLoader](/api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.html), this loader loads command from classes - commands modules.
-It takes them from di by [ICommandsModule](/api/DidiFrame.UserCommands.Loader.Reflection.ICommandsModule.html) interface.
+We will use [ReflectionUserCommandsLoader](../api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.html), this loader loads command from classes - commands modules.
+It takes them from di by [ICommandsModule](../api/DidiFrame.UserCommands.Loader.Reflection.ICommandsModule.html) interface.
 To add reflection loader call `AddReflectionUserCommandsLoader()` extension method on service collection.
 
 ### Command pipeline
@@ -97,6 +97,6 @@ public UserCommandResult SayHello(UserCommandContext ctx, string word, IMember t
 }
 ```
 
-Write handler in method then return [UserCommandResult](/api/DidiFrame.UserCommands.Models.UserCommandResult.html) object.
+Write handler in method then return [UserCommandResult](../api/DidiFrame.UserCommands.Models.UserCommandResult.html) object.
 I you want use states, settings or other services request it from ctor (module is di collection element).
 Commands module is done. Don't forget add it into service collection using simple `AddSingletone` or `AddTransient` methods

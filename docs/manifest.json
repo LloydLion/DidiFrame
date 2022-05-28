@@ -2896,15 +2896,18 @@
       "version": ""
     },
     {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
       "type": "Conceptual",
       "source_relative_path": "articles/first_project.md",
       "output": {
         ".html": {
           "relative_path": "articles/first_project.html",
-          "hash": "IURTGHMLe+YZr3wLpcQ36kAPRfv9k9Nvuvd3OZNpDOM="
+          "hash": "nZKtn/sSsXhBok23C/vkjMx7r3LIIfiARRbmi35/HcE="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -2916,10 +2919,10 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "pO5MKBWyrc2QFuTv9CAzCg2AoMNyi9cg/LYw4wALtGA="
+          "hash": "9iv8zOUY+TckpL7jWdvRlwdD7cVpCyhsu5q5Y442g2Q="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -2995,7 +2998,7 @@
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 4,
-          "skipped_file_count": 4
+          "skipped_file_count": 2
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
