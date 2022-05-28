@@ -26,12 +26,15 @@
   <ItemGroup>
     <Compile Remove="api\**" />
     <Compile Remove="articles\**" />
+    <Compile Remove="DocFX\**" />
     <Compile Remove="_site\**" />
     <EmbeddedResource Remove="api\**" />
     <EmbeddedResource Remove="articles\**" />
+    <EmbeddedResource Remove="DocFX\**" />
     <EmbeddedResource Remove="_site\**" />
     <None Remove="api\**" />
     <None Remove="articles\**" />
+    <None Remove="DocFX\**" />
     <None Remove="_site\**" />
   </ItemGroup>
 
@@ -54,10 +57,6 @@
 
   <ItemGroup>
     <PackageReference Include="dein.Colorify" Version="2.7.0" />
-    <PackageReference Include="docfx.console" Version="2.59.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="DSharpPlus" Version="4.2.0" />
     <PackageReference Include="FluentValidation" Version="10.4.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.4.0" />

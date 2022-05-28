@@ -7,13 +7,7 @@
 TestBot/settings.json
 TestBot/settings/
 
-DidiFrame/_site/
-DidiFrame/api/
-DidiFrame/articles/
-DidiFrame/docfx.json
-DidiFrame/index.md
-DidiFrame/log.txt
-DidiFrame/toc.yml
+DidiFrame/DocFX/api
 
 # User-specific files
 *.rsuser

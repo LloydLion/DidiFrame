@@ -122,6 +122,7 @@
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static IServiceCollection AddLifetime&lt;TLifetime, TBase&gt;(this IServiceCollection services, string stateKey)
+
     where TLifetime : ILifetime&lt;TBase&gt; where TBase : class, ILifetimeBase</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -195,6 +196,7 @@
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static IServiceCollection AddLifetime&lt;TFactory, TLifetime, TBase&gt;(this IServiceCollection services, string stateKey)
+
     where TFactory : class, ILifetimeFactory&lt;TLifetime, TBase&gt; where TLifetime : ILifetime&lt;TBase&gt; where TBase : class, ILifetimeBase</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
