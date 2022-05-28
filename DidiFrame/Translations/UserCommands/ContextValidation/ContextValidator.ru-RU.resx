@@ -120,6 +120,9 @@
   <data name="ByFilterBlockedMessage" xml:space="preserve">
     <value>Вы не можоте выполнить эту комманду, вы были заболокированы фильтром: {0}</value>
   </data>
+  <data name="NoDataProvided" xml:space="preserve">
+    <value>Информация не предоставлена командой</value>
+  </data>
   <data name="ValidationErrorMessage" xml:space="preserve">
     <value>Вы неправельно ввели аргументы комманды! Пожалуйста иправте их и попробуйте снова: {0}</value>
   </data>

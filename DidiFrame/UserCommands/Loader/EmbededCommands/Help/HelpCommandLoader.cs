@@ -96,7 +96,12 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			var args = cmd.Arguments.Where(s => s.AdditionalInfo.GetExtension<ArgumentDescription>()?.Remarks is not null).ToArray();
 			var rmStrs = args.Select(s => localizer["RemarkContent_2", s.Name, cmdloc[s.AdditionalInfo.GetRequiredExtension<ArgumentDescription>().Remarks ?? throw new ImpossibleVariantException()]]);
 			var cmdRemark = desc.Remarks is null ? "" : '*' + localizer["RemarkContent_1", cmdloc[desc.Remarks]] + '\n';
-			embedBuilder.AddField(new(localizer["RemarksTitle"], cmdRemark + string.Join("\n*", rmStrs)));
+
+			if (string.IsNullOrWhiteSpace(cmdRemark) == false || rmStrs.Any())
+			{
+				var readyRemarks = cmdRemark + '*' + string.Join("\n*", rmStrs);
+				embedBuilder.AddField(new(localizer["RemarksTitle"], readyRemarks));
+			}
 
 
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new() { MessageEmbeds = new[] { embedBuilder.Build() } } });
