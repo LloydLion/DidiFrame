@@ -21,13 +21,13 @@ In json file create tipical configuration for Microsoft.Extensions.Configuration
 
 Almost components of DidiFrame requires logging module. Logging in DidiFrame based on Microsoft.Extensions.Logging library and you can configurate it as you want.
 Simple call `AddLogging(Action<ILoggingBuilder>)` method with delegate and configurate logging. But library has custom fancy logger to add it call on `ILoggingBuilder`
-`AddFancyConsole(DateTime)` method with start time object that can be got from builder using `GetStartupTime()` method. Added fancy console requires Colorfy module in di container.
+`AddFancyConsole(DateTime)` method with start time object that can be got from builder using `GetStartupTime()` method.
 
 ## Step 4 - Services
 
 When configuration added we can add di container into builder. To do it call `AddServices(Action<IServiceCollection>)` method and give it configuration delegate.
 In delegate we should add services into di container. DidiFrame is modules-based framework and you can enable or disable any components,
-but in first time we should add Data management subsystem, Model factory provider, Auto repositories (optional), Command repository, Some command loader, Command pipeline and Discord client.
+but in first time we should add Data management subsystem, Model factory provider, Auto repositories (optional), Command repository, Some command loader, Command pipeline, Localization and Discord client.
 About each module further in the text
 
 ### Data management subsystem
@@ -79,6 +79,12 @@ This pipeline based on text messages and responses to a command with text
 
 Discord client is "window" to discord server, we can interact with discord server only using client.
 To add DSharpPlus-based client into di call `AddDSharpClient(IConfiguration)` extension method on service collection.
+
+### Localization
+
+We have to translate bot to different lang to salve this propblem created Microsoft.Extensions.Localization library that included into DidiFrame. To add it call `AddLocalization` extension method on service collection.
+But we recommend to use `AddConfiguratedLocalization()` extension method from DidiFrame because it also adds logging filters for localizers.
+P.S. Localization module is required by many component and without it noone module will work.
 
 ## Step 5 - Run
 
