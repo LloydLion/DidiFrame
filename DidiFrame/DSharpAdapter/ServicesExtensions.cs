@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.DSharpAdapter
 {
+	/// <summary>
+	/// Extensions for DidiFrame.DSharpAdapter namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

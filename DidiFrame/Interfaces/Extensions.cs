@@ -1,5 +1,8 @@
 ﻿namespace DidiFrame.Interfaces
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Interfaces namespace
+	/// </summary>
 	public static class Extensions
 	{
 		/// <summary>

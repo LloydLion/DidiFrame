@@ -131,6 +131,7 @@ namespace DidiFrame.Utils
 			}
 		}
 
+		/// <inheritdoc/>
 		public async void Dispose()
 		{
 			if(active) Channel.MessageDeleted -= OnMessageDeleted;

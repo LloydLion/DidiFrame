@@ -24,6 +24,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 		}
 
 
+		/// <inheritdoc/>
 		public override ValidatedUserCommandContext? Process(UserCommandContext input, UserCommandPipelineContext pipelineContext)
 		{
 			var cmd = input.Command;

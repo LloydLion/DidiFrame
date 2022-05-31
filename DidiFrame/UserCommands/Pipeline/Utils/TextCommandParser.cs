@@ -36,6 +36,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		}
 
 
+		/// <inheritdoc/>
 		public override UserCommandPreContext? Process(string content, UserCommandPipelineContext pipelineContext)
 		{
 			var server = pipelineContext.SendData.Channel.Server;

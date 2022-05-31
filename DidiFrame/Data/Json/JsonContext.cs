@@ -31,6 +31,7 @@ namespace DidiFrame.Data.Json
 		}
 
 
+		/// <inheritdoc/>
 		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class
 		{
 			if (factory is null) return Load<TModel>(server, key);
@@ -99,6 +100,7 @@ namespace DidiFrame.Data.Json
 			}
 		}
 
+		/// <inheritdoc/>
 		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
 			using (locker.Lock(server))
@@ -107,6 +109,7 @@ namespace DidiFrame.Data.Json
 			}
 		}
 
+		/// <inheritdoc/>
 		public Task PreloadDataAsync()
 		{
 			return cache.LoadAllAsync();

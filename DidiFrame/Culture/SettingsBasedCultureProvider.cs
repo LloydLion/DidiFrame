@@ -26,6 +26,7 @@ namespace DidiFrame.Culture
 		}
 
 
+		/// <inheritdoc/>
 		public CultureInfo GetCulture(IServer server)
 		{
 			return repository.Get(server).CultureInfo;

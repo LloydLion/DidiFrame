@@ -27,13 +27,17 @@ namespace DidiFrame.DSharpAdapter
 		private readonly CancellationTokenSource cts = new();
 		private readonly ILogger<Client> logger;
 
+		/// <inheritdoc/>
 		public event MessageSentEventHandler? MessageSent;
 
+		/// <inheritdoc/>
 		public event MessageDeletedEventHandler? MessageDeleted;
 
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IServer> Servers => servers;
 
+		/// <inheritdoc/>
 		public IUser SelfAccount => new User(client.CurrentUser, this);
 
 		/// <summary>
@@ -93,6 +97,7 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
+		/// <inheritdoc/>
 		public async Task AwaitForExit()
 		{
 			int ticks = 0;
@@ -113,6 +118,7 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
+		/// <inheritdoc/>
 		public void Connect()
 		{
 			client.ConnectAsync().Wait();
@@ -144,6 +150,7 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			GC.SuppressFinalize(this);
@@ -172,10 +179,10 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
-		/// <summary>
-		/// Do safe opration under discord client
-		/// </summary>
-		/// <param name="operation">Operation delegate</param>
+		///// <summary>
+		///// Do safe opration under discord client
+		///// </summary>
+		///// <param name="operation">Operation delegate</param>
 		internal void DoSafeOperation(Action operation, NotFoundInfo? nfi = null)
 		{
 		reset:
@@ -209,12 +216,12 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
-		/// <summary>
-		/// Do safe opration under discord client with result
-		/// </summary>
-		/// <typeparam name="TReturn">Type of result</typeparam>
-		/// <param name="operation">Operation delegate</param>
-		/// <returns>Operation result</returns>
+		///// <summary>
+		///// Do safe opration under discord client with result
+		///// </summary>
+		///// <typeparam name="TReturn">Type of result</typeparam>
+		///// <param name="operation">Operation delegate</param>
+		///// <returns>Operation result</returns>
 		internal TReturn DoSafeOperation<TReturn>(Func<TReturn> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
@@ -248,11 +255,11 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
-		/// <summary>
-		/// Do safe async opration under discord client
-		/// </summary>
-		/// <param name="operation">Async operation delegate</param>
-		/// <returns>Wait task</returns>
+		///// <summary>
+		///// Do safe async opration under discord client
+		///// </summary>
+		///// <param name="operation">Async operation delegate</param>
+		///// <returns>Wait task</returns>
 		internal async Task DoSafeOperationAsync(Func<Task> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
@@ -286,12 +293,12 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
-		/// <summary>
-		/// Do safe async opration under discord client with result
-		/// </summary>
-		/// <typeparam name="TReturn">Type of result</typeparam>
-		/// <param name="operation">Async operation delegate</param>
-		/// <returns>Async operation result</returns>
+		///// <summary>
+		///// Do safe async opration under discord client with result
+		///// </summary>
+		///// <typeparam name="TReturn">Type of result</typeparam>
+		///// <param name="operation">Async operation delegate</param>
+		///// <returns>Async operation result</returns>
 		internal async Task<TReturn> DoSafeOperationAsync<TReturn>(Func<Task<TReturn>> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
@@ -331,11 +338,14 @@ namespace DidiFrame.DSharpAdapter
 		/// </summary>
 		public class Options
 		{
+			/// <summary>
+			/// Discord's bot token, see discord documentation
+			/// </summary>
 			public string Token { get; set; } = "";
 		}
 
 
-		public struct NotFoundInfo
+		internal struct NotFoundInfo
 		{
 			public NotFoundInfo(string objectType, ulong objectId, string? objectName = null)
 			{

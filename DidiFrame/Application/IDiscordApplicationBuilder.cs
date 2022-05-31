@@ -30,7 +30,7 @@ namespace DidiFrame.Application
 		public IDiscordApplicationBuilder AddServices(Action<IServiceCollection, IConfiguration> buildAction);
 
 		/// <summary>
-		/// Adds configuration object to builder, can be used in AddServices(Action<IServiceCollection, IConfiguration>)
+		/// Adds configuration object to builder, can be used in AddServices(Action)
 		/// to add configurated services
 		/// </summary>
 		/// <param name="configuration">Configuration itself</param>
@@ -49,7 +49,7 @@ namespace DidiFrame.Application
 		public DateTime GetStartupTime();
 
 		/// <summary>
-		/// Adds logging into services. It can be replaced by calling AddLogging(Action<ILoggingBuilder>) extension method at services object
+		/// Adds logging into services. It can be replaced by calling AddLogging(Action) extension method at services object
 		/// </summary>
 		/// <param name="buildAction">Action under Microsoft.Extensions.Logging.ILoggingBuilder</param>
 		public void AddLogging(Action<ILoggingBuilder> buildAction);

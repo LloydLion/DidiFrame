@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Data.AutoKeys
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Data.AutoKeys namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

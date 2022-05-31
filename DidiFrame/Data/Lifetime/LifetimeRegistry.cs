@@ -23,6 +23,7 @@
 		}
 
 
+		/// <inheritdoc/>
 		public void LoadAndRunAll(IServer server)
 		{
 			using var state = baseRepository.GetState(server);

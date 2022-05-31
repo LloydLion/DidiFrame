@@ -13,8 +13,10 @@
 		public AbstractUserCommandPipelineMiddleware() { }
 
 
+		/// <inheritdoc/>
 		public abstract TOut? Process(TIn input, UserCommandPipelineContext pipelineContext);
 
+		/// <inheritdoc/>
 		public object? Process(object input, UserCommandPipelineContext pipelineContext) => Process((TIn)input, pipelineContext);
 	}
 }

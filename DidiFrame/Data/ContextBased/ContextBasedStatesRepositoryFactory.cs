@@ -25,11 +25,13 @@
 		}
 
 
+		/// <inheritdoc/>
 		public IServersStatesRepository<TModel> Create<TModel>(string key) where TModel : class
 		{
 			return new ContextBasedStatesRepository<TModel>(ctx, provider, key);
 		}
 
+		/// <inheritdoc/>
 		public Task PreloadDataAsync()
 		{
 			return ctx.PreloadDataAsync();

@@ -12,6 +12,7 @@
 		public Disable() { }
 
 
+		/// <inheritdoc/>
 		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx)
 		{
 			return new ValidationFailResult("CommandDisabled", UserCommandCode.InternalError);

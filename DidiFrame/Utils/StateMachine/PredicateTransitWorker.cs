@@ -25,8 +25,10 @@
 		}
 
 
+		/// <inheritdoc/>
 		public override void Activate() { }
 
+		/// <inheritdoc/>
 		public override bool CanDoTransit()
 		{
 			try
@@ -40,6 +42,7 @@
 			}
 		}
 
+		/// <inheritdoc/>
 		public override void Disactivate() { }
 	}
 }

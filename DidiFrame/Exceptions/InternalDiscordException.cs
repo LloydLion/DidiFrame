@@ -9,6 +9,7 @@
 		/// Creates new instance of DidiFrame.Exceptions.InternalDiscordException
 		/// </summary>
 		/// <param name="message">Message for exception</param>
+		/// <param name="innerException">Raw exception from client</param>
 		public InternalDiscordException(string message, Exception innerException) : base(message, innerException) { }
 	}
 }

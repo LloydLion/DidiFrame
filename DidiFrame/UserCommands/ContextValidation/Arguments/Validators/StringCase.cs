@@ -19,6 +19,7 @@
 		}
 
 
+		/// <inheritdoc/>
 		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, string value)
 		{
 			if (onlyUpperNotLower)

@@ -20,6 +20,7 @@
 		}
 
 
+		/// <inheritdoc/>
 		public override TOutput? Process(TInput input, UserCommandPipelineContext pipelineContext)
 		{
 			var res = selector(input);

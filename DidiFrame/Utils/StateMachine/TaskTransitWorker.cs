@@ -29,10 +29,13 @@ namespace DidiFrame.Utils.StateMachine
 		}
 
 
+		/// <inheritdoc/>
 		public override void Activate() => currentTask = taskFactory(source.Token);
 
+		/// <inheritdoc/>
 		public override bool CanDoTransit() => currentTask?.IsCompleted ?? throw new ImpossibleVariantException();
 
+		/// <inheritdoc/>
 		public override void Disactivate()
 		{
 			source.Cancel();

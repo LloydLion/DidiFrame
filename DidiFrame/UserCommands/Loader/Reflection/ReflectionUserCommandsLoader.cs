@@ -50,6 +50,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		}
 
 
+		/// <inheritdoc/>
 		public void LoadTo(IUserCommandsRepository rp)
 		{
 			foreach (var instance in modules)

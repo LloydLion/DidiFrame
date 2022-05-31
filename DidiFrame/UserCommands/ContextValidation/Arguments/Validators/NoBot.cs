@@ -12,6 +12,7 @@
 		public NoBot() { }
 
 
+		/// <inheritdoc/>
 		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, IMember value)
 		{
 			return value.IsBot ? new("IsBot", UserCommandCode.InvalidInput) : null;

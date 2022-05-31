@@ -22,6 +22,7 @@
 
 
 
+		/// <inheritdoc/>
 		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData)
 		{
 			return Task.Run(() =>

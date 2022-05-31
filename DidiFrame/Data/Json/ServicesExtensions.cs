@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Data.Json
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Data.Json namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

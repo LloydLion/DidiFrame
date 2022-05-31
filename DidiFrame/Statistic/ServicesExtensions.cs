@@ -2,6 +2,9 @@
 
 namespace DidiFrame.Statistic
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Statistic namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

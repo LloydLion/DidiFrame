@@ -1,5 +1,8 @@
 ﻿namespace DidiFrame.Utils.ExtendableModels
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Utils.ExtendableModels namespace
+	/// </summary>
 	public static class ProviderExtensions
 	{
 		/// <summary>

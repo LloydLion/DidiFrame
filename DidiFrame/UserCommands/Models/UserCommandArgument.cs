@@ -17,13 +17,37 @@ namespace DidiFrame.UserCommands.Models
 		/// </summary>
 		public enum Type
 		{
+			/// <summary>
+			/// Some integer number
+			/// </summary>
 			Integer,
+			/// <summary>
+			/// Some number with float point
+			/// </summary>
 			Double,
+			/// <summary>
+			/// Some string
+			/// </summary>
 			String,
+			/// <summary>
+			/// Some server's member
+			/// </summary>
 			Member,
+			/// <summary>
+			/// Some role
+			/// </summary>
 			Role,
+			/// <summary>
+			/// Some role or member
+			/// </summary>
 			Mentionable,
+			/// <summary>
+			/// Some tine span
+			/// </summary>
 			TimeSpan,
+			/// <summary>
+			/// Some date and time
+			/// </summary>
 			DateTime
 		}
 	}

@@ -19,10 +19,5 @@
 		{
 			Key = key;
 		}
-
-		public StatisticEntry()
-		{
-			throw new InvalidOperationException("Key property must be initialized");
-		}
 	}
 }

@@ -31,7 +31,7 @@
 		/// <summary>
 		/// Creates new instance of DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider based on object collection.
 		/// Be SUPER careful! objects will registated by thier types (from GetType()).
-		/// Recomended to use  DefaultModelAdditionalInfoProvider(IReadOnlyDictionary<Type, object>) ctor
+		/// Recomended to use  DefaultModelAdditionalInfoProvider(IReadOnlyDictionary) ctor
 		/// </summary>
 		/// <param name="objects">Base object collection</param>
 		public SimpleModelAdditionalInfoProvider(IReadOnlyCollection<object> objects) : this(objects.ToDictionary(s => s.GetType())) { }
@@ -46,11 +46,13 @@
 		}
 
 
+		/// <inheritdoc/>
 		public IReadOnlyDictionary<Type, object> GetAllExtensions()
 		{
 			return objects;
 		}
 
+		/// <inheritdoc/>
 		public object? GetExtension(Type type)
 		{
 			return objects.ContainsKey(type) ? objects[type] : null;

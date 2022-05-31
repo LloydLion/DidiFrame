@@ -12,6 +12,7 @@
 		public NormalString() { }
 
 
+		/// <inheritdoc/>
 		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, string value)
 		{
 			if (string.IsNullOrWhiteSpace(value)) return new("WhiteSpace", UserCommandCode.InvalidInputFormat);

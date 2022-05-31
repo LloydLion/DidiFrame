@@ -81,8 +81,17 @@
 		/// </summary>
 		public enum Status
 		{
+			/// <summary>
+			/// Pipeline works
+			/// </summary>
 			ContinuePipeline = default,
+			/// <summary>
+			/// Pipeline begins to be dropped
+			/// </summary>
 			BeginDrop,
+			/// <summary>
+			/// Pipeline begins to be finalized
+			/// </summary>
 			BeginFinalize,
 		}
 	}

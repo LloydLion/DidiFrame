@@ -2,6 +2,9 @@
 
 namespace DidiFrame.GlobalEvents
 {
+	/// <summary>
+	/// Extensions for DidiFrame.GlobalEvents namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

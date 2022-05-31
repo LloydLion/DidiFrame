@@ -2,6 +2,9 @@
 
 namespace DidiFrame.Logging
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Logging namespace for ILoggingBuilder
+	/// </summary>
 	public static class LoggingExtensions
 	{
 		/// <summary>

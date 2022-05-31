@@ -100,6 +100,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 		public GreaterThen(Type type, string customSourceName) : this(type, customSourceName, false, false) { }
 
 
+		/// <inheritdoc/>
 		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value)
 		{
 			var actualValue = (IComparable)value.ComplexObject;

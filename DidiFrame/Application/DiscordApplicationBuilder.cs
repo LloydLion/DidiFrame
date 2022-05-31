@@ -19,11 +19,13 @@ namespace DidiFrame.Application
 		}
 
 
+		/// <inheritdoc/>
 		public IDiscordApplication Build()
 		{
 			return new DiscordApplication(services.BuildServiceProvider(), now);
 		}
 
+		/// <inheritdoc/>
 		public IConfiguration GetConfiguration()
 		{
 			if (configuration is null)
@@ -32,6 +34,7 @@ namespace DidiFrame.Application
 			return configuration;
 		}
 
+		/// <inheritdoc/>
 		public void AddConfiguration(IConfigurationRoot configuration)
 		{
 			if (this.configuration is not null)
@@ -39,6 +42,7 @@ namespace DidiFrame.Application
 			this.configuration = configuration;
 		}
 
+		/// <inheritdoc/>
 		public IDiscordApplicationBuilder AddServices(Action<IServiceCollection, IConfiguration> buildAction)
 		{
 			if (configuration is null) throw new InvalidOperationException("Add configuration itself before add services using configuration or add services without configuration");
@@ -47,17 +51,20 @@ namespace DidiFrame.Application
 			return this;
 		}
 
+		/// <inheritdoc/>
 		public IDiscordApplicationBuilder AddServices(Action<IServiceCollection> buildAction)
 		{
 			buildAction(services);
 			return this;
 		}
 
+		/// <inheritdoc/>
 		public void AddLogging(Action<ILoggingBuilder> buildAction)
 		{
 			services.AddLogging(buildAction);
 		}
 
+		/// <inheritdoc/>
 		public DateTime GetStartupTime() => now;
 
 

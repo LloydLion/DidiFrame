@@ -22,6 +22,7 @@
 		}
 
 
+		/// <inheritdoc/>
 		public TLifetime Create(TBase baseObject)
 		{
 			return (TLifetime)(Activator.CreateInstance(typeof(TLifetime), baseObject, provider)

@@ -2,6 +2,9 @@
 
 namespace DidiFrame.AutoInjecting
 {
+	/// <summary>
+	/// Extensions for DidiFrame.AutoInjecting namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

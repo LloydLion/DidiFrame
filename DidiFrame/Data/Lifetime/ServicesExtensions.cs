@@ -2,6 +2,9 @@
 
 namespace DidiFrame.Data.Lifetime
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Data.Lifetime namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

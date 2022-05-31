@@ -30,10 +30,13 @@ namespace DidiFrame.Utils.StateMachine
 		}
 
 
+		/// <inheritdoc/>
 		public bool CanActivate(TState state) => true;
 
+		/// <inheritdoc/>
 		public bool CanDoTransit() => currentTask?.IsCompleted ?? throw new ImpossibleVariantException();
 
+		/// <inheritdoc/>
 		public void Disactivate()
 		{
 			cts.Cancel();
@@ -64,12 +67,14 @@ namespace DidiFrame.Utils.StateMachine
 			cts = new();
 		}
 
+		/// <inheritdoc/>
 		public void Activate(IStateMachine<TState> stateMahcine)
 		{
 			stateMachine = stateMahcine;
 			currentTask = waitTaskFactory(cts.Token);
 		}
 
+		/// <inheritdoc/>
 		public TState? DoTransit()
 		{
 			return tstate;

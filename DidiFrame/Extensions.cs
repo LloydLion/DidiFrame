@@ -2,6 +2,9 @@
 
 namespace DidiFrame
 {
+	/// <summary>
+	/// Extensions for DidiFrame namespace
+	/// </summary>
 	public static class Extensions
 	{
 		/// <summary>

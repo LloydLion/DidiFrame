@@ -2,6 +2,9 @@
 
 namespace DidiFrame.Culture
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Culture namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

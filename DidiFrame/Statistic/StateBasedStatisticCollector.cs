@@ -21,6 +21,7 @@ namespace DidiFrame.Statistic
 		}
 
 
+		/// <inheritdoc/>
 		public void Collect(StatisticAction action, StatisticEntry entry, IServer server, long defaultValue = 0)
 		{
 			using var state = repository.GetState(server);
@@ -34,6 +35,7 @@ namespace DidiFrame.Statistic
 			sod.Act(action);
 		}
 
+		/// <inheritdoc/>
 		public long Get(StatisticEntry entry, IServer server, long defaultValue = 0)
 		{
 			using var state = repository.GetState(server);

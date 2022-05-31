@@ -20,12 +20,16 @@ namespace DidiFrame.UserCommands.Repository
 		}
 
 
+		/// <inheritdoc/>
 		public int Count => cmds.Count;
 
+		/// <inheritdoc/>
 		public UserCommandInfo GetCommad(string name) => cmds[name];
 
+		/// <inheritdoc/>
 		public bool TryGetCommad(string name, out UserCommandInfo? command) => cmds.TryGetValue(name, out command);
 
+		/// <inheritdoc/>
 		public IEnumerator<UserCommandInfo> GetEnumerator() => cmds.Values.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

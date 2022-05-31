@@ -19,12 +19,14 @@
 			client.MessageSent += Client_MessageSent;
 		}
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			client.MessageSent -= Client_MessageSent;
 			GC.SuppressFinalize(this);
 		}
 
+		/// <inheritdoc/>
 		public void SetSyncCallback(Action<IMessage, UserCommandSendData, Action<UserCommandResult>> action)
 		{
 			this.action = action;

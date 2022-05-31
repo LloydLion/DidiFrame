@@ -27,6 +27,7 @@
 		public TObject Object { get; }
 
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			callback(this);

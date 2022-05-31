@@ -15,6 +15,7 @@
 		public AbstractArgumentValidator() { }
 
 
+		/// <inheritdoc/>
 		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value)
 		{
 			this.services = services;

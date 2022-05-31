@@ -23,11 +23,13 @@ namespace DidiFrame.Logging
 		}
 
 
+		/// <inheritdoc/>
 		public ILogger CreateLogger(string categoryName)
 		{
 			return new FancyConsoleLogger(categoryName, format, start);
 		}
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			GC.SuppressFinalize(this);

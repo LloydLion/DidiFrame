@@ -9,6 +9,7 @@
 		private readonly IServersStatesRepository<ICollection<TBase>> repository;
 
 
+		/// <inheritdoc/>
 		public event Action<ILifetime<TBase>>? Finished;
 
 
@@ -22,6 +23,7 @@
 		}
 
 
+		/// <inheritdoc/>
 		public void Update(ILifetime<TBase> lifetime)
 		{
 			var baseObj = lifetime.GetBaseClone();
@@ -31,6 +33,7 @@
 			holder.Object.Add(baseObj);
 		}
 
+		/// <inheritdoc/>
 		public void Finish(ILifetime<TBase> lifetime)
 		{
 			var baseObj = lifetime.GetBaseClone();

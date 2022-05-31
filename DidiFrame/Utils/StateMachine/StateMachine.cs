@@ -1,5 +1,9 @@
 ﻿namespace DidiFrame.Utils.StateMachine
 {
+	/// <summary>
+	/// Simple implementation of DidiFrame.Utils.StateMachine.IStateMachine`1
+	/// </summary>
+	/// <typeparam name="TState">Struct that represents state of statemahcine</typeparam>
 	public class StateMachine<TState> : IStateMachine<TState> where TState : struct
 	{
 		private static readonly EventId ActiveWorkersRecalcID = new(32, "ActiveWorkersRecalc");
@@ -16,6 +20,7 @@
 		private static readonly ThreadLocker<StateMachine<TState>> locker = new();
 
 
+		/// <inheritdoc/>
 		public StateMachine(IReadOnlyList<IStateTransitWorker<TState>> workers, ILogger logger)
 		{
 			this.workers = workers.ToList();
@@ -35,15 +40,19 @@
 		}
 
 
+		/// <inheritdoc/>
 		public TState? CurrentState { get; private set; }
 
+		/// <inheritdoc/>
 		public ILogger Logger { get; }
 
 
 
+		/// <inheritdoc/>
 		public event StateChangedEventHandler<TState>? StateChanged;
 
-		
+
+		/// <inheritdoc/>
 		public StateUpdateResult<TState> UpdateState()
 		{
 			using(locker.Lock(this)) return UpdateStateNoLock();
@@ -96,6 +105,7 @@
 			}
 		}
 
+		/// <inheritdoc/>
 		public void Start(TState startState)
 		{
 			CurrentState = startState;
@@ -105,6 +115,7 @@
 			Logger.Log(LogLevel.Debug, MachineStartupID, "Machine has started");
 		}
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			GC.SuppressFinalize(this);
@@ -127,6 +138,7 @@
 			Logger.Log(LogLevel.Trace, ActiveWorkersRecalcID, "Machine's old workers disactivated and new workers for {State} state activated", CurrentState);
 		}
 
+		/// <inheritdoc/>
 		public Task AwaitForState(TState? state)
 		{
 			return Task.Run(() =>
@@ -135,6 +147,7 @@
 			});
 		}
 
+		/// <inheritdoc/>
 		public FreezeModel<TState> Freeze()
 		{
 			var lockFree = locker.Lock(this);

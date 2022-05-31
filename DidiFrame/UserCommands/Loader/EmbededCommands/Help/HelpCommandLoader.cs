@@ -23,6 +23,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		}
 
 
+		/// <inheritdoc/>
 		public void LoadTo(IUserCommandsRepository rp)
 		{
 			rp.AddCommand(new UserCommandInfo("cmd", CmdHandler, new UserCommandArgument[]

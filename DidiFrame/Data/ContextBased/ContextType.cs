@@ -5,7 +5,13 @@
 	/// </summary>
 	public enum ContextType
 	{
+		/// <summary>
+		/// Context for servers' states
+		/// </summary>
 		States,
+		/// <summary>
+		/// Context for servers' settings
+		/// </summary>
 		Settings
 	}
 }

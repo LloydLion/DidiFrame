@@ -31,6 +31,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 		}
 
 
+		/// <inheritdoc/>
 		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value)
 		{
 			var array = (IEnumerable)value.ComplexObject;

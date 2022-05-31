@@ -32,6 +32,7 @@ namespace DidiFrame.UserCommands.Executing
 		}
 
 
+		/// <inheritdoc/>
 		public override UserCommandResult? Process(ValidatedUserCommandContext ctx, UserCommandPipelineContext pipelineContext)
 		{
 			try
@@ -116,9 +117,21 @@ namespace DidiFrame.UserCommands.Executing
 			/// </summary>
 			public enum UnspecifiedErrorMessageBehavior
 			{
+				/// <summary>
+				/// Disables any actions
+				/// </summary>
 				Disable,
+				/// <summary>
+				/// Sends simple error message without any debug info
+				/// </summary>
 				EnableWithoutDebugInfo,
+				/// <summary>
+				/// Sends message with exception type and its message
+				/// </summary>
 				EnableWithExceptionsTypeAndMessage,
+				/// <summary>
+				/// Sends message with full exception info
+				/// </summary>
 				EnableWithFullExceptionInfo
 			}
 		}

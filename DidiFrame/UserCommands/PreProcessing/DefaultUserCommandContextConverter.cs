@@ -29,6 +29,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 		}
 
 
+		/// <inheritdoc/>
 		public override UserCommandContext? Process(UserCommandPreContext preCtx, UserCommandPipelineContext pipelineContext)
 		{
 			// preCtx.Arguments is dictionary from argument to array of pre objects which parsed by cmd parser
@@ -88,6 +89,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 #pragma warning restore CS8620
 		}
 
+		/// <inheritdoc/>
 		public bool TryGetPreObjectTypes(Type complexType, [NotNullWhen(true)]out IReadOnlyList<UserCommandArgument.Type>? possiblePreObjectTypes)
 		{
 			var pos = subConverters.Where(s => s.WorkType == complexType).ToArray();

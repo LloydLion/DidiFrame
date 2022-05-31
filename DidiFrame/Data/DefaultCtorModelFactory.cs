@@ -6,6 +6,7 @@
 	/// <typeparam name="T">Model type that has parameterless ctor</typeparam>
 	public class DefaultCtorModelFactory<T> : IModelFactory<T> where T : class, new()
 	{
+		/// <inheritdoc/>
 		public T CreateDefault() => new();
 	}
 }

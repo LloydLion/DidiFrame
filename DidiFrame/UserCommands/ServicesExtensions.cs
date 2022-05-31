@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.UserCommands
 {
+	/// <summary>
+	/// Extensions for DidiFrame.UserCommands namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

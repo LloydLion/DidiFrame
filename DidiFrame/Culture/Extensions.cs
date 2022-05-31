@@ -1,5 +1,8 @@
 ﻿namespace DidiFrame.Culture
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Culture namespace
+	/// </summary>
 	public static class Extensions
 	{
 		/// <summary>

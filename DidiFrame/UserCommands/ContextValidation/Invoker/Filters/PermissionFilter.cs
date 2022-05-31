@@ -19,6 +19,7 @@
 		}
 
 
+		/// <inheritdoc/>
 		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx)
 		{
 			return ctx.Invoker.HasPermissionIn(permissions, ctx.Channel) ? null : new ValidationFailResult("NoPermissions", UserCommandCode.NoPermission);

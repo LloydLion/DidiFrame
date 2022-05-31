@@ -10,6 +10,7 @@
 		private StateUpdateResult<TState>? result;
 
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			result = DisposeDelegate.Invoke();

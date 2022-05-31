@@ -45,6 +45,7 @@ namespace DidiFrame.Data.MongoDB
 		}
 
 
+		/// <inheritdoc/>
 		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
 			using (opLocker.Lock(server))
@@ -65,6 +66,7 @@ namespace DidiFrame.Data.MongoDB
 			return (TModel)cache[server][key];
 		}
 
+		/// <inheritdoc/>
 		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class
 		{
 			if (factory is null) return Load<TModel>(server, key);
@@ -98,6 +100,7 @@ namespace DidiFrame.Data.MongoDB
 			}
 		}
 
+		/// <inheritdoc/>
 		public async Task PreloadDataAsync()
 		{
 			var cursor = db.ListCollectionNames();

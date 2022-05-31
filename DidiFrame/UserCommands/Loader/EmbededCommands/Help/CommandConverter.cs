@@ -14,11 +14,14 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		public CommandConverter() { }
 
 
+		/// <inheritdoc/>
 		public Type WorkType => typeof(UserCommandInfo);
 
+		/// <inheritdoc/>
 		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes { get; } = new[] { UserCommandArgument.Type.String };
 
 
+		/// <inheritdoc/>
 		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)
 		{
 			var cmds = services.GetRequiredService<IUserCommandsRepository>().GetCommandsFor(preCtx.Channel.Server);

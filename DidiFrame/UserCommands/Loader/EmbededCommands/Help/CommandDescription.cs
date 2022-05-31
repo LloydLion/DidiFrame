@@ -17,9 +17,21 @@
 	/// </summary>
 	public enum LaunchGroup
 	{
+		/// <summary>
+		/// Indicates that the command can be executed by everyone
+		/// </summary>
 		Everyone,
+		/// <summary>
+		/// Indicates that the command can be executed only by special groups
+		/// </summary>
 		Special,
+		/// <summary>
+		/// Indicates that the command can be executed only by creator
+		/// </summary>
 		OnlyForCreator,
+		/// <summary>
+		/// Indicates that the command can be executed only by server's moderators
+		/// </summary>
 		Moderators
 	}
 }

@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 {
+	/// <summary>
+	/// Extensions for DidiFrame.UserCommands.Loader.EmbededCommands.Help namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

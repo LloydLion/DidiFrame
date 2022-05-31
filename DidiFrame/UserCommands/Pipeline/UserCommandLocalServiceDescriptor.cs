@@ -12,6 +12,7 @@
 		public UserCommandLocalServiceDescriptor() { }
 
 
+		/// <inheritdoc/>
 		public IDisposable CreateInstance(IServiceProvider sp) =>
 			(IDisposable)(Activator.CreateInstance(typeof(TService), sp) ?? throw new ImpossibleVariantException());
 	}

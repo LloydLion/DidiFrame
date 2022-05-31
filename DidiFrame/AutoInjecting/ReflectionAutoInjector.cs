@@ -26,6 +26,7 @@ namespace DidiFrame.AutoInjecting
 		public ReflectionAutoInjector() : this(Assembly.GetCallingAssembly()) { }
 
 
+		/// <inheritdoc/>
 		public void InjectDependencies(IServiceCollection services)
 		{
 			var subinjectors = targetAssembly.GetTypes().Where(s => s.GetInterfaces().Contains(typeof(IAutoSubInjector))).ToArray();

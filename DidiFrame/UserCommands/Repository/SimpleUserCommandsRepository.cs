@@ -15,11 +15,13 @@
 		public SimpleUserCommandsRepository() { }
 
 
+		/// <inheritdoc/>
 		public IUserCommandsCollection GetCommandsFor(IServer server)
 		{
 			return new UserCommandsCollection(infos);
 		}
 
+		/// <inheritdoc/>
 		public void AddCommand(UserCommandInfo commandInfo)
 		{
 			if (built) throw new InvalidOperationException("Object has built");
@@ -28,11 +30,13 @@
 			infos.Add(commandInfo);
 		}
 
+		/// <inheritdoc/>
 		public void AddCommand(UserCommandInfo cmd, IServer server)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <inheritdoc/>
 		public void Fix()
 		{
 			built = true;

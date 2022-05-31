@@ -75,6 +75,7 @@ namespace DidiFrame.Data.Lifetime
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
 		protected ObjectHolder<TBase> GetBase() => GetBase(out _);
 
+		/// <inheritdoc/>
 		public TBase GetBaseClone()
 		{
 			using (baseLocker.Lock(this))
@@ -83,6 +84,7 @@ namespace DidiFrame.Data.Lifetime
 			}
 		}
 
+		/// <inheritdoc/>
 		public void Run(ILifetimeStateUpdater<TBase> updater)
 		{
 			this.updater = updater;

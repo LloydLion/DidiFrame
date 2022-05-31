@@ -28,10 +28,13 @@
 		}
 
 
+		/// <inheritdoc/>
 		public bool CanActivate(TState state) => activation.Equals(state);
 
+		/// <inheritdoc/>
 		public TState? DoTransit() => destination;
 
+		/// <inheritdoc/>
 		public void Activate(IStateMachine<TState> stateMachine)
 		{
 			StateMachine = stateMachine;

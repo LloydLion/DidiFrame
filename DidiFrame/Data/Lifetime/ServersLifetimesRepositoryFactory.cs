@@ -24,6 +24,7 @@ namespace DidiFrame.Data.Lifetime
 		}
 
 
+		/// <inheritdoc/>
 		public IServersLifetimesRepository<TLifetime, TBase> Create<TLifetime, TBase>(string stateKey)
 			where TLifetime : ILifetime<TBase>
 			where TBase : class, ILifetimeBase

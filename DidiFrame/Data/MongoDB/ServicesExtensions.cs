@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Data.MongoDB
 {
+	/// <summary>
+	/// Extensions for DidiFrame.Data.MongoDB namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

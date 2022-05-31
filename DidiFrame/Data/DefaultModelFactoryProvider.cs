@@ -20,6 +20,7 @@ namespace DidiFrame.Data
 		}
 
 
+		/// <inheritdoc/>
 		public IModelFactory<TModel> GetFactory<TModel>() where TModel : class
 		{
 			return provider.GetRequiredService<IModelFactory<TModel>>();

@@ -2,6 +2,9 @@
 
 namespace DidiFrame.UserCommands.Pipeline.Building
 {
+	/// <summary>
+	/// Extensions for DidiFrame.UserCommands.Pipeline.Building namespace
+	/// </summary>
 	public static class BuildingExtensions
 	{
 		/// <summary>

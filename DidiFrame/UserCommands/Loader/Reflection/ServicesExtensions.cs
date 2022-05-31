@@ -2,6 +2,9 @@
 
 namespace DidiFrame.UserCommands.Loader.Reflection
 {
+	/// <summary>
+	/// Extensions for DidiFrame.UserCommands.Loader.Reflection namespace for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>
