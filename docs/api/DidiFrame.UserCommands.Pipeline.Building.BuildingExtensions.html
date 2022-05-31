@@ -73,7 +73,8 @@
   
   <h1 id="DidiFrame_UserCommands_Pipeline_Building_BuildingExtensions" data-uid="DidiFrame.UserCommands.Pipeline.Building.BuildingExtensions" class="text-break">Class BuildingExtensions
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Extensions for DidiFrame.UserCommands.Pipeline.Building namespace</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
@@ -122,7 +123,6 @@
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static IUserCommandPipelineMiddlewareBuilder&lt;TOutput&gt; AddMiddleware&lt;TInput, TOutput, TService&gt;(this IUserCommandPipelineMiddlewareBuilder&lt;TInput&gt; builder, bool integrate)
-
     where TService : IUserCommandPipelineMiddleware&lt;TInput, TOutput&gt;</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -200,7 +200,6 @@
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static IUserCommandPipelineMiddlewareBuilder&lt;TOutput&gt; AddMiddleware&lt;TInput, TOutput, TService&gt;(this IUserCommandPipelineMiddlewareBuilder&lt;TInput&gt; builder, ServiceLifetime? integrate = null)
-
     where TService : IUserCommandPipelineMiddleware&lt;TInput, TOutput&gt;</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -278,7 +277,6 @@
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static IUserCommandPipelineMiddlewareBuilder&lt;TSource&gt; SetSource&lt;TSource, TSourceService&gt;(this IUserCommandPipelineBuilder builder, bool integrate)
-
     where TSourceService : IUserCommandPipelineDispatcher&lt;TSource&gt;</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -352,7 +350,6 @@
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public static IUserCommandPipelineMiddlewareBuilder&lt;TSource&gt; SetSource&lt;TSource, TSourceService&gt;(this IUserCommandPipelineBuilder builder, ServiceLifetime? integrate = null)
-
     where TSourceService : IUserCommandPipelineDispatcher&lt;TSource&gt;</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>

@@ -173,7 +173,8 @@
   
   <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_Process_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.Process*"></a>
   <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_Process_UserCommandPreContext_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.Process(UserCommandPreContext,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">Process(UserCommandPreContext, UserCommandPipelineContext)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Processes some object into another</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -197,7 +198,8 @@
       <tr>
         <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.html">UserCommandPipelineContext</a></td>
         <td><span class="parametername">pipelineContext</span></td>
-        <td></td>
+        <td><p>Context where middleware executes</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -212,7 +214,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Nullable</span>&lt;<span class="xref">UserCommandContext</span>&gt;</td>
-        <td></td>
+        <td><p>Ready object or null if pipeline has been dropped or finalized</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -222,7 +225,8 @@
   
   <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_TryGetPreObjectTypes_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.TryGetPreObjectTypes*"></a>
   <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_TryGetPreObjectTypes_Type_System_Nullable_IReadOnlyList_UserCommandArgument_Type____" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.TryGetPreObjectTypes(Type,System.Nullable{IReadOnlyList{UserCommandArgument.Type}}@)">TryGetPreObjectTypes(Type, out Nullable&lt;IReadOnlyList&lt;UserCommandArgument.Type&gt;&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns true and value only if complex type has only one set of pretypes</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -241,12 +245,14 @@
       <tr>
         <td><span class="xref">Type</span></td>
         <td><span class="parametername">complexType</span></td>
-        <td></td>
+        <td><p>Complex type for search</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Nullable</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<span class="xref">UserCommandArgument.Type</span>&gt;&gt;</td>
         <td><span class="parametername">possiblePreObjectTypes</span></td>
-        <td></td>
+        <td><p>Pretypes of complex type</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -261,7 +267,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>If has only one set</p>
+</td>
       </tr>
     </tbody>
   </table>

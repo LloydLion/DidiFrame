@@ -174,7 +174,8 @@
   
   <a id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_Activate_" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.Activate*"></a>
   <h4 id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_Activate_DidiFrame_Utils_StateMachine_IStateMachine__0__" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.Activate(DidiFrame.Utils.StateMachine.IStateMachine{`0})">Activate(IStateMachine&lt;TState&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Activates transit, statemachine calls it when CanActivate(TState) becomes true</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -193,7 +194,8 @@
       <tr>
         <td><a class="xref" href="DidiFrame.Utils.StateMachine.IStateMachine-1.html">IStateMachine</a>&lt;TState&gt;</td>
         <td><span class="parametername">stateMahcine</span></td>
-        <td></td>
+        <td><p>Statemachine that called method</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -201,7 +203,8 @@
   
   <a id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_CanActivate_" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.CanActivate*"></a>
   <h4 id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_CanActivate__0_" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.CanActivate(`0)">CanActivate(TState)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks if can activate transit on given state</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -220,7 +223,8 @@
       <tr>
         <td><span class="xref">TState</span></td>
         <td><span class="parametername">state</span></td>
-        <td></td>
+        <td><p>Checking state of statemachine</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -235,7 +239,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>If can activate transit, if can it will activated by statamachine using Activate() method</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -243,7 +248,8 @@
   
   <a id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_CanDoTransit_" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.CanDoTransit*"></a>
   <h4 id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_CanDoTransit" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.CanDoTransit">CanDoTransit()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks if transit ready to switch state of statemahcine</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -260,7 +266,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>If can switch, if can statemachine will call DoTransit() method</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -268,7 +275,8 @@
   
   <a id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_Disactivate_" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.Disactivate*"></a>
   <h4 id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_Disactivate" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.Disactivate">Disactivate()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Disactivates transit, statemachine calls it when some (this or other) transit switches statemachine state and transit is active</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -278,7 +286,8 @@
   
   <a id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_DoTransit_" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.DoTransit*"></a>
   <h4 id="DidiFrame_Utils_StateMachine_ResetTransitWorker_1_DoTransit" data-uid="DidiFrame.Utils.StateMachine.ResetTransitWorker`1.DoTransit">DoTransit()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Return target state of transit or null to finalize statemachine</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -295,7 +304,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Nullable</span>&lt;TState&gt;</td>
-        <td></td>
+        <td><p>Target state or null</p>
+</td>
       </tr>
     </tbody>
   </table>

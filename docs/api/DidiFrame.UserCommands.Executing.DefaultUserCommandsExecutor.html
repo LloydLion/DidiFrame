@@ -86,7 +86,6 @@
     <h5>Implements</h5>
     <div><a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware-2.html">IUserCommandPipelineMiddleware</a>&lt;<span class="xref">ValidatedUserCommandContext</span>, <span class="xref">UserCommandResult</span>&gt;</div>
     <div><a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html">IUserCommandPipelineMiddleware</a></div>
-    <div><span class="xref">IDisposable</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -150,7 +149,7 @@
       <tr>
         <td><span class="xref">IOptions</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options.html">DefaultUserCommandsExecutor.Options</a>&gt;</td>
         <td><span class="parametername">options</span></td>
-        <td><p>Option for executor</p>
+        <td><p>Option for executor (DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options)</p>
 </td>
       </tr>
       <tr>
@@ -171,19 +170,10 @@
   </h3>
   
   
-  <a id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Dispose_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Dispose*"></a>
-  <h4 id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Dispose" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Dispose">Dispose()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
-  </div>
-  
-  
   <a id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Process_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Process*"></a>
   <h4 id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Process_ValidatedUserCommandContext_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Process(ValidatedUserCommandContext,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">Process(ValidatedUserCommandContext, UserCommandPipelineContext)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Processes some object into another</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -207,7 +197,8 @@
       <tr>
         <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.html">UserCommandPipelineContext</a></td>
         <td><span class="parametername">pipelineContext</span></td>
-        <td></td>
+        <td><p>Context where middleware executes</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -222,7 +213,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Nullable</span>&lt;<span class="xref">UserCommandResult</span>&gt;</td>
-        <td></td>
+        <td><p>Ready object or null if pipeline has been dropped or finalized</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -234,9 +226,6 @@
   </div>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html">IUserCommandPipelineMiddleware</a>
-  </div>
-  <div>
-      <span class="xref">IDisposable</span>
   </div>
 </article>
           </div>

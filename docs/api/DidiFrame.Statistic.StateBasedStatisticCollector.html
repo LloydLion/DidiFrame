@@ -120,13 +120,13 @@
   
   
   <a id="DidiFrame_Statistic_StateBasedStatisticCollector__ctor_" data-uid="DidiFrame.Statistic.StateBasedStatisticCollector.#ctor*"></a>
-  <h4 id="DidiFrame_Statistic_StateBasedStatisticCollector__ctor_IServersStatesRepository_ICollection_DidiFrame_Statistic_StateBasedStatisticCollector_StatisticDictionaryItem___" data-uid="DidiFrame.Statistic.StateBasedStatisticCollector.#ctor(IServersStatesRepository{ICollection{DidiFrame.Statistic.StateBasedStatisticCollector.StatisticDictionaryItem}})">StateBasedStatisticCollector(IServersStatesRepository&lt;ICollection&lt;StateBasedStatisticCollector.StatisticDictionaryItem&gt;&gt;)</h4>
+  <h4 id="DidiFrame_Statistic_StateBasedStatisticCollector__ctor_IServersStatesRepositoryFactory_" data-uid="DidiFrame.Statistic.StateBasedStatisticCollector.#ctor(IServersStatesRepositoryFactory)">StateBasedStatisticCollector(IServersStatesRepositoryFactory)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Statistic.StateBasedStatisticCollector</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public StateBasedStatisticCollector(IServersStatesRepository&lt;ICollection&lt;StateBasedStatisticCollector.StatisticDictionaryItem&gt;&gt; repository)</code></pre>
+    <pre><code class="lang-csharp hljs">public StateBasedStatisticCollector(IServersStatesRepositoryFactory repository)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -139,7 +139,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IServersStatesRepository</span>&lt;<span class="xref">ICollection</span>&lt;<a class="xref" href="DidiFrame.Statistic.StateBasedStatisticCollector.StatisticDictionaryItem.html">StateBasedStatisticCollector.StatisticDictionaryItem</a>&gt;&gt;</td>
+        <td><span class="xref">IServersStatesRepositoryFactory</span></td>
         <td><span class="parametername">repository</span></td>
         <td><p>Base repository to store stats data</p>
 </td>
@@ -152,7 +152,8 @@
   
   <a id="DidiFrame_Statistic_StateBasedStatisticCollector_Collect_" data-uid="DidiFrame.Statistic.StateBasedStatisticCollector.Collect*"></a>
   <h4 id="DidiFrame_Statistic_StateBasedStatisticCollector_Collect_DidiFrame_Statistic_StatisticAction_DidiFrame_Statistic_StatisticEntry_IServer_System_Int64_" data-uid="DidiFrame.Statistic.StateBasedStatisticCollector.Collect(DidiFrame.Statistic.StatisticAction,DidiFrame.Statistic.StatisticEntry,IServer,System.Int64)">Collect(StatisticAction, StatisticEntry, IServer, Int64)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies operation under stat entry</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -171,22 +172,26 @@
       <tr>
         <td><a class="xref" href="DidiFrame.Statistic.StatisticAction.html">StatisticAction</a></td>
         <td><span class="parametername">action</span></td>
-        <td></td>
+        <td><p>Operation under stat entry</p>
+</td>
       </tr>
       <tr>
         <td><a class="xref" href="DidiFrame.Statistic.StatisticEntry.html">StatisticEntry</a></td>
         <td><span class="parametername">entry</span></td>
-        <td></td>
+        <td><p>Entry itself</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">IServer</span></td>
         <td><span class="parametername">server</span></td>
-        <td></td>
+        <td><p>Server where need to do operation</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Int64</span></td>
         <td><span class="parametername">defaultValue</span></td>
-        <td></td>
+        <td><p>Default value of entry if it hasn't created yet</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -194,7 +199,8 @@
   
   <a id="DidiFrame_Statistic_StateBasedStatisticCollector_Get_" data-uid="DidiFrame.Statistic.StateBasedStatisticCollector.Get*"></a>
   <h4 id="DidiFrame_Statistic_StateBasedStatisticCollector_Get_DidiFrame_Statistic_StatisticEntry_IServer_System_Int64_" data-uid="DidiFrame.Statistic.StateBasedStatisticCollector.Get(DidiFrame.Statistic.StatisticEntry,IServer,System.Int64)">Get(StatisticEntry, IServer, Int64)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets stat entry current value</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -213,17 +219,20 @@
       <tr>
         <td><a class="xref" href="DidiFrame.Statistic.StatisticEntry.html">StatisticEntry</a></td>
         <td><span class="parametername">entry</span></td>
-        <td></td>
+        <td><p>Entry itself</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">IServer</span></td>
         <td><span class="parametername">server</span></td>
-        <td></td>
+        <td><p>Server where need to get value</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Int64</span></td>
         <td><span class="parametername">defaultValue</span></td>
-        <td></td>
+        <td><p>Default value of entry if it hasn't created yet</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -238,7 +247,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Int64</span></td>
-        <td></td>
+        <td><p>Current value of entry or given default value</p>
+</td>
       </tr>
     </tbody>
   </table>

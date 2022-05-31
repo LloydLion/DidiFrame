@@ -158,12 +158,12 @@
   
   <a id="DidiFrame_Data_Lifetime_ServersLifetimesRepositoryFactory_Create_" data-uid="DidiFrame.Data.Lifetime.ServersLifetimesRepositoryFactory.Create*"></a>
   <h4 id="DidiFrame_Data_Lifetime_ServersLifetimesRepositoryFactory_Create__2_System_String_" data-uid="DidiFrame.Data.Lifetime.ServersLifetimesRepositoryFactory.Create``2(System.String)">Create&lt;TLifetime, TBase&gt;(String)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates new repository</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public IServersLifetimesRepository&lt;TLifetime, TBase&gt; Create&lt;TLifetime, TBase&gt;(string stateKey)
-
     where TLifetime : ILifetime&lt;TBase&gt; where TBase : class, ILifetimeBase</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -179,7 +179,8 @@
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">stateKey</span></td>
-        <td></td>
+        <td><p>Data key that will be used to request base objects from servers' states</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -194,7 +195,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="DidiFrame.Data.Lifetime.IServersLifetimesRepository-2.html">IServersLifetimesRepository</a>&lt;TLifetime, TBase&gt;</td>
-        <td></td>
+        <td><p>New repository</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -209,11 +211,13 @@
     <tbody>
       <tr>
         <td><span class="parametername">TLifetime</span></td>
-        <td></td>
+        <td><p>Type of target lifetime</p>
+</td>
       </tr>
       <tr>
         <td><span class="parametername">TBase</span></td>
-        <td></td>
+        <td><p>Type of base object of that lifetime</p>
+</td>
       </tr>
     </tbody>
   </table>

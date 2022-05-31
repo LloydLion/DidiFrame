@@ -320,25 +320,6 @@ references:
   commentId: N:DidiFrame.AutoInjecting
   fullName: DidiFrame.AutoInjecting
   nameWithType: DidiFrame.AutoInjecting
-- uid: DidiFrame.AutoInjecting.Extensions
-  name: Extensions
-  href: api/DidiFrame.AutoInjecting.Extensions.html
-  commentId: T:DidiFrame.AutoInjecting.Extensions
-  fullName: DidiFrame.AutoInjecting.Extensions
-  nameWithType: Extensions
-- uid: DidiFrame.AutoInjecting.Extensions.InjectAutoDependencies(Microsoft.Extensions.DependencyInjection.IServiceCollection,DidiFrame.AutoInjecting.IAutoInjector)
-  name: InjectAutoDependencies(IServiceCollection, IAutoInjector)
-  href: api/DidiFrame.AutoInjecting.Extensions.html#DidiFrame_AutoInjecting_Extensions_InjectAutoDependencies_Microsoft_Extensions_DependencyInjection_IServiceCollection_DidiFrame_AutoInjecting_IAutoInjector_
-  commentId: M:DidiFrame.AutoInjecting.Extensions.InjectAutoDependencies(Microsoft.Extensions.DependencyInjection.IServiceCollection,DidiFrame.AutoInjecting.IAutoInjector)
-  fullName: DidiFrame.AutoInjecting.Extensions.InjectAutoDependencies(Microsoft.Extensions.DependencyInjection.IServiceCollection, DidiFrame.AutoInjecting.IAutoInjector)
-  nameWithType: Extensions.InjectAutoDependencies(IServiceCollection, IAutoInjector)
-- uid: DidiFrame.AutoInjecting.Extensions.InjectAutoDependencies*
-  name: InjectAutoDependencies
-  href: api/DidiFrame.AutoInjecting.Extensions.html#DidiFrame_AutoInjecting_Extensions_InjectAutoDependencies_
-  commentId: Overload:DidiFrame.AutoInjecting.Extensions.InjectAutoDependencies
-  isSpec: "True"
-  fullName: DidiFrame.AutoInjecting.Extensions.InjectAutoDependencies
-  nameWithType: Extensions.InjectAutoDependencies
 - uid: DidiFrame.AutoInjecting.IAutoInjector
   name: IAutoInjector
   href: api/DidiFrame.AutoInjecting.IAutoInjector.html
@@ -415,6 +396,25 @@ references:
   isSpec: "True"
   fullName: DidiFrame.AutoInjecting.ReflectionAutoInjector.InjectDependencies
   nameWithType: ReflectionAutoInjector.InjectDependencies
+- uid: DidiFrame.AutoInjecting.ServicesExtensions
+  name: ServicesExtensions
+  href: api/DidiFrame.AutoInjecting.ServicesExtensions.html
+  commentId: T:DidiFrame.AutoInjecting.ServicesExtensions
+  fullName: DidiFrame.AutoInjecting.ServicesExtensions
+  nameWithType: ServicesExtensions
+- uid: DidiFrame.AutoInjecting.ServicesExtensions.InjectAutoDependencies(Microsoft.Extensions.DependencyInjection.IServiceCollection,DidiFrame.AutoInjecting.IAutoInjector)
+  name: InjectAutoDependencies(IServiceCollection, IAutoInjector)
+  href: api/DidiFrame.AutoInjecting.ServicesExtensions.html#DidiFrame_AutoInjecting_ServicesExtensions_InjectAutoDependencies_Microsoft_Extensions_DependencyInjection_IServiceCollection_DidiFrame_AutoInjecting_IAutoInjector_
+  commentId: M:DidiFrame.AutoInjecting.ServicesExtensions.InjectAutoDependencies(Microsoft.Extensions.DependencyInjection.IServiceCollection,DidiFrame.AutoInjecting.IAutoInjector)
+  fullName: DidiFrame.AutoInjecting.ServicesExtensions.InjectAutoDependencies(Microsoft.Extensions.DependencyInjection.IServiceCollection, DidiFrame.AutoInjecting.IAutoInjector)
+  nameWithType: ServicesExtensions.InjectAutoDependencies(IServiceCollection, IAutoInjector)
+- uid: DidiFrame.AutoInjecting.ServicesExtensions.InjectAutoDependencies*
+  name: InjectAutoDependencies
+  href: api/DidiFrame.AutoInjecting.ServicesExtensions.html#DidiFrame_AutoInjecting_ServicesExtensions_InjectAutoDependencies_
+  commentId: Overload:DidiFrame.AutoInjecting.ServicesExtensions.InjectAutoDependencies
+  isSpec: "True"
+  fullName: DidiFrame.AutoInjecting.ServicesExtensions.InjectAutoDependencies
+  nameWithType: ServicesExtensions.InjectAutoDependencies
 - uid: DidiFrame.Culture
   name: DidiFrame.Culture
   href: api/DidiFrame.Culture.html
@@ -491,63 +491,63 @@ references:
   isSpec: "True"
   fullName: DidiFrame.Culture.IServerCultureProvider.GetCulture
   nameWithType: IServerCultureProvider.GetCulture
-- uid: DidiFrame.Culture.ServerCultureProvider
-  name: ServerCultureProvider
-  href: api/DidiFrame.Culture.ServerCultureProvider.html
-  commentId: T:DidiFrame.Culture.ServerCultureProvider
-  fullName: DidiFrame.Culture.ServerCultureProvider
-  nameWithType: ServerCultureProvider
-- uid: DidiFrame.Culture.ServerCultureProvider.#ctor(IServersSettingsRepositoryFactory)
-  name: ServerCultureProvider(IServersSettingsRepositoryFactory)
-  href: api/DidiFrame.Culture.ServerCultureProvider.html#DidiFrame_Culture_ServerCultureProvider__ctor_IServersSettingsRepositoryFactory_
-  commentId: M:DidiFrame.Culture.ServerCultureProvider.#ctor(IServersSettingsRepositoryFactory)
-  fullName: DidiFrame.Culture.ServerCultureProvider.ServerCultureProvider(IServersSettingsRepositoryFactory)
-  nameWithType: ServerCultureProvider.ServerCultureProvider(IServersSettingsRepositoryFactory)
-- uid: DidiFrame.Culture.ServerCultureProvider.#ctor*
-  name: ServerCultureProvider
-  href: api/DidiFrame.Culture.ServerCultureProvider.html#DidiFrame_Culture_ServerCultureProvider__ctor_
-  commentId: Overload:DidiFrame.Culture.ServerCultureProvider.#ctor
-  isSpec: "True"
-  fullName: DidiFrame.Culture.ServerCultureProvider.ServerCultureProvider
-  nameWithType: ServerCultureProvider.ServerCultureProvider
-- uid: DidiFrame.Culture.ServerCultureProvider.GetCulture(IServer)
-  name: GetCulture(IServer)
-  href: api/DidiFrame.Culture.ServerCultureProvider.html#DidiFrame_Culture_ServerCultureProvider_GetCulture_IServer_
-  commentId: M:DidiFrame.Culture.ServerCultureProvider.GetCulture(IServer)
-  fullName: DidiFrame.Culture.ServerCultureProvider.GetCulture(IServer)
-  nameWithType: ServerCultureProvider.GetCulture(IServer)
-- uid: DidiFrame.Culture.ServerCultureProvider.GetCulture*
-  name: GetCulture
-  href: api/DidiFrame.Culture.ServerCultureProvider.html#DidiFrame_Culture_ServerCultureProvider_GetCulture_
-  commentId: Overload:DidiFrame.Culture.ServerCultureProvider.GetCulture
-  isSpec: "True"
-  fullName: DidiFrame.Culture.ServerCultureProvider.GetCulture
-  nameWithType: ServerCultureProvider.GetCulture
-- uid: DidiFrame.Culture.ServerCultureProvider.SettingsKey
-  name: SettingsKey
-  href: api/DidiFrame.Culture.ServerCultureProvider.html#DidiFrame_Culture_ServerCultureProvider_SettingsKey
-  commentId: F:DidiFrame.Culture.ServerCultureProvider.SettingsKey
-  fullName: DidiFrame.Culture.ServerCultureProvider.SettingsKey
-  nameWithType: ServerCultureProvider.SettingsKey
 - uid: DidiFrame.Culture.ServicesExtensions
   name: ServicesExtensions
   href: api/DidiFrame.Culture.ServicesExtensions.html
   commentId: T:DidiFrame.Culture.ServicesExtensions
   fullName: DidiFrame.Culture.ServicesExtensions
   nameWithType: ServicesExtensions
-- uid: DidiFrame.Culture.ServicesExtensions.AddCultureMachine(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  name: AddCultureMachine(IServiceCollection)
-  href: api/DidiFrame.Culture.ServicesExtensions.html#DidiFrame_Culture_ServicesExtensions_AddCultureMachine_Microsoft_Extensions_DependencyInjection_IServiceCollection_
-  commentId: M:DidiFrame.Culture.ServicesExtensions.AddCultureMachine(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  fullName: DidiFrame.Culture.ServicesExtensions.AddCultureMachine(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  nameWithType: ServicesExtensions.AddCultureMachine(IServiceCollection)
-- uid: DidiFrame.Culture.ServicesExtensions.AddCultureMachine*
-  name: AddCultureMachine
-  href: api/DidiFrame.Culture.ServicesExtensions.html#DidiFrame_Culture_ServicesExtensions_AddCultureMachine_
-  commentId: Overload:DidiFrame.Culture.ServicesExtensions.AddCultureMachine
+- uid: DidiFrame.Culture.ServicesExtensions.AddSettingsBasedCultureProvider(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  name: AddSettingsBasedCultureProvider(IServiceCollection)
+  href: api/DidiFrame.Culture.ServicesExtensions.html#DidiFrame_Culture_ServicesExtensions_AddSettingsBasedCultureProvider_Microsoft_Extensions_DependencyInjection_IServiceCollection_
+  commentId: M:DidiFrame.Culture.ServicesExtensions.AddSettingsBasedCultureProvider(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  fullName: DidiFrame.Culture.ServicesExtensions.AddSettingsBasedCultureProvider(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  nameWithType: ServicesExtensions.AddSettingsBasedCultureProvider(IServiceCollection)
+- uid: DidiFrame.Culture.ServicesExtensions.AddSettingsBasedCultureProvider*
+  name: AddSettingsBasedCultureProvider
+  href: api/DidiFrame.Culture.ServicesExtensions.html#DidiFrame_Culture_ServicesExtensions_AddSettingsBasedCultureProvider_
+  commentId: Overload:DidiFrame.Culture.ServicesExtensions.AddSettingsBasedCultureProvider
   isSpec: "True"
-  fullName: DidiFrame.Culture.ServicesExtensions.AddCultureMachine
-  nameWithType: ServicesExtensions.AddCultureMachine
+  fullName: DidiFrame.Culture.ServicesExtensions.AddSettingsBasedCultureProvider
+  nameWithType: ServicesExtensions.AddSettingsBasedCultureProvider
+- uid: DidiFrame.Culture.SettingsBasedCultureProvider
+  name: SettingsBasedCultureProvider
+  href: api/DidiFrame.Culture.SettingsBasedCultureProvider.html
+  commentId: T:DidiFrame.Culture.SettingsBasedCultureProvider
+  fullName: DidiFrame.Culture.SettingsBasedCultureProvider
+  nameWithType: SettingsBasedCultureProvider
+- uid: DidiFrame.Culture.SettingsBasedCultureProvider.#ctor(IServersSettingsRepositoryFactory)
+  name: SettingsBasedCultureProvider(IServersSettingsRepositoryFactory)
+  href: api/DidiFrame.Culture.SettingsBasedCultureProvider.html#DidiFrame_Culture_SettingsBasedCultureProvider__ctor_IServersSettingsRepositoryFactory_
+  commentId: M:DidiFrame.Culture.SettingsBasedCultureProvider.#ctor(IServersSettingsRepositoryFactory)
+  fullName: DidiFrame.Culture.SettingsBasedCultureProvider.SettingsBasedCultureProvider(IServersSettingsRepositoryFactory)
+  nameWithType: SettingsBasedCultureProvider.SettingsBasedCultureProvider(IServersSettingsRepositoryFactory)
+- uid: DidiFrame.Culture.SettingsBasedCultureProvider.#ctor*
+  name: SettingsBasedCultureProvider
+  href: api/DidiFrame.Culture.SettingsBasedCultureProvider.html#DidiFrame_Culture_SettingsBasedCultureProvider__ctor_
+  commentId: Overload:DidiFrame.Culture.SettingsBasedCultureProvider.#ctor
+  isSpec: "True"
+  fullName: DidiFrame.Culture.SettingsBasedCultureProvider.SettingsBasedCultureProvider
+  nameWithType: SettingsBasedCultureProvider.SettingsBasedCultureProvider
+- uid: DidiFrame.Culture.SettingsBasedCultureProvider.GetCulture(IServer)
+  name: GetCulture(IServer)
+  href: api/DidiFrame.Culture.SettingsBasedCultureProvider.html#DidiFrame_Culture_SettingsBasedCultureProvider_GetCulture_IServer_
+  commentId: M:DidiFrame.Culture.SettingsBasedCultureProvider.GetCulture(IServer)
+  fullName: DidiFrame.Culture.SettingsBasedCultureProvider.GetCulture(IServer)
+  nameWithType: SettingsBasedCultureProvider.GetCulture(IServer)
+- uid: DidiFrame.Culture.SettingsBasedCultureProvider.GetCulture*
+  name: GetCulture
+  href: api/DidiFrame.Culture.SettingsBasedCultureProvider.html#DidiFrame_Culture_SettingsBasedCultureProvider_GetCulture_
+  commentId: Overload:DidiFrame.Culture.SettingsBasedCultureProvider.GetCulture
+  isSpec: "True"
+  fullName: DidiFrame.Culture.SettingsBasedCultureProvider.GetCulture
+  nameWithType: SettingsBasedCultureProvider.GetCulture
+- uid: DidiFrame.Culture.SettingsBasedCultureProvider.SettingsKey
+  name: SettingsKey
+  href: api/DidiFrame.Culture.SettingsBasedCultureProvider.html#DidiFrame_Culture_SettingsBasedCultureProvider_SettingsKey
+  commentId: F:DidiFrame.Culture.SettingsBasedCultureProvider.SettingsKey
+  fullName: DidiFrame.Culture.SettingsBasedCultureProvider.SettingsKey
+  nameWithType: SettingsBasedCultureProvider.SettingsKey
 - uid: DidiFrame.Data
   name: DidiFrame.Data
   href: api/DidiFrame.Data.html
@@ -2427,53 +2427,6 @@ references:
   isSpec: "True"
   fullName: DidiFrame.DSharpAdapter.Client.Dispose
   nameWithType: Client.Dispose
-- uid: DidiFrame.DSharpAdapter.Client.DoSafeOperation(Action)
-  name: DoSafeOperation(Action)
-  href: api/DidiFrame.DSharpAdapter.Client.html#DidiFrame_DSharpAdapter_Client_DoSafeOperation_Action_
-  commentId: M:DidiFrame.DSharpAdapter.Client.DoSafeOperation(Action)
-  fullName: DidiFrame.DSharpAdapter.Client.DoSafeOperation(Action)
-  nameWithType: Client.DoSafeOperation(Action)
-- uid: DidiFrame.DSharpAdapter.Client.DoSafeOperation*
-  name: DoSafeOperation
-  href: api/DidiFrame.DSharpAdapter.Client.html#DidiFrame_DSharpAdapter_Client_DoSafeOperation_
-  commentId: Overload:DidiFrame.DSharpAdapter.Client.DoSafeOperation
-  isSpec: "True"
-  fullName: DidiFrame.DSharpAdapter.Client.DoSafeOperation
-  nameWithType: Client.DoSafeOperation
-- uid: DidiFrame.DSharpAdapter.Client.DoSafeOperation``1(Func{``0})
-  name: DoSafeOperation<TReturn>(Func<TReturn>)
-  href: api/DidiFrame.DSharpAdapter.Client.html#DidiFrame_DSharpAdapter_Client_DoSafeOperation__1_Func___0__
-  commentId: M:DidiFrame.DSharpAdapter.Client.DoSafeOperation``1(Func{``0})
-  name.vb: DoSafeOperation(Of TReturn)(Func(Of TReturn))
-  fullName: DidiFrame.DSharpAdapter.Client.DoSafeOperation<TReturn>(Func<TReturn>)
-  fullName.vb: DidiFrame.DSharpAdapter.Client.DoSafeOperation(Of TReturn)(Func(Of TReturn))
-  nameWithType: Client.DoSafeOperation<TReturn>(Func<TReturn>)
-  nameWithType.vb: Client.DoSafeOperation(Of TReturn)(Func(Of TReturn))
-- uid: DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync(Func{Task})
-  name: DoSafeOperationAsync(Func<Task>)
-  href: api/DidiFrame.DSharpAdapter.Client.html#DidiFrame_DSharpAdapter_Client_DoSafeOperationAsync_Func_Task__
-  commentId: M:DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync(Func{Task})
-  name.vb: DoSafeOperationAsync(Func(Of Task))
-  fullName: DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync(Func<Task>)
-  fullName.vb: DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync(Func(Of Task))
-  nameWithType: Client.DoSafeOperationAsync(Func<Task>)
-  nameWithType.vb: Client.DoSafeOperationAsync(Func(Of Task))
-- uid: DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync*
-  name: DoSafeOperationAsync
-  href: api/DidiFrame.DSharpAdapter.Client.html#DidiFrame_DSharpAdapter_Client_DoSafeOperationAsync_
-  commentId: Overload:DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync
-  isSpec: "True"
-  fullName: DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync
-  nameWithType: Client.DoSafeOperationAsync
-- uid: DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync``1(Func{Task{``0}})
-  name: DoSafeOperationAsync<TReturn>(Func<Task<TReturn>>)
-  href: api/DidiFrame.DSharpAdapter.Client.html#DidiFrame_DSharpAdapter_Client_DoSafeOperationAsync__1_Func_Task___0___
-  commentId: M:DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync``1(Func{Task{``0}})
-  name.vb: DoSafeOperationAsync(Of TReturn)(Func(Of Task(Of TReturn)))
-  fullName: DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync<TReturn>(Func<Task<TReturn>>)
-  fullName.vb: DidiFrame.DSharpAdapter.Client.DoSafeOperationAsync(Of TReturn)(Func(Of Task(Of TReturn)))
-  nameWithType: Client.DoSafeOperationAsync<TReturn>(Func<Task<TReturn>>)
-  nameWithType.vb: Client.DoSafeOperationAsync(Of TReturn)(Func(Of Task(Of TReturn)))
 - uid: DidiFrame.DSharpAdapter.Client.MessageDeleted
   name: MessageDeleted
   href: api/DidiFrame.DSharpAdapter.Client.html#DidiFrame_DSharpAdapter_Client_MessageDeleted
@@ -3901,6 +3854,25 @@ references:
   commentId: N:DidiFrame.Exceptions
   fullName: DidiFrame.Exceptions
   nameWithType: DidiFrame.Exceptions
+- uid: DidiFrame.Exceptions.DiscordObjectNotFoundException
+  name: DiscordObjectNotFoundException
+  href: api/DidiFrame.Exceptions.DiscordObjectNotFoundException.html
+  commentId: T:DidiFrame.Exceptions.DiscordObjectNotFoundException
+  fullName: DidiFrame.Exceptions.DiscordObjectNotFoundException
+  nameWithType: DiscordObjectNotFoundException
+- uid: DidiFrame.Exceptions.DiscordObjectNotFoundException.#ctor(System.String,System.UInt64,System.String)
+  name: DiscordObjectNotFoundException(String, UInt64, String)
+  href: api/DidiFrame.Exceptions.DiscordObjectNotFoundException.html#DidiFrame_Exceptions_DiscordObjectNotFoundException__ctor_System_String_System_UInt64_System_String_
+  commentId: M:DidiFrame.Exceptions.DiscordObjectNotFoundException.#ctor(System.String,System.UInt64,System.String)
+  fullName: DidiFrame.Exceptions.DiscordObjectNotFoundException.DiscordObjectNotFoundException(System.String, System.UInt64, System.String)
+  nameWithType: DiscordObjectNotFoundException.DiscordObjectNotFoundException(String, UInt64, String)
+- uid: DidiFrame.Exceptions.DiscordObjectNotFoundException.#ctor*
+  name: DiscordObjectNotFoundException
+  href: api/DidiFrame.Exceptions.DiscordObjectNotFoundException.html#DidiFrame_Exceptions_DiscordObjectNotFoundException__ctor_
+  commentId: Overload:DidiFrame.Exceptions.DiscordObjectNotFoundException.#ctor
+  isSpec: "True"
+  fullName: DidiFrame.Exceptions.DiscordObjectNotFoundException.DiscordObjectNotFoundException
+  nameWithType: DiscordObjectNotFoundException.DiscordObjectNotFoundException
 - uid: DidiFrame.Exceptions.ImpossibleVariantException
   name: ImpossibleVariantException
   href: api/DidiFrame.Exceptions.ImpossibleVariantException.html
@@ -3920,25 +3892,50 @@ references:
   isSpec: "True"
   fullName: DidiFrame.Exceptions.ImpossibleVariantException.ImpossibleVariantException
   nameWithType: ImpossibleVariantException.ImpossibleVariantException
+- uid: DidiFrame.Exceptions.InternalDiscordException
+  name: InternalDiscordException
+  href: api/DidiFrame.Exceptions.InternalDiscordException.html
+  commentId: T:DidiFrame.Exceptions.InternalDiscordException
+  fullName: DidiFrame.Exceptions.InternalDiscordException
+  nameWithType: InternalDiscordException
+- uid: DidiFrame.Exceptions.InternalDiscordException.#ctor(System.String,Exception)
+  name: InternalDiscordException(String, Exception)
+  href: api/DidiFrame.Exceptions.InternalDiscordException.html#DidiFrame_Exceptions_InternalDiscordException__ctor_System_String_Exception_
+  commentId: M:DidiFrame.Exceptions.InternalDiscordException.#ctor(System.String,Exception)
+  fullName: DidiFrame.Exceptions.InternalDiscordException.InternalDiscordException(System.String, Exception)
+  nameWithType: InternalDiscordException.InternalDiscordException(String, Exception)
+- uid: DidiFrame.Exceptions.InternalDiscordException.#ctor*
+  name: InternalDiscordException
+  href: api/DidiFrame.Exceptions.InternalDiscordException.html#DidiFrame_Exceptions_InternalDiscordException__ctor_
+  commentId: Overload:DidiFrame.Exceptions.InternalDiscordException.#ctor
+  isSpec: "True"
+  fullName: DidiFrame.Exceptions.InternalDiscordException.InternalDiscordException
+  nameWithType: InternalDiscordException.InternalDiscordException
+- uid: DidiFrame.Exceptions.NotEnoughPermissionsException
+  name: NotEnoughPermissionsException
+  href: api/DidiFrame.Exceptions.NotEnoughPermissionsException.html
+  commentId: T:DidiFrame.Exceptions.NotEnoughPermissionsException
+  fullName: DidiFrame.Exceptions.NotEnoughPermissionsException
+  nameWithType: NotEnoughPermissionsException
+- uid: DidiFrame.Exceptions.NotEnoughPermissionsException.#ctor(System.String)
+  name: NotEnoughPermissionsException(String)
+  href: api/DidiFrame.Exceptions.NotEnoughPermissionsException.html#DidiFrame_Exceptions_NotEnoughPermissionsException__ctor_System_String_
+  commentId: M:DidiFrame.Exceptions.NotEnoughPermissionsException.#ctor(System.String)
+  fullName: DidiFrame.Exceptions.NotEnoughPermissionsException.NotEnoughPermissionsException(System.String)
+  nameWithType: NotEnoughPermissionsException.NotEnoughPermissionsException(String)
+- uid: DidiFrame.Exceptions.NotEnoughPermissionsException.#ctor*
+  name: NotEnoughPermissionsException
+  href: api/DidiFrame.Exceptions.NotEnoughPermissionsException.html#DidiFrame_Exceptions_NotEnoughPermissionsException__ctor_
+  commentId: Overload:DidiFrame.Exceptions.NotEnoughPermissionsException.#ctor
+  isSpec: "True"
+  fullName: DidiFrame.Exceptions.NotEnoughPermissionsException.NotEnoughPermissionsException
+  nameWithType: NotEnoughPermissionsException.NotEnoughPermissionsException
 - uid: DidiFrame.Extensions
   name: Extensions
   href: api/DidiFrame.Extensions.html
   commentId: T:DidiFrame.Extensions
   fullName: DidiFrame.Extensions
   nameWithType: Extensions
-- uid: DidiFrame.Extensions.AddColorfy(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  name: AddColorfy(IServiceCollection)
-  href: api/DidiFrame.Extensions.html#DidiFrame_Extensions_AddColorfy_Microsoft_Extensions_DependencyInjection_IServiceCollection_
-  commentId: M:DidiFrame.Extensions.AddColorfy(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  fullName: DidiFrame.Extensions.AddColorfy(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  nameWithType: Extensions.AddColorfy(IServiceCollection)
-- uid: DidiFrame.Extensions.AddColorfy*
-  name: AddColorfy
-  href: api/DidiFrame.Extensions.html#DidiFrame_Extensions_AddColorfy_
-  commentId: Overload:DidiFrame.Extensions.AddColorfy
-  isSpec: "True"
-  fullName: DidiFrame.Extensions.AddColorfy
-  nameWithType: Extensions.AddColorfy
 - uid: DidiFrame.Extensions.AddConfiguratedLocalization(Microsoft.Extensions.DependencyInjection.IServiceCollection,Action{LocalizationOptions})
   name: AddConfiguratedLocalization(IServiceCollection, Action<LocalizationOptions>)
   href: api/DidiFrame.Extensions.html#DidiFrame_Extensions_AddConfiguratedLocalization_Microsoft_Extensions_DependencyInjection_IServiceCollection_Action_LocalizationOptions__
@@ -5113,34 +5110,31 @@ references:
   commentId: T:DidiFrame.Statistic.ServicesExtensions
   fullName: DidiFrame.Statistic.ServicesExtensions
   nameWithType: ServicesExtensions
-- uid: DidiFrame.Statistic.ServicesExtensions.AddStatisticTools(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  name: AddStatisticTools(IServiceCollection)
-  href: api/DidiFrame.Statistic.ServicesExtensions.html#DidiFrame_Statistic_ServicesExtensions_AddStatisticTools_Microsoft_Extensions_DependencyInjection_IServiceCollection_
-  commentId: M:DidiFrame.Statistic.ServicesExtensions.AddStatisticTools(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  fullName: DidiFrame.Statistic.ServicesExtensions.AddStatisticTools(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  nameWithType: ServicesExtensions.AddStatisticTools(IServiceCollection)
-- uid: DidiFrame.Statistic.ServicesExtensions.AddStatisticTools*
-  name: AddStatisticTools
-  href: api/DidiFrame.Statistic.ServicesExtensions.html#DidiFrame_Statistic_ServicesExtensions_AddStatisticTools_
-  commentId: Overload:DidiFrame.Statistic.ServicesExtensions.AddStatisticTools
+- uid: DidiFrame.Statistic.ServicesExtensions.AddStateBasedStatisticTools(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  name: AddStateBasedStatisticTools(IServiceCollection)
+  href: api/DidiFrame.Statistic.ServicesExtensions.html#DidiFrame_Statistic_ServicesExtensions_AddStateBasedStatisticTools_Microsoft_Extensions_DependencyInjection_IServiceCollection_
+  commentId: M:DidiFrame.Statistic.ServicesExtensions.AddStateBasedStatisticTools(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  fullName: DidiFrame.Statistic.ServicesExtensions.AddStateBasedStatisticTools(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  nameWithType: ServicesExtensions.AddStateBasedStatisticTools(IServiceCollection)
+- uid: DidiFrame.Statistic.ServicesExtensions.AddStateBasedStatisticTools*
+  name: AddStateBasedStatisticTools
+  href: api/DidiFrame.Statistic.ServicesExtensions.html#DidiFrame_Statistic_ServicesExtensions_AddStateBasedStatisticTools_
+  commentId: Overload:DidiFrame.Statistic.ServicesExtensions.AddStateBasedStatisticTools
   isSpec: "True"
-  fullName: DidiFrame.Statistic.ServicesExtensions.AddStatisticTools
-  nameWithType: ServicesExtensions.AddStatisticTools
+  fullName: DidiFrame.Statistic.ServicesExtensions.AddStateBasedStatisticTools
+  nameWithType: ServicesExtensions.AddStateBasedStatisticTools
 - uid: DidiFrame.Statistic.StateBasedStatisticCollector
   name: StateBasedStatisticCollector
   href: api/DidiFrame.Statistic.StateBasedStatisticCollector.html
   commentId: T:DidiFrame.Statistic.StateBasedStatisticCollector
   fullName: DidiFrame.Statistic.StateBasedStatisticCollector
   nameWithType: StateBasedStatisticCollector
-- uid: DidiFrame.Statistic.StateBasedStatisticCollector.#ctor(IServersStatesRepository{ICollection{DidiFrame.Statistic.StateBasedStatisticCollector.StatisticDictionaryItem}})
-  name: StateBasedStatisticCollector(IServersStatesRepository<ICollection<StateBasedStatisticCollector.StatisticDictionaryItem>>)
-  href: api/DidiFrame.Statistic.StateBasedStatisticCollector.html#DidiFrame_Statistic_StateBasedStatisticCollector__ctor_IServersStatesRepository_ICollection_DidiFrame_Statistic_StateBasedStatisticCollector_StatisticDictionaryItem___
-  commentId: M:DidiFrame.Statistic.StateBasedStatisticCollector.#ctor(IServersStatesRepository{ICollection{DidiFrame.Statistic.StateBasedStatisticCollector.StatisticDictionaryItem}})
-  name.vb: StateBasedStatisticCollector(IServersStatesRepository(Of ICollection(Of StateBasedStatisticCollector.StatisticDictionaryItem)))
-  fullName: DidiFrame.Statistic.StateBasedStatisticCollector.StateBasedStatisticCollector(IServersStatesRepository<ICollection<DidiFrame.Statistic.StateBasedStatisticCollector.StatisticDictionaryItem>>)
-  fullName.vb: DidiFrame.Statistic.StateBasedStatisticCollector.StateBasedStatisticCollector(IServersStatesRepository(Of ICollection(Of DidiFrame.Statistic.StateBasedStatisticCollector.StatisticDictionaryItem)))
-  nameWithType: StateBasedStatisticCollector.StateBasedStatisticCollector(IServersStatesRepository<ICollection<StateBasedStatisticCollector.StatisticDictionaryItem>>)
-  nameWithType.vb: StateBasedStatisticCollector.StateBasedStatisticCollector(IServersStatesRepository(Of ICollection(Of StateBasedStatisticCollector.StatisticDictionaryItem)))
+- uid: DidiFrame.Statistic.StateBasedStatisticCollector.#ctor(IServersStatesRepositoryFactory)
+  name: StateBasedStatisticCollector(IServersStatesRepositoryFactory)
+  href: api/DidiFrame.Statistic.StateBasedStatisticCollector.html#DidiFrame_Statistic_StateBasedStatisticCollector__ctor_IServersStatesRepositoryFactory_
+  commentId: M:DidiFrame.Statistic.StateBasedStatisticCollector.#ctor(IServersStatesRepositoryFactory)
+  fullName: DidiFrame.Statistic.StateBasedStatisticCollector.StateBasedStatisticCollector(IServersStatesRepositoryFactory)
+  nameWithType: StateBasedStatisticCollector.StateBasedStatisticCollector(IServersStatesRepositoryFactory)
 - uid: DidiFrame.Statistic.StateBasedStatisticCollector.#ctor*
   name: StateBasedStatisticCollector
   href: api/DidiFrame.Statistic.StateBasedStatisticCollector.html#DidiFrame_Statistic_StateBasedStatisticCollector__ctor_
@@ -5231,12 +5225,6 @@ references:
   commentId: T:DidiFrame.Statistic.StatisticEntry
   fullName: DidiFrame.Statistic.StatisticEntry
   nameWithType: StatisticEntry
-- uid: DidiFrame.Statistic.StatisticEntry.#ctor
-  name: StatisticEntry()
-  href: api/DidiFrame.Statistic.StatisticEntry.html#DidiFrame_Statistic_StatisticEntry__ctor
-  commentId: M:DidiFrame.Statistic.StatisticEntry.#ctor
-  fullName: DidiFrame.Statistic.StatisticEntry.StatisticEntry()
-  nameWithType: StatisticEntry.StatisticEntry()
 - uid: DidiFrame.Statistic.StatisticEntry.#ctor(System.String)
   name: StatisticEntry(String)
   href: api/DidiFrame.Statistic.StatisticEntry.html#DidiFrame_Statistic_StatisticEntry__ctor_System_String_
@@ -5826,19 +5814,6 @@ references:
   isSpec: "True"
   fullName: DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.DefaultUserCommandsExecutor
   nameWithType: DefaultUserCommandsExecutor.DefaultUserCommandsExecutor
-- uid: DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Dispose
-  name: Dispose()
-  href: api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.html#DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Dispose
-  commentId: M:DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Dispose
-  fullName: DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Dispose()
-  nameWithType: DefaultUserCommandsExecutor.Dispose()
-- uid: DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Dispose*
-  name: Dispose
-  href: api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.html#DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Dispose_
-  commentId: Overload:DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Dispose
-  isSpec: "True"
-  fullName: DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Dispose
-  nameWithType: DefaultUserCommandsExecutor.Dispose
 - uid: DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options
   name: DefaultUserCommandsExecutor.Options
   href: api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options.html

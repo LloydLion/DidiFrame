@@ -174,7 +174,7 @@
       <tr>
         <td><span class="xref">IServiceProvider</span></td>
         <td><span class="parametername">provider</span></td>
-        <td><p>Model factory provider for state management</p>
+        <td><p>Services that will transmited into context</p>
 </td>
       </tr>
     </tbody>
@@ -185,12 +185,12 @@
   
   <a id="DidiFrame_Data_ContextBased_ContextBasedSettingsRepositoryFactory_2_Create_" data-uid="DidiFrame.Data.ContextBased.ContextBasedSettingsRepositoryFactory`2.Create*"></a>
   <h4 id="DidiFrame_Data_ContextBased_ContextBasedSettingsRepositoryFactory_2_Create__1_System_String_" data-uid="DidiFrame.Data.ContextBased.ContextBasedSettingsRepositoryFactory`2.Create``1(System.String)">Create&lt;TModel&gt;(String)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates new repository</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public IServersSettingsRepository&lt;TModel&gt; Create&lt;TModel&gt;(string key)
-
     where TModel : class</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
@@ -206,7 +206,8 @@
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">key</span></td>
-        <td></td>
+        <td><p>State key in servers' settings</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -221,7 +222,8 @@
     <tbody>
       <tr>
         <td><a class="xref" href="DidiFrame.Data.IServersSettingsRepository-1.html">IServersSettingsRepository</a>&lt;TModel&gt;</td>
-        <td></td>
+        <td><p>New repository</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -236,7 +238,8 @@
     <tbody>
       <tr>
         <td><span class="parametername">TModel</span></td>
-        <td></td>
+        <td><p>Type of repository</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -244,7 +247,8 @@
   
   <a id="DidiFrame_Data_ContextBased_ContextBasedSettingsRepositoryFactory_2_PreloadDataAsync_" data-uid="DidiFrame.Data.ContextBased.ContextBasedSettingsRepositoryFactory`2.PreloadDataAsync*"></a>
   <h4 id="DidiFrame_Data_ContextBased_ContextBasedSettingsRepositoryFactory_2_PreloadDataAsync" data-uid="DidiFrame.Data.ContextBased.ContextBasedSettingsRepositoryFactory`2.PreloadDataAsync">PreloadDataAsync()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Preloads all servers' settings data async</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -261,7 +265,8 @@
     <tbody>
       <tr>
         <td><span class="xref">Task</span></td>
-        <td></td>
+        <td><p>Wait task</p>
+</td>
       </tr>
     </tbody>
   </table>

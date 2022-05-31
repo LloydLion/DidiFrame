@@ -121,7 +121,10 @@
   
   <a id="DidiFrame_Utils_ExtendableModels_SimpleModelAdditionalInfoProvider__ctor_" data-uid="DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.#ctor*"></a>
   <h4 id="DidiFrame_Utils_ExtendableModels_SimpleModelAdditionalInfoProvider__ctor_IReadOnlyCollection_System_Object__" data-uid="DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.#ctor(IReadOnlyCollection{System.Object})">SimpleModelAdditionalInfoProvider(IReadOnlyCollection&lt;Object&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider based on object collection.
+Be SUPER careful! objects will registated by thier types (from GetType()).
+Recomended to use  DefaultModelAdditionalInfoProvider(IReadOnlyDictionary) ctor</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -140,7 +143,8 @@
       <tr>
         <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">System.Object</span>&gt;</td>
         <td><span class="parametername">objects</span></td>
-        <td></td>
+        <td><p>Base object collection</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -267,7 +271,8 @@ Recomended to use  DefaultModelAdditionalInfoProvider(params (object, Type)[]) c
   
   <a id="DidiFrame_Utils_ExtendableModels_SimpleModelAdditionalInfoProvider_GetAllExtensions_" data-uid="DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.GetAllExtensions*"></a>
   <h4 id="DidiFrame_Utils_ExtendableModels_SimpleModelAdditionalInfoProvider_GetAllExtensions" data-uid="DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.GetAllExtensions">GetAllExtensions()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets all extensions of model that it provides</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -284,7 +289,8 @@ Recomended to use  DefaultModelAdditionalInfoProvider(params (object, Type)[]) c
     <tbody>
       <tr>
         <td><span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">Type</span>, <span class="xref">System.Object</span>&gt;</td>
-        <td></td>
+        <td><p>Type to object dictionary</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -292,7 +298,8 @@ Recomended to use  DefaultModelAdditionalInfoProvider(params (object, Type)[]) c
   
   <a id="DidiFrame_Utils_ExtendableModels_SimpleModelAdditionalInfoProvider_GetExtension_" data-uid="DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.GetExtension*"></a>
   <h4 id="DidiFrame_Utils_ExtendableModels_SimpleModelAdditionalInfoProvider_GetExtension_Type_" data-uid="DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.GetExtension(Type)">GetExtension(Type)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets model's extension</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -311,7 +318,8 @@ Recomended to use  DefaultModelAdditionalInfoProvider(params (object, Type)[]) c
       <tr>
         <td><span class="xref">Type</span></td>
         <td><span class="parametername">type</span></td>
-        <td></td>
+        <td><p>Type of extension</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -326,7 +334,8 @@ Recomended to use  DefaultModelAdditionalInfoProvider(params (object, Type)[]) c
     <tbody>
       <tr>
         <td><span class="xref">System.Object</span></td>
-        <td></td>
+        <td><p>Extension or null if no extension found</p>
+</td>
       </tr>
     </tbody>
   </table>

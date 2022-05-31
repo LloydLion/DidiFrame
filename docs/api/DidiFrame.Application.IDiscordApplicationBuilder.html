@@ -88,7 +88,9 @@
   
   <a id="DidiFrame_Application_IDiscordApplicationBuilder_AddConfiguration_" data-uid="DidiFrame.Application.IDiscordApplicationBuilder.AddConfiguration*"></a>
   <h4 id="DidiFrame_Application_IDiscordApplicationBuilder_AddConfiguration_Microsoft_Extensions_Configuration_IConfigurationRoot_" data-uid="DidiFrame.Application.IDiscordApplicationBuilder.AddConfiguration(Microsoft.Extensions.Configuration.IConfigurationRoot)">AddConfiguration(IConfigurationRoot)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds configuration object to builder, can be used in AddServices(Action)
+to add configurated services</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -107,7 +109,8 @@
       <tr>
         <td><span class="xref">Microsoft.Extensions.Configuration.IConfigurationRoot</span></td>
         <td><span class="parametername">configuration</span></td>
-        <td></td>
+        <td><p>Configuration itself</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -115,7 +118,8 @@
   
   <a id="DidiFrame_Application_IDiscordApplicationBuilder_AddLogging_" data-uid="DidiFrame.Application.IDiscordApplicationBuilder.AddLogging*"></a>
   <h4 id="DidiFrame_Application_IDiscordApplicationBuilder_AddLogging_Action_ILoggingBuilder__" data-uid="DidiFrame.Application.IDiscordApplicationBuilder.AddLogging(Action{ILoggingBuilder})">AddLogging(Action&lt;ILoggingBuilder&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds logging into services. It can be replaced by calling AddLogging(Action) extension method at services object</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -134,7 +138,8 @@
       <tr>
         <td><span class="xref">Action</span>&lt;<span class="xref">ILoggingBuilder</span>&gt;</td>
         <td><span class="parametername">buildAction</span></td>
-        <td></td>
+        <td><p>Action under Microsoft.Extensions.Logging.ILoggingBuilder</p>
+</td>
       </tr>
     </tbody>
   </table>
