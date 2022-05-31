@@ -30,6 +30,8 @@ namespace DidiFrame.DSharpAdapter
 
 		public ulong Id => guild.Id;
 
+		public DiscordGuild Guild => guild;
+
 
 		public IMember GetMember(ulong id) => GetMembers().Single(s => s.Id == id);
 
@@ -48,6 +50,10 @@ namespace DidiFrame.DSharpAdapter
 		public IRole GetRole(ulong id) => GetRoles().Single(s => s.Id == id);
 
 		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
+
+		public bool HasChannel(ulong id) => GetChannels().Any(s => s.Id == id);
+
+		public bool HasChannel(IChannel channel) => GetChannels().Contains(channel);
 
 		public override bool Equals(object? obj) => Equals(obj as Server);
 
@@ -76,7 +82,7 @@ namespace DidiFrame.DSharpAdapter
 			this.guild = guild;
 			this.client = client;
 
-			categories.Add(new ChannelCategory(guild, this)); //Global category
+			categories.Add(new ChannelCategory(this)); //Global category
 
 			client.BaseClient.GuildMemberAdded += OnGuildMemberAdded;
 			client.BaseClient.GuildRoleCreated += OnGuildRoleCreated;

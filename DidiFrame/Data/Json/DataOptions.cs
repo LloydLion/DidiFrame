@@ -8,12 +8,12 @@
 		/// <summary>
 		/// Option for servers' states
 		/// </summary>
-		public DataOption? States { get; set; } = new();
+		public DataOption? States { get; set; } = null;
 
 		/// <summary>
 		/// Option for servers' settings
 		/// </summary>
-		public DataOption? Settings { get; set; } = new();
+		public DataOption? Settings { get; set; } = null;
 
 
 		/// <summary>

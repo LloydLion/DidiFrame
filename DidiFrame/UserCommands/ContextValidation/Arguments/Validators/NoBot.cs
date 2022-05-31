@@ -2,6 +2,7 @@
 {
 	/// <summary>
 	/// Validator that requires non-bot member
+	/// Keys: IsBot
 	/// </summary>
 	public class NoBot : AbstractArgumentValidator<IMember>
 	{

@@ -5,7 +5,6 @@ namespace DidiFrame.DSharpAdapter
 	internal class Member : User, IMember
 	{
 		private readonly DiscordMember member;
-		private readonly MessageConverter converter = new();
 
 
 		public IServer Server => BaseServer;
@@ -15,7 +14,7 @@ namespace DidiFrame.DSharpAdapter
 		public override string UserName => member.DisplayName;
 
 
-		public Member(DiscordMember member, Server server) : base(member, (Client)server.Client)
+		public Member(DiscordMember member, Server server) : base(member, server.SourceClient)
 		{
 			this.member = member;
 			BaseServer = server;
@@ -43,8 +42,8 @@ namespace DidiFrame.DSharpAdapter
 			return BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
 				var channel = await member.CreateDmChannelAsync();
-				await channel.SendMessageAsync(converter.ConvertUp(model));
-			});
+				await channel.SendMessageAsync(MessageConverter.ConvertUp(model));
+			}, new(DSharpAdapter.Client.UserName, Id, base.UserName));
 		}
 	}
 }

@@ -12,27 +12,13 @@ namespace DidiFrame.DSharpAdapter
 		public ulong Id => channel.Id;
 
 		public IChannelCategory Category => channel.Parent is null ?
-			new ChannelCategory(channel.Guild, server) : new ChannelCategory(channel.Parent, server);
+			new ChannelCategory(server) : new ChannelCategory(channel.Parent, server);
 
 		public IServer Server => server;
 
 		public DiscordChannel BaseChannel => channel;
 
-		public bool IsExist
-		{
-			get
-			{
-				try
-				{
-					server.GetChannel(Id);
-					return true;
-				}
-				catch (Exception)
-				{
-					return false;
-				}
-			}
-		}
+		public bool IsExist => server.HasChannel(this);
 
 
 		public Channel(DiscordChannel channel, Server server)
@@ -57,6 +43,6 @@ namespace DidiFrame.DSharpAdapter
 			};
 		}
 
-		public Task DeleteAsync() => server.SourceClient.DoSafeOperationAsync(() => channel.DeleteAsync());
+		public Task DeleteAsync() => server.SourceClient.DoSafeOperationAsync(() => channel.DeleteAsync(), new(Client.ChannelName, Id, Name));
 	}
 }

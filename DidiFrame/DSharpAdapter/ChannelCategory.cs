@@ -1,24 +1,17 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DSharpPlus.Entities;
 
 namespace DidiFrame.DSharpAdapter
 {
 	internal class ChannelCategory : IChannelCategory
 	{
 		private readonly DiscordChannel? category;
-		private readonly DiscordGuild guild;
 		private readonly Server server;
 
 
 		public string? Name => category?.Name;
 
 		public IReadOnlyCollection<IChannel> Channels =>
-			guild.GetChannelsAsync().Result.Where(s => s.Parent == category).Select(s => Channel.Construct(s, server)).ToArray();
+			server.GetChannels().Where(s => s.Category == this).ToArray();
 
 		public ulong? Id => category?.Id;
 
@@ -29,12 +22,10 @@ namespace DidiFrame.DSharpAdapter
 		{
 			this.category = category;
 			this.server = server;
-			this.guild = category.Guild;
 		}
 
-		public ChannelCategory(DiscordGuild guild, Server server)
+		public ChannelCategory(Server server)
 		{
-			this.guild = guild;
 			this.server = server;
 		}
 
@@ -43,9 +34,7 @@ namespace DidiFrame.DSharpAdapter
 
 		public bool Equals(IChannelCategory? other) => other is ChannelCategory category && category.Id == Id;
 
-		public async Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel)
-		{
-			return Channel.Construct(await guild.CreateChannelAsync(creationModel.Name, creationModel.ChannelType.GetDSharp(), category), server);
-		}
+		public async Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel) =>
+			Channel.Construct(await server.SourceClient.DoSafeOperationAsync(() => server.Guild.CreateChannelAsync(creationModel.Name, creationModel.ChannelType.GetDSharp(), category)), server);
 	}
 }

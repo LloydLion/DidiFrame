@@ -2,6 +2,7 @@
 {
 	/// <summary>
 	/// Filter that based on permissions
+	/// Keys: NoPermissions
 	/// </summary>
 	public class PermissionFilter : IUserCommandInvokerFilter
 	{

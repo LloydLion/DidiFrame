@@ -4,6 +4,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 {
 	/// <summary>
 	/// Validator that requires more then something number
+	/// Keys: NullValue, TooGreat, TooSmall
 	/// </summary>
 	public class GreaterThen : IUserCommandArgumentValidator
 	{

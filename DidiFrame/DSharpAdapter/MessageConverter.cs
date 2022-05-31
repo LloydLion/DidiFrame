@@ -1,14 +1,11 @@
-﻿using DidiFrame.Entities.Message;
-using DidiFrame.Entities.Message.Components;
-using DidiFrame.Entities.Message.Embed;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 using System.Text;
 
 namespace DidiFrame.DSharpAdapter
 {
-	internal class MessageConverter
+	internal static class MessageConverter
 	{
-		public MessageSendModel ConvertDown(DiscordMessage message)
+		public static MessageSendModel ConvertDown(DiscordMessage message)
 		{
 			var content = message.Content;
 
@@ -80,7 +77,7 @@ namespace DidiFrame.DSharpAdapter
 			return new MessageSendModel(content) { Files = files, MessageEmbeds = embeds, ComponentsRows = components };
 		}
 
-		public DiscordMessageBuilder ConvertUp(MessageSendModel messageSendModel)
+		public static DiscordMessageBuilder ConvertUp(MessageSendModel messageSendModel)
 		{
 			var builder = new DiscordMessageBuilder();
 

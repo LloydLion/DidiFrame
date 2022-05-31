@@ -2,6 +2,7 @@
 {
 	/// <summary>
 	/// Filter that disables command
+	/// Keys: CommandDisabled
 	/// </summary>
 	public class Disable : IUserCommandInvokerFilter
 	{

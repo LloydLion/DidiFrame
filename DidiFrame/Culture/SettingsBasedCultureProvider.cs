@@ -5,7 +5,7 @@ namespace DidiFrame.Culture
 	/// <summary>
 	/// A settings-based server culture provider
 	/// </summary>
-	public class ServerCultureProvider : IServerCultureProvider
+	public class SettingsBasedCultureProvider : IServerCultureProvider
 	{
 		/// <summary>
 		/// Key in server settings
@@ -20,7 +20,7 @@ namespace DidiFrame.Culture
 		/// Creates a new instance of DidiFrame.Culture.ServerCultureProvider
 		/// </summary>
 		/// <param name="repositoryFactory">Factory of server settings repoistory</param>
-		public ServerCultureProvider(IServersSettingsRepositoryFactory repositoryFactory)
+		public SettingsBasedCultureProvider(IServersSettingsRepositoryFactory repositoryFactory)
 		{
 			repository = repositoryFactory.Create<CultureSettings>(SettingsKey);
 		}

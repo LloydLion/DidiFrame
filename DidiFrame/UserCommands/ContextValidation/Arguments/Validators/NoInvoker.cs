@@ -2,6 +2,7 @@
 {
 	/// <summary>
 	/// Validator that requires non-invoker member
+	/// Keys: MemberIsInvoker
 	/// </summary>
 	public class NoInvoker : AbstractArgumentValidator<IMember>
 	{

@@ -2,7 +2,7 @@
 
 namespace DidiFrame.AutoInjecting
 {
-	public static class Extensions
+	public static class ServicesExtensions
 	{
 		/// <summary>
 		/// Uses given auto injector to add services descriptor into service collection

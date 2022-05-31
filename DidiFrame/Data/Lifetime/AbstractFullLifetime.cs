@@ -44,7 +44,7 @@ namespace DidiFrame.Data.Lifetime
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
 		protected new ObjectHolder<TBase> GetBase()
 		{
-			var bo = GetBase(out var smFreeze);
+			var bo = base.GetBase(out var smFreeze);
 
 			return new ObjectHolder<TBase>(bo.Object, async (_) =>
 			{
@@ -66,7 +66,7 @@ namespace DidiFrame.Data.Lifetime
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
 		protected new ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
 		{
-			var bo = GetBase(out var internalFreeze);
+			var bo = base.GetBase(out var internalFreeze);
 			smFreeze = internalFreeze;
 
 			return new ObjectHolder<TBase>(bo.Object, async (_) =>

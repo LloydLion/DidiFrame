@@ -4,6 +4,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 {
 	/// <summary>
 	/// Validator that checks every element of collection by other validator
+	/// Keys will be inherited from the validator
 	/// </summary>
 	public class ForeachValidator : IUserCommandArgumentValidator
 	{

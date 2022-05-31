@@ -27,7 +27,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser
 		/// </summary>
-		/// <param name="options">Option for DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser</param>
+		/// <param name="options">Option for parser (DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.Options)</param>
 		/// <param name="repository">Command repository to detect commands</param>
 		public TextCommandParser(IOptions<Options> options, IUserCommandsRepository repository)
 		{

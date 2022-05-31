@@ -68,8 +68,8 @@ namespace TestProject.TestingEnvironmentTests
 
 			var factory = new ServersStatesRepositoryFactory(new CustomFactoryProvider<ICollection<LTBase>>(new CustomFactory<ICollection<LTBase>>(() => new List<LTBase>())));
 			factory.AddRepository("demo", new ServersStatesRepository<ICollection<LTBase>>());
-			var ltfactory = new ServersLifetimesRepositoryFactory(factory);
-			ltfactory.AddRepository(new Environment.Data.ServersLifetimesRepository<Lifetime, LTBase>(), new LifetimeFactory(), "demo");
+			var ltfactory = new Environment.Data.ServersLifetimesRepositoryFactory(factory);
+			ltfactory.AddRepository(new ServersLifetimesRepository<Lifetime, LTBase>(), new LifetimeFactory(), "demo");
 
 			//----------------------
 

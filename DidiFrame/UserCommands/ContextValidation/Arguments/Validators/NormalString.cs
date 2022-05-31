@@ -2,6 +2,7 @@
 {
 	/// <summary>
 	/// Validator that requires "normal" string
+	/// Key: WhiteSpace
 	/// </summary>
 	public class NormalString : AbstractArgumentValidator<string>
 	{

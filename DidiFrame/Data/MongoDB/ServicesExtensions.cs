@@ -10,7 +10,7 @@ namespace DidiFrame.Data.MongoDB
 		/// Add data management into service collection that based on Mongo database
 		/// </summary>
 		/// <param name="services">Service collection</param>
-		/// <param name="configuration">Configuration for MongoDb</param>
+		/// <param name="configuration">Configuration for MongoDb (model - DidiFrame.Data.MongoDB.DataOptions)</param>
 		/// <param name="integrateStates">If integrate states enviroment</param>
 		/// <param name="integrateSettings">If integrate settings enviroment</param>
 		/// <returns>Given collection to be chained</returns>

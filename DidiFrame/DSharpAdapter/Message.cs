@@ -8,7 +8,6 @@ namespace DidiFrame.DSharpAdapter
 		private DiscordMessage message;
 		private readonly TextChannel owner;
 		private Lazy<MessageInteractionDispatcher> mid;
-		private readonly MessageConverter converter = new();
 
 
 		public TextChannel BaseChannel => owner;
@@ -41,7 +40,7 @@ namespace DidiFrame.DSharpAdapter
 
 		public bool Equals(IMessage? other) => other is Message msg && msg.Id == Id && msg.TextChannel == TextChannel;
 
-		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => message.DeleteAsync());
+		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => message.DeleteAsync(), new(Client.MessageName, Id));
 
 		public IInteractionDispatcher GetInteractionDispatcher() => mid.Value;
 
@@ -56,8 +55,8 @@ namespace DidiFrame.DSharpAdapter
 			return owner.BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
 				if (resetDispatcher) ResetInteractionDispatcher();
-				message = await message.ModifyAsync(converter.ConvertUp(SendModel = sendModel));
-			});
+				message = await message.ModifyAsync(MessageConverter.ConvertUp(SendModel = sendModel));
+			}, new(Client.MessageName, Id));
 		}
 
 		public void ResetInteractionDispatcher()

@@ -9,7 +9,7 @@ namespace DidiFrame.DSharpAdapter
 		/// Adds DSharp client as discord client
 		/// </summary>
 		/// <param name="services">Service collection</param>
-		/// <param name="configuration">Configuration for client</param>
+		/// <param name="configuration">Configuration for client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <returns>Given collection to be chained</returns>
 		public static IServiceCollection AddDSharpClient(this IServiceCollection services, IConfiguration configuration)
 		{

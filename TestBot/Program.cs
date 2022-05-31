@@ -49,11 +49,11 @@ appBuilder.AddServices((services, config) => services
 	.AddReflectionUserCommandsLoader()
 	.AddHelpCommands()
 	.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
-	.AddCultureMachine()
+	.AddSettingsBasedCultureProvider()
 	.AddConfiguratedLocalization()
 	.AddLifetimes()
 	.AddGlobalEvents()
-	.AddStatisticTools()
+	.AddStateBasedStatisticTools()
 	.InjectAutoDependencies(new AutoInjector()));
 
 

@@ -1,5 +1,4 @@
-﻿using DidiFrame.Entities.Message.Components;
-using DSharpPlus;
+﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 
@@ -9,7 +8,6 @@ namespace DidiFrame.DSharpAdapter
 	{
 		private readonly Message message;
 		private readonly List<EventHolder> holders = new();
-		private readonly MessageConverter converter;
 
 
 		public MessageInteractionDispatcher(Message message)
@@ -17,7 +15,6 @@ namespace DidiFrame.DSharpAdapter
 			this.message = message;
 			if (message.SendModel.ComponentsRows is null || message.SendModel.ComponentsRows.Any() == false) throw new ArgumentException("Enable to created InteractionDispatcher if message no contains components");
 			message.BaseChannel.BaseServer.SourceClient.BaseClient.ComponentInteractionCreated += OnInteractionCreated;
-			converter = new MessageConverter();
 		}
 
 
@@ -41,7 +38,7 @@ namespace DidiFrame.DSharpAdapter
 				{
 					var ir = await result;
 
-					var msgBuilder = converter.ConvertUp(ir.Respond);
+					var msgBuilder = MessageConverter.ConvertUp(ir.Respond);
 
 					var inb = new DiscordInteractionResponseBuilder(msgBuilder) { IsEphemeral = true };
 

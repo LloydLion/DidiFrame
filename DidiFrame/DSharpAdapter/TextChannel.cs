@@ -12,7 +12,6 @@ namespace DidiFrame.DSharpAdapter
 
 		private readonly DiscordChannel channel;
 		private readonly Server server;
-		private readonly MessageConverter converter;
 		private readonly List<Message> messages = new();
 		private readonly List<ulong> ids = new();
 		private static readonly ThreadLocker<TextChannel> listLocker = new();
@@ -37,7 +36,6 @@ namespace DidiFrame.DSharpAdapter
 
 			this.channel = channel;
 			this.server = server;
-			converter = new();
 
 			foreach (var item in channel.GetMessagesAsync(MessagesIdLimit).Result)
 				ids.Add(item.Id);
@@ -54,7 +52,7 @@ namespace DidiFrame.DSharpAdapter
 			{
 				//If not exist throw
 				var discord = channel.GetMessageAsync(id).Result;
-				return new Message(discord, this, converter.ConvertDown(discord));
+				return new Message(discord, this, MessageConverter.ConvertDown(discord));
 			}
 		}
 
@@ -69,10 +67,10 @@ namespace DidiFrame.DSharpAdapter
 
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
-			var builder = converter.ConvertUp(messageSendModel);
+			var builder = MessageConverter.ConvertUp(messageSendModel);
 
 			var msg = await server.SourceClient.DoSafeOperationAsync(async () =>
-				new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder)));
+				new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder)), new(Client.ChannelName, Id, Name));
 
 			using (listLocker.Lock(this))
 			{
@@ -91,7 +89,7 @@ namespace DidiFrame.DSharpAdapter
 			//Bot's messages already in list
 			if (message.Author.Id == server.Client.SelfAccount.Id) return;
 
-			var model = new Message(message, this, converter.ConvertDown(message));
+			var model = new Message(message, this, MessageConverter.ConvertDown(message));
 
 			using (listLocker.Lock(this))
 			{

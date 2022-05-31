@@ -2,6 +2,7 @@
 {
 	/// <summary>
 	/// Validator that requires specified case from string
+	/// Keys: OnlyInUpperCase, OnlyInLowerCase
 	/// </summary>
 	public class StringCase : AbstractArgumentValidator<string>
 	{

@@ -13,7 +13,7 @@ namespace DidiFrame.DSharpAdapter
 		{
 			if (channel.Type.GetAbstract() != Entities.ChannelType.Voice)
 			{
-				throw new InvalidOperationException("Channel must be text");
+				throw new InvalidOperationException("Channel must be voice");
 			}
 
 			this.channel = channel;

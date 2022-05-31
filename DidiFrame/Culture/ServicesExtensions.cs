@@ -9,9 +9,9 @@ namespace DidiFrame.Culture
 		/// </summary>
 		/// <param name="services">Service collection</param>
 		/// <returns>Given collection to be chained</returns>
-		public static IServiceCollection AddCultureMachine(this IServiceCollection services)
+		public static IServiceCollection AddSettingsBasedCultureProvider(this IServiceCollection services)
 		{
-			services.AddTransient<IServerCultureProvider, ServerCultureProvider>();
+			services.AddTransient<IServerCultureProvider, SettingsBasedCultureProvider>();
 			return services;
 		}
 	}

@@ -10,9 +10,15 @@ namespace DidiFrame.DSharpAdapter
 	/// </summary>
 	public class Client : IClient
 	{
+		internal const string ChannelName = "Channel";
+		internal const string MemberName = "Member";
+		internal const string UserName = "User";
+		internal const string ServerName = "Server";
+		internal const string MessageName = "Message";
 		private readonly static EventId MessageSentHandlerExceptionID = new(44, "MessageSentHandlerException");
 		private readonly static EventId SafeOperationErrorID = new(23, "SafeOperationError");
 		private readonly static EventId SafeOperationCriticalErrorID = new(22, "SafeOperationCriticalError");
+		private readonly static EventId NoServerConnectionID = new(21, "NoServerConnection");
 
 
 		private readonly DiscordClient client;
@@ -20,7 +26,6 @@ namespace DidiFrame.DSharpAdapter
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 		private readonly ILogger<Client> logger;
-
 
 		public event MessageSentEventHandler? MessageSent;
 
@@ -42,7 +47,7 @@ namespace DidiFrame.DSharpAdapter
 		/// <summary>
 		/// Creates instance of DidiFrame.DSharpAdapter.Client
 		/// </summary>
-		/// <param name="options">Configuration of DSharp client</param>
+		/// <param name="options">Configuration of DSharp client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>
 		public Client(IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null)
@@ -88,9 +93,24 @@ namespace DidiFrame.DSharpAdapter
 			}
 		}
 
-		public Task AwaitForExit()
+		public async Task AwaitForExit()
 		{
-			return Task.Delay(-1);
+			int ticks = 0;
+			while (ticks < 5)
+			{
+				await Task.Delay(new TimeSpan(0, 5, 0));
+
+				try
+				{
+					//Demo operation
+					await client.GetUserAsync(SelfAccount.Id, updateCache: true);
+					ticks = 0;
+				}
+				catch (Exception)
+				{
+					ticks++;
+				}
+			}
 		}
 
 		public void Connect()
@@ -142,10 +162,11 @@ namespace DidiFrame.DSharpAdapter
 			try
 			{
 				//Demo operation
-				await client.GetUserAsync(SelfAccount.Id);
+				await client.GetUserAsync(SelfAccount.Id, updateCache: true);
 			}
 			catch (Exception)
 			{
+				logger.Log(LogLevel.Warning, NoServerConnectionID, "No connection to discord server! Waiting 450ms");
 				await Task.Delay(450);
 				goto reset;
 			}
@@ -155,7 +176,7 @@ namespace DidiFrame.DSharpAdapter
 		/// Do safe opration under discord client
 		/// </summary>
 		/// <param name="operation">Operation delegate</param>
-		public void DoSafeOperation(Action operation)
+		internal void DoSafeOperation(Action operation, NotFoundInfo? nfi = null)
 		{
 		reset:
 			CheckAndAwaitConnectionAsync().Wait();
@@ -167,18 +188,23 @@ namespace DidiFrame.DSharpAdapter
 			catch (Exception ex)
 			{
 				var pex = ex;
-				if (ex is AggregateException ar) pex = ar.InnerException;
+				if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
 
 				if (pex is ServerErrorException || pex is RateLimitException)
 				{
 					logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
 					if (pex is RateLimitException) Thread.Sleep(250);
+					else Thread.Sleep(1000);
 					goto reset;
 				}
 				else
 				{
 					logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
-					throw;
+
+					if (nfi.HasValue && pex is NotFoundException)
+						throw new DiscordObjectNotFoundException(nfi.Value.ObjectType, nfi.Value.ObjectId, nfi.Value.ObjectName);
+					else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
+					else throw new InternalDiscordException(pex.Message, pex);
 				}
 			}
 		}
@@ -189,7 +215,7 @@ namespace DidiFrame.DSharpAdapter
 		/// <typeparam name="TReturn">Type of result</typeparam>
 		/// <param name="operation">Operation delegate</param>
 		/// <returns>Operation result</returns>
-		public TReturn DoSafeOperation<TReturn>(Func<TReturn> operation)
+		internal TReturn DoSafeOperation<TReturn>(Func<TReturn> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
 			CheckAndAwaitConnectionAsync().Wait();
@@ -201,18 +227,23 @@ namespace DidiFrame.DSharpAdapter
 			catch (Exception ex)
 			{
 				var pex = ex;
-				if (ex is AggregateException ar) pex = ar.InnerException;
+				if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
 
 				if (pex is ServerErrorException || pex is RateLimitException)
 				{
 					logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
 					if (pex is RateLimitException) Thread.Sleep(250);
+					else Thread.Sleep(1000);
 					goto reset;
 				}
 				else
 				{
 					logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
-					throw;
+
+					if (nfi.HasValue && pex is NotFoundException)
+						throw new DiscordObjectNotFoundException(nfi.Value.ObjectType, nfi.Value.ObjectId, nfi.Value.ObjectName);
+					else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
+					else throw new InternalDiscordException(pex.Message, pex);
 				}
 			}
 		}
@@ -222,7 +253,7 @@ namespace DidiFrame.DSharpAdapter
 		/// </summary>
 		/// <param name="operation">Async operation delegate</param>
 		/// <returns>Wait task</returns>
-		public async Task DoSafeOperationAsync(Func<Task> operation)
+		internal async Task DoSafeOperationAsync(Func<Task> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
 			await CheckAndAwaitConnectionAsync();
@@ -234,18 +265,23 @@ namespace DidiFrame.DSharpAdapter
 			catch (Exception ex)
 			{
 				var pex = ex;
-				if (ex is AggregateException ar) pex = ar.InnerException;
+				if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
 
 				if (pex is ServerErrorException || pex is RateLimitException)
 				{
 					logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
 					if (pex is RateLimitException) Thread.Sleep(250);
+					else Thread.Sleep(1000);
 					goto reset;
 				}
 				else
 				{
 					logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
-					throw;
+
+					if (nfi.HasValue && pex is NotFoundException)
+						throw new DiscordObjectNotFoundException(nfi.Value.ObjectType, nfi.Value.ObjectId, nfi.Value.ObjectName);
+					else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
+					else throw new InternalDiscordException(pex.Message, pex);
 				}
 			}
 		}
@@ -256,7 +292,7 @@ namespace DidiFrame.DSharpAdapter
 		/// <typeparam name="TReturn">Type of result</typeparam>
 		/// <param name="operation">Async operation delegate</param>
 		/// <returns>Async operation result</returns>
-		public async Task<TReturn> DoSafeOperationAsync<TReturn>(Func<Task<TReturn>> operation)
+		internal async Task<TReturn> DoSafeOperationAsync<TReturn>(Func<Task<TReturn>> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
 			await CheckAndAwaitConnectionAsync();
@@ -268,18 +304,23 @@ namespace DidiFrame.DSharpAdapter
 			catch (Exception ex)
 			{
 				var pex = ex;
-				if (ex is AggregateException ar) pex = ar.InnerException;
+				if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
 
 				if (pex is ServerErrorException || pex is RateLimitException)
 				{
 					logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
 					if (pex is RateLimitException) Thread.Sleep(250);
+					else Thread.Sleep(1000);
 					goto reset;
 				}
 				else
 				{
 					logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
-					throw;
+
+					if (nfi.HasValue && pex is NotFoundException)
+						throw new DiscordObjectNotFoundException(nfi.Value.ObjectType, nfi.Value.ObjectId, nfi.Value.ObjectName);
+					else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
+					else throw new InternalDiscordException(pex.Message, pex);
 				}
 			}
 		}
@@ -291,6 +332,24 @@ namespace DidiFrame.DSharpAdapter
 		public class Options
 		{
 			public string Token { get; set; } = "";
+		}
+
+
+		public struct NotFoundInfo
+		{
+			public NotFoundInfo(string objectType, ulong objectId, string? objectName = null)
+			{
+				ObjectType = objectType;
+				ObjectId = objectId;
+				ObjectName = objectName;
+			}
+
+
+			public string ObjectType { get; }
+
+			public string? ObjectName { get; }
+
+			public ulong ObjectId { get; }
 		}
 	}
 }
