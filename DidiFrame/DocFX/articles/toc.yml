@@ -2,3 +2,7 @@
   href: intro.md
 - name: First project
   href: first_project.md
+- name: Discord api and discord client
+  href: discord_api_and_discord_client.md
+- name: User commands and pipelines
+  href: user_commands_and_pipelines.md

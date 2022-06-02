@@ -40,7 +40,7 @@ Tip 1: use [ConstructorAssignablePropertyAttribute](../api/DidiFrame.Data.Model.
 
 Tip 2: create Id property to indentitify models
 
-Tip 3: You can use c# records as models, but don't forget apply [ConstructorAssignablePropertyAttribute](../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html)
+Tip 3: you can use c# records as models, but don't forget apply [ConstructorAssignablePropertyAttribute](../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html)
 
 Framework by default has two Data management subsystems: Json based and MongoDb based, to add Json based call `AddJsonDataManagement(IConfiguration, bool, bool)` extension method on service collection,
 to add MongoDb based call `AddMongoDataManagement(IConfiguration, bool, bool)` extension method. See documentation for details.

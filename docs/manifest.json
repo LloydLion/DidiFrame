@@ -2936,11 +2936,26 @@
         "InvalidFileLink"
       ],
       "type": "Conceptual",
+      "source_relative_path": "articles/discord_api_and_discord_client.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/discord_api_and_discord_client.html",
+          "hash": "jxeOfSA/aJ2rKKjsp+bi7/kuwSJSk5JZaiSdTTcbH5w="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
       "source_relative_path": "articles/first_project.md",
       "output": {
         ".html": {
           "relative_path": "articles/first_project.html",
-          "hash": "6PVXaa6rAlQ8BprDVgfiODiCei5XiZcnvqhKNsR43hk="
+          "hash": "d/qCZk4s0jHoI1+zwc21rL7wBS04WbFwheKkJTY64XA="
         }
       },
       "is_incremental": true,
@@ -2955,7 +2970,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "9iv8zOUY+TckpL7jWdvRlwdD7cVpCyhsu5q5Y442g2Q="
+          "hash": "oBMy43zP+IZgPG0OqMk+qhN8XK2p7xhZZp+fiCO1n/A="
         }
       },
       "is_incremental": true,
@@ -2967,7 +2982,22 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "WfrLo473FOVv1jauz0wi+NpEbY4h6je32mLKphJIobA="
+          "hash": "gtmco+yNqiCjc++fJJWHLS9Bq1E5oc0QAxme718cUfg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "articles/user_commands_and_pipelines.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/user_commands_and_pipelines.html",
+          "hash": "N/7SXzqsNtDAgEKfKwuXEx8GYxGcJIIEUd0nYEHtu9k="
         }
       },
       "is_incremental": false,
@@ -3033,8 +3063,8 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 4,
-          "skipped_file_count": 4
+          "total_file_count": 6,
+          "skipped_file_count": 5
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,

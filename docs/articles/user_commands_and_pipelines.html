@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>User commands and pipelines </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="User commands and pipelines ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="user-commands-and-pipelines">User commands and pipelines</h1>
+
+<p>Commands is main methods for user to interact with bot. We should know how it works in DidiFrame.</p>
+<h2 id="what-are-user-commands">What are user commands</h2>
+<p>User command is <a href="../api/DidiFrame.UserCommands.Models.UserCommandInfo.html">model</a> that contains info about executor, arguments and its name.
+Commands can be realized using different paths, this behavior is determined by User command pipeline.
+Command can has many forms like simple text command or discord application's command.</p>
+<h2 id="where-commands-are-stored">Where commands are stored</h2>
+<p>In <a href="../api/DidiFrame.UserCommands.Repository.IUserCommandsRepository.html">User commands repository</a>. It is a collection for commands in each server. You can add commands to repository (Only in bot's Main) using its methods.</p>
+<p>If need to get commands for server you can use <code>GetCommandsFor(IServer)</code> that returns a new <a href="../api/DidiFrame.UserCommands.Repository.IUserCommandsCollection.html">collection</a> of commands.</p>
+<p>DidiFrame provides simple implementation of repository interface - <a href="../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html">SimpleUserCommandsRepository</a>, but it doesn't support &quot;per server commands&quot;</p>
+<h2 id="how-commands-are-loaded">How commands are loaded</h2>
+<p>Commands are loaded by <a href="../api/DidiFrame.UserCommands.Loader.IUserCommandsLoader.html">User commands loader</a>. This classes contains only one method - <code>LoadTo(IUserCommandsRepository)</code> that loads commands from some source to repository.
+Application builder gets loaders from service collection, it supports many loaders.</p>
+<p>DidiFrame provides simple implementations of interface: <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.html">ReflectionUserCommandsLoader</a> and <a href="../api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.HelpCommandLoader.html">HelpCommandLoader</a></p>
+<ul>
+<li>ReflectionUserCommandsLoader is loader that loads from commands modules.</li>
+<li>HelpCommandLoader simple loads 2 commands: <code>help</code> and <code>cmd</code> to help users get information about bot.</li>
+</ul>
+<h2 id="reflection-user-commands-loader">Reflection user commands loader</h2>
+<p>ReflectionUserCommandsLoader gets implementations of <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ICommandsModule.html">ICommandsModule</a> from service collection and analyzes them.
+It gets all method that marked as command by <a href="../api/DidiFrame.UserCommands.Loader.Reflection.CommandAttribute.html">CommandAttribute</a>. Attribute requires set command name.<br>
+Then the loader reads method signature:</p>
+<ul>
+<li>return type must be <a href="../api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a> or Task&lt;<a href="../api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a>&gt;</li>
+<li>first argument must be <a href="../api/DidiFrame.UserCommands.Models.UserCommandContext.html">UserCommandContext</a></li>
+<li>other arguments will converted to command's arguments</li>
+</ul>
+<p>When user calls command method will be called with trasmited arguments and handles command.</p>
+<h2 id="commands-extending">Commands extending</h2>
+<p>Commands can contain additional components to extend them functional.
+Commands do it using <a href="../api/DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider.html">IModelAdditionalInfoProvider</a>. This class like to IServiceProvider, but for models and using to extend models.</p>
+<p>Same mechanism also used for each command's argument.</p>
+<p>DidiFrame has simple implementation for <a href="../api/DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider.html">IModelAdditionalInfoProvider</a> interface - <a href="../DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.html">SimpleModelAdditionalInfoProvider</a></p>
+<h2 id="argument-validation">Argument validation</h2>
+<p>Commands' arguments can accept any values, but sometimes it is bad and we need to constrain values.
+Framework has validation mechanism.</p>
+<p>To validate argument's value you need to implementate <a href="../api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html">IUserCommandArgumentValidator</a> in some class or use <a href="../api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.html">ready validators</a>.<br>
+Interfacte has one method - <code>ValidationFailResult? Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)</code> that will be called before handler and can drop command pipline if returns not null value<br>
+About return: if <code>Validate</code> methods returns null it means that all ok else result must have locale key to print error and final command execution code. Locale key will be transcripted in default localizer for command (From additional info) by pattern: $(command_name).$(arg_name):$(key).</p>
+<p>To apply validators add collection with them into additional info of argument.<br>
+To apply it in reflection loader use <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ValidatorAttribute.html">ValidatorAttribute</a> on argument.</p>
+<p>Tip: you can see error locale key of default validators in them description</p>
+<h2 id="invoker-filtration">Invoker filtration</h2>
+<p>Filters for invoker are useful if need to check permission level or some timeouts.</p>
+<p>Filter is class that implements <a href="../api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html">IUserCommandInvokerFilter</a> interface.<br>
+DidiFrame provides some filters in <a href="../DidiFrame.UserCommands.ContextValidation.Invoker.Filters.html">DidiFrame.UserCommands.ContextValidation.Invoker.Filters</a></p>
+<p>Filter is very simillar to validators: has simillar interface with one method, is called before handler and can drop pipeline.<br>
+Method in <a href="../api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html">IUserCommandInvokerFilter</a> has same result type and it works same, but pattern is other: $(command_name):$(key).</p>
+<p>To apply filters add collection with them into additional info of command.<br>
+To apply it in reflection loader use <a href="../api/DidiFrame.UserCommands.Loader.Reflection.InvokerFilter.html">InvokerFilter</a> attribute on method.</p>
+<p>Tip: you can see error locale key of default filters in them description</p>
+<h2 id="user-command-pipeline">User command pipeline</h2>
+<p>Pipeline is main component of all user commands subsystem, it processes validators and filters, pareses and sends messages and also does all other work.</p>
+<p>A pipeline works simple: central component is dispatcher (<a href="../api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher-1.html">IUserCommandPipelineDispatcher`1</a>).<br>
+It starts and ends pipeline. It contains single method that sets callback. Dispatcher must trigger callback at some event and transmit call info with special dispatcher's object, it initiate pipeline start.<br>
+Call info includes <a href="../api/DidiFrame.UserCommands.Models.UserCommandSendData.html">meta info</a> and second callback that will be called at pipeline end.</p>
+<p>Dispatcher triggers the chain of middlewares.<br>
+<a href="../api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html">Middleware</a> is middle component and element of chain. Middleware has single method - <code>TOut? Process(TIn, PipelineContext)</code> that processes some object into other.</p>
+<p>Finnally, we have that execution order:
+Dispatcher -&gt; Middleware 1 -&gt; Middleware 2 -&gt; Middleware 3 -&gt; ... -&gt; Dispatcher's callback</p>
+<p>Each link has custom and determined by generic types transit object's type. Dispatcher has special object that will be accepted by first middleware as input, than the middleware processes output object that trasmites to next middleware as input.
+The last middleware must return <a href="../api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a> that object dispatcher's callback will accept.</p>
+<p>About support classes:</p>
+<ul>
+<li><a href="../api/DidiFrame.UserCommands.Pipeline.UserCommandPipeline.html">UserCommandPipeline</a> - Model of allmost pipeline with each middleware and dispatcher</li>
+<li><a href="../api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineExecutor.html">IUserCommandPipelineExecutor</a> - Executor of pipeline that accepts pipeline and input object from dispatcher, returns task with <a href="../api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a> for dispatcher's callback.</li>
+<li><a href="../api/DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.html">UserCommandPipelineContext</a> - Help context for pipeline's middlewares</li>
+</ul>
+<p>Note:</p>
+<ul>
+<li>Executor don't work with dispatcher, callback that calls executor must be assignated outside.</li>
+<li>Executor is async.</li>
+<li>Pipeline finalization stops pipeline executing and returns result to dispatcher's callback, but dropping is stops pipeline executing and don't calls dispatcher's callback.</li>
+<li>To drop or finalize pipeline return null from middleware and call special context's method.</li>
+<li><a href="../api/DidiFrame.Application.IDiscordApplication.html">IDiscordApplication</a> automaticlly registers all need for pipeline stuff using special builder.</li>
+<li>If you want create your middleware use <a href="../api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html">AbstractUserCommandPipelineMiddleware`2</a> support class</li>
+</ul>
+<h2 id="user-command-pipeline-building">User command pipeline building</h2>
+<p>Adding pipeline to di container or direct constructing means using builder to create pipeline.</p>
+<p>Why we should do it, we can directly create instance of <a href="../api/DidiFrame.UserCommands.Pipeline.UserCommandPipeline.html">UserCommandPipeline</a> and use it in executor? Answer - builder is more convenient, it: checks type using generic types, support di container to integrate each pipeline element, has extensions methods do something more and builder is required if you use <a href="../api/DidiFrame.Application.IDiscordApplication.html">IDiscordApplication</a>.</p>
+<p>Builder is class that implements <a href="../api/DidiFrame.UserCommands.Pipeline.Building.IUserCommandPipelineBuilder.html">IUserCommandPipelineBuilder</a> interface. Default implementation of it interface is internal class of DidiFrame and you can't access it outside.
+But you has <code>AddUserCommandPipeline(Action\&lt;IUserCommandPipelineBuilder\&gt;)</code> extension method for service collection. Builder is standard fluent builder, simple read methods description and don't forget call <code>Build()</code> at end.
+Also builder has extension methods that can simplify process.</p>
+<p>Note:<br>
+Framework has ready pipeline that can be added using <code>ClassicMessageUserCommandPipeline(IConfiguration textCommandParserConfig, IConfiguration defaultCommandsExecutorConfig)</code> extension method on service collection.<br>
+That contains:<br>
+<a href="../api/DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher.html">MessageUserCommandDispatcher</a> -&gt; <a href="../api/DidiFrame.UserCommands.Pipeline.Utils.DelegateMiddleware-2.html">DelegateMiddleware&lt;IMessage, string&gt;</a> -&gt; <a href="../api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.html">TextCommandParser</a> -&gt; <a href="../api/DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.html">DefaultUserCommandContextConverter</a> -&gt; <a href="../api/DidiFrame.UserCommands.ContextValidation.ContextValidator.html">ContextValidator</a> -&gt; <a href="../api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.html">DefaultUserCommandsExecutor</a>.<br>
+Each of they integrated in di container (<a href="../api/DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.html">DefaultUserCommandContextConverter</a> registrated as <a href="../api/DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.html">IUserCommandContextConverter</a>).
+DelegateMiddleware selects content from message.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

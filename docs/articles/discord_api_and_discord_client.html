@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Introduction </title>
+    <title>Discord api and discord client </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Introduction ">
+    <meta name="title" content="Discord api and discord client ">
     <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -67,10 +67,28 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="introduction">Introduction</h1>
+<h1 id="discord-api-and-discord-client">Discord api and discord client</h1>
 
-<p>Here you can read articles about development on DidiFrame.
-For example: <a href="first_project.html">First project</a>, <a href="../wip.html">User commands and pipelines</a>, <a href="../discord_api_and_discord_client.html">Discord api and discord client</a></p>
+<p>Here you learn about discord client and thier interfaces</p>
+<h2 id="what-is-discord-client">What is discord client</h2>
+<p>Discord client is &quot;window&quot; to discord server, we can interact with discord server only using client.
+These are no any direct REST packeges to discord api or middle api library calls.</p>
+<h2 id="how-to-work-with-it">How to work with it</h2>
+<p>Discord client itself implements interface <a href="../api/DidiFrame.Interfaces.IClient.html">IClient</a>.
+Interface describes methods and properties that works with other interfaces (like IServer, IUser) and etc.</p>
+<p>You can see list of all &quot;discord&quot; interfaces  in namespace <a href="../api/DidiFrame.Interfaces.html">DidiFrame.Interfaces</a></p>
+<h2 id="dsharp-client">DSharp client</h2>
+<p>These is DSharp client that based on DSharpPlus library.
+Client type is <a href="../api/DidiFrame.DSharpAdapter.Client.html">DidiFrame.DSharpAdapter.Client</a>.</p>
+<p>DSharp client more than simple adaptation of DSharpPlus library, it has got a cache and disconnect-safe methods.
+Many methods of interfaces are sync and DSharp client uses caches to give result at the moment.</p>
+<p>The client requires discord bot's token to work, you can get it in Discord development portal</p>
+<h2 id="your-client">Your client</h2>
+<p>About clients creation. App builder uses a client that provided by service collection.
+To use custom client simple add implementation as <a href="../api/DidiFrame.Interfaces.IClient.html">IClient</a> into di container.
+Don't forget remove default client.</p>
+<h2 id="fake-client">Fake client</h2>
+<p>We can create fake client for bot testing, simple replace all methods with gugs, but now framework don't provide something like it.</p>
 </article>
           </div>
           
