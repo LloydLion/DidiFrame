@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Introduction </title>
+    <title>Statistic tools </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Introduction ">
+    <meta name="title" content="Statistic tools ">
     <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -67,10 +67,41 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="introduction">Introduction</h1>
+<h1 id="statistic-tools">Statistic tools</h1>
 
-<p>Here you can read articles about development on DidiFrame.
-For example: <a href="first_project.html">First project</a>, <a href="user_commands_and_pipelines.html">User commands and pipelines</a>, <a href="discord_api_and_discord_client.html">Discord api and discord client</a>.</p>
+<h2 id="description">Description</h2>
+<p>Statistic is usefull tool to analize bot's functions and DidiFrame has methods to collect it.</p>
+<p>Use <a href="../api/DidiFrame.Statistic.IStatisticCollector.html">IStatisticCollector</a> to control it.</p>
+<p>Tool has method <code>Collect(StatisticAction, StatisticEntry, IServer, long = 0)</code> to change current stat record and <code>long Get(StatisticEntry, IServer, long = 0)</code> to get value.</p>
+<p><a href="../api/DidiFrame.Statistic.StatisticEntry.html">StatisticEntry</a> is information about statistic entry (record), <a href="">StatisticAction</a> is delegate that accepts one <em>reference</em> paramater of long type.</p>
+<h2 id="using-example">Using example</h2>
+<pre><code class="lang-cs">class Commands : ICommandModule
+{
+	private static readonly StatisticEntry HelloSayed = new(&quot;hello_sayed&quot;);
+	private readonly IStatisticCollector stats;
+
+
+	//Request stat tools from di
+	public Commands(IStatisticCollector stats)
+	{
+		this.stats = stats;
+	}
+
+
+	[Command(&quot;hello&quot;)]
+	public UserCommandResult SayHello(UserCommandContext ctx, string word, IMember toMention)
+	{
+		stats.Collect(s =&gt; s++, HelloSayed, ctx.Invoker.Server); //0 as default
+		return new($&quot;Hello to {toMention.Mention} with {word} from {ctx.Invoker}&quot;);
+	}
+
+	[Command(&quot;hellocount&quot;)]
+	public UserCommandResult SayHello(UserCommandContext ctx)
+	{
+		return new($&quot;Somebody sayed hello {stats.Get(HelloSayed, ctx.Invoker.Server)} times&quot;);
+	}
+}
+</code></pre>
 </article>
           </div>
           

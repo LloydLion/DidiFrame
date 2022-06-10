@@ -75,6 +75,8 @@
 Then you need use application builder to create discord bot.
 Now only one: <a href="../api/DidiFrame.Application.DiscordApplicationBuilder.html">DiscordApplicationBuilder</a> exist.
 Create it using <code>Create()</code> method and save into var.</p>
+<p>Note: to create bot account visit <a href="https://discord.com/developers/applications">Discord developver portal</a> and create new application.
+Here you can also get token for bot.</p>
 <h2 id="step-2---configuration">Step 2 - Configuration</h2>
 <p>We using the Microsoft.Extensions.Configuration library to manage configs.
 Builder has method <code>AddConfiguration(IConfigurationRoot)</code> that uses to add configuration into builder, but its is not convenient.
@@ -89,26 +91,30 @@ Simple call <code>AddLogging(Action&lt;ILoggingBuilder&gt;)</code> method with d
 <p>When configuration added we can add di container into builder. To do it call <code>AddServices(Action&lt;IServiceCollection&gt;)</code> method and give it configuration delegate.
 In delegate we should add services into di container. DidiFrame is modules-based framework and you can enable or disable any components,
 but in first time we should add Data management subsystem, Model factory provider, Auto repositories (optional), Command repository, Some command loader, Command pipeline, Localization and Discord client.
-About each module further in the text</p>
+About each module further in the text.</p>
 <h3 id="data-management-subsystem">Data management subsystem</h3>
 <p>We sometimes need to save some data &quot;in server&quot; (for example reputaion point or created voice channels) or get server's configuration (for example report channel), Data management subsystem solves this problem.
 From di container we can request IServersSettingsRepositoryFactory for settings and IServersStatesRepositoryFactory for states then call <code>Create&lt;TModel&gt;(string dataKey)</code> method to get repository that can provide state or settings for specific server.
 Repositories methods are simple and intuitive and in first project guide we won't stop on it.</p>
-<p>Tip 1: use <a href="../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html">ConstructorAssignablePropertyAttribute</a> to create readonly property that will be assignable from constructor</p>
-<p>Tip 2: create Id property to indentitify models</p>
+<p>Tip 1: use <a href="../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html">ConstructorAssignablePropertyAttribute</a> to create readonly property that will be assignable from constructor.</p>
+<p>Tip 2: create Id property to indentitify models.</p>
 <p>Tip 3: you can use c# records as models, but don't forget apply <a href="../api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html">ConstructorAssignablePropertyAttribute</a></p>
 <p>Framework by default has two Data management subsystems: Json based and MongoDb based, to add Json based call <code>AddJsonDataManagement(IConfiguration, bool, bool)</code> extension method on service collection,
 to add MongoDb based call <code>AddMongoDataManagement(IConfiguration, bool, bool)</code> extension method. See documentation for details.</p>
+<p>We recommend use Json for server's settings and mongo for states.</p>
+<p>Json subsystem localated at <a href="../api/DidiFrame.Data.Json.html">DidiFrame.Data.Json</a> namespace. It uses json files in special directory (set it in configuration), one file per server named as (serverId).json.</p>
+<p>Mongo subsystem localated at <a href="../api/DidiFrame.Data.MongoDB.html">DidiFrame.Data.MongoDB</a> namespace. It uses mongo database for save data. Set connection string and database name in configuration. Subsystem uses one collection per server.</p>
 <h3 id="model-factory-provider">Model factory provider</h3>
 <p>Each server's state must have default value that value for a type provides <a href="../api/DidiFrame.Data.IModelFactory-1.html">IModelFactory</a>, but somebody must provide model factories that somebody is Model factory provider.
 Default provider is <a href="../api/DidiFrame.Data.DefaultModelFactoryProvider.html">DefaultModelFactoryProvider</a> (that can be added by <code>.AddTransient&lt;IModelFactoryProvider, DefaultModelFactoryProvider&gt;()</code> method on service collection) that takes factories from di container.
-Don't forget add your models' factories into di, framework provides factory that using default model's ctor: <a href="../api/DidiFrame.Data.DefaultCtorModelFactory-1.html">DefaultCtorModelFactory</a></p>
+Don't forget add your models' factories into di, framework provides factory that using default model's ctor: <a href="../api/DidiFrame.Data.DefaultCtorModelFactory-1.html">DefaultCtorModelFactory</a>.</p>
 <h3 id="auto-repositories">Auto repositories</h3>
 <p>As stated above data repositories can be creates by data repository factories, but it isn't convenient: we have to request factory then call <code>Create</code> method and assign repository into var.
 We have a solution: Auto repositories! We should mark model with <a href="../api/DidiFrame.Data.AutoKeys.DataKeyAttribute.html">DataKeyAttribute</a> and request <code>IServers...Repository&lt;TModel&gt;</code> (without Auto repositories component, it throws ecxeption).
-To add Auto repositories into di call <code>AddAutoDataRepositories()</code> extension method on service collection</p>
+To add Auto repositories into di call <code>AddAutoDataRepositories()</code> extension method on service collection.</p>
 <h3 id="command-repository">Command repository</h3>
 <p>Here all are simple, simple store for your user commands. To add <a href="../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html">SimpleUserCommandsRepository</a> use <code>AddSimpleUserCommandsRepository()</code> extension method on service collection.</p>
+<p>Warning: <a href="../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html">SimpleUserCommandsRepository</a> doesn't support per server commands.</p>
 <h3 id="command-loader">Command loader</h3>
 <p>Repository is cool thing, but who will fill it? Command loaders! answer we, command loader is module that loads commands on bot startup from some sources.
 We will use <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.html">ReflectionUserCommandsLoader</a>, this loader loads command from classes - commands modules.
@@ -118,20 +124,21 @@ To add reflection loader call <code>AddReflectionUserCommandsLoader()</code> ext
 <p>Previous component only stores and loads commands, but somebody must execute them, for this purpose Command pipeline has been created.
 Pipeline manages commands' execution process, say what command is and what can call them.
 We can call <code>AddUserCommandPipeline(Action&lt;IUserCommandPipelineBuilder&gt;)</code> extension method and configurate pipeline manually, but framework has ready-to-use preset to add it call <code>AddClassicMessageUserCommandPipeline(IConfiguration, IConfiguration)</code> extension method on service collection.
-This pipeline based on text messages and responses to a command with text</p>
+This pipeline based on text messages and responses to a command with text.</p>
 <h3 id="discord-client">Discord client</h3>
 <p>Discord client is &quot;window&quot; to discord server, we can interact with discord server only using client.
 To add DSharpPlus-based client into di call <code>AddDSharpClient(IConfiguration)</code> extension method on service collection.</p>
 <h3 id="localization">Localization</h3>
-<p>We have to translate bot to different lang to salve this propblem created Microsoft.Extensions.Localization library that included into DidiFrame. To add it call <code>AddLocalization</code> extension method on service collection.
-But we recommend to use <code>AddConfiguratedLocalization()</code> extension method from DidiFrame because it also adds logging filters for localizers.
-P.S. Localization module is required by many component and without it noone module will work.</p>
+<p>We have to translate bot to different langs to salve this propblem created Microsoft.Extensions.Localization library that included into DidiFrame. To add it call <code>AddLocalization</code> extension method on service collection.
+But we recommend to use <code>AddConfiguratedLocalization</code> extension method from DidiFrame because it also adds logging filters for localizers.</p>
+<p>Note 1: Localization module is required by many component and without it noone module will work.</p>
+<p>Note 2: Localization files path in DidiFrame is &quot;DidiFrame:Translations/&quot;. Now supported 2 lang: [en-US] English (as default), [ru-RU] Russian.</p>
 <h2 id="step-5---run">Step 5 - Run</h2>
 <p>Finnaly build application using builder's <code>Build()</code> method and call <code>Connect</code> to connect to server, <code>PrepareAsync()</code> to cache all data and prepare framework to run and <code>AwaitForExist()</code> to wait bot exit.
 Now you can build and start your application, but bot won't do anything, you should add commands.</p>
 <h2 id="step-6---commands-module">Step 6 - Commands module</h2>
 <p>Commands module is container for commands. Create new class and write new method with a similar signature.</p>
-<pre><code>[Command(&quot;hello&quot;)]
+<pre><code class="lang-cs">[Command(&quot;hello&quot;)]
 public UserCommandResult SayHello(UserCommandContext ctx, string word, IMember toMention)
 {
 	...
@@ -139,7 +146,7 @@ public UserCommandResult SayHello(UserCommandContext ctx, string word, IMember t
 </code></pre>
 <p>Write handler in method then return <a href="../api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a> object.
 I you want use states, settings or other services request it from ctor (module is di collection element).
-Commands module is done. Don't forget add it into service collection using simple <code>AddSingletone</code> or <code>AddTransient</code> methods</p>
+Commands module is done. Don't forget add it into service collection using simple <code>AddSingleton</code> or <code>AddTransient</code> methods.</p>
 <h2 id="final-words">Final words</h2>
 <p>You created your first bot on DidiFrame framework!</p>
 <p>No? You can download <a href="../examples/FirstProject.zip">example</a> to research it or ask us using Github issues.</p>

@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Introduction </title>
+    <title>Auto injecting </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Introduction ">
+    <meta name="title" content="Auto injecting ">
     <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -67,10 +67,36 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="introduction">Introduction</h1>
+<h1 id="auto-injecting">Auto injecting</h1>
 
-<p>Here you can read articles about development on DidiFrame.
-For example: <a href="first_project.html">First project</a>, <a href="user_commands_and_pipelines.html">User commands and pipelines</a>, <a href="discord_api_and_discord_client.html">Discord api and discord client</a>.</p>
+<h2 id="description">Description</h2>
+<p>Service collection is super tool, but if you create very big project main file with collection inizialization becomes huge.
+To solve this problem DidiFrame has auto injecting mechanism.</p>
+<p>To inject services call <code>InjectAutoDependencies(IAutoInjector)</code> and transmit some <a href="../api/DidiFrame.AutoInjecting.IAutoInjector.html">IAutoInjector</a> inteface implementation.
+DidiFrame privides reflection based aut injector - <a href="../api/DidiFrame.AutoInjecting.ReflectionAutoInjector.html">ReflectionAutoInjector</a> that gets services from given to ctor assembly using type that implements <a href="../api/DidiFrame.AutoInjecting.IAutoSubInjector.html">IAutoSubInjector</a></p>
+<h2 id="using-example">Using example</h2>
+<p><strong>Program.cs</strong></p>
+<pre><code class="lang-cs">public static void Main(string[] args)
+{
+	...
+
+	builder.AddServices(services =&gt;
+		...
+		.InjectAutoDependencies(new ReflectionAutoInjector(Assembly.GetExecutingAssembly()))
+		//Provide assembly is optional, injector has default ctor that gets calling assembly
+	)
+	...
+}
+</code></pre>
+<p><strong>Other file</strong></p>
+<pre><code class="lang-cs">internal class SomeSystemAutoInjector : IAutoSubInjector
+{
+	void InjectDependencies(IServiceCollection services)
+	{
+		//Add something here
+	}
+}
+</code></pre>
 </article>
           </div>
           

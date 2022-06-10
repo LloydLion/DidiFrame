@@ -77,7 +77,7 @@ Command can has many forms like simple text command or discord application's com
 <h2 id="where-commands-are-stored">Where commands are stored</h2>
 <p>In <a href="../api/DidiFrame.UserCommands.Repository.IUserCommandsRepository.html">User commands repository</a>. It is a collection for commands in each server. You can add commands to repository (Only in bot's Main) using its methods.</p>
 <p>If need to get commands for server you can use <code>GetCommandsFor(IServer)</code> that returns a new <a href="../api/DidiFrame.UserCommands.Repository.IUserCommandsCollection.html">collection</a> of commands.</p>
-<p>DidiFrame provides simple implementation of repository interface - <a href="../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html">SimpleUserCommandsRepository</a>, but it doesn't support &quot;per server commands&quot;</p>
+<p>DidiFrame provides simple implementation of repository interface - <a href="../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html">SimpleUserCommandsRepository</a>, but it doesn't support &quot;per server commands&quot;.</p>
 <h2 id="how-commands-are-loaded">How commands are loaded</h2>
 <p>Commands are loaded by <a href="../api/DidiFrame.UserCommands.Loader.IUserCommandsLoader.html">User commands loader</a>. This classes contains only one method - <code>LoadTo(IUserCommandsRepository)</code> that loads commands from some source to repository.
 Application builder gets loaders from service collection, it supports many loaders.</p>
@@ -109,7 +109,8 @@ Interfacte has one method - <code>ValidationFailResult? Validate(IServiceProvide
 About return: if <code>Validate</code> methods returns null it means that all ok else result must have locale key to print error and final command execution code. Locale key will be transcripted in default localizer for command (From additional info) by pattern: $(command_name).$(arg_name):$(key).</p>
 <p>To apply validators add collection with them into additional info of argument.<br>
 To apply it in reflection loader use <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ValidatorAttribute.html">ValidatorAttribute</a> on argument.</p>
-<p>Tip: you can see error locale key of default validators in them description</p>
+<p>Tip 1: you can see error locale key of default validators in them description.</p>
+<p>Tip 2: abstract class <a href="../api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html">AbstractArgumentValidator</a> can help in validators createtion.</p>
 <h2 id="invoker-filtration">Invoker filtration</h2>
 <p>Filters for invoker are useful if need to check permission level or some timeouts.</p>
 <p>Filter is class that implements <a href="../api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html">IUserCommandInvokerFilter</a> interface.<br>
@@ -118,7 +119,20 @@ DidiFrame provides some filters in <a href="../DidiFrame.UserCommands.ContextVal
 Method in <a href="../api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html">IUserCommandInvokerFilter</a> has same result type and it works same, but pattern is other: $(command_name):$(key).</p>
 <p>To apply filters add collection with them into additional info of command.<br>
 To apply it in reflection loader use <a href="../api/DidiFrame.UserCommands.Loader.Reflection.InvokerFilter.html">InvokerFilter</a> attribute on method.</p>
-<p>Tip: you can see error locale key of default filters in them description</p>
+<p>Tip: you can see error locale key of default filters in them description.</p>
+<h2 id="custom-arguments-types">Custom arguments types</h2>
+<p>As command's argumetns you can use constrained set of types, each of them listed in <a href="../api/DidiFrame.UserCommands.Models.UserCommandArgument.Type.html">UserCommandArgument.Type</a> enum, but what if you want use more.</p>
+<p>Command arguments before they are intercepted by the executor, passed to the command, go through a conversion process.</p>
+<p>To create custom type implementate <a href="api/DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html">IDefaultContextConveterSubConverter</a> interface and add it into di container.</p>
+<p>It works like it:</p>
+<p>\cmd <ins>&quot;text&quot;</ins> <ins>42 @Nobody</ins> <ins>02.12|12:23:22</ins></p>
+<pre><code class="lang-raw">|Type  |Raw            |Convertation|Result        |  
+|------|---------------|------------|--------------|  
+|string|&quot;text&quot;         | ----&gt;      |&quot;text&quot;        |  
+|int   |42             | --|        |              |  
+|member|@Nobody        | --} ---&gt;   |Custom model  |  
+|date  |02.12|12:23:22 | ----&gt;      |02.12|12:23:22|
+</code></pre>
 <h2 id="user-command-pipeline">User command pipeline</h2>
 <p>Pipeline is main component of all user commands subsystem, it processes validators and filters, pareses and sends messages and also does all other work.</p>
 <p>A pipeline works simple: central component is dispatcher (<a href="../api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher-1.html">IUserCommandPipelineDispatcher`1</a>).<br>
@@ -143,7 +157,7 @@ The last middleware must return <a href="../api/DidiFrame.UserCommands.Models.Us
 <li>Pipeline finalization stops pipeline executing and returns result to dispatcher's callback, but dropping is stops pipeline executing and don't calls dispatcher's callback.</li>
 <li>To drop or finalize pipeline return null from middleware and call special context's method.</li>
 <li><a href="../api/DidiFrame.Application.IDiscordApplication.html">IDiscordApplication</a> automaticlly registers all need for pipeline stuff using special builder.</li>
-<li>If you want create your middleware use <a href="../api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html">AbstractUserCommandPipelineMiddleware`2</a> support class</li>
+<li>If you want create your middleware use <a href="../api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html">AbstractUserCommandPipelineMiddleware`2</a> support class .</li>
 </ul>
 <h2 id="user-command-pipeline-building">User command pipeline building</h2>
 <p>Adding pipeline to di container or direct constructing means using builder to create pipeline.</p>

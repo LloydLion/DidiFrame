@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Introduction </title>
+    <title>Message components </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Introduction ">
+    <meta name="title" content="Message components ">
     <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -67,10 +67,36 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="introduction">Introduction</h1>
+<h1 id="message-components">Message components</h1>
 
-<p>Here you can read articles about development on DidiFrame.
-For example: <a href="first_project.html">First project</a>, <a href="user_commands_and_pipelines.html">User commands and pipelines</a>, <a href="discord_api_and_discord_client.html">Discord api and discord client</a>.</p>
+<h2 id="description">Description</h2>
+<p>Discord provides functions to create and handle buttons, select lists in messages, it called as Discord components and you can read about it in discord's documentation.</p>
+<p>DidiFrame contains classes from each discord component: <a href="../api/DidiFrame.Entities.Message.Components.MessageButton.html">MessageButton</a>, <a href="../api/DidiFrame.Entities.Message.Components.MessageLinkButton.html">MessageLinkButton</a>, <a href="../api/DidiFrame.Entities.Message.Components.MessageSelectMenu.html">MessageSelectMenu</a> (Component row is not visual component, discord uses it only as container).</p>
+<p>Each of them you can add into message using ComponentsRows property in <a href="http://localhost:8080/api/DidiFrame.Entities.Message.MessageSendModel.html">MessageSendModel</a>.</p>
+<p>Note: MessageComponentRow is container for other components from discord, it represent one row of components, them will be rendered in row.</p>
+<p>DidiFrame provides <a href="../api/DidiFrame.Interfaces.IInteractionDispatcher.html">IInteractionDispatcher</a> interface implementation for each message that bot sends (If you try attach to non bot message nothing will happen).
+To access it call <code>GetInteractionDispatcher()</code> on message.</p>
+<p>It has two methods: <code>Attach&lt;TComponent&gt;(string, AsyncInteractionCallback&lt;TComponent&gt;)</code> and <code>Detach&lt;TComponent&gt;(string, AsyncInteractionCallback&lt;TComponent&gt; callback)</code> where TComponent is IInteractionComponent.
+The first adds handler, the second removes. Handler is special delegates, but it is simple handlers, nothing unusual, but as result every handler must return interaction result that will be displayed to user.</p>
+<p>As first parameter both methods accepts string of interaction component to handle.</p>
+<h2 id="component-interface">Component interface</h2>
+<p>DidiFrame provides two interfaces: <a href="">IComponent</a> and <a href="">IInteractionComponent</a>.</p>
+<ul>
+<li>The first is simple component (like <a href="../api/DidiFrame.Entities.Message.Components.MessageLinkButton.html">MessageLinkButton</a>), doesn't create any interactions. This components can be used only as visual componets.</li>
+<li>The second inherits the first, but supports interactions, it can be used in <a href="../api/DidiFrame.Interfaces.IInteractionDispatcher.html">IInteractionDispatcher</a>.</li>
+</ul>
+<h2 id="using-example">Using example</h2>
+<pre><code class="lang-cs">var id = message.GetInteractionDispatcher();
+
+id.Attach&lt;MessageButton&gt;(&quot;demo_bnt&quot;, ctx =&gt;
+{
+	//Do something
+	return new(new MessageSendModel(&quot;Hello from demo button&quot;));
+})
+
+//To detach use functions
+
+</code></pre>
 </article>
           </div>
           

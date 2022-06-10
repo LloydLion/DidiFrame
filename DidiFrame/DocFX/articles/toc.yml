@@ -6,3 +6,13 @@
   href: discord_api_and_discord_client.md
 - name: User commands and pipelines
   href: user_commands_and_pipelines.md
+- name: Localization and culture machine
+  href: localization_and_culture_machine.md
+- name: Statistic tools
+  href: statistic_tools.md
+- name: Global events
+  href: global_events.md
+- name: Auto injecting
+  href: auto_injecting.md
+- name: Message components
+  href: message_components.md

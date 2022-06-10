@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Introduction </title>
+    <title>Global events </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Introduction ">
+    <meta name="title" content="Global events ">
     <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -67,10 +67,37 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="introduction">Introduction</h1>
+<h1 id="global-events">Global events</h1>
 
-<p>Here you can read articles about development on DidiFrame.
-For example: <a href="first_project.html">First project</a>, <a href="user_commands_and_pipelines.html">User commands and pipelines</a>, <a href="discord_api_and_discord_client.html">Discord api and discord client</a>.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Global events is ..... global events that triggers at main bot's events.</p>
+<p>Every global event is class and can be got from di container.</p>
+<p>Now DidiFrame has only one event - <a href="../api/DidiFrame.GlobalEvents.StartupEvent.html">Startup</a></p>
+<p>To add all global events to di container call <code>AddGlobalEvents()</code> extension method on service collection</p>
+<h2 id="startupevent">StartupEvent</h2>
+<p>Class - <a href="../api/DidiFrame.GlobalEvents.StartupEvent.html">DidiFrame.GlobalEvents.StartupEvent</a></p>
+<p>This event is raised by the application builder while preparing to launch the bot.</p>
+<p>It has invoke method and two events: <code>Action Startup</code> and <code>Action&lt;IServer&gt; ServerStartup</code>.</p>
+<p><code>Startup</code> invokes directly, <code>ServerStartup</code> invokes multiple for each server in client.</p>
+<p>Tip: <a href="../api/DidiFrame.GlobalEvents.StartupEvent.html">StartupEvent</a> has overrided + and - operators to (un)subscribe events hadlers simpler</p>
+<h2 id="using-example">Using example</h2>
+<pre><code class="lang-cs">public static void Main(string[] args)
+{
+	...
+
+	var repository = application.Services.GetRequiredService&lt;IServerSettingsRepositpryFactory&gt;().Create&lt;NotifyModel&gt;(&quot;notify&quot;);
+	application.Services.GetRequiredService&lt;StartupEvent&gt;().ServerStartup += async (server) =&gt;
+	{
+		var model = repository.GetSettings(server);
+		if (model.NotifyChannel) //Check is enabled
+		{
+			await model.NotifyChannel.SendMessageAsync(new(&quot;Bot is working!&quot;));
+		}
+	};
+	
+	...
+}
+</code></pre>
 </article>
           </div>
           

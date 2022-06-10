@@ -2936,6 +2936,21 @@
         "InvalidFileLink"
       ],
       "type": "Conceptual",
+      "source_relative_path": "articles/auto_injecting.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/auto_injecting.html",
+          "hash": "q6DKIcYWgLKcTRm/iBpbm/fy2Bz/NeUoRj0bgbG+av0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
       "source_relative_path": "articles/discord_api_and_discord_client.md",
       "output": {
         ".html": {
@@ -2943,7 +2958,7 @@
           "hash": "jxeOfSA/aJ2rKKjsp+bi7/kuwSJSk5JZaiSdTTcbH5w="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -2955,10 +2970,25 @@
       "output": {
         ".html": {
           "relative_path": "articles/first_project.html",
-          "hash": "d/qCZk4s0jHoI1+zwc21rL7wBS04WbFwheKkJTY64XA="
+          "hash": "TDzV1kJpAAR8hmkA71szlrh1GuIxqu5DLt0MV9qRr6I="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "articles/global_events.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/global_events.html",
+          "hash": "TeHQfNNZOherMxCrIad0pQctSyAvBxu0fzs7ecmrNDg="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -2970,10 +3000,55 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "oBMy43zP+IZgPG0OqMk+qhN8XK2p7xhZZp+fiCO1n/A="
+          "hash": "3FgzbjNJk8wABvx/awRG8YTziFGHR1qH+tQGBdoA3s4="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "articles/localization_and_culture_machine.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/localization_and_culture_machine.html",
+          "hash": "oTPNBqs3HtVoZfYJls914Zb132WiSw7tWqmFX7H5lQo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "articles/message_components.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/message_components.html",
+          "hash": "JAfN7f5obg+mZ8wwiB0Z33riM2d534tnMUeUv1leqFs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "articles/statistic_tools.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/statistic_tools.html",
+          "hash": "HKRm1OAwfcAPJdDIJbYBQRbdQYMgkXxVbtJ+W39KEL0="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -2982,7 +3057,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "gtmco+yNqiCjc++fJJWHLS9Bq1E5oc0QAxme718cUfg="
+          "hash": "V75itp0WpcdzyB/GI8ZI/iBn2ya0IzRZByG8ZMXl5xU="
         }
       },
       "is_incremental": false,
@@ -2997,7 +3072,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/user_commands_and_pipelines.html",
-          "hash": "N/7SXzqsNtDAgEKfKwuXEx8GYxGcJIIEUd0nYEHtu9k="
+          "hash": "WYYKXNZaFzCsDzNgu6Fd4Ow+R7It1V04Dixhm8geZFk="
         }
       },
       "is_incremental": false,
@@ -3063,8 +3138,8 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 6,
-          "skipped_file_count": 5
+          "total_file_count": 11,
+          "skipped_file_count": 6
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,

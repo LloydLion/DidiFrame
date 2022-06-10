@@ -9,7 +9,7 @@
     <Description>Smart framework to create discord bots using c#</Description>
     <PackageId>$(Authors).$(AssemblyName)</PackageId>
     <Copyright>©LloydLion 2022</Copyright>
-    <PackageProjectUrl>https://github.com/LloydLion/DidiFrame</PackageProjectUrl>
+    <PackageProjectUrl>https://lloydlion.github.io/DidiFrame/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/LloydLion/DidiFrame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

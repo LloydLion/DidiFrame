@@ -14,7 +14,7 @@ In [User commands repository](../api/DidiFrame.UserCommands.Repository.IUserComm
 
 If need to get commands for server you can use `GetCommandsFor(IServer)` that returns a new [collection](../api/DidiFrame.UserCommands.Repository.IUserCommandsCollection.html) of commands.
 
-DidiFrame provides simple implementation of repository interface - [SimpleUserCommandsRepository](../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html), but it doesn't support "per server commands"
+DidiFrame provides simple implementation of repository interface - [SimpleUserCommandsRepository](../api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html), but it doesn't support "per server commands".
 
 ## How commands are loaded
 
@@ -57,7 +57,9 @@ About return: if `Validate` methods returns null it means that all ok else resul
 To apply validators add collection with them into additional info of argument.  
 To apply it in reflection loader use [ValidatorAttribute](../api/DidiFrame.UserCommands.Loader.Reflection.ValidatorAttribute.html) on argument.
 
-Tip: you can see error locale key of default validators in them description
+Tip 1: you can see error locale key of default validators in them description.
+
+Tip 2: abstract class [AbstractArgumentValidator](../api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html) can help in validators createtion.
 
 ## Invoker filtration
 
@@ -72,7 +74,28 @@ Method in [IUserCommandInvokerFilter](../api/DidiFrame.UserCommands.ContextValid
 To apply filters add collection with them into additional info of command.  
 To apply it in reflection loader use [InvokerFilter](../api/DidiFrame.UserCommands.Loader.Reflection.InvokerFilter.html) attribute on method.
 
-Tip: you can see error locale key of default filters in them description
+Tip: you can see error locale key of default filters in them description.
+
+## Custom arguments types
+
+As command's argumetns you can use constrained set of types, each of them listed in [UserCommandArgument.Type](../api/DidiFrame.UserCommands.Models.UserCommandArgument.Type.html) enum, but what if you want use more.
+
+Command arguments before they are intercepted by the executor, passed to the command, go through a conversion process.
+
+To create custom type implementate [IDefaultContextConveterSubConverter](api/DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html) interface and add it into di container.
+
+It works like it:
+
+\cmd <ins>"text"</ins> <ins>42 \@Nobody</ins> <ins>02.12\|12:23:22</ins>
+
+```raw
+|Type  |Raw            |Convertation|Result        |  
+|------|---------------|------------|--------------|  
+|string|"text"         | ---->      |"text"        |  
+|int   |42             | --|        |              |  
+|member|@Nobody        | --} --->   |Custom model  |  
+|date  |02.12|12:23:22 | ---->      |02.12|12:23:22|
+```
 
 ## User command pipeline
 
@@ -102,7 +125,7 @@ Note:
 * Pipeline finalization stops pipeline executing and returns result to dispatcher's callback, but dropping is stops pipeline executing and don't calls dispatcher's callback.
 * To drop or finalize pipeline return null from middleware and call special context's method.
 * [IDiscordApplication](../api/DidiFrame.Application.IDiscordApplication.html) automaticlly registers all need for pipeline stuff using special builder.
-* If you want create your middleware use [AbstractUserCommandPipelineMiddleware\`2](../api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html) support class 
+* If you want create your middleware use [AbstractUserCommandPipelineMiddleware\`2](../api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html) support class .
 
 ## User command pipeline building
 

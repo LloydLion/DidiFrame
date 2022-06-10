@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Introduction </title>
+    <title>Localization and culture machine </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Introduction ">
+    <meta name="title" content="Localization and culture machine ">
     <meta name="generator" content="docfx 2.59.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -67,10 +67,50 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="introduction">Introduction</h1>
+<h1 id="localization-and-culture-machine">Localization and culture machine</h1>
 
-<p>Here you can read articles about development on DidiFrame.
-For example: <a href="first_project.html">First project</a>, <a href="user_commands_and_pipelines.html">User commands and pipelines</a>, <a href="discord_api_and_discord_client.html">Discord api and discord client</a>.</p>
+<h2 id="localization">Localization</h2>
+<p>We have to translate bot to different langs to salve this propblem created Microsoft.Extensions.Localization library that included into DidiFrame. To add it call <code>AddLocalization</code> extension method on service collection.
+But we recommend to use <code>AddConfiguratedLocalization</code> extension method from DidiFrame because it also adds logging filters for localizers.</p>
+<p>Note 1: Localization module is required by many component and without it noone module will work.</p>
+<p>Note 2: Localization files path in DidiFrame is &quot;DidiFrame:Translations/&quot;. Now supported 2 lang: [en-US] English (as default), [ru-RU] Russian.</p>
+<h2 id="culture-machine">Culture machine</h2>
+<p>Alt name is <code>Culture provider</code>.</p>
+<p>Localization module provides text by key and current culture, but for different server we must use different server, unless localization is useless.</p>
+<p>Note 1: Default localizers from Microsoft.Extensions.Localization library gets culture from Thread.CurrentUICulture.</p>
+<p>Note 2: By default if no culture mahcine everywhere is en-US culture will be setuped.</p>
+<p>Culture mahcine is source of culture info for each server. It implements <a href="../api/DidiFrame.Culture.IServerCultureProvider.html">IServerCultureProvider</a>.</p>
+<p>Default implementation from DidiFrame is <a href="../api/DidiFrame.Culture.SettingsBasedCultureProvider.html">SettingsBasedCultureProvider</a> that takes culture from servers' settings by <code>culture</code> key and using <a href="../api/DidiFrame.Culture.CultureSettings.html">CultureSettings</a> model. To add it into di use <code>AddSettingsBasedCultureProvider()</code> extension method on service collection.</p>
+<h2 id="using-example">Using example</h2>
+<pre><code class="lang-cs">class Commands : ICommandModule
+{
+	private readonly IStringLocalizer&lt;Commands&gt; localizer;
+	private readonly IServerCultureProvider provider;
+
+
+	//Request localizer and culture provider from di
+	public Commands(IStringLocalizer&lt;Commands&gt; localizer, IServerCultureProvider provider)
+	{
+		this.localizer = localizer;
+		this.provider = provider;
+	}
+
+
+	[Command(&quot;hello&quot;)]
+	public UserCommandResult SayHello(UserCommandContext ctx, string word, IMember toMention)
+	{
+		//Thread.CurrentUICulture is automatically setted by executor
+		return new(localizer[&quot;Hello&quot;, toMention.Mention, word, ctx.Invoker]);
+	}
+	
+	[Command(&quot;culture&quot;)]
+	public UserCommandResult SayHello(UserCommandContext ctx)
+	{
+		var culture = provider.GetCulture(ctx.Channel.Server);
+		return new(localizer[&quot;Culture&quot;, culture.ToString()]);
+	}
+}
+</code></pre>
 </article>
           </div>
           
