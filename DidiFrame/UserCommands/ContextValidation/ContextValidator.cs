@@ -54,7 +54,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 						failResult = validator.Validate(services, input, argument.Key, argument.Value);
 						if (failResult is not null)
 						{
-							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}.{argument.Key.Name}:{failResult.LocaleKey}", argument.Value];
+							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}.{argument.Key.Name}:{failResult.LocaleKey}", argument.Value.ComplexObject];
 							return fail(localizer["ValidationErrorMessage", arg]);
 						}
 					}

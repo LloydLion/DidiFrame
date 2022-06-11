@@ -126,8 +126,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 							var description = method.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
 							if (description is not null) additionalInfo.Add((description, description.GetType()));
 
-							var readyInfo = new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args,
-								new SimpleModelAdditionalInfoProvider((handlerLocalizer, typeof(IStringLocalizer)), (filters, typeof(IReadOnlyCollection<IUserCommandInvokerFilter>))));
+							var readyInfo = new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
 
 							rp.AddCommand(instance.ReprocessCommand(readyInfo));
 
