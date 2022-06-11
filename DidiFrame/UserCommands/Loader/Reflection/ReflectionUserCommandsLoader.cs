@@ -118,13 +118,13 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 								}
 							}
 
-							var additionalInfo = new List<(object, Type)> { (handlerLocalizer, typeof(IStringLocalizer)) };
+							var additionalInfo = new Dictionary<Type, object> { { typeof(IStringLocalizer), handlerLocalizer } };
 
 							var filters = method.GetCustomAttributes<InvokerFilter>().Select(s => s.Filter).ToArray();
-							additionalInfo.Add((filters, typeof(IReadOnlyCollection<IUserCommandInvokerFilter>)));
+							additionalInfo.Add(typeof(IReadOnlyCollection<IUserCommandInvokerFilter>), filters);
 
 							var description = method.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
-							if (description is not null) additionalInfo.Add((description, description.GetType()));
+							if (description is not null) additionalInfo.Add(description.GetType(), description);
 
 							var readyInfo = new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
 
