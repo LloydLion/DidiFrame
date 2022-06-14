@@ -23,6 +23,76 @@ namespace TestBot.Systems.Test
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
 				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
 		}
+		
+		[Command("typon")]
+		public Task<UserCommandResult> Typo1(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typom")]
+		public Task<UserCommandResult> Typo2(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typot")]
+		public Task<UserCommandResult> Typo3(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typor")]
+		public Task<UserCommandResult> Typo4(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typof")]
+		public Task<UserCommandResult> Typo5(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typoe")]
+		public Task<UserCommandResult> Typo6(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typod")]
+		public Task<UserCommandResult> Typo7(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typoc")]
+		public Task<UserCommandResult> Typo8(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typob")]
+		public Task<UserCommandResult> Typo9(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
+		
+		[Command("typoa")]
+		public Task<UserCommandResult> Typo0(UserCommandContext _, string to)
+		{
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
+				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+		}
 
 		[Command("sum")]
 		public Task<UserCommandResult> Sum(UserCommandContext _, int a, int b)

@@ -1,4 +1,5 @@
-﻿using DidiFrame.Data.Lifetime;
+﻿using DidiFrame.Culture;
+using DidiFrame.Data.Lifetime;
 using DidiFrame.GlobalEvents;
 using DidiFrame.UserCommands.Loader;
 using DidiFrame.UserCommands.Pipeline;
@@ -21,11 +22,14 @@ namespace DidiFrame.Application
 		private readonly EventId LoaderStartID = new(46, "LoaderStart");
 		private readonly EventId LoaderDoneID = new(47, "LoaderDone");
 		private readonly EventId LoadingDoneID = new(48, "LoadingDone");
+		private readonly EventId PipelineExecutionErrorID = new(78, "PipelineExecutionError");
+		private readonly EventId ErrorMessageSendErrorID = new(77, "ErrorMessageSendError");
 
 
 		private readonly IServiceProvider services;
 		private readonly IClient client;
 		private readonly ILogger<DiscordApplication> logger;
+		private readonly IServerCultureProvider culture;
 		private readonly DateTime now;
 		private bool connected = false;
 
@@ -35,6 +39,8 @@ namespace DidiFrame.Application
 			this.services = services;
 			client = services.GetRequiredService<IClient>();
 			logger = services.GetRequiredService<ILogger<DiscordApplication>>();
+			culture = services.GetService<IServerCultureProvider>() ?? new GagCultureProvider(new("en-US"));
+
 			logger.Log(LogLevel.Debug, ClientInstantiationID, "Client instance created");
 			this.now = now;
 		}
@@ -85,8 +91,13 @@ namespace DidiFrame.Application
 			else logger.Log(LogLevel.Debug, StartEventSkippedID, "Startup event skipped because hasn't been added");
 
 
-			foreach (var registry in services.GetServices<ILifetimesRegistry>())
-				foreach (var server in client.Servers) registry.LoadAndRunAll(server);
+			var registries = services.GetServices<ILifetimesRegistry>();
+			foreach (var server in client.Servers)
+				foreach (var registry in registries)
+				{
+					culture.SetupCulture(server);
+					registry.LoadAndRunAll(server);
+				}
 			logger.Log(LogLevel.Debug, LifetimeRegistrationDoneID, "Every lifetime loaded and started");
 
 
@@ -95,8 +106,25 @@ namespace DidiFrame.Application
 			var executor = services.GetRequiredService<IUserCommandPipelineExecutor>();
 			pipeline.Origin.SetSyncCallback(async (obj, sendData, callback) =>
 			{
-				var result = await executor.ProcessAsync(pipeline, obj, sendData);
-				if (result is not null) callback(result);
+				try
+				{
+					var result = await executor.ProcessAsync(pipeline, obj, sendData);
+					if (result is not null) callback(result);
+				}
+				catch (Exception ex)
+				{
+					logger.Log(LogLevel.Warning, PipelineExecutionErrorID, ex, "Exception catched in pipeline thread!");
+					try
+					{
+						var msg = await sendData.Channel.SendMessageAsync(new("Command fatal!"));
+						await Task.Delay(10000);
+						await msg.DeleteAsync();
+					}
+					catch (Exception iex)
+					{
+						logger.Log(LogLevel.Warning, ErrorMessageSendErrorID, iex, "Enable to send error message!");
+					}
+				}
 			});
 			logger.Log(LogLevel.Debug, UserCommandsPipelineDoneID, "UserCommandPipeline created and event handler for executor registrated");
 		}

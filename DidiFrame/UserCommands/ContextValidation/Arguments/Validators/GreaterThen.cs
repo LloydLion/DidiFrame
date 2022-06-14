@@ -101,7 +101,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 
 
 		/// <inheritdoc/>
-		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value)
+		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider locals)
 		{
 			var actualValue = (IComparable)value.ComplexObject;
 			var compare = numberSource(context);

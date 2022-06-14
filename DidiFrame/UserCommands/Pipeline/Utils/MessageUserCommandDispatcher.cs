@@ -37,23 +37,23 @@
 			action?.Invoke(message, new(message.Author, message.TextChannel), callback);
 
 
-			async void callback(UserCommandResult result)
+			void callback(UserCommandResult result)
 			{
 				IMessage? msg = null;
 
 				if (result.RespondMessage is not null)
-					msg = await message.TextChannel.SendMessageAsync(result.RespondMessage);
+					msg = message.TextChannel.SendMessageAsync(result.RespondMessage).Result;
 				else
 				{
 					if (result.Code != UserCommandCode.Sucssesful)
 					{
-						msg = await message.TextChannel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code));
+						msg = message.TextChannel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code)).Result;
 					}
 				}
 
-				await Task.Delay(10000);
-				if (msg is not null) try { await msg.DeleteAsync(); } catch (Exception) { }
-				try { await message.DeleteAsync(); } catch (Exception) { }
+				Thread.Sleep(60000);
+				if (msg is not null) try { msg.DeleteAsync(); } catch (Exception) { }
+				try { message.DeleteAsync(); } catch (Exception) { }
 			}
 		}
 	}

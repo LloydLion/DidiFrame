@@ -1,4 +1,5 @@
 ﻿using DidiFrame.AutoInjecting;
+using DidiFrame.UserCommands.Loader.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Test
@@ -7,7 +8,7 @@ namespace TestBot.Systems.Test
 	{
 		public void InjectDependencies(IServiceCollection services)
 		{
-			services.AddSingleton<CommandsHandler>();
+			services.AddSingleton<ICommandsModule, CommandsHandler>();
 			services.AddSingleton<SystemCore>();
 		}
 	}

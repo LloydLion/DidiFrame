@@ -22,7 +22,8 @@
 		/// <param name="services">Service provider to get services</param>
 		/// <param name="preCtx">Original raw command context</param>
 		/// <param name="preObjects">Pre objects that types described in PreObjectTypes property</param>
+		/// <param name="localServices">Local services from pipeline</param>
 		/// <returns>Result of convertation: final object or error locale key</returns>
-		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects);
+		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider localServices);
 	}
 }

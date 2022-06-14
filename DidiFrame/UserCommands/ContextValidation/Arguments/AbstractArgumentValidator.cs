@@ -7,6 +7,7 @@
 	public abstract class AbstractArgumentValidator<TValidation> : IUserCommandArgumentValidator
 	{
 		private IServiceProvider? services;
+		private IServiceProvider? locals;
 
 
 		/// <summary>
@@ -16,9 +17,10 @@
 
 
 		/// <inheritdoc/>
-		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value)
+		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
 		{
 			this.services = services;
+			locals = localServices;
 			return Validate(context, argument, (TValidation)value.ComplexObject);
 		}
 
@@ -37,5 +39,12 @@
 		/// <returns>Service provider that provided by context validator middleware</returns>
 		/// <exception cref="InvalidOperationException">If tried get provider outside Validate() method</exception>
 		protected IServiceProvider GetServiceProvider() => services ?? throw new InvalidOperationException("Enable to get service provider in ctor");
+
+		/// <summary>
+		/// Gets local services
+		/// </summary>
+		/// <returns>Local services that provided by context validator middleware</returns>
+		/// <exception cref="InvalidOperationException">If tried get provider outside Validate() method</exception>
+		protected IServiceProvider GetLocalServices() => locals ?? throw new InvalidOperationException("Enable to get local services in ctor");
 	}
 }

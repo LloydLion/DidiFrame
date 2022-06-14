@@ -61,7 +61,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 				else if (s.Key.IsArray == false) //Complex non-array argument case
 				{
 					var converter = subConverters.Single(a => a.WorkType == s.Key.TargetType && a.PreObjectTypes.SequenceEqual(s.Key.OriginTypes));
-					var convertationResult = converter.Convert(services, preCtx, s.Value);
+					var convertationResult = converter.Convert(services, preCtx, s.Value, pipelineContext.LocalServices);
 					if (convertationResult.IsSuccessful == false)
 					{
 						convertationResult.DeconstructAsFailture(out var localeKey, out var code);

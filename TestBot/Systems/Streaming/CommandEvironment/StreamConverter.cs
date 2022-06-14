@@ -10,7 +10,7 @@ namespace TestBot.Systems.Streaming.CommandEvironment
 		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes => new[] { UserCommandArgument.Type.String };
 
 
-		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)
+		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider locals)
 		{
 			var sysCore = services.GetRequiredService<ISystemCore>();
 			var name = (string)preObjects[0];

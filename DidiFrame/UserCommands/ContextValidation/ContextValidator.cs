@@ -36,7 +36,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 			if (filters is not null)
 			foreach (var filter in filters)
 			{
-				failResult = filter.Filter(services, input);
+				failResult = filter.Filter(services, input, pipelineContext.LocalServices);
 					if (failResult is not null)
 					{
 						var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}:{failResult.LocaleKey}"];
@@ -51,7 +51,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 				if (validators is not null)
 					foreach (var validator in validators)
 					{
-						failResult = validator.Validate(services, input, argument.Key, argument.Value);
+						failResult = validator.Validate(services, input, argument.Key, argument.Value, pipelineContext.LocalServices);
 						if (failResult is not null)
 						{
 							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}.{argument.Key.Name}:{failResult.LocaleKey}", argument.Value.ComplexObject];

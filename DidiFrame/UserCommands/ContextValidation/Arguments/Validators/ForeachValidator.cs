@@ -32,13 +32,13 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 
 
 		/// <inheritdoc/>
-		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value)
+		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider locals)
 		{
 			var array = (IEnumerable)value.ComplexObject;
 
 			foreach (var item in array)
 			{
-				var tf = validator.Validate(services, context, argument, new(argument, item, value.PreObjects));
+				var tf = validator.Validate(services, context, argument, new(argument, item, value.PreObjects), locals);
 				if (tf is not null) return tf;
 			}
 

@@ -22,7 +22,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 
 
 		/// <inheritdoc/>
-		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects)
+		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider locals)
 		{
 			var cmds = services.GetRequiredService<IUserCommandsRepository>().GetCommandsFor(preCtx.Channel.Server);
 			var cmdName = (string)preObjects.Single();
