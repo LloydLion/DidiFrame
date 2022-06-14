@@ -97,14 +97,39 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 					else
 					{
 						//order is important (thanks LINQ)
-						var pa = preArgs.Take(argument.OriginTypes.Count);
+						var pa = preArgs.Take(argument.OriginTypes.Count).ToArray();
+
+						if (pa.Length != argument.OriginTypes.Count)
+						{
+							pipelineContext.DropPipeline();
+							return null;
+						}
+						for (int i = 0; i < pa.Length; i++)
+							if(argument.OriginTypes[i] != pa[i].Item1)
+							{
+								pipelineContext.DropPipeline();
+								return null;
+							}
+
 						arguments.Add((argument, pa.Select(s => ConvertArgument(s.Item2, s.Item1, server)).ToList()));
 						preArgs.RemoveRange(0, argument.OriginTypes.Count);
 					}
 				}
-			}
 
-			return new(pipelineContext.SendData.Invoker, pipelineContext.SendData.Channel, command, arguments.ToDictionary(s => s.Item1, s => (IReadOnlyList<object>)s.Item2));
+				return new(pipelineContext.SendData.Invoker, pipelineContext.SendData.Channel, command, arguments.ToDictionary(s => s.Item1, s => (IReadOnlyList<object>)s.Item2));
+			}
+			else
+			{
+				if (command.Arguments.Any())
+				{
+					pipelineContext.DropPipeline();
+					return null;
+				}
+				else
+				{
+					return new(pipelineContext.SendData.Invoker, pipelineContext.SendData.Channel, command, new Dictionary<UserCommandArgument, IReadOnlyList<object>>());
+				}
+			}
 		}
 
 		private object ConvertArgument(string rawStr, UserCommandArgument.Type ttype, IServer server)

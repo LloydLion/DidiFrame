@@ -34,18 +34,29 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			new SimpleModelAdditionalInfoProvider((localizer, typeof(IStringLocalizer)),
 				(new CommandDescription("ShowsCmdInfo", "ShowsCmdInfo", LaunchGroup.Everyone, null, null, "Help"), typeof(CommandDescription)))));
 
-			rp.AddCommand(new UserCommandInfo("help", HelpHandler, Array.Empty<UserCommandArgument>(), new SimpleModelAdditionalInfoProvider((localizer, typeof(IStringLocalizer)),
+			rp.AddCommand(new UserCommandInfo("help", HelpHandler, new UserCommandArgument[]
+			{
+				new(false, new[] { UserCommandArgument.Type.Integer }, typeof(int), "page",
+					new SimpleModelAdditionalInfoProvider((new ArgumentDescription("TargetPage", null), typeof(ArgumentDescription))))
+			}, new SimpleModelAdditionalInfoProvider((localizer, typeof(IStringLocalizer)),
 				(new CommandDescription("ShowsCmdsList", "ShowsCmdsList", LaunchGroup.Everyone, null, null, "Help"), typeof(CommandDescription)))));
 		}
 
 
 		private Task<UserCommandResult> HelpHandler(UserCommandContext ctx)
 		{
+			var page = ctx.Arguments.Single().Value.As<int>();
+
 			var cmds = repository.GetCommandsFor(ctx.Channel.Server);
 
 			var embedBuilder = new MessageEmbedBuilder(localizer["HelpTitle"], localizer["HelpDescription"], new("#44dca5"));
 
-			foreach (var cmd in cmds)
+			var error = Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(localizer["NoPage"]) });
+			if (page <= 0) return error;
+			var data = cmds.Skip((page - 1) * 20).Take(20);
+			if (!data.Any()) return error;
+
+			foreach (var cmd in data)
 			{
 				var desc = cmd.AdditionalInfo.GetExtension<CommandDescription>();
 				var cmdloc = cmd.AdditionalInfo.GetExtension<IStringLocalizer>();

@@ -120,6 +120,9 @@
   <data name="ArgumentInfoTitle" xml:space="preserve">
     <value>Аргумент "{0}"</value>
   </data>
+  <data name="cmd.command:NoCommandExist" xml:space="preserve">
+    <value>Несуществует команды с таким именем</value>
+  </data>
   <data name="CmdDescription" xml:space="preserve">
     <value>{0}</value>
   </data>
@@ -162,6 +165,9 @@
   <data name="NoDataProvided" xml:space="preserve">
     <value>Информация не предоставлена командой</value>
   </data>
+  <data name="NoPage" xml:space="preserve">
+    <value>Несуществует страницы с таким именем</value>
+  </data>
   <data name="RemarkContent_1" xml:space="preserve">
     <value>Примечание: {0}</value>
   </data>
@@ -179,6 +185,9 @@
   </data>
   <data name="TargetCmd" xml:space="preserve">
     <value>Целевая команда для отображения информации</value>
+  </data>
+  <data name="TargetPage" xml:space="preserve">
+    <value>Целевая страница</value>
   </data>
   <data name="UsingTitle" xml:space="preserve">
     <value>Использование команды</value>

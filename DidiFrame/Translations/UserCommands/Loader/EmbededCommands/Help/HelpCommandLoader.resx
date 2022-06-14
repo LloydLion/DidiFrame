@@ -120,6 +120,9 @@
   <data name="ArgumentInfoTitle" xml:space="preserve">
     <value>Argument "{0}"</value>
   </data>
+  <data name="cmd.command:NoCommandExist" xml:space="preserve">
+    <value>No command exist with same name</value>
+  </data>
   <data name="CmdDescription" xml:space="preserve">
     <value>{0}</value>
   </data>
@@ -162,6 +165,9 @@
   <data name="NoDataProvided" xml:space="preserve">
     <value>No information provided by command</value>
   </data>
+  <data name="NoPage" xml:space="preserve">
+    <value>These is no page under given number</value>
+  </data>
   <data name="RemarkContent_1" xml:space="preserve">
     <value>Remark: {0}</value>
   </data>
@@ -179,6 +185,9 @@
   </data>
   <data name="TargetCmd" xml:space="preserve">
     <value>Target command to show information</value>
+  </data>
+  <data name="TargetPage" xml:space="preserve">
+    <value>Target page</value>
   </data>
   <data name="UsingTitle" xml:space="preserve">
     <value>Command using</value>
