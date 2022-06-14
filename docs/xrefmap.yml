@@ -5295,6 +5295,23 @@ references:
   fullName.vb: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator(Of TValidation).AbstractArgumentValidator
   nameWithType: AbstractArgumentValidator<TValidation>.AbstractArgumentValidator
   nameWithType.vb: AbstractArgumentValidator(Of TValidation).AbstractArgumentValidator
+- uid: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.GetLocalServices
+  name: GetLocalServices()
+  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_GetLocalServices
+  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.GetLocalServices
+  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator<TValidation>.GetLocalServices()
+  fullName.vb: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator(Of TValidation).GetLocalServices()
+  nameWithType: AbstractArgumentValidator<TValidation>.GetLocalServices()
+  nameWithType.vb: AbstractArgumentValidator(Of TValidation).GetLocalServices()
+- uid: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.GetLocalServices*
+  name: GetLocalServices
+  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_GetLocalServices_
+  commentId: Overload:DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.GetLocalServices
+  isSpec: "True"
+  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator<TValidation>.GetLocalServices
+  fullName.vb: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator(Of TValidation).GetLocalServices
+  nameWithType: AbstractArgumentValidator<TValidation>.GetLocalServices
+  nameWithType.vb: AbstractArgumentValidator(Of TValidation).GetLocalServices
 - uid: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.GetServiceProvider
   name: GetServiceProvider()
   href: api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_GetServiceProvider
@@ -5312,14 +5329,14 @@ references:
   fullName.vb: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator(Of TValidation).GetServiceProvider
   nameWithType: AbstractArgumentValidator<TValidation>.GetServiceProvider
   nameWithType.vb: AbstractArgumentValidator(Of TValidation).GetServiceProvider
-- uid: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue)
-  name: Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_
-  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue)
-  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator<TValidation>.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  fullName.vb: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator(Of TValidation).Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  nameWithType: AbstractArgumentValidator<TValidation>.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  nameWithType.vb: AbstractArgumentValidator(Of TValidation).Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
+- uid: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)
+  name: Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)
+  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator<TValidation>.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  fullName.vb: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator(Of TValidation).Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  nameWithType: AbstractArgumentValidator<TValidation>.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  nameWithType.vb: AbstractArgumentValidator(Of TValidation).Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
 - uid: DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1.Validate(UserCommandContext,UserCommandArgument,`0)
   name: Validate(UserCommandContext, UserCommandArgument, TValidation)
   href: api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_Validate_UserCommandContext_UserCommandArgument__0_
@@ -5343,12 +5360,12 @@ references:
   commentId: T:DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator
   fullName: DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator
   nameWithType: IUserCommandArgumentValidator
-- uid: DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue)
-  name: Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html#DidiFrame_UserCommands_ContextValidation_Arguments_IUserCommandArgumentValidator_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_
-  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue)
-  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  nameWithType: IUserCommandArgumentValidator.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
+- uid: DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)
+  name: Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html#DidiFrame_UserCommands_ContextValidation_Arguments_IUserCommandArgumentValidator_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)
+  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  nameWithType: IUserCommandArgumentValidator.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
 - uid: DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.Validate*
   name: Validate
   href: api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html#DidiFrame_UserCommands_ContextValidation_Arguments_IUserCommandArgumentValidator_Validate_
@@ -5390,12 +5407,12 @@ references:
   isSpec: "True"
   fullName: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.ForeachValidator
   nameWithType: ForeachValidator.ForeachValidator
-- uid: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue)
-  name: Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.html#DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_
-  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue)
-  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  nameWithType: ForeachValidator.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
+- uid: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)
+  name: Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.html#DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)
+  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  nameWithType: ForeachValidator.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
 - uid: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate*
   name: Validate
   href: api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.html#DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator_Validate_
@@ -5470,12 +5487,12 @@ references:
   isSpec: "True"
   fullName: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.GreaterThen
   nameWithType: GreaterThen.GreaterThen
-- uid: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue)
-  name: Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.html#DidiFrame_UserCommands_ContextValidation_Arguments_Validators_GreaterThen_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_
-  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue)
-  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
-  nameWithType: GreaterThen.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue)
+- uid: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)
+  name: Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  href: api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.html#DidiFrame_UserCommands_ContextValidation_Arguments_Validators_GreaterThen_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)
+  fullName: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
+  nameWithType: GreaterThen.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)
 - uid: DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate*
   name: Validate
   href: api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.html#DidiFrame_UserCommands_ContextValidation_Arguments_Validators_GreaterThen_Validate_
@@ -5677,12 +5694,12 @@ references:
   isSpec: "True"
   fullName: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Disable
   nameWithType: Disable.Disable
-- uid: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter(IServiceProvider,UserCommandContext)
-  name: Filter(IServiceProvider, UserCommandContext)
-  href: api/DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.html#DidiFrame_UserCommands_ContextValidation_Invoker_Filters_Disable_Filter_IServiceProvider_UserCommandContext_
-  commentId: M:DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter(IServiceProvider,UserCommandContext)
-  fullName: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter(IServiceProvider, UserCommandContext)
-  nameWithType: Disable.Filter(IServiceProvider, UserCommandContext)
+- uid: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter(IServiceProvider,UserCommandContext,IServiceProvider)
+  name: Filter(IServiceProvider, UserCommandContext, IServiceProvider)
+  href: api/DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.html#DidiFrame_UserCommands_ContextValidation_Invoker_Filters_Disable_Filter_IServiceProvider_UserCommandContext_IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter(IServiceProvider,UserCommandContext,IServiceProvider)
+  fullName: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter(IServiceProvider, UserCommandContext, IServiceProvider)
+  nameWithType: Disable.Filter(IServiceProvider, UserCommandContext, IServiceProvider)
 - uid: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter*
   name: Filter
   href: api/DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.html#DidiFrame_UserCommands_ContextValidation_Invoker_Filters_Disable_Filter_
@@ -5709,12 +5726,12 @@ references:
   isSpec: "True"
   fullName: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.PermissionFilter
   nameWithType: PermissionFilter.PermissionFilter
-- uid: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.Filter(IServiceProvider,UserCommandContext)
-  name: Filter(IServiceProvider, UserCommandContext)
-  href: api/DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.html#DidiFrame_UserCommands_ContextValidation_Invoker_Filters_PermissionFilter_Filter_IServiceProvider_UserCommandContext_
-  commentId: M:DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.Filter(IServiceProvider,UserCommandContext)
-  fullName: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.Filter(IServiceProvider, UserCommandContext)
-  nameWithType: PermissionFilter.Filter(IServiceProvider, UserCommandContext)
+- uid: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.Filter(IServiceProvider,UserCommandContext,IServiceProvider)
+  name: Filter(IServiceProvider, UserCommandContext, IServiceProvider)
+  href: api/DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.html#DidiFrame_UserCommands_ContextValidation_Invoker_Filters_PermissionFilter_Filter_IServiceProvider_UserCommandContext_IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.Filter(IServiceProvider,UserCommandContext,IServiceProvider)
+  fullName: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.Filter(IServiceProvider, UserCommandContext, IServiceProvider)
+  nameWithType: PermissionFilter.Filter(IServiceProvider, UserCommandContext, IServiceProvider)
 - uid: DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.Filter*
   name: Filter
   href: api/DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.html#DidiFrame_UserCommands_ContextValidation_Invoker_Filters_PermissionFilter_Filter_
@@ -5728,12 +5745,12 @@ references:
   commentId: T:DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter
   fullName: DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter
   nameWithType: IUserCommandInvokerFilter
-- uid: DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter(IServiceProvider,UserCommandContext)
-  name: Filter(IServiceProvider, UserCommandContext)
-  href: api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html#DidiFrame_UserCommands_ContextValidation_Invoker_IUserCommandInvokerFilter_Filter_IServiceProvider_UserCommandContext_
-  commentId: M:DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter(IServiceProvider,UserCommandContext)
-  fullName: DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter(IServiceProvider, UserCommandContext)
-  nameWithType: IUserCommandInvokerFilter.Filter(IServiceProvider, UserCommandContext)
+- uid: DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter(IServiceProvider,UserCommandContext,IServiceProvider)
+  name: Filter(IServiceProvider, UserCommandContext, IServiceProvider)
+  href: api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html#DidiFrame_UserCommands_ContextValidation_Invoker_IUserCommandInvokerFilter_Filter_IServiceProvider_UserCommandContext_IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter(IServiceProvider,UserCommandContext,IServiceProvider)
+  fullName: DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter(IServiceProvider, UserCommandContext, IServiceProvider)
+  nameWithType: IUserCommandInvokerFilter.Filter(IServiceProvider, UserCommandContext, IServiceProvider)
 - uid: DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter*
   name: Filter
   href: api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html#DidiFrame_UserCommands_ContextValidation_Invoker_IUserCommandInvokerFilter_Filter_
@@ -5952,15 +5969,15 @@ references:
   isSpec: "True"
   fullName: DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.CommandConverter
   nameWithType: CommandConverter.CommandConverter
-- uid: DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert(IServiceProvider,UserCommandPreContext,IReadOnlyList{System.Object})
-  name: Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<Object>)
-  href: api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.html#DidiFrame_UserCommands_Loader_EmbededCommands_Help_CommandConverter_Convert_IServiceProvider_UserCommandPreContext_IReadOnlyList_System_Object__
-  commentId: M:DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert(IServiceProvider,UserCommandPreContext,IReadOnlyList{System.Object})
-  name.vb: Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of Object))
-  fullName: DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<System.Object>)
-  fullName.vb: DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of System.Object))
-  nameWithType: CommandConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<Object>)
-  nameWithType.vb: CommandConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of Object))
+- uid: DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert(IServiceProvider,UserCommandPreContext,IReadOnlyList{System.Object},IServiceProvider)
+  name: Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<Object>, IServiceProvider)
+  href: api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.html#DidiFrame_UserCommands_Loader_EmbededCommands_Help_CommandConverter_Convert_IServiceProvider_UserCommandPreContext_IReadOnlyList_System_Object__IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert(IServiceProvider,UserCommandPreContext,IReadOnlyList{System.Object},IServiceProvider)
+  name.vb: Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of Object), IServiceProvider)
+  fullName: DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<System.Object>, IServiceProvider)
+  fullName.vb: DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of System.Object), IServiceProvider)
+  nameWithType: CommandConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<Object>, IServiceProvider)
+  nameWithType.vb: CommandConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of Object), IServiceProvider)
 - uid: DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Convert*
   name: Convert
   href: api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.html#DidiFrame_UserCommands_Loader_EmbededCommands_Help_CommandConverter_Convert_
@@ -8203,15 +8220,15 @@ references:
   commentId: T:DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter
   fullName: DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter
   nameWithType: IDefaultContextConveterSubConverter
-- uid: DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert(IServiceProvider,UserCommandPreContext,IReadOnlyList{System.Object})
-  name: Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<Object>)
-  href: api/DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html#DidiFrame_UserCommands_PreProcessing_IDefaultContextConveterSubConverter_Convert_IServiceProvider_UserCommandPreContext_IReadOnlyList_System_Object__
-  commentId: M:DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert(IServiceProvider,UserCommandPreContext,IReadOnlyList{System.Object})
-  name.vb: Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of Object))
-  fullName: DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<System.Object>)
-  fullName.vb: DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of System.Object))
-  nameWithType: IDefaultContextConveterSubConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<Object>)
-  nameWithType.vb: IDefaultContextConveterSubConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of Object))
+- uid: DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert(IServiceProvider,UserCommandPreContext,IReadOnlyList{System.Object},IServiceProvider)
+  name: Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<Object>, IServiceProvider)
+  href: api/DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html#DidiFrame_UserCommands_PreProcessing_IDefaultContextConveterSubConverter_Convert_IServiceProvider_UserCommandPreContext_IReadOnlyList_System_Object__IServiceProvider_
+  commentId: M:DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert(IServiceProvider,UserCommandPreContext,IReadOnlyList{System.Object},IServiceProvider)
+  name.vb: Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of Object), IServiceProvider)
+  fullName: DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<System.Object>, IServiceProvider)
+  fullName.vb: DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of System.Object), IServiceProvider)
+  nameWithType: IDefaultContextConveterSubConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList<Object>, IServiceProvider)
+  nameWithType.vb: IDefaultContextConveterSubConverter.Convert(IServiceProvider, UserCommandPreContext, IReadOnlyList(Of Object), IServiceProvider)
 - uid: DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.Convert*
   name: Convert
   href: api/DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html#DidiFrame_UserCommands_PreProcessing_IDefaultContextConveterSubConverter_Convert_
