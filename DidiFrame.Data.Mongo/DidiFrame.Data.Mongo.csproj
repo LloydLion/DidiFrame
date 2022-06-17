@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageId>$(Authors).$(AssemblyName)</PackageId>
+    <PackageId>LloydLion.$(AssemblyName)</PackageId>
     <Version>1.2.0-dev</Version>
     <Authors>LloydLion</Authors>
     <Description>LloydLion.DidiFrame module that contains mongo db based data management subsystem</Description>

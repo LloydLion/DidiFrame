@@ -22,7 +22,7 @@ using DidiFrame.Culture;
 using DidiFrame.GlobalEvents;
 using DidiFrame.Data.Lifetime;
 using DidiFrame.UserCommands.Loader.Reflection;
-using DidiFrame.DSharpAdapter;
+using DidiFrame.Clients.DSharp;
 using DidiFrame;
 using DidiFrame.Application;
 using DidiFrame.Data.MongoDB;

@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.0.3" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DidiFrame.Clients.DSharp\DidiFrame.Clients.DSharp.csproj" />
+    <ProjectReference Include="..\DidiFrame.Data.Json\DidiFrame.Data.Json.csproj" />
+    <ProjectReference Include="..\DidiFrame.Data.Mongo\DidiFrame.Data.Mongo.csproj" />
     <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
   </ItemGroup>
 
