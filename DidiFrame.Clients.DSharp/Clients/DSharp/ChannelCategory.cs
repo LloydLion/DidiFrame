@@ -1,6 +1,8 @@
-﻿using DSharpPlus.Entities;
+﻿using DidiFrame.Entities;
+using DidiFrame.Interfaces;
+using DSharpPlus.Entities;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class ChannelCategory : IChannelCategory
 	{

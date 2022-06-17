@@ -1,7 +1,7 @@
-﻿using DSharpPlus;
+﻿using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class VoiceChannel : Channel, IVoiceChannel
 	{

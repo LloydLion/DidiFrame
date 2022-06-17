@@ -1,7 +1,11 @@
-﻿using DSharpPlus.Entities;
+﻿using DidiFrame.Entities;
+using DidiFrame.Entities.Message;
+using DidiFrame.Entities.Message.Components;
+using DidiFrame.Entities.Message.Embed;
+using DSharpPlus.Entities;
 using System.Text;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal static class MessageConverter
 	{
@@ -99,7 +103,7 @@ namespace DidiFrame.DSharpAdapter
 					{
 						Title = baseEmbed.Title,
 						Description = baseEmbed.Description,
-						Color = baseEmbed.Color.GetDSharp(),
+                        Color = baseEmbed.Color.GetDSharp(),
 						Timestamp = baseEmbed.Metadata.Timestamp,
 						Author = new DiscordEmbedBuilder.EmbedAuthor()
 						{ IconUrl = baseEmbed.Metadata.AuthorIconUrl, Name = baseEmbed.Metadata.AuthorName, Url = baseEmbed.Metadata.AuthorPersonalUrl },

@@ -1,9 +1,13 @@
 ﻿using DidiFrame.Culture;
+using DidiFrame.Exceptions;
+using DidiFrame.Interfaces;
 using DSharpPlus;
 using DSharpPlus.Exceptions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Globalization;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
 	/// Discord client based on DSharpPlus library
@@ -26,6 +30,7 @@ namespace DidiFrame.DSharpAdapter
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 		private readonly ILogger<Client> logger;
+		private readonly Lazy<IUser> selfAccount;
 
 		/// <inheritdoc/>
 		public event MessageSentEventHandler? MessageSent;
@@ -38,8 +43,7 @@ namespace DidiFrame.DSharpAdapter
 		public IReadOnlyCollection<IServer> Servers => servers;
 
 		/// <inheritdoc/>
-		public IUser SelfAccount => new User(client.CurrentUser, this);
-
+		public IUser SelfAccount => selfAccount.Value;
 		/// <summary>
 		/// Base client from DSharpPlus library
 		/// </summary>
@@ -70,6 +74,7 @@ namespace DidiFrame.DSharpAdapter
 			});
 
 			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
+			selfAccount = new(() => new User(client.CurrentUser, this));
 		}
 
 		//Must be invoked from TextChannel objects

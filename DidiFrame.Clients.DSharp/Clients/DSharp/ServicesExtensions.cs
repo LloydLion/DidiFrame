@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DidiFrame.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
 	/// Extensions for DidiFrame.DSharpAdapter namespace for service collection

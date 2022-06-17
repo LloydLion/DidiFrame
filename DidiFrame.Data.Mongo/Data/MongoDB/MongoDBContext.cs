@@ -1,7 +1,9 @@
 ﻿using DidiFrame.Data.ContextBased;
+using DidiFrame.Interfaces;
 using DidiFrame.Utils;
 using DidiFrame.Utils.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;

@@ -1,11 +1,12 @@
 ﻿using DidiFrame.Culture;
+using DidiFrame.Interfaces;
 using DidiFrame.Utils;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System.Collections;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class Server : IServer, IDisposable
 	{

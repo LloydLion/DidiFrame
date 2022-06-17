@@ -1,8 +1,11 @@
-﻿using DSharpPlus;
+﻿using DidiFrame.Entities.Message.Components;
+using DidiFrame.Exceptions;
+using DidiFrame.Interfaces;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class MessageInteractionDispatcher : IInteractionDispatcher, IDisposable
 	{
@@ -13,7 +16,10 @@ namespace DidiFrame.DSharpAdapter
 		public MessageInteractionDispatcher(Message message)
 		{
 			this.message = message;
-			if (message.SendModel.ComponentsRows is null || message.SendModel.ComponentsRows.Any() == false) throw new ArgumentException("Enable to created InteractionDispatcher if message no contains components");
+			if (message.TextChannel.Server.Client.SelfAccount != message.Author)
+				throw new ArgumentException("Enable to create InteractionDispatcher if message sent not by bot");
+			if (message.SendModel.ComponentsRows is null || message.SendModel.ComponentsRows.Any() == false)
+				throw new ArgumentException("Enable to create InteractionDispatcher if message no contains components");
 			message.BaseChannel.BaseServer.SourceClient.BaseClient.ComponentInteractionCreated += OnInteractionCreated;
 		}
 

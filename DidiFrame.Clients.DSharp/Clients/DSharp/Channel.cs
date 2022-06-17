@@ -1,6 +1,8 @@
-﻿using DSharpPlus.Entities;
+﻿using DidiFrame.Entities;
+using DidiFrame.Interfaces;
+using DSharpPlus.Entities;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class Channel : IChannel
 	{
@@ -11,8 +13,7 @@ namespace DidiFrame.DSharpAdapter
 
 		public ulong Id => channel.Id;
 
-		public IChannelCategory Category => channel.Parent is null ?
-			new ChannelCategory(server) : new ChannelCategory(channel.Parent, server);
+		public IChannelCategory Category { get; }
 
 		public IServer Server => server;
 
@@ -23,6 +24,8 @@ namespace DidiFrame.DSharpAdapter
 
 		public Channel(DiscordChannel channel, Server server)
 		{
+			Category = channel.Parent is null ? server.GetCategory(null) :
+				server.GetCategories().Single(s => s.Id == channel.ParentId);
 			this.channel = channel;
 			this.server = server;
 		}

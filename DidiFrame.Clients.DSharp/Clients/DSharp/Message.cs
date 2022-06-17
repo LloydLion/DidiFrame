@@ -1,7 +1,8 @@
 ﻿using DidiFrame.Entities.Message;
+using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class Message : IMessage, IDisposable
 	{

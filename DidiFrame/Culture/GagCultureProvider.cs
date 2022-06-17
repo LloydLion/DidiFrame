@@ -2,7 +2,7 @@
 
 namespace DidiFrame.Culture
 {
-	internal class GagCultureProvider : IServerCultureProvider
+	public class GagCultureProvider : IServerCultureProvider
 	{
 		private readonly CultureInfo cultureInfoForEachServer;
 

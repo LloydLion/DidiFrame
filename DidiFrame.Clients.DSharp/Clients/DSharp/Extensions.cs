@@ -5,8 +5,10 @@ using AbsChannelType = DidiFrame.Entities.ChannelType;
 using DButtonStyle= DSharpPlus.ButtonStyle;
 using AbsButtonStyle = DidiFrame.Entities.Message.Components.ButtonStyle;
 using DSharpPlus.Entities;
+using DidiFrame.Exceptions;
+using DidiFrame.Entities;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal static class Extensions
 	{

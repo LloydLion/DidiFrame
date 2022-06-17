@@ -1,8 +1,10 @@
-﻿using DidiFrame.Entities.Message;
+﻿using DidiFrame.Entities;
+using DidiFrame.Entities.Message;
+using DidiFrame.Interfaces;
 using DidiFrame.Utils;
 using DSharpPlus.Entities;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class TextChannel : Channel, ITextChannel
 	{

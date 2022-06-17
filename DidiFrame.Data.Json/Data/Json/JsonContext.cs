@@ -1,6 +1,8 @@
 ﻿using DidiFrame.Data.ContextBased;
+using DidiFrame.Interfaces;
 using DidiFrame.Utils;
 using DidiFrame.Utils.Json;
+using Microsoft.Extensions.Logging;
 
 namespace DidiFrame.Data.Json
 {

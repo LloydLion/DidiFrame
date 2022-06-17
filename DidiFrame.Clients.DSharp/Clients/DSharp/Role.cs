@@ -1,11 +1,13 @@
-﻿using DSharpPlus.Entities;
+﻿using DidiFrame.Entities;
+using DidiFrame.Interfaces;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class Role : IRole
 	{

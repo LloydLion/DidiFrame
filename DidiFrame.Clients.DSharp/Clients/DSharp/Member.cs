@@ -1,6 +1,9 @@
-﻿using DSharpPlus.Entities;
+﻿using DidiFrame.Entities;
+using DidiFrame.Entities.Message;
+using DidiFrame.Interfaces;
+using DSharpPlus.Entities;
 
-namespace DidiFrame.DSharpAdapter
+namespace DidiFrame.Clients.DSharp
 {
 	internal class Member : User, IMember
 	{
@@ -37,13 +40,13 @@ namespace DidiFrame.DSharpAdapter
 			member.PermissionsIn(((Channel)channel).BaseChannel).GetAbstract().HasFlag(permissions);
 
 
-		public Task SendDirectMessageAsyncInternal(MessageSendModel model)
+		internal Task SendDirectMessageAsyncInternal(MessageSendModel model)
 		{
 			return BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
 				var channel = await member.CreateDmChannelAsync();
 				await channel.SendMessageAsync(MessageConverter.ConvertUp(model));
-			}, new(DSharpAdapter.Client.UserName, Id, base.UserName));
+			}, new(DSharp.Client.UserName, Id, base.UserName));
 		}
 	}
 }
