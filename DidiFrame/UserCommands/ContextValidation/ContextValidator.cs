@@ -63,7 +63,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 				if (providers is not null)
 					foreach (var provider in providers)
 					{
-						var values = provider.ProvideValues(services);
+						var values = provider.ProvideValues(input.Channel.Server, services);
 						if (!values.Contains(argument.Value.ComplexObject))
 						{
 							failResult = new("MissmatchObject", UserCommandCode.InvalidInput);

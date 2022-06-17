@@ -23,7 +23,7 @@
 
 
 		/// <inheritdoc/>
-		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData)
+		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData, object dispatcherState)
 		{
 			return Task.Run(() =>
 			{
@@ -33,7 +33,7 @@
 
 				foreach (var middleware in pipeline.Middlewares)
 				{
-					var context = new UserCommandPipelineContext(services, sendData);
+					var context = new UserCommandPipelineContext(services, sendData, (result) => pipeline.Origin.Respond(dispatcherState, result));
 
 					var newValue = middleware.Process(currentValue, context);
 

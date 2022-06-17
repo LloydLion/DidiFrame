@@ -1,5 +1,9 @@
 ﻿namespace DidiFrame.UserCommands.Pipeline
 {
+	public delegate void DispatcherSyncCallback<in TOut>(IUserCommandPipelineDispatcher<TOut> invoker,
+		TOut dispatcherOutput, UserCommandSendData sendData, object stateObject) where TOut : notnull;
+
+
 	/// <summary>
 	/// Dispatcher for user command pipeline, it is origin and end of pipeline
 	/// </summary>
@@ -9,7 +13,11 @@
 		/// <summary>
 		/// Subscribes sync hander to start-pipeline event
 		/// </summary>
-		/// <param name="actionWithCallback">Handler that recives start object, send data and callback to call at end</param>
-		public void SetSyncCallback(Action<TOut, UserCommandSendData, Action<UserCommandResult>> actionWithCallback);
+		/// <param name="callback">Handler that recives start object, send data and state object to finalize pipeline using dispathcer</param>
+		public void SetSyncCallback(DispatcherSyncCallback<TOut> callback);
+
+		public void Respond(object stateObject, UserCommandResult result);
+
+		public void FinalizePipeline(object stateObject);
 	}
 }

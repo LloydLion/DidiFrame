@@ -12,6 +12,6 @@
 		/// <param name="input">Input object from dispatcher</param>
 		/// <param name="sendData">Send data from dispatcher</param>
 		/// <returns>Task with result for dispatcher or null if pipeline has dropped</returns>
-		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData);
+		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData, object dispatcherState);
 	}
 }

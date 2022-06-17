@@ -104,12 +104,13 @@ namespace DidiFrame.Application
 			var pipelineBuilder = services.GetRequiredService<IUserCommandPipelineBuilder>();
 			var pipeline = pipelineBuilder.Build(services);
 			var executor = services.GetRequiredService<IUserCommandPipelineExecutor>();
-			pipeline.Origin.SetSyncCallback(async (obj, sendData, callback) =>
+			pipeline.Origin.SetSyncCallback(async (dispatcher, obj, sendData, state) =>
 			{
 				try
 				{
-					var result = await executor.ProcessAsync(pipeline, obj, sendData);
-					if (result is not null) callback(result);
+					var result = await executor.ProcessAsync(pipeline, obj, sendData, state);
+					if (result is not null) dispatcher.Respond(state, result);
+					dispatcher.FinalizePipeline(state);
 				}
 				catch (Exception ex)
 				{

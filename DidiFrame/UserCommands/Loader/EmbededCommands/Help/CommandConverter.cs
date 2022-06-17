@@ -32,5 +32,31 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			if (!has) return ConvertationResult.Failture("NoCommandExist", UserCommandCode.InvalidInput);
 			else return ConvertationResult.Success(value ?? throw new ImpossibleVariantException());
 		}
+
+		/// <inheritdoc/>
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices)
+		{
+			return new[] { ((UserCommandInfo)convertationResult).Name };
+		}
+
+		/// <inheritdoc/>
+		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()
+		{
+			return new PossibleValues();
+		}
+
+
+		public class PossibleValues : IUserCommandArgumentValuesProvider
+		{
+			/// <inheritdoc/>
+			public Type TargetType => typeof(UserCommandInfo);
+
+
+			/// <inheritdoc/>
+			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+			{
+				return services.GetRequiredService<IUserCommandsRepository>().GetCommandsFor(server);
+			}
+		}
 	}
 }

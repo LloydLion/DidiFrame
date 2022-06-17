@@ -5,6 +5,6 @@
 		public Type TargetType { get; }	
 
 
-		public IReadOnlyCollection<object> ProvideValues(IServiceProvider services);
+		public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services);
 	}
 }
