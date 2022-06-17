@@ -73,7 +73,9 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 
 						try
 						{
-							var commandName = ((CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), false)[0]).Name;
+							var commandAttr = (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), false)[0];
+							var commandName = commandAttr.Name;
+							var isSync = !method.ReturnType.IsAssignableTo(typeof(Task));
 
 							var @params = method.GetParameters();
 							var args = new UserCommandArgument[@params.Length - 1];
@@ -118,7 +120,8 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 							var description = method.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
 							if (description is not null) additionalInfo.Add(description.GetType(), description);
 
-							var readyInfo = new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
+							var handler = new Handler(method, instance, isSync, commandAttr.ReturnLocaleKey is not null ? handlerLocalizer[commandAttr.ReturnLocaleKey] : (string?)null);
+							var readyInfo = new UserCommandInfo(commandName, handler.HandleAsync, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
 
 							rp.AddCommand(instance.ReprocessCommand(readyInfo));
 
@@ -155,7 +158,14 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 			if (@params.Length > 1)
 				if (!Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
 
-			if (info.ReturnType != typeof(Task<UserCommandResult>) && info.ReturnType != typeof(UserCommandResult)) return false;
+			if (attr.ReturnLocaleKey is not null)
+			{
+				if (info.ReturnType != typeof(Task) && info.ReturnType != typeof(void)) return false;
+			}
+			else
+			{
+				if (info.ReturnType != typeof(Task<UserCommandResult>) && info.ReturnType != typeof(UserCommandResult)) return false;
+			}
 
 			return true;
 		}
@@ -165,14 +175,16 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		{
 			private readonly MethodInfo method;
 			private readonly object obj;
-			private readonly bool isSync;
+			private readonly string? returnLocalizedString;
+			private readonly bool asSync;
 
 
-			public Handler(MethodInfo method, object obj)
+			public Handler(MethodInfo method, object obj, bool asSync, string? returnLocalizedString)
 			{
 				this.method = method;
 				this.obj = obj;
-				isSync = method.ReturnType == typeof(UserCommandResult);
+				this.asSync = asSync;
+				this.returnLocalizedString = returnLocalizedString;
 			}
 
 
@@ -181,7 +193,13 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				var callRes = method.Invoke(obj, ctx.Arguments.Values.Select(s => s.ComplexObject).Prepend(ctx).ToArray()) ??
 						throw new NullReferenceException("Handler method's return was null");
 
-				return isSync ? Task.FromResult((UserCommandResult)callRes) : (Task<UserCommandResult>)callRes;
+				if (returnLocalizedString is not null)
+				{
+					var cache = returnLocalizedString;
+					return asSync ? Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) }) :
+						((Task)callRes).ContinueWith(s => new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) });
+				}
+				else return asSync ? Task.FromResult((UserCommandResult)callRes) : (Task<UserCommandResult>)callRes;
 			}
 		}
 	}

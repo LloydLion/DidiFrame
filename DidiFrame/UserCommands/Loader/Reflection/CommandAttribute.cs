@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Loader.Reflection
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DidiFrame.UserCommands.Loader.Reflection
 {
 	/// <summary>
 	/// Indicates method as command
@@ -14,11 +16,19 @@
 		{
 			Name = name;
 		}
+		
+		public CommandAttribute(string name, string returnLocaleKey)
+		{
+			Name = name;
+			ReturnLocaleKey = returnLocaleKey;
+		}
 
 
 		/// <summary>
 		/// Name of new command
 		/// </summary>
 		public string Name { get; }
+
+		public string? ReturnLocaleKey { get; }
 	}
 }
