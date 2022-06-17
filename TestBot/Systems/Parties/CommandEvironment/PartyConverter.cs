@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Parties.CommandEvironment
 {
-	internal class PartyConverter : IDefaultContextConveterSubConverter
+	internal class PartyConverter : IUserCommandContextSubConverter
 	{
 		public Type WorkType => typeof(ObjectHolder<PartyModel>);
 

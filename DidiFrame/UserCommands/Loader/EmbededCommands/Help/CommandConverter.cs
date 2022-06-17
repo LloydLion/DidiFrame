@@ -6,7 +6,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 	/// <summary>
 	/// Sub converter for DidiFrame.UserCommands.Models.UserCommandInfo type
 	/// </summary>
-	public class CommandConverter : IDefaultContextConveterSubConverter
+	public class CommandConverter : IUserCommandContextSubConverter
 	{
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter

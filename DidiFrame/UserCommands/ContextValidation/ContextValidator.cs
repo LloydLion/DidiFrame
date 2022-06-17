@@ -34,19 +34,20 @@ namespace DidiFrame.UserCommands.ContextValidation
 			var cmdLocalizer = cmd.AdditionalInfo.GetExtension<IStringLocalizer>();
 
 			if (filters is not null)
-			foreach (var filter in filters)
-			{
-				failResult = filter.Filter(services, input, pipelineContext.LocalServices);
-					if (failResult is not null)
-					{
-						var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}:{failResult.LocaleKey}"];
-						return fail(localizer["ByFilterBlockedMessage", arg]);
-					}
-			}
+				foreach (var filter in filters)
+				{
+					failResult = filter.Filter(services, input, pipelineContext.LocalServices);
+						if (failResult is not null)
+						{
+							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}:{failResult.LocaleKey}"];
+							return fail(localizer["ByFilterBlockedMessage", arg]);
+						}
+				}
 
 			foreach (var argument in input.Arguments)
 			{
 				var validators = argument.Key.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandArgumentValidator>>();
+				var providers = argument.Key.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandArgumentValuesProvider>>();
 
 				if (validators is not null)
 					foreach (var validator in validators)
@@ -54,6 +55,18 @@ namespace DidiFrame.UserCommands.ContextValidation
 						failResult = validator.Validate(services, input, argument.Key, argument.Value, pipelineContext.LocalServices);
 						if (failResult is not null)
 						{
+							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}.{argument.Key.Name}:{failResult.LocaleKey}", argument.Value.ComplexObject];
+							return fail(localizer["ValidationErrorMessage", arg]);
+						}
+					}
+				
+				if (providers is not null)
+					foreach (var provider in providers)
+					{
+						var values = provider.ProvideValues(services);
+						if (!values.Contains(argument.Value.ComplexObject))
+						{
+							failResult = new("MissmatchObject", UserCommandCode.InvalidInput);
 							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}.{argument.Key.Name}:{failResult.LocaleKey}", argument.Value.ComplexObject];
 							return fail(localizer["ValidationErrorMessage", arg]);
 						}

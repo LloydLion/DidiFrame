@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Streaming.CommandEvironment
 {
-	internal class StreamConverter : IDefaultContextConveterSubConverter
+	internal class StreamConverter : IUserCommandContextSubConverter
 	{
 		public Type WorkType => typeof(StreamLifetime);
 

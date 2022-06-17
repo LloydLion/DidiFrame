@@ -25,8 +25,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 			typeof(Tuple<,,,,,,>),
 		};
 
-		private static readonly IReadOnlyDictionary<Type, UserCommandArgument.Type> argsTypes = Enum.GetValues(typeof(UserCommandArgument.Type))
-				.OfType<UserCommandArgument.Type>().ToDictionary(s => s.GetReqObjectType());
+		private static readonly IReadOnlyDictionary<Type, UserCommandArgument.Type> argsTypes = Enum.GetValues<UserCommandArgument.Type>().ToDictionary(s => s.GetReqObjectType());
 
 		private readonly IEnumerable<ICommandsModule> modules;
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
@@ -82,40 +81,33 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 							{
 								var ptype = @params[i].ParameterType;
 								UserCommandArgument.Type[] types;
+								var providers = new List<IUserCommandArgumentValuesProvider>();
 
 
 								var pet = ptype.GetElementType(); //Null if not array, Not null if array
 								if (argsTypes.ContainsKey(ptype) || (pet is not null && argsTypes.ContainsKey(pet)))
-									types = parseAndConvertType(pet ?? ptype);
+									types = new[] { argsTypes[pet ?? ptype] };
 								else
 								{
-									//If can get will put into workType var else condition'll enter
-									if (converter.TryGetPreObjectTypes(ptype, out var patypes) == false)
-									{
-										var ota = @params[i].GetCustomAttribute<OriginalTypeAttribute>() ?? throw new NullReferenceException();
-										types = parseAndConvertType(ota.OriginalType);
-									}
-									else types = patypes.ToArray();
+									var subc = converter.GetSubConverter(ptype);
+									types = subc.PreObjectTypes.ToArray();
+									var pprov = subc.CreatePossibleValuesProvider();
+									if(pprov is not null) providers.Add(pprov);
 								}
 
-								var argAdditionalInfo = new List<(object, Type)>();
+								var argAdditionalInfo = new Dictionary<Type, object>();
+
+								providers.AddRange(@params[i].GetCustomAttributes<ValuesProviderAttribute>().Select(s => s.Provider).ToArray());
+								argAdditionalInfo.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), providers);
 
 								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Select(s => s.Validator).ToArray();
-								argAdditionalInfo.Add((validators, typeof(IReadOnlyCollection<IUserCommandArgumentValidator>)));
+								argAdditionalInfo.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValidator>), validators);
 
 								var argDescription = @params[i].GetCustomAttribute<ArgDescriptionAttribute>()?.CreateModel();
-								if(argDescription is not null) argAdditionalInfo.Add((argDescription, argDescription.GetType()));
+								if(argDescription is not null) argAdditionalInfo.Add(argDescription.GetType(), argDescription);
 
 								args[i - 1] = new UserCommandArgument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name",
-									new SimpleModelAdditionalInfoProvider(argAdditionalInfo.ToArray()));
-
-
-								static UserCommandArgument.Type[] parseAndConvertType(Type type)
-								{
-									if (type.IsGenericType && tuples.Contains(type.GetGenericTypeDefinition()))
-										return type.GetGenericArguments().Select(s => argsTypes[s]).ToArray();
-									else return new[] { argsTypes[type] };
-								}
+									new SimpleModelAdditionalInfoProvider(argAdditionalInfo));
 							}
 
 							var additionalInfo = new Dictionary<Type, object> { { typeof(IStringLocalizer), handlerLocalizer } };

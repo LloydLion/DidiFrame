@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Games.CommandEvironment
 {
-	internal class GameConverter : IDefaultContextConveterSubConverter
+	internal class GameConverter : IUserCommandContextSubConverter
 	{
 		public Type WorkType => typeof(GameLifetime);
 

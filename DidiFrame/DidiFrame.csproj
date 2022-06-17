@@ -79,4 +79,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UserCommands\ContextValidation\Arguments\Providers\" />
+  </ItemGroup>
+
 </Project>

@@ -17,7 +17,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		public static IServiceCollection AddHelpCommands(this IServiceCollection services)
 		{
 			services.AddTransient<IUserCommandsLoader, HelpCommandLoader>();
-			services.AddTransient<IDefaultContextConveterSubConverter, CommandConverter>();
+			services.AddTransient<IUserCommandContextSubConverter, CommandConverter>();
 			return services;
 		}
 	}

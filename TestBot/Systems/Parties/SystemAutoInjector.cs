@@ -16,7 +16,7 @@ namespace TestBot.Systems.Parties
 			services.AddSingleton<ICommandsModule, CommandsHandler>();
 			services.AddTransient<IModelFactory<ICollection<PartyModel>>, DefaultCtorModelFactory<List<PartyModel>>>();
 			services.AddTransient<UIHelper>();
-			services.AddTransient<IDefaultContextConveterSubConverter, PartyConverter>();
+			services.AddTransient<IUserCommandContextSubConverter, PartyConverter>();
 		}
 	}
 }

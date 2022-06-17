@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Sub converter for DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter class. Converts raw arguments to ready-to-use object
 	/// </summary>
-	public interface IDefaultContextConveterSubConverter
+	public interface IUserCommandContextSubConverter
 	{
 		/// <summary>
 		/// Output type of convertation
@@ -25,5 +25,9 @@
 		/// <param name="localServices">Local services from pipeline</param>
 		/// <returns>Result of convertation: final object or error locale key</returns>
 		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider localServices);
+
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices);
+
+		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider();
 	}
 }

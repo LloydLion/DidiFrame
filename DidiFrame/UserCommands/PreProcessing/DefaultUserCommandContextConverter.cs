@@ -10,7 +10,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 	/// </summary>
 	public class DefaultUserCommandContextConverter : AbstractUserCommandPipelineMiddleware<UserCommandPreContext, UserCommandContext>, IUserCommandContextConverter
 	{
-		private readonly IReadOnlyCollection<IDefaultContextConveterSubConverter> subConverters;
+		private readonly IReadOnlyCollection<IUserCommandContextSubConverter> subConverters;
 		private readonly IServiceProvider services;
 		private readonly IStringLocalizer<DefaultUserCommandContextConverter> localizer;
 
@@ -21,13 +21,20 @@ namespace DidiFrame.UserCommands.PreProcessing
 		/// <param name="services">Services that will be provided to sub converters</param>
 		/// <param name="subConverters">Sub converters that converts raw arguments to ready-to-use</param>
 		/// <param name="localizer">Localizer that will be used for print error messages</param>
-		public DefaultUserCommandContextConverter(IServiceProvider services, IEnumerable<IDefaultContextConveterSubConverter> subConverters, IStringLocalizer<DefaultUserCommandContextConverter> localizer)
+		public DefaultUserCommandContextConverter(IServiceProvider services, IEnumerable<IUserCommandContextSubConverter> subConverters, IStringLocalizer<DefaultUserCommandContextConverter> localizer)
 		{
 			this.subConverters = subConverters.ToArray();
 			this.services = services;
 			this.localizer = localizer;
 		}
 
+
+		/// <inheritdoc/>
+		public IUserCommandContextSubConverter GetSubConverter(Type type) => subConverters.Single(s => s.WorkType == type);
+
+		/// <inheritdoc/>
+		public IUserCommandContextSubConverter GetSubConverter(IReadOnlyList<UserCommandArgument.Type> inputs) =>
+			subConverters.Single(s => s.PreObjectTypes.SequenceEqual(inputs));
 
 		/// <inheritdoc/>
 		public override UserCommandContext? Process(UserCommandPreContext preCtx, UserCommandPipelineContext pipelineContext)
@@ -60,7 +67,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 				}
 				else if (s.Key.IsArray == false) //Complex non-array argument case
 				{
-					var converter = subConverters.Single(a => a.WorkType == s.Key.TargetType && a.PreObjectTypes.SequenceEqual(s.Key.OriginTypes));
+					var converter = GetSubConverter(s.Key.TargetType);
 					var convertationResult = converter.Convert(services, preCtx, s.Value, pipelineContext.LocalServices);
 					if (convertationResult.IsSuccessful == false)
 					{
@@ -87,28 +94,6 @@ namespace DidiFrame.UserCommands.PreProcessing
 #pragma warning disable CS8620
 			return new UserCommandContext(preCtx.Invoker, preCtx.Channel, preCtx.Command, arguments, new SimpleModelAdditionalInfoProvider((pipelineContext.LocalServices, typeof(IServiceProvider))));
 #pragma warning restore CS8620
-		}
-
-		/// <inheritdoc/>
-		public bool TryGetPreObjectTypes(Type complexType, [NotNullWhen(true)]out IReadOnlyList<UserCommandArgument.Type>? possiblePreObjectTypes)
-		{
-			var pos = subConverters.Where(s => s.WorkType == complexType).ToArray();
-
-			if (pos.Length == 0)
-			{
-				possiblePreObjectTypes = null;
-				throw new InvalidOperationException("No converters for type " + complexType.FullName);
-			}
-			else if (pos.Length == 1)
-			{
-				possiblePreObjectTypes = pos.Single().PreObjectTypes;
-				return true;
-			}
-			else
-			{
-				possiblePreObjectTypes = null;
-				return false;
-			}
 		}
 	}
 }
