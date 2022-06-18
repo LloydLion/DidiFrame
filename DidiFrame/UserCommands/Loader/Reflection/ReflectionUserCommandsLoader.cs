@@ -108,6 +108,9 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 								var argDescription = @params[i].GetCustomAttribute<ArgDescriptionAttribute>()?.CreateModel();
 								if(argDescription is not null) argAdditionalInfo.Add(argDescription.GetType(), argDescription);
 
+								var map = @params[i].GetCustomAttribute<MapAttribute>()?.GetLocaleMap();
+								if (map is not null) argAdditionalInfo.Add(map.GetType(), map);
+
 								args[i - 1] = new UserCommandArgument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name",
 									new SimpleModelAdditionalInfoProvider(argAdditionalInfo));
 							}
