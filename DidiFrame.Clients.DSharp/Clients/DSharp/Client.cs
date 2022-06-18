@@ -51,6 +51,8 @@ namespace DidiFrame.Clients.DSharp
 
 		internal IServerCultureProvider CultureProvider { get; }
 
+		public IServiceProvider Services { get; }
+
 
 		/// <summary>
 		/// Creates instance of DidiFrame.DSharpAdapter.Client
@@ -58,7 +60,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="options">Configuration of DSharp client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>
-		public Client(IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null)
+		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null)
 		{
 			var opt = options.Value;
 			logger = factory.CreateLogger<Client>();
@@ -75,6 +77,7 @@ namespace DidiFrame.Clients.DSharp
 
 			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
 			selfAccount = new(() => new User(client.CurrentUser, this));
+			Services = servicesForExtensions;
 		}
 
 		//Must be invoked from TextChannel objects

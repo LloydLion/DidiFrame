@@ -32,6 +32,8 @@ namespace DidiFrame.Interfaces
 		/// </summary>
 		public IUser SelfAccount { get; }
 
+		public IServiceProvider Services { get; }
+
 
 		/// <summary>
 		/// Waits for bot exit
