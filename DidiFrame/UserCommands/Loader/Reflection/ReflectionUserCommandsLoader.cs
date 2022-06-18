@@ -31,6 +31,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
 		private readonly IStringLocalizerFactory stringLocalizerFactory;
 		private readonly IUserCommandContextConverter converter;
+		private readonly IReadOnlyCollection<IReflectionCommandAdditionalInfoLoader> subloaders;
 
 
 		/// <summary>
@@ -40,12 +41,17 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// <param name="logger">Logger for loader</param>
 		/// <param name="stringLocalizerFactory">Localizer factory to provide localizers for commands</param>
 		/// <param name="converter">Converter to resolve complex arguments</param>
-		public ReflectionUserCommandsLoader(IEnumerable<ICommandsModule> modules, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter)
+		public ReflectionUserCommandsLoader(IEnumerable<ICommandsModule> modules,
+			ILogger<ReflectionUserCommandsLoader> logger,
+			IStringLocalizerFactory stringLocalizerFactory,
+			IUserCommandContextConverter converter,
+			IEnumerable<IReflectionCommandAdditionalInfoLoader> subloaders)
 		{
 			this.modules = modules;
 			this.logger = logger;
 			this.stringLocalizerFactory = stringLocalizerFactory;
 			this.converter = converter;
+			this.subloaders = subloaders.ToArray();
 		}
 
 
@@ -111,6 +117,12 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 								var map = @params[i].GetCustomAttribute<MapAttribute>()?.GetLocaleMap();
 								if (map is not null) argAdditionalInfo.Add(map.GetType(), map);
 
+								foreach (var infoloader in subloaders)
+								{
+									var info = infoloader.ProcessArgument(@params[i]);
+									foreach (var item in info) argAdditionalInfo.Add(item.Key, item.Value);
+								}
+
 								args[i - 1] = new UserCommandArgument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name",
 									new SimpleModelAdditionalInfoProvider(argAdditionalInfo));
 							}
@@ -122,6 +134,12 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 
 							var description = method.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
 							if (description is not null) additionalInfo.Add(description.GetType(), description);
+
+							foreach (var infoloader in subloaders)
+							{
+								var info = infoloader.ProcessMethod(method);
+								foreach (var item in info) additionalInfo.Add(item.Key, item.Value);
+							}
 
 							var handler = new Handler(method, instance, isSync, commandAttr.ReturnLocaleKey is not null ? handlerLocalizer[commandAttr.ReturnLocaleKey] : (string?)null);
 							var readyInfo = new UserCommandInfo(commandName, handler.HandleAsync, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
