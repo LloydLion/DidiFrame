@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal class User : IUser
+	public class User : IUser
 	{
 		private readonly DiscordUser user;
 		private readonly Client client;

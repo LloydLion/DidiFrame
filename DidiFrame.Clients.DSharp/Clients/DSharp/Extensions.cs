@@ -10,7 +10,7 @@ using DidiFrame.Entities;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal static class Extensions
+	public static class Extensions
 	{
 		public static AbsPermissions GetAbstract(this DPermissions dPermissions)
 		{

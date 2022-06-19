@@ -7,7 +7,7 @@ using DSharpPlus.EventArgs;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal class MessageInteractionDispatcher : IInteractionDispatcher, IDisposable
+	public class MessageInteractionDispatcher : IInteractionDispatcher, IDisposable
 	{
 		private readonly Message message;
 		private readonly List<EventHolder> holders = new();

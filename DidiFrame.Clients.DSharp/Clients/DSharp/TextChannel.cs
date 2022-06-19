@@ -6,7 +6,7 @@ using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal class TextChannel : Channel, ITextChannel
+	public class TextChannel : Channel, ITextChannel
 	{
 		public const int MessagesLimit = 5;
 		public const int MessagesIdLimit = 70;
@@ -86,7 +86,7 @@ namespace DidiFrame.Clients.DSharp
 			return msg;
 		}
 
-		public void OnMessageCreate(DiscordMessage message)
+		internal void OnMessageCreate(DiscordMessage message)
 		{
 			//Bot's messages already in list
 			if (message.Author.Id == server.Client.SelfAccount.Id) return;
@@ -107,7 +107,7 @@ namespace DidiFrame.Clients.DSharp
 			server.SourceClient.OnMessageCreated(model);
 		}
 
-		public void OnMessageDelete(DiscordMessage message)
+		internal void OnMessageDelete(DiscordMessage message)
 		{
 			ids.Remove(message.Id);
 

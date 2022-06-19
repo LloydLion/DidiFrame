@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal class ChannelCategory : IChannelCategory
+	public class ChannelCategory : IChannelCategory
 	{
 		private readonly DiscordChannel? category;
 		private readonly Server server;

@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal class Message : IMessage, IDisposable
+	public class Message : IMessage, IDisposable
 	{
 		private DiscordMessage message;
 		private readonly TextChannel owner;

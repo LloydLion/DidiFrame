@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal static class MessageConverter
+	public static class MessageConverter
 	{
 		public static MessageSendModel ConvertDown(DiscordMessage message)
 		{

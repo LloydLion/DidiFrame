@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal class Server : IServer, IDisposable
+	public class Server : IServer, IDisposable
 	{
 		private readonly DiscordGuild guild;
 		private readonly Client client;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DidiFrame.Clients.DSharp
 {
-	internal class Role : IRole
+	public class Role : IRole
 	{
 		private readonly DiscordRole role;
 		private readonly Server server;
