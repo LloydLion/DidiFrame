@@ -18,5 +18,16 @@ namespace TestBot.Systems.Parties.CommandEvironment
 			if (sysCore.HasParty(preCtx.Invoker.Server, name)) return ConvertationResult.Success(sysCore.GetParty(preCtx.Invoker.Server, name));
 			else return ConvertationResult.Failture("PartyNotExist", UserCommandCode.InvalidInput);
 		}
+
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices)
+		{
+			var party = (ObjectHolder<PartyModel>)convertationResult;
+			return new object[] { party.Object };
+		}
+
+		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()
+		{
+			return null;
+		}
 	}
 }

@@ -17,5 +17,16 @@ namespace TestBot.Systems.Streaming.CommandEvironment
 			if (sysCore.HasStream(preCtx.Invoker.Server, name)) return ConvertationResult.Success(sysCore.GetStream(preCtx.Invoker.Server, name));
 			else return ConvertationResult.Failture("StreamNotFound", UserCommandCode.InvalidInput);
 		}
+
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices)
+		{
+			var sl = (StreamLifetime)convertationResult;
+			return new object[] { sl };
+		}
+
+		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()
+		{
+			return null;
+		}
 	}
 }
