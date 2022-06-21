@@ -26,11 +26,19 @@ using DidiFrame.Clients.DSharp;
 using DidiFrame;
 using DidiFrame.Application;
 using DidiFrame.Data.MongoDB;
+using DidiFrame.UserCommands.Pipeline.Building;
 
 using AutoInjector = DidiFrame.AutoInjecting.ReflectionAutoInjector;
 using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
 using DidiFrame.Statistic;
+using DidiFrame.UserCommands.Pipeline;
+using DidiFrame.UserCommands.PreProcessing;
+using DidiFrame.UserCommands.Executing;
+using DidiFrame.UserCommands.Pipeline.Utils;
+using DidiFrame.UserCommands.Pipeline.Services;
+using DidiFrame.UserCommands.ContextValidation;
+using DidiFrame.Clients.DSharp.Clients.DSharp;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -38,23 +46,42 @@ appBuilder.AddJsonConfiguration("settings.json");
 
 appBuilder.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddFacnyConsoleLogging(appBuilder.GetStartupTime()));
 
-appBuilder.AddServices((services, config) => services
-	.AddJsonDataManagement(config.GetSection("Data:Json"), false, true)
-	.AddMongoDataManagement(config.GetSection("Data:Mongo"), true, false)
-	.AddAutoDataRepositories()
-	.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
-	.AddDSharpClient(config.GetSection("Discord"))
-	.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
-	.AddSimpleUserCommandsRepository()
-	.AddReflectionUserCommandsLoader()
-	.AddHelpCommands()
-	.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
-	.AddSettingsBasedCultureProvider()
-	.AddConfiguratedLocalization()
-	.AddLifetimes()
-	.AddGlobalEvents()
-	.AddStateBasedStatisticTools()
-	.InjectAutoDependencies(new AutoInjector()));
+appBuilder.AddServices((services, config) =>
+{
+	services
+		.AddJsonDataManagement(config.GetSection("Data:Json"), false, true)
+		.AddMongoDataManagement(config.GetSection("Data:Mongo"), true, false)
+		.AddAutoDataRepositories()
+		.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
+		.AddDSharpClient(config.GetSection("Discord"))
+		//.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
+		.AddSimpleUserCommandsRepository()
+		.AddReflectionUserCommandsLoader()
+		.AddHelpCommands()
+		.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
+		.AddSettingsBasedCultureProvider()
+		.AddConfiguratedLocalization()
+		.AddLifetimes()
+		.AddGlobalEvents()
+		.AddStateBasedStatisticTools()
+		.InjectAutoDependencies(new AutoInjector());
+
+	services.Configure<DefaultUserCommandsExecutor.Options>(config.GetSection("Commands:Executing"));
+
+	services.AddTransient<IUserCommandContextConverter, DefaultUserCommandContextConverter>();
+
+	services.AddUserCommandLocalService<Disposer>();
+
+	services.AddUserCommandPipeline(builder =>
+	{
+		builder
+			.SetSource<UserCommandPreContext, ApplicationCommandDispatcher>(true)
+			.AddMiddleware(prov => prov.GetRequiredService<IUserCommandContextConverter>())
+			.AddMiddleware<UserCommandContext, ValidatedUserCommandContext, ContextValidator>(true)
+			.AddMiddleware<ValidatedUserCommandContext, UserCommandResult, DefaultUserCommandsExecutor>(true)
+			.Build();
+	});
+});
 
 
 var application = appBuilder.Build();
@@ -64,8 +91,8 @@ var application = appBuilder.Build();
 #endif
 
 application.Connect();
-await application.PrepareAsync();
-await application.AwaitForExit();
+application.PrepareAsync().Wait();
+application.AwaitForExit().Wait();
 
 
 

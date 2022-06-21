@@ -13,7 +13,7 @@ namespace DidiFrame.Clients.DSharp
 
 		public ulong Id => channel.Id;
 
-		public IChannelCategory Category { get; }
+		public IChannelCategory Category => server.GetCategory(channel.ParentId);
 
 		public IServer Server => server;
 
@@ -24,8 +24,6 @@ namespace DidiFrame.Clients.DSharp
 
 		public Channel(DiscordChannel channel, Server server)
 		{
-			Category = channel.Parent is null ? server.GetCategory(null) :
-				server.GetCategories().Single(s => s.Id == channel.ParentId);
 			this.channel = channel;
 			this.server = server;
 		}

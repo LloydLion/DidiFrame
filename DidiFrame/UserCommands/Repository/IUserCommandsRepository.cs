@@ -12,6 +12,10 @@
 		/// <returns>Command collection</returns>
 		public IUserCommandsCollection GetCommandsFor(IServer server);
 
+		public IUserCommandsCollection GetGlobalCommands();
+
+		public IUserCommandsCollection GetFullCommandList(IServer server);
+
 		/// <summary>
 		/// Adds command for server
 		/// </summary>

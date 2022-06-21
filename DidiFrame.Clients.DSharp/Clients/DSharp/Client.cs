@@ -2,6 +2,7 @@
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
