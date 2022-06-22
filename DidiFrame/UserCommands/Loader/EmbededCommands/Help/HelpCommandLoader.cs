@@ -47,7 +47,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		{
 			var page = ctx.Arguments.Single().Value.As<int>();
 
-			var cmds = repository.GetCommandsFor(ctx.Channel.Server);
+			var cmds = repository.GetFullCommandList(ctx.Channel.Server);
 
 			var embedBuilder = new MessageEmbedBuilder(localizer["HelpTitle"], localizer["HelpDescription"], new("#44dca5"));
 

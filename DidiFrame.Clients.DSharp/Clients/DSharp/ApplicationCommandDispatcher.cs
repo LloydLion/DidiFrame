@@ -1,10 +1,13 @@
-﻿using DidiFrame.Interfaces;
+﻿using DidiFrame.Entities;
+using DidiFrame.Interfaces;
 using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.Repository;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.Localization;
+using System.Globalization;
 
 namespace DidiFrame.Clients.DSharp.Clients.DSharp
 {
@@ -13,12 +16,13 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 		private DispatcherSyncCallback<UserCommandPreContext>? callback;
 		private readonly Dictionary<UserCommandInfo, DiscordApplicationCommand> convertedCommands;
 		private readonly Client client;
+		private readonly IStringLocalizer<ApplicationCommandDispatcher> localizer;
 
-
-		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands)
+		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands, IStringLocalizer<ApplicationCommandDispatcher> localizer)
 		{
 			client = (Client)dsharp;
 			client.BaseClient.InteractionCreated += BaseClient_InteractionCreated;
+			this.localizer = localizer;
 
 			var tmp = new Dictionary<UserCommandInfo, DiscordApplicationCommand>();
 			foreach (var cmd in commands.GetGlobalCommands())
@@ -43,7 +47,8 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 				var cmd = convertedCommands.Single(s => s.Value.Id == cmdId);
 
 				var preArgs = new List<object>();
-				foreach (var para in e.Interaction.Data.Options) preArgs.Add(para.Value);
+				if (e.Interaction.Data.Options is not null)
+					foreach (var para in e.Interaction.Data.Options) preArgs.Add(para.Value);
 
 				var list = new Dictionary<UserCommandArgument, IReadOnlyList<object>>();
 				foreach (var arg in cmd.Key.Arguments)
@@ -71,17 +76,19 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 			return Task.CompletedTask;
 		}
 
+		/// <inheritdoc/>
 		public void FinalizePipeline(object stateObject)
 		{
 			var state = (StateObject)stateObject;
 			if (state.Responded == false)
 			{
 				var builder = new DiscordWebhookBuilder();
-				builder.WithContent("Command complite");
+				builder.WithContent(localizer["CommandComplited"]);
 				state.Interaction.EditOriginalResponseAsync(builder).Wait();
 			}
 		}
 
+		/// <inheritdoc/>
 		public void Respond(object stateObject, UserCommandResult result)
 		{
 			var state = (StateObject)stateObject;
@@ -99,17 +106,17 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 			}
 		}
 
+		/// <inheritdoc/>
 		public void SetSyncCallback(DispatcherSyncCallback<UserCommandPreContext> callback)
 		{
 			this.callback = callback;
 		}
 
-		private static DiscordApplicationCommand ConvertCommand(UserCommandInfo info)
+		private DiscordApplicationCommand ConvertCommand(UserCommandInfo info)
 		{
 			var name = info.Name.Replace(" ", "_");
 			var args = info.Arguments.Select(s =>
 			{
-				var types = s.OriginTypes;
 				if (s.IsArray)
 				{
 					var type = castType(s.OriginTypes.Single());
@@ -117,20 +124,29 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 					for (int i = 0; i < array.Length; i++)
 					{
 						var name = s.Name + "_" + i;
-						array[i] = new(name, $"Element of {s.Name} array", type, false);
+						var descLocs = getDCLocs(localizer, DiscordStatic.SupportedCultures, "ArrayElementArgumentDescription", s.Name, i);
+						array[i] = new(name, localizer["ArrayElementArgumentDescription", s.Name, i], type, required: false, description_localizations: descLocs);
 					}
 
 					return array;
 				}
-				else return types.Select((a, i) =>
+				else if (s.OriginTypes.Count == 1)
+				{
+					var type = s.OriginTypes.Single();
+					var descLocs = getDCLocs(localizer, DiscordStatic.SupportedCultures, "SimpleArgumentDescription", s.Name);
+					return new[] { new DiscordApplicationCommandOption(s.Name.ToLower(), localizer["SimpleArgumentDescription", s.Name], castType(type), required: true, description_localizations: descLocs) };
+				}
+				else return s.OriginTypes.Select((a, i) =>
 				{
 					var type = castType(a);
-					var name = s.OriginTypes.Count == 1 ? s.Name : s.Name + "_" + i;
-					return new DiscordApplicationCommandOption(name.ToLower(), "Part/full of " + s.Name + " parameter", type, true);
+					var name = s.Name + "_" + i;
+					var descLocs = getDCLocs(localizer, DiscordStatic.SupportedCultures, "ComplexArgumentDescription", i, s.Name);
+					return new DiscordApplicationCommandOption(name.ToLower(), localizer["ComplexArgumentDescription", i, s.Name], type, required: true, description_localizations: descLocs);
 				}).ToArray();
 			}).SelectMany(s => s).ToArray();
 
-			return new(name, $"Invokes {info.Name} command", args);
+			var cmdDescLocs = getDCLocs(localizer, DiscordStatic.SupportedCultures, "CommandDescription", info.Name);
+			return new(name, localizer["CommandDescription", info.Name], args, description_localizations: cmdDescLocs);
 
 			static ApplicationCommandOptionType castType(UserCommandArgument.Type input) => input switch
 			{
@@ -144,6 +160,13 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 				UserCommandArgument.Type.Integer => ApplicationCommandOptionType.Integer,
 				_ => throw new NotSupportedException(),
 			};
+
+			static IReadOnlyDictionary<string, string> getDCLocs(IStringLocalizer localizer, IReadOnlyCollection<string> cultures, string key, params object[] args)
+			{
+				var r = cultures.ToDictionary(s => new CultureInfo(s));
+				var ret = localizer.GetStringForAllLocales(r.Keys, key, args).ToDictionary(s => r[s.Key], s => s.Value);
+				return ret;
+			}
 		}
 
 		private static IReadOnlyList<object> ReConvert(Server server, IReadOnlyList<object> raw, IReadOnlyList<UserCommandArgument.Type> types)
@@ -163,7 +186,7 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 					UserCommandArgument.Type.Integer => (int)(long)rawArg,
 					UserCommandArgument.Type.String => (string)rawArg,
 					UserCommandArgument.Type.Double => (double)rawArg,
-					UserCommandArgument.Type.Mentionable => throw new NotImplementedException(),
+					UserCommandArgument.Type.Mentionable => getMentionable((ulong)rawArg),
 					UserCommandArgument.Type.TimeSpan => TimeSpan.Parse((string)rawArg),
 					_ => throw new NotSupportedException(),
 				};
@@ -172,6 +195,12 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 			}
 
 			return objs;
+
+
+			object getMentionable(ulong id)
+			{
+				return server.GetMembers().Any(s => s.Id == id) ? server.GetMember(id) : server.GetRole(id);
+			}
 		}
 
 
