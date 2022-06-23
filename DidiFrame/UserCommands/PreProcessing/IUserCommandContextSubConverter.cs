@@ -26,8 +26,18 @@
 		/// <returns>Result of convertation: final object or error locale key</returns>
 		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider localServices);
 
+		/// <summary>
+		/// Converts ready-to-use object to raw argumnets
+		/// </summary>
+		/// <param name="services">Global service provider</param>
+		/// <param name="convertationResult">Ready-to-use object</param>
+		/// <returns></returns>
 		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult);
 
+		/// <summary>
+		/// Creates values provider that provides all possible values of converter output or null if no provider can be created
+		/// </summary>
+		/// <returns>Possible values provider or null</returns>
 		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider();
 	}
 }

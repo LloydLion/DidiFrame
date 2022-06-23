@@ -1,9 +1,13 @@
-﻿using System.Globalization;
-
-namespace DidiFrame.Entities
+﻿namespace DidiFrame.Entities
 {
+	/// <summary>
+	/// Static discord's constants
+	/// </summary>
 	public static class DiscordStatic
 	{
+		/// <summary>
+		/// Codes of supported cultues
+		/// </summary>
 		public readonly static IReadOnlyCollection<string> SupportedCultures = new[]
 		{
 			"da",

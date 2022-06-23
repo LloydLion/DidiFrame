@@ -14,8 +14,11 @@ using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 
-namespace DidiFrame.Clients.DSharp.Clients.DSharp
+namespace DidiFrame.Clients.DSharp
 {
+	/// <summary>
+	/// User command pipeline dispatcher that using discord's application commands
+	/// </summary>
 	public class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>
 	{
 		private DispatcherSyncCallback<UserCommandPreContext>? callback;
@@ -26,6 +29,14 @@ namespace DidiFrame.Clients.DSharp.Clients.DSharp
 		private readonly IServiceProvider services;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Clients.DSharp.ApplicationCommandDispatcher
+		/// </summary>
+		/// <param name="dsharp">DSharp client (only DidiFrame.Clients.DSharp.Client) to attach application commands</param>
+		/// <param name="commands">Repository to register application commands</param>
+		/// <param name="localizer">Localizer to send error messages and write cmds' descriptions</param>
+		/// <param name="converter">Converter to provide subconverters for autocomplite</param>
+		/// <param name="services">Services for values providers</param>
 		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands, IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter, IServiceProvider services)
 		{
 			client = (Client)dsharp;

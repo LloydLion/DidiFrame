@@ -9,6 +9,9 @@ namespace DidiFrame.UserCommands.ContextValidation
 	/// </summary>
 	public class ContextValidator : AbstractUserCommandPipelineMiddleware<UserCommandContext, ValidatedUserCommandContext>
 	{
+		/// <summary>
+		/// Error code that will be transcipted if a provider give error
+		/// </summary>
 		public const string ProviderErrorCode = "NoObjectProvided";
 
 

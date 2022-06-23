@@ -2,6 +2,11 @@
 
 namespace DidiFrame.ClientExtensions
 {
+	/// <summary>
+	/// Reflection based implementation of DidiFrame.ClientExtensions.IServerExtensionFactory
+	/// </summary>
+	/// <typeparam name="TExtension">Type of extension interface</typeparam>
+	/// <typeparam name="TImplementation">Type of extension implementation</typeparam>
 	public class ReflectionServerExtensionFactory<TExtension, TImplementation> : IServerExtensionFactory<TExtension> where TExtension : class where TImplementation : TExtension
 	{
 		private readonly ConstructorInfo constructor;
@@ -9,6 +14,12 @@ namespace DidiFrame.ClientExtensions
 		private TExtension? singleton;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.ClientExtensions.ReflectionServerExtensionFactory`2 that creates extensions using (TServer, IServiceProvider) ctor
+		/// where TServer is IServer's inheritor, but isn't IServer itself
+		/// </summary>
+		/// <param name="asSingleton">If need create only one instance of extension</param>
+		/// <exception cref="ArgumentException">If single ctor of extension is not (TServer, IServiceProvider) where TClient is IServer's inheritor, but isn't IServer itself</exception>
 		public ReflectionServerExtensionFactory(bool asSingleton)
 		{
 			var typeOfImplementation = typeof(TImplementation);
@@ -19,7 +30,7 @@ namespace DidiFrame.ClientExtensions
 			//Validation
 			if (pars.Length != 2 || pars[0].ParameterType == typeof(IClient) ||
 				!pars[0].ParameterType.IsAssignableTo(typeof(IServer)) || pars[1].ParameterType != typeof(IServiceProvider))
-                throw new ArgumentException("Invalid ctor paramters. Excepted ctor: (TServer, IServiceProvider) where TServer is IServer's inheritor, but isn't IServer itself", nameof(TImplementation));
+                throw new ArgumentException("Invalid ctor paramters. Excepted ctor: (TServer, IServiceProvider) where TServer is IServer's inheritor, but isn't IServer itself");
 
 			TargetServerType = pars[1].ParameterType;
 			constructor = ctor;

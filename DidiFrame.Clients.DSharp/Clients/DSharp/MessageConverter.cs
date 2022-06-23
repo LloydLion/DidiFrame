@@ -7,8 +7,16 @@ using System.Text;
 
 namespace DidiFrame.Clients.DSharp
 {
+	/// <summary>
+	/// Utilites to convert message from DSharp model to DidiFrame model
+	/// </summary>
 	public static class MessageConverter
 	{
+		/// <summary>
+		/// Extracts from DSharp's DiscordMessage DidiFrame.Entities.Message.MessageSendModel
+		/// </summary>
+		/// <param name="message">DSharp message</param>
+		/// <returns>DidiFrame send model</returns>
 		public static MessageSendModel ConvertDown(DiscordMessage message)
 		{
 			var content = message.Content;
@@ -81,6 +89,12 @@ namespace DidiFrame.Clients.DSharp
 			return new MessageSendModel(content) { Files = files, MessageEmbeds = embeds, ComponentsRows = components };
 		}
 
+		/// <summary>
+		/// Converts DidiFrame.Entities.Message.MessageSendModel to DSharp message builder
+		/// </summary>
+		/// <param name="messageSendModel">DidiFrame send model</param>
+		/// <returns>DSharp message builder</returns>
+		/// <exception cref="NotSupportedException">If model contains unsupported components</exception>
 		public static DiscordMessageBuilder ConvertUp(MessageSendModel messageSendModel)
 		{
 			var builder = new DiscordMessageBuilder();

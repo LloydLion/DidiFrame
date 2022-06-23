@@ -45,6 +45,14 @@ namespace DidiFrame
 			return services;
 		}
 
+		/// <summary>
+		/// Gets localization of key for each given culture
+		/// </summary>
+		/// <param name="localizer">Localizer to get localizations</param>
+		/// <param name="infos">Target cultures</param>
+		/// <param name="key">Key to transcript</param>
+		/// <param name="args">Arguments for key</param>
+		/// <returns>Dictionary: culture - localization</returns>
 		public static IReadOnlyDictionary<CultureInfo, string> GetStringForAllLocales(this IStringLocalizer localizer, IReadOnlyCollection<CultureInfo> infos, string key, params object[] args)
 		{
 			var ui = Thread.CurrentThread.CurrentUICulture;

@@ -46,13 +46,11 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		}
 
 
-		public class PossibleValues : IUserCommandArgumentValuesProvider
+		private class PossibleValues : IUserCommandArgumentValuesProvider
 		{
-			/// <inheritdoc/>
 			public Type TargetType => typeof(UserCommandInfo);
 
 
-			/// <inheritdoc/>
 			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
 			{
 				return services.GetRequiredService<IUserCommandsRepository>().GetFullCommandList(server);

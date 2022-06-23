@@ -1,6 +1,8 @@
 ﻿using DidiFrame.UserCommands.ContextValidation.Arguments.Providers;
 using DidiFrame.UserCommands.PreProcessing;
 using DidiFrame.Utils.ExtendableModels;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
 
 namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 {
@@ -9,6 +11,9 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 	/// </summary>
 	public class HelpCommandLoader : IUserCommandsLoader
 	{
+		private const int MaxCmdsInOnePage = 20;
+
+
 		private readonly IStringLocalizer<HelpCommandLoader> localizer;
 		private readonly IUserCommandsRepository repository;
 		private readonly IUserCommandContextConverter converter;
@@ -19,6 +24,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		/// </summary>
 		/// <param name="localizer">Localizer for commands</param>
 		/// <param name="repository">Commands repositroy to get commands</param>
+		/// <param name="converter">Converter to get values provider from DidiFrame.UserCommands.Models.UserCommandInfo subconverter</param>
 		public HelpCommandLoader(IStringLocalizer<HelpCommandLoader> localizer, IUserCommandsRepository repository, IUserCommandContextConverter converter)
 		{
 			this.localizer = localizer;
@@ -44,9 +50,11 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 
 			//---------------------------
 
-			dic = new Dictionary<Type, object>();
-			//dic.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), new NumericProvider(1, ));
-			dic.Add(typeof(ArgumentDescription), new ArgumentDescription("TargetPage", null));
+			dic = new Dictionary<Type, object>
+			{
+				{ typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), new IUserCommandArgumentValuesProvider[] { new Provider(rp) } },
+				{ typeof(ArgumentDescription), new ArgumentDescription("TargetPage", null) }
+			};
 
 			rp.AddCommand(new UserCommandInfo("help", HelpHandler, new UserCommandArgument[]
 			{
@@ -66,7 +74,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 
 			var error = Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(localizer["NoPage"]) });
 			if (page <= 0) return error;
-			var data = cmds.Skip((page - 1) * 20).Take(20);
+			var data = cmds.Skip((page - 1) * MaxCmdsInOnePage).Take(MaxCmdsInOnePage);
 			if (!data.Any()) return error;
 
 			foreach (var cmd in data)
@@ -130,6 +138,51 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 
 
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new() { MessageEmbeds = new[] { embedBuilder.Build() } } });
+		}
+
+
+		private class Provider : IUserCommandArgumentValuesProvider
+		{
+			private readonly IUserCommandsRepository repository;
+
+
+			public Provider(IUserCommandsRepository repository)
+			{
+				this.repository = repository;
+			}
+
+
+			public Type TargetType => typeof(int);
+
+
+			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+			{
+				var max = repository.GetFullCommandList(server).Count / MaxCmdsInOnePage; //Max page INDEX
+				return (IReadOnlyCollection<object>)new Collection(max);
+			}
+
+
+			private class Collection : IReadOnlyCollection<int>
+			{
+				private readonly int max;
+
+
+				public Collection(int max)
+				{
+					this.max = max;
+				}
+
+
+				public int Count => max + 1;
+
+
+				public IEnumerator<int> GetEnumerator()
+				{
+					for (int i = 0; i <= max; i++) yield return i;
+				}
+
+				IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+			}
 		}
 	}
 }

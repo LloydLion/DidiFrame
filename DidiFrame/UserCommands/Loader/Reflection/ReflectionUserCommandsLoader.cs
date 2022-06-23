@@ -13,18 +13,6 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 	{
 		private static readonly EventId LoadingSkipID = new(12, "LoadingSkip");
 		private static readonly EventId LoadingDoneID = new(13, "LoadingDone");
-
-		private static readonly Type[] tuples = new[]
-		{
-			typeof(Tuple<>),
-			typeof(Tuple<,>),
-			typeof(Tuple<,,>),
-			typeof(Tuple<,,,>),
-			typeof(Tuple<,,,,>),
-			typeof(Tuple<,,,,,>),
-			typeof(Tuple<,,,,,,>),
-		};
-
 		private static readonly IReadOnlyDictionary<Type, UserCommandArgument.Type> argsTypes = Enum.GetValues<UserCommandArgument.Type>().ToDictionary(s => s.GetReqObjectType());
 
 		private readonly IEnumerable<ICommandsModule> modules;
@@ -41,6 +29,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// <param name="logger">Logger for loader</param>
 		/// <param name="stringLocalizerFactory">Localizer factory to provide localizers for commands</param>
 		/// <param name="converter">Converter to resolve complex arguments</param>
+		/// <param name="subloaders">Subloaders that extends loader functional</param>
 		public ReflectionUserCommandsLoader(IEnumerable<ICommandsModule> modules,
 			ILogger<ReflectionUserCommandsLoader> logger,
 			IStringLocalizerFactory stringLocalizerFactory,

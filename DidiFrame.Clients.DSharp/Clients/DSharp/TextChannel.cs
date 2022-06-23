@@ -6,9 +6,19 @@ using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp
 {
+	/// <summary>
+	/// DSharp implementation of DidiFrame.Interfaces.ITextChannel
+	/// </summary>
 	public class TextChannel : Channel, ITextChannel
 	{
+		/// <summary>
+		/// Limit of messages that channel will cache
+		/// </summary>
 		public const int MessagesLimit = 5;
+		/// <summary>
+		/// Limit of message that channel will provide.
+		/// All messages out the limit is not exist
+		/// </summary>
 		public const int MessagesIdLimit = 70;
 
 
@@ -19,21 +29,29 @@ namespace DidiFrame.Clients.DSharp
 		private static readonly ThreadLocker<TextChannel> listLocker = new();
 
 
+		/// <inheritdoc/>
 		public event MessageSentEventHandler? MessageSent;
 
+		/// <inheritdoc/>
 		public event MessageDeletedEventHandler? MessageDeleted;
 
 
-		public Server BaseServer => server;
-
+		/// <inheritdoc/>
 		public IReadOnlyList<Message> Messages => messages;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Clients.DSharp.TextChannel
+		/// </summary>
+		/// <param name="channel">Base DiscordChannel from DSharp</param>
+		/// <param name="server">Owner server object wrap</param>
+		/// <exception cref="ArgumentException">If channel is not text (or text compatible)</exception>
+		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
 		public TextChannel(DiscordChannel channel, Server server) : base(channel, server)
 		{
 			if(channel.Type.GetAbstract() != ChannelType.TextCompatible)
 			{
-				throw new InvalidOperationException("Channel must be text");
+				throw new ArgumentException("Channel must be text", nameof(channel));
 			}
 
 			this.channel = channel;
@@ -43,6 +61,7 @@ namespace DidiFrame.Clients.DSharp
 				ids.Add(item.Id);
 		}
 
+		/// <inheritdoc/>
 		public IMessage GetMessage(ulong id)
 		{
 			if (HasMessage(id) == false)
@@ -58,15 +77,18 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
+		/// <inheritdoc/>
 		public IReadOnlyList<IMessage> GetMessages(int count = -1)
 		{
 			if (count == -1) return messages;
 			return messages.AsEnumerable().Reverse().Take(Math.Min(count, messages.Count)).ToArray();
 		}
 
+		/// <inheritdoc/>
 		public bool HasMessage(ulong id) => ids.Contains(id);
 
 
+		/// <inheritdoc/>
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
 			var builder = MessageConverter.ConvertUp(messageSendModel);

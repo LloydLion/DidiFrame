@@ -3,15 +3,25 @@ using DidiFrame.Utils;
 
 namespace DidiFrame.UserCommands.Loader.Reflection
 {
+	/// <summary>
+	/// Map attribute that adds locale map for values providers, validators and filters
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Parameter, AllowMultiple = false)]
     public class MapAttribute : Attribute
 	{
-        public const string ProviderErrorCode = ContextValidator.ProviderErrorCode;
+		/// <summary>
+		/// Error code that will be transcipted if a provider give error
+		/// </summary>
+		public const string ProviderErrorCode = ContextValidator.ProviderErrorCode;
 
 
 		private readonly LocaleMap map;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Loader.Reflection.MapAttribute
+		/// </summary>
+		/// <param name="pairs">Pairs that will used to create locale map</param>
 		public MapAttribute(params (string, string)[] pairs)
 		{
 			var preMap = new Dictionary<string, string>();
@@ -22,6 +32,10 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		}
 
 
+		/// <summary>
+		/// Creates locale map that based on attibute
+		/// </summary>
+		/// <returns></returns>
 		public LocaleMap GetLocaleMap() => map;
 	}
 }

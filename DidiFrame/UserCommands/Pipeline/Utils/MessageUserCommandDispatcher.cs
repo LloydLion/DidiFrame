@@ -17,6 +17,7 @@
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher
 		/// </summary>
 		/// <param name="client">Discord clint to access to discord</param>
+		/// <param name="logger">Logger for dispatcher</param>
 		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger)
 		{
 			this.client = client;

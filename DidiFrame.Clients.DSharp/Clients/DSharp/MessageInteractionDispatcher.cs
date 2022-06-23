@@ -7,12 +7,21 @@ using DSharpPlus.EventArgs;
 
 namespace DidiFrame.Clients.DSharp
 {
+	/// <summary>
+	/// DSharp implementation of DidiFrame.Interfaces.IInteractionDispatcher
+	/// </summary>
 	public class MessageInteractionDispatcher : IInteractionDispatcher, IDisposable
 	{
 		private readonly Message message;
 		private readonly List<EventHolder> holders = new();
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Clients.DSharp.MessageInteractionDispatcher using DSharp message wrap
+		/// </summary>
+		/// <param name="message">DSharp message wrap</param>
+		/// <exception cref="ArgumentException">If message doesn't contain any components</exception>
+		/// <exception cref="ArgumentException">If message have been sent by not bot</exception>
 		public MessageInteractionDispatcher(Message message)
 		{
 			this.message = message;
@@ -24,11 +33,13 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
+		/// <inheritdoc/>
 		public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent
 		{
 			holders.Add(new EventHolder<TComponent>(message, id, callback));
 		}
 
+		/// <inheritdoc/>
 		public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent
 		{
 			holders.RemoveAll(s => s is EventHolder<TComponent> ev && (ev.Id, ev.Callback) == (id, callback));
@@ -56,9 +67,11 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			message.BaseChannel.BaseServer.SourceClient.BaseClient.ComponentInteractionCreated -= OnInteractionCreated;
+			GC.SuppressFinalize(this);
 		}
 
 

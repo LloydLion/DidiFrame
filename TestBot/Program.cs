@@ -27,18 +27,14 @@ using DidiFrame;
 using DidiFrame.Application;
 using DidiFrame.Data.MongoDB;
 using DidiFrame.UserCommands.Pipeline.Building;
-
-using AutoInjector = DidiFrame.AutoInjecting.ReflectionAutoInjector;
 using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
 using DidiFrame.Statistic;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.PreProcessing;
 using DidiFrame.UserCommands.Executing;
-using DidiFrame.UserCommands.Pipeline.Utils;
 using DidiFrame.UserCommands.Pipeline.Services;
 using DidiFrame.UserCommands.ContextValidation;
-using DidiFrame.Clients.DSharp.Clients.DSharp;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -64,7 +60,7 @@ appBuilder.AddServices((services, config) =>
 		.AddLifetimes()
 		.AddGlobalEvents()
 		.AddStateBasedStatisticTools()
-		.InjectAutoDependencies(new AutoInjector());
+		.InjectAutoDependencies(new ReflectionAutoInjector());
 
 	services.Configure<DefaultUserCommandsExecutor.Options>(config.GetSection("Commands:Executing"));
 

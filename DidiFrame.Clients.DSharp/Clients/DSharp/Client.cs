@@ -50,14 +50,19 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		public DiscordClient BaseClient => client;
 
-		internal IServerCultureProvider CultureProvider { get; }
+		/// <summary>
+		/// Culture info provider that using in event to setup culture
+		/// </summary>
+		public IServerCultureProvider CultureProvider { get; }
 
+		/// <inheritdoc/>
 		public IServiceProvider Services { get; }
 
 
 		/// <summary>
 		/// Creates instance of DidiFrame.DSharpAdapter.Client
 		/// </summary>
+		/// <param name="servicesForExtensions">Services that will be used for extensions</param>
 		/// <param name="options">Configuration of DSharp client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>

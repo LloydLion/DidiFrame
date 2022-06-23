@@ -8,6 +8,9 @@ using System.Collections;
 
 namespace DidiFrame.Clients.DSharp
 {
+	/// <summary>
+	/// DSharp implementation of DidiFrame.Interfaces.IServer
+	/// </summary>
 	public class Server : IServer, IDisposable
 	{
 		private readonly DiscordGuild guild;
@@ -23,43 +26,66 @@ namespace DidiFrame.Clients.DSharp
 		private readonly ThreadLocker<IList> cacheUpdateLocker = new();
 
 
+		/// <inheritdoc/>
 		public string Name => guild.Name;
 
+		/// <inheritdoc/>
 		public IClient Client => client;
 
+		/// <summary>
+		/// Owner client object
+		/// </summary>
 		public Client SourceClient => client;
 
+		/// <inheritdoc/>
 		public ulong Id => guild.Id;
 
+		/// <summary>
+		/// Base DiscordGuild from DSharp
+		/// </summary>
 		public DiscordGuild Guild => guild;
 
 
+		/// <inheritdoc/>
 		public IMember GetMember(ulong id) => GetMembers().Single(s => s.Id == id);
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IMember> GetMembers() => members;
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IChannelCategory> GetCategories() => categories;
 
+		/// <inheritdoc/>
 		public IChannelCategory GetCategory(ulong? id) => GetCategories().Single(s => s.Id == id);
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IChannel> GetChannels() => channels;
 
+		/// <inheritdoc/>
 		public IChannel GetChannel(ulong id) => GetChannels().Single(s => s.Id == id);
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IRole> GetRoles() => roles;
 
+		/// <inheritdoc/>
 		public IRole GetRole(ulong id) => GetRoles().Single(s => s.Id == id);
 
+		/// <inheritdoc/>
 		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
 
+		/// <inheritdoc/>
 		public bool HasChannel(ulong id) => GetChannels().Any(s => s.Id == id);
 
+		/// <inheritdoc/>
 		public bool HasChannel(IChannel channel) => GetChannels().Contains(channel);
 
+		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Server);
 
+		/// <inheritdoc/>
 		public override int GetHashCode() => Id.GetHashCode();
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			//Detatch events
@@ -75,9 +101,16 @@ namespace DidiFrame.Clients.DSharp
 
 			cts.Cancel();
 			globalCacheUpdateTask.Wait();
+
+			GC.SuppressFinalize(this);
 		}
 
 
+		/// <summary>
+		/// Creates new isntance of DidiFrame.Clients.DSharp.Server
+		/// </summary>
+		/// <param name="guild">Base DiscordGuild from DSharp</param>
+		/// <param name="client">Owner client object</param>
 		public Server(DiscordGuild guild, Client client)
 		{
 			this.guild = guild;
