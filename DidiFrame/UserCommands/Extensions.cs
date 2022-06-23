@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.UserCommands
 {
-	internal static class Extensions
+	public static class Extensions
 	{
 		public static Type GetReqObjectType(this UserCommandArgument.Type type)
 		{

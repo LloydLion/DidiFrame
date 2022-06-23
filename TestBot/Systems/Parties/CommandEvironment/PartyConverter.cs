@@ -19,7 +19,7 @@ namespace TestBot.Systems.Parties.CommandEvironment
 			else return ConvertationResult.Failture("PartyNotExist", UserCommandCode.InvalidInput);
 		}
 
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices)
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
 		{
 			var party = (ObjectHolder<PartyModel>)convertationResult;
 			return new object[] { party.Object };

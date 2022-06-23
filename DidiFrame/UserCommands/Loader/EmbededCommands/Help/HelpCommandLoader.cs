@@ -1,4 +1,6 @@
-﻿using DidiFrame.Utils.ExtendableModels;
+﻿using DidiFrame.UserCommands.ContextValidation.Arguments.Providers;
+using DidiFrame.UserCommands.PreProcessing;
+using DidiFrame.Utils.ExtendableModels;
 
 namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 {
@@ -9,6 +11,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 	{
 		private readonly IStringLocalizer<HelpCommandLoader> localizer;
 		private readonly IUserCommandsRepository repository;
+		private readonly IUserCommandContextConverter converter;
 
 
 		/// <summary>
@@ -16,28 +19,38 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		/// </summary>
 		/// <param name="localizer">Localizer for commands</param>
 		/// <param name="repository">Commands repositroy to get commands</param>
-		public HelpCommandLoader(IStringLocalizer<HelpCommandLoader> localizer, IUserCommandsRepository repository)
+		public HelpCommandLoader(IStringLocalizer<HelpCommandLoader> localizer, IUserCommandsRepository repository, IUserCommandContextConverter converter)
 		{
 			this.localizer = localizer;
 			this.repository = repository;
+			this.converter = converter;
 		}
 
 
 		/// <inheritdoc/>
 		public void LoadTo(IUserCommandsRepository rp)
 		{
+			var dic = new Dictionary<Type, object>();
+			var provider = converter.GetSubConverter(typeof(UserCommandInfo)).CreatePossibleValuesProvider();
+			if(provider is not null) dic.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), new[] { provider });
+			dic.Add(typeof(ArgumentDescription), new ArgumentDescription("TargetCmd", null));
+
 			rp.AddCommand(new UserCommandInfo("cmd", CmdHandler, new UserCommandArgument[]
 			{
-				new(false, new[] { UserCommandArgument.Type.String }, typeof(UserCommandInfo), "command",
-					new SimpleModelAdditionalInfoProvider((new ArgumentDescription("TargetCmd", null), typeof(ArgumentDescription))))
+				new(false, new[] { UserCommandArgument.Type.String }, typeof(UserCommandInfo), "command", new SimpleModelAdditionalInfoProvider(dic))
 			},
 			new SimpleModelAdditionalInfoProvider((localizer, typeof(IStringLocalizer)),
 				(new CommandDescription("ShowsCmdInfo", "ShowsCmdInfo", LaunchGroup.Everyone, null, null, "Help"), typeof(CommandDescription)))));
 
+			//---------------------------
+
+			dic = new Dictionary<Type, object>();
+			//dic.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), new NumericProvider(1, ));
+			dic.Add(typeof(ArgumentDescription), new ArgumentDescription("TargetPage", null));
+
 			rp.AddCommand(new UserCommandInfo("help", HelpHandler, new UserCommandArgument[]
 			{
-				new(false, new[] { UserCommandArgument.Type.Integer }, typeof(int), "page",
-					new SimpleModelAdditionalInfoProvider((new ArgumentDescription("TargetPage", null), typeof(ArgumentDescription))))
+				new(false, new[] { UserCommandArgument.Type.Integer }, typeof(int), "page", new SimpleModelAdditionalInfoProvider(dic))
 			}, new SimpleModelAdditionalInfoProvider((localizer, typeof(IStringLocalizer)),
 				(new CommandDescription("ShowsCmdsList", "ShowsCmdsList", LaunchGroup.Everyone, null, null, "Help"), typeof(CommandDescription)))));
 		}

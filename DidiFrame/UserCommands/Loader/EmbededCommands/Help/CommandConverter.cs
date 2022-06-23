@@ -34,7 +34,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		}
 
 		/// <inheritdoc/>
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices)
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
 		{
 			return new[] { ((UserCommandInfo)convertationResult).Name };
 		}
@@ -55,7 +55,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			/// <inheritdoc/>
 			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
 			{
-				return services.GetRequiredService<IUserCommandsRepository>().GetCommandsFor(server);
+				return services.GetRequiredService<IUserCommandsRepository>().GetFullCommandList(server);
 			}
 		}
 	}

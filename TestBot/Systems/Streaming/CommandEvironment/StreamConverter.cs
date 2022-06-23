@@ -18,7 +18,7 @@ namespace TestBot.Systems.Streaming.CommandEvironment
 			else return ConvertationResult.Failture("StreamNotFound", UserCommandCode.InvalidInput);
 		}
 
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices)
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
 		{
 			var sl = (StreamLifetime)convertationResult;
 			return new object[] { sl };

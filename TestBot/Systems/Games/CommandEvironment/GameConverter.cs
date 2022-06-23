@@ -18,7 +18,7 @@ namespace TestBot.Systems.Games.CommandEvironment
 			else return ConvertationResult.Failture("NoGameExist", UserCommandCode.InvalidInput);
 		}
 
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices)
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
 		{
 			var gl = (GameLifetime)convertationResult;
 			return new object[] { gl.GetBaseClone().Name };

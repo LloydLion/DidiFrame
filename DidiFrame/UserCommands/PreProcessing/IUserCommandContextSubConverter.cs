@@ -26,7 +26,7 @@
 		/// <returns>Result of convertation: final object or error locale key</returns>
 		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider localServices);
 
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult, IServiceProvider localServices);
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult);
 
 		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider();
 	}
