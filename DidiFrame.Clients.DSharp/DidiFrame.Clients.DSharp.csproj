@@ -51,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Translations\Clients\DSharp\ApplicationCommandDispatcher.resx">
+    <EmbeddedResource Update="Translations\ApplicationCommandDispatcher.resx">
       <Generator></Generator>
     </EmbeddedResource>
   </ItemGroup>
