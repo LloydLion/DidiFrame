@@ -29,7 +29,7 @@
     <EmbeddedResource Update="Translations\Systems\Voice\UIHelper.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Update="Translations\Systems\Voice\UIHelper.ru-RU.resx">
+    <EmbeddedResource Update="Translations\Systems\Voice\UIHelper.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
