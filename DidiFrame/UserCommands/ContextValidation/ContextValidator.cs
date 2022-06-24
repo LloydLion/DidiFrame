@@ -53,7 +53,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 						if (map is null || cmdLocalizer is null) readyText = localizer["NoDataProvided"];
 						else
 						{
-							if (map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
+							if (!map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
 							else readyText = cmdLocalizer[map.TranscriptCode(failResult.ErrorCode)];
 						}
 
@@ -78,7 +78,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 							if (map is null || cmdLocalizer is null) readyText = localizer["NoDataProvided"];
 							else
 							{
-								if (map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
+								if (!map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
 								else readyText = cmdLocalizer[map.TranscriptCode(failResult.ErrorCode)];
 							}
 
@@ -98,7 +98,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 							if (map is null || cmdLocalizer is null) readyText = localizer["NoDataProvided"];
 							else
 							{
-								if (map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
+								if (!map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
 								else readyText = cmdLocalizer[map.TranscriptCode(failResult.ErrorCode)];
 							}
 

@@ -200,16 +200,23 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 
 			public Task<UserCommandResult> HandleAsync(UserCommandContext ctx)
 			{
-				var callRes = method.Invoke(obj, ctx.Arguments.Values.Select(s => s.ComplexObject).Prepend(ctx).ToArray()) ??
-						throw new NullReferenceException("Handler method's return was null");
+				var callRes = method.Invoke(obj, ctx.Arguments.Values.Select(s => s.ComplexObject).Prepend(ctx).ToArray());
 
 				if (returnLocalizedString is not null)
 				{
 					var cache = returnLocalizedString;
-					return asSync ? Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) }) :
-						((Task)callRes).ContinueWith(s => new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) });
+					if (asSync) return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) });
+					else
+					{
+						if (callRes is null) throw new NullReferenceException("Handler method's return was null");
+						return ((Task)callRes).ContinueWith(s => new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) });
+					}
 				}
-				else return asSync ? Task.FromResult((UserCommandResult)callRes) : (Task<UserCommandResult>)callRes;
+				else
+				{
+					if (callRes is null) throw new NullReferenceException("Handler method's return was null");
+					return asSync ? Task.FromResult((UserCommandResult)callRes) : (Task<UserCommandResult>)callRes;
+				}
 			}
 		}
 	}

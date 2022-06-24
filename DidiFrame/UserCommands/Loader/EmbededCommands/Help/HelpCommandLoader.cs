@@ -158,11 +158,11 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
 			{
 				var max = repository.GetFullCommandList(server).Count / MaxCmdsInOnePage; //Max page INDEX
-				return (IReadOnlyCollection<object>)new Collection(max);
+				return new Collection(max + 1);
 			}
 
 
-			private class Collection : IReadOnlyCollection<int>
+			private class Collection : IReadOnlyCollection<object>
 			{
 				private readonly int max;
 
@@ -173,12 +173,12 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 				}
 
 
-				public int Count => max + 1;
+				public int Count => max;
 
 
-				public IEnumerator<int> GetEnumerator()
+				public IEnumerator<object> GetEnumerator()
 				{
-					for (int i = 0; i <= max; i++) yield return i;
+					for (int i = 1; i <= max; i++) yield return i;
 				}
 
 				IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

@@ -32,6 +32,11 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public bool IsExist => owner.HasMessage(Id);
 
+		/// <summary>
+		/// Base DiscordMessage from DSharp
+		/// </summary>
+		public DiscordMessage BaseMessage => message;
+
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Message

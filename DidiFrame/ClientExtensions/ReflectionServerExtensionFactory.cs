@@ -32,7 +32,7 @@ namespace DidiFrame.ClientExtensions
 				!pars[0].ParameterType.IsAssignableTo(typeof(IServer)) || pars[1].ParameterType != typeof(IServiceProvider))
                 throw new ArgumentException("Invalid ctor paramters. Excepted ctor: (TServer, IServiceProvider) where TServer is IServer's inheritor, but isn't IServer itself");
 
-			TargetServerType = pars[1].ParameterType;
+			TargetServerType = pars[0].ParameterType;
 			constructor = ctor;
 			this.asSingleton = asSingleton;
 		}

@@ -44,15 +44,15 @@ namespace DidiFrame.Clients.DSharp
 			this.localizer = localizer;
 			this.converter = converter;
 			this.services = services;
-			var tmp = new Dictionary<UserCommandInfo, DiscordApplicationCommand>();
+
+			convertedCommands = new();
 			foreach (var cmd in commands.GetGlobalCommands())
 			{
 				var converted = ConvertCommand(cmd);
-				tmp.Add(cmd, converted);
+				convertedCommands.Add(cmd, converted);
 			}
 
-			convertedCommands = client.BaseClient.BulkOverwriteGlobalApplicationCommandsAsync(tmp.Values).Result
-				.Join(tmp.Keys, s => s.Name, s => s.Name, (a, b) => (a, b)).ToDictionary(s => s.b, s => s.a);
+			client.BaseClient.BulkOverwriteGlobalApplicationCommandsAsync(convertedCommands.Values).Wait();
 		}
 
 
@@ -60,11 +60,11 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Interaction.Type == InteractionType.ApplicationCommand)
 			{
-				var server = (Server)client.Servers.Single(s => s.Id == e.Interaction.GuildId);         //Get server where interaction was created
-				var channel = server.GetChannel(e.Interaction.ChannelId).AsText();                      //Get channel where interaction was created
-				var member = server.GetMember(e.Interaction.User.Id);                                   //Get member who created interaction
-				var cmdId = e.Interaction.Data.Id;                                                      //Id of called command
-				var cmd = convertedCommands.Single(s => s.Value.Id == cmdId);                           //Command that was called (pair - AppCmd|DidiFrameCmd)
+				var server = (Server)client.Servers.Single(s => s.Id == e.Interaction.GuildId);			//Get server where interaction was created
+				var channel = server.GetChannel(e.Interaction.ChannelId).AsText();						//Get channel where interaction was created
+				var member = server.GetMember(e.Interaction.User.Id);									//Get member who created interaction
+				var cmdName = e.Interaction.Data.Name;                                                  //Name of called command
+				var cmd = convertedCommands.Single(s => s.Value.Name == cmdName);						//Command that was called (pair - AppCmd|DidiFrameCmd)
 
 				var preArgs = new List<object>();
 				if (e.Interaction.Data.Options is not null)
@@ -95,7 +95,7 @@ namespace DidiFrame.Clients.DSharp
 						var types = arg.OriginTypes;
 						var pre = preArgs.Take(types.Count).ToArray();
 						string? error = null;
-						var preObjs = types.Select((s, i) => ReConvert(server, s, types[i], out error)).ToArray();
+						var preObjs = pre.Select((s, i) => ReConvert(server, s, types[i], out error)).ToArray();
 						preArgs.RemoveRange(0, types.Count);
 
 						if (error is not null)
@@ -117,9 +117,9 @@ namespace DidiFrame.Clients.DSharp
 			{
 				var server = (Server)client.Servers.Single(s => s.Id == e.Interaction.GuildId);			//Get server where interaction was created
 				var channel = server.GetChannel(e.Interaction.ChannelId).AsText();						//Get channel where interaction was created
-				var member = server.GetMember(e.Interaction.User.Id);                                   //Get member who created interaction
-				var cmdId = e.Interaction.Data.Id;														//Id of called command
-				var cmd = convertedCommands.Single(s => s.Value.Id == cmdId);							//Command that was called (pair - AppCmd|DidiFrameCmd)
+				var member = server.GetMember(e.Interaction.User.Id);									//Get member who created interaction
+				var cmdName = e.Interaction.Data.Name;													//Name of called command
+				var cmd = convertedCommands.Single(s => s.Value.Name == cmdName);						//Command that was called (pair - AppCmd|DidiFrameCmd)
 
 				var darg = e.Interaction.Data.Options.Single(s => s.Focused);                           //Focused argument
 				var processedName = darg.Name.Contains('_') ? darg.Name.Split('_')[0] : darg.Name;		//Processed name of arguments that will be used if argumnet is complex
@@ -130,9 +130,11 @@ namespace DidiFrame.Clients.DSharp
 				if (providers is not null)
 				{
 					var values = new HashSet<object>();
-					foreach (var prov in providers)
-						foreach (var el in prov.ProvideValues(server, services))
-							values.Add(el);
+					if (providers.Any())
+					{
+						foreach (var item in providers.First().ProvideValues(server, services)) values.Add(item);
+						foreach (var prov in providers.Skip(1)) values.IntersectWith(prov.ProvideValues(server, services));
+					}
 
 					object[] baseCollection;
 					if (arg.OriginTypes.Count == 1 && arg.OriginTypes.Single().GetReqObjectType() == arg.TargetType)

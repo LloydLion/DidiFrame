@@ -21,12 +21,15 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Loader.Reflection.MapAttribute
 		/// </summary>
-		/// <param name="pairs">Pairs that will used to create locale map</param>
-		public MapAttribute(params (string, string)[] pairs)
+		/// <param name="pairs">Pairs that will used to create locale map. Elemnt count must be even</param>
+		public MapAttribute(params string[] pairs)
 		{
 			var preMap = new Dictionary<string, string>();
 
-			foreach (var pair in pairs) preMap.Add(pair.Item1, pair.Item2);
+			for (int i = 0; i < pairs.Length; i += 2)
+			{
+				preMap.Add(pairs[i], pairs[i + 1]);
+			}
 
 			map = new(preMap);
 		}

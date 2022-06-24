@@ -1,7 +1,4 @@
-﻿using DidiFrame.Data;
-using DidiFrame.Entities.Message;
-
-namespace TestBot.Systems.Test
+﻿namespace TestBot.Systems.Test
 {
 	internal class SystemCore
 	{
