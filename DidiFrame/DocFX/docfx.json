@@ -4,14 +4,19 @@
       "src": [
         {
           "files": [
-            "**.csproj"
+            "**/DidiFrame.csproj",
+            "**/DidiFrame.Clients.DSharp.csproj",
+            "**/DidiFrame.Data.Json.csproj",
+            "**/DidiFrame.Data.Mongo.csproj"
           ],
-          "src": ".."
+          "src": "../.."
         }
       ],
       "dest": "api",
       "disableGitFeatures": false,
-      "disableDefaultFilter": false
+      "disableDefaultFilter": false,
+	  "force": true,
+	  "shouldSkipMarkup": false
     }
   ],
   "build": {

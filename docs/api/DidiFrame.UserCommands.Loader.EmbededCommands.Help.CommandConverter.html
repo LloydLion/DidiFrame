@@ -83,7 +83,7 @@
   </div>
   <div classs="implements">
     <h5>Implements</h5>
-    <div><a class="xref" href="DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html">IDefaultContextConveterSubConverter</a></div>
+    <div><a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -113,7 +113,7 @@
   <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
   <h5 id="DidiFrame_UserCommands_Loader_EmbededCommands_Help_CommandConverter_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class CommandConverter : IDefaultContextConveterSubConverter</code></pre>
+    <pre><code class="lang-csharp hljs">public class CommandConverter : IUserCommandContextSubConverter</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -246,9 +246,86 @@
       </tr>
     </tbody>
   </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Loader_EmbededCommands_Help_CommandConverter_ConvertBack_" data-uid="DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.ConvertBack*"></a>
+  <h4 id="DidiFrame_UserCommands_Loader_EmbededCommands_Help_CommandConverter_ConvertBack_IServiceProvider_System_Object_" data-uid="DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.ConvertBack(IServiceProvider,System.Object)">ConvertBack(IServiceProvider, Object)</h4>
+  <div class="markdown level1 summary"><p>Converts ready-to-use object to raw argumnets</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;object&gt; ConvertBack(IServiceProvider services, object convertationResult)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServiceProvider</span></td>
+        <td><span class="parametername">services</span></td>
+        <td><p>Global service provider</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">convertationResult</span></td>
+        <td><p>Ready-to-use object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyList</span>&lt;<span class="xref">System.Object</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Loader_EmbededCommands_Help_CommandConverter_CreatePossibleValuesProvider_" data-uid="DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.CreatePossibleValuesProvider*"></a>
+  <h4 id="DidiFrame_UserCommands_Loader_EmbededCommands_Help_CommandConverter_CreatePossibleValuesProvider" data-uid="DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.CreatePossibleValuesProvider">CreatePossibleValuesProvider()</h4>
+  <div class="markdown level1 summary"><p>Creates values provider that provides all possible values of converter output or null if no provider can be created</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">IUserCommandArgumentValuesProvider</span>&gt;</td>
+        <td><p>Possible values provider or null</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="implements">Implements</h3>
   <div>
-      <a class="xref" href="DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html">IDefaultContextConveterSubConverter</a>
+      <a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a>
   </div>
 </article>
           </div>

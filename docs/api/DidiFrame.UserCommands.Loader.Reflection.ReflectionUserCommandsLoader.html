@@ -120,13 +120,13 @@
   
   
   <a id="DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__ctor_" data-uid="DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__ctor_IEnumerable_DidiFrame_UserCommands_Loader_Reflection_ICommandsModule__ILogger_DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__IStringLocalizerFactory_DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_" data-uid="DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.#ctor(IEnumerable{DidiFrame.UserCommands.Loader.Reflection.ICommandsModule},ILogger{DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader},IStringLocalizerFactory,DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter)">ReflectionUserCommandsLoader(IEnumerable&lt;ICommandsModule&gt;, ILogger&lt;ReflectionUserCommandsLoader&gt;, IStringLocalizerFactory, IUserCommandContextConverter)</h4>
+  <h4 id="DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__ctor_IEnumerable_DidiFrame_UserCommands_Loader_Reflection_ICommandsModule__ILogger_DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__IStringLocalizerFactory_DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_IEnumerable_DidiFrame_UserCommands_Loader_Reflection_IReflectionCommandAdditionalInfoLoader__" data-uid="DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.#ctor(IEnumerable{DidiFrame.UserCommands.Loader.Reflection.ICommandsModule},ILogger{DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader},IStringLocalizerFactory,DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter,IEnumerable{DidiFrame.UserCommands.Loader.Reflection.IReflectionCommandAdditionalInfoLoader})">ReflectionUserCommandsLoader(IEnumerable&lt;ICommandsModule&gt;, ILogger&lt;ReflectionUserCommandsLoader&gt;, IStringLocalizerFactory, IUserCommandContextConverter, IEnumerable&lt;IReflectionCommandAdditionalInfoLoader&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ReflectionUserCommandsLoader(IEnumerable&lt;ICommandsModule&gt; modules, ILogger&lt;ReflectionUserCommandsLoader&gt; logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter)</code></pre>
+    <pre><code class="lang-csharp hljs">public ReflectionUserCommandsLoader(IEnumerable&lt;ICommandsModule&gt; modules, ILogger&lt;ReflectionUserCommandsLoader&gt; logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter, IEnumerable&lt;IReflectionCommandAdditionalInfoLoader&gt; subloaders)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -160,6 +160,12 @@
         <td><a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.html">IUserCommandContextConverter</a></td>
         <td><span class="parametername">converter</span></td>
         <td><p>Converter to resolve complex arguments</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Loader.Reflection.IReflectionCommandAdditionalInfoLoader.html">IReflectionCommandAdditionalInfoLoader</a>&gt;</td>
+        <td><span class="parametername">subloaders</span></td>
+        <td><p>Subloaders that extends loader functional</p>
 </td>
       </tr>
     </tbody>

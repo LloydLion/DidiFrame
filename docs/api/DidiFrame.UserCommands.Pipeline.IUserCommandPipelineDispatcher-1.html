@@ -102,14 +102,14 @@
   </h3>
   
   
-  <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_SetSyncCallback_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.SetSyncCallback*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_SetSyncCallback_Action__0_UserCommandSendData_Action_UserCommandResult___" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.SetSyncCallback(Action{`0,UserCommandSendData,Action{UserCommandResult}})">SetSyncCallback(Action&lt;TOut, UserCommandSendData, Action&lt;UserCommandResult&gt;&gt;)</h4>
-  <div class="markdown level1 summary"><p>Subscribes sync hander to start-pipeline event</p>
+  <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_FinalizePipeline_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.FinalizePipeline*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_FinalizePipeline_System_Object_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.FinalizePipeline(System.Object)">FinalizePipeline(Object)</h4>
+  <div class="markdown level1 summary"><p>Finalizes pipeline</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetSyncCallback(Action&lt;TOut, UserCommandSendData, Action&lt;UserCommandResult&gt;&gt; actionWithCallback)</code></pre>
+    <pre><code class="lang-csharp hljs">void FinalizePipeline(object stateObject)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -122,9 +122,73 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Action</span>&lt;TOut, <span class="xref">UserCommandSendData</span>, <span class="xref">Action</span>&lt;<span class="xref">UserCommandResult</span>&gt;&gt;</td>
-        <td><span class="parametername">actionWithCallback</span></td>
-        <td><p>Handler that recives start object, send data and callback to call at end</p>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">stateObject</span></td>
+        <td><p>Special state object that have been given by dispatcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_Respond_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.Respond*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_Respond_System_Object_UserCommandResult_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.Respond(System.Object,UserCommandResult)">Respond(Object, UserCommandResult)</h4>
+  <div class="markdown level1 summary"><p>Responds to command call with user command result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void Respond(object stateObject, UserCommandResult result)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">stateObject</span></td>
+        <td><p>Special state object that have been given by dispatcher</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">UserCommandResult</span></td>
+        <td><span class="parametername">result</span></td>
+        <td><p>Result of user command pipeline</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_SetSyncCallback_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.SetSyncCallback*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_SetSyncCallback_DidiFrame_UserCommands_Pipeline_DispatcherSyncCallback__0__" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.SetSyncCallback(DidiFrame.UserCommands.Pipeline.DispatcherSyncCallback{`0})">SetSyncCallback(DispatcherSyncCallback&lt;TOut&gt;)</h4>
+  <div class="markdown level1 summary"><p>Subscribes sync hander to start-pipeline event</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">void SetSyncCallback(DispatcherSyncCallback&lt;TOut&gt; callback)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.DispatcherSyncCallback-1.html">DispatcherSyncCallback</a>&lt;TOut&gt;</td>
+        <td><span class="parametername">callback</span></td>
+        <td><p>Handler that recives start object, send data and state object to finalize pipeline using dispathcer</p>
 </td>
       </tr>
     </tbody>
