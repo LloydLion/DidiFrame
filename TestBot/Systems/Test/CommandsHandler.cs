@@ -1,6 +1,9 @@
 ﻿using DidiFrame.Entities.Message;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Loader.Reflection;
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
+using TestBot.Systems.Test.ClientExtensions;
 
 namespace TestBot.Systems.Test
 {
@@ -23,96 +26,90 @@ namespace TestBot.Systems.Test
 			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
 				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
 		}
-		
-		[Command("typon")]
-		public Task<UserCommandResult> Typo1(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typom")]
-		public Task<UserCommandResult> Typo2(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typot")]
-		public Task<UserCommandResult> Typo3(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typor")]
-		public Task<UserCommandResult> Typo4(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typof")]
-		public Task<UserCommandResult> Typo5(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typoe")]
-		public Task<UserCommandResult> Typo6(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typod")]
-		public Task<UserCommandResult> Typo7(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typoc")]
-		public Task<UserCommandResult> Typo8(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typob")]
-		public Task<UserCommandResult> Typo9(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
-		
-		[Command("typoa")]
-		public Task<UserCommandResult> Typo0(UserCommandContext _, string to)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
-		}
 
-		[Command("sum")]
-		public Task<UserCommandResult> Sum(UserCommandContext _, int a, int b)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["SumResult", a + b]) });
-		}
+		[Command("shello", "SimpleGreeting")]
+		[SuppressMessage("Performance", "CA1822")]
+		public void SimpleHello(UserCommandContext _) { }
 
-		[Command("asum")]
-		public Task<UserCommandResult> Sum(UserCommandContext _, int[] b)
-		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["SumResult", b.Sum()]) });
-		}
-
-		[Command("display")]
-		public async Task<UserCommandResult> Display(UserCommandContext ctx)
+		[Command("display", "DisplayComplite")]
+		public async Task Display(UserCommandContext ctx)
 		{
 			await core.SendDisplayMessageAsync(ctx.Invoker.Server);
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["DisplayComplite"]) };
+		}
+
+		[Command("reply")]
+		[SuppressMessage("Performance", "CA1822")]
+		public UserCommandResult Reply(UserCommandContext ctx,
+			[Lazy()][ValuesProvider(typeof(MyProv), 3, 5)] string choose)
+		{
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new("All ok! You choose is " + choose) };
+		}
+
+		[Command("replym")]
+		[SuppressMessage("Performance", "CA1822")]
+		public UserCommandResult ReplyMap(UserCommandContext ctx,
+			[Map(MapAttribute.ProviderErrorCode, "ProviderError")][ValuesProvider(typeof(MyProv), 3, 5)] string choose)
+		{
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new("All ok! You choose is " + choose) };
+		}
+
+		[Command("get reactions")]
+		[SuppressMessage("Performance", "CA1822")]
+		public async Task<UserCommandResult> GetReactions(UserCommandContext ctx)
+		{
+			var msg = await ctx.Channel.SendMessageAsync(new MessageSendModel("Set 🍎 here!"));
+			await Task.Delay(5000);
+			var count = msg.GetReactions(":apple:");
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new($"You setted {count} 🍎") };
+		}
+
+		public class MyProv : IUserCommandArgumentValuesProvider
+		{
+			private readonly int magicBase;
+			private readonly int count;
+
+
+			public MyProv(int magicBase, int count)
+			{
+				this.magicBase = magicBase;
+				this.count = count;
+			}
+
+
+			public Type TargetType => typeof(string);
+
+
+			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+			{
+				return new Collection(magicBase, count);
+			}
+
+
+			private class Collection : IReadOnlyCollection<string>
+			{
+				private readonly int magicBase;
+				private readonly int count;
+
+
+				public Collection(int magicBase, int count)
+				{
+					this.magicBase = magicBase;
+					this.count = count;
+				}
+
+
+				public int Count => count;
+
+
+				public IEnumerator<string> GetEnumerator()
+				{
+					var random = new Random(magicBase);
+					for (int i = 0; i < count; i++)
+						yield return random.Next().ToString();
+				}
+
+				IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+			}
 		}
 	}
 }

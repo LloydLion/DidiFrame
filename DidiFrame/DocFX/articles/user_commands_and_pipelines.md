@@ -61,6 +61,18 @@ Tip 1: you can see error locale key of default validators in them description.
 
 Tip 2: abstract class [AbstractArgumentValidator](../api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html) can help in validators createtion.
 
+## Arguments values providing
+
+Usually argument can accept only limited list of values, you can filter it using validators, but framework has more simple solution: Argument values providers.
+Argument values provider implements [IUserCommandArgumentValuesProvider](../api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValuesProvider.html).
+
+In context validation process providers will be checked and if argument contains no allowed data validation error will produced (Error code is one for each provider: "NoObjectProvided" from [ContextValidator.ProviderErrorCode](../api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.html)).
+We recomend use providers where it possible.
+
+To add provider to argument use [ValuesProviderAttribute](../api/DidiFrame.UserCommands.Loader.Reflection.ValuesProviderAttribute.html) in relflection provider or add IReadOnlyCollection\<[IUserCommandArgumentValuesProvider](../api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValuesProvider.html)\> into additional info of argument.
+
+Note: multiple providers allowed values will be crossed.
+
 ## Invoker filtration
 
 Filters for invoker are useful if need to check permission level or some timeouts.
@@ -82,7 +94,7 @@ As command's argumetns you can use constrained set of types, each of them listed
 
 Command arguments before they are intercepted by the executor, passed to the command, go through a conversion process.
 
-To create custom type implementate [IDefaultContextConveterSubConverter](api/DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html) interface and add it into di container.
+To create custom type implementate [IUserCommandContextSubConverter](api/DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html) interface and add it into di container.
 
 It works like it:
 
@@ -96,6 +108,8 @@ It works like it:
 |member|@Nobody        | --} --->   |Custom model  |  
 |date  |02.12|12:23:22 | ---->      |02.12|12:23:22|
 ```
+
+Sub converters also must provide backward convertation - from ready-object to raw arguments and can (it is optional) provide custom values provider that will be automaticlly (in loading proccess) applied to argument.
 
 ## User command pipeline
 

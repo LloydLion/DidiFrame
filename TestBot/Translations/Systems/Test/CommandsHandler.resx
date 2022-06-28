@@ -123,6 +123,9 @@
   <data name="Greeting" xml:space="preserve">
     <value>Hello {0} from new CGZBot3</value>
   </data>
+  <data name="ProviderError" xml:space="preserve">
+    <value>You did invalid choose!</value>
+  </data>
   <data name="SumResult" xml:space="preserve">
     <value>Sum result: {0}</value>
   </data>

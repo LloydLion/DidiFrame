@@ -11,7 +11,8 @@
 		/// <param name="pipeline">Pipeline model itself</param>
 		/// <param name="input">Input object from dispatcher</param>
 		/// <param name="sendData">Send data from dispatcher</param>
+		/// <param name="dispatcherState">State of dispatcher to call it</param>
 		/// <returns>Task with result for dispatcher or null if pipeline has dropped</returns>
-		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData);
+		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData, object dispatcherState);
 	}
 }

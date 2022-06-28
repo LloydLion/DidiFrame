@@ -13,25 +13,13 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 	{
 		private static readonly EventId LoadingSkipID = new(12, "LoadingSkip");
 		private static readonly EventId LoadingDoneID = new(13, "LoadingDone");
-
-		private static readonly Type[] tuples = new[]
-		{
-			typeof(Tuple<>),
-			typeof(Tuple<,>),
-			typeof(Tuple<,,>),
-			typeof(Tuple<,,,>),
-			typeof(Tuple<,,,,>),
-			typeof(Tuple<,,,,,>),
-			typeof(Tuple<,,,,,,>),
-		};
-
-		private static readonly IReadOnlyDictionary<Type, UserCommandArgument.Type> argsTypes = Enum.GetValues(typeof(UserCommandArgument.Type))
-				.OfType<UserCommandArgument.Type>().ToDictionary(s => s.GetReqObjectType());
+		private static readonly IReadOnlyDictionary<Type, UserCommandArgument.Type> argsTypes = Enum.GetValues<UserCommandArgument.Type>().ToDictionary(s => s.GetReqObjectType());
 
 		private readonly IEnumerable<ICommandsModule> modules;
 		private readonly ILogger<ReflectionUserCommandsLoader> logger;
 		private readonly IStringLocalizerFactory stringLocalizerFactory;
 		private readonly IUserCommandContextConverter converter;
+		private readonly IReadOnlyCollection<IReflectionCommandAdditionalInfoLoader> subloaders;
 
 
 		/// <summary>
@@ -41,12 +29,18 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// <param name="logger">Logger for loader</param>
 		/// <param name="stringLocalizerFactory">Localizer factory to provide localizers for commands</param>
 		/// <param name="converter">Converter to resolve complex arguments</param>
-		public ReflectionUserCommandsLoader(IEnumerable<ICommandsModule> modules, ILogger<ReflectionUserCommandsLoader> logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter)
+		/// <param name="subloaders">Subloaders that extends loader functional</param>
+		public ReflectionUserCommandsLoader(IEnumerable<ICommandsModule> modules,
+			ILogger<ReflectionUserCommandsLoader> logger,
+			IStringLocalizerFactory stringLocalizerFactory,
+			IUserCommandContextConverter converter,
+			IEnumerable<IReflectionCommandAdditionalInfoLoader> subloaders)
 		{
 			this.modules = modules;
 			this.logger = logger;
 			this.stringLocalizerFactory = stringLocalizerFactory;
 			this.converter = converter;
+			this.subloaders = subloaders.ToArray();
 		}
 
 
@@ -74,7 +68,9 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 
 						try
 						{
-							var commandName = ((CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), false)[0]).Name;
+							var commandAttr = (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), false)[0];
+							var commandName = commandAttr.Name;
+							var isSync = !method.ReturnType.IsAssignableTo(typeof(Task));
 
 							var @params = method.GetParameters();
 							var args = new UserCommandArgument[@params.Length - 1];
@@ -82,40 +78,42 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 							{
 								var ptype = @params[i].ParameterType;
 								UserCommandArgument.Type[] types;
+								var providers = new List<IUserCommandArgumentValuesProvider>();
 
 
 								var pet = ptype.GetElementType(); //Null if not array, Not null if array
 								if (argsTypes.ContainsKey(ptype) || (pet is not null && argsTypes.ContainsKey(pet)))
-									types = parseAndConvertType(pet ?? ptype);
+									types = new[] { argsTypes[pet ?? ptype] };
 								else
 								{
-									//If can get will put into workType var else condition'll enter
-									if (converter.TryGetPreObjectTypes(ptype, out var patypes) == false)
-									{
-										var ota = @params[i].GetCustomAttribute<OriginalTypeAttribute>() ?? throw new NullReferenceException();
-										types = parseAndConvertType(ota.OriginalType);
-									}
-									else types = patypes.ToArray();
+									var subc = converter.GetSubConverter(ptype);
+									types = subc.PreObjectTypes.ToArray();
+									var pprov = subc.CreatePossibleValuesProvider();
+									if(pprov is not null) providers.Add(pprov);
 								}
 
-								var argAdditionalInfo = new List<(object, Type)>();
+								var argAdditionalInfo = new Dictionary<Type, object>();
+
+								providers.AddRange(@params[i].GetCustomAttributes<ValuesProviderAttribute>().Select(s => s.Provider).ToArray());
+								argAdditionalInfo.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), providers);
 
 								var validators = @params[i].GetCustomAttributes<ValidatorAttribute>().Select(s => s.Validator).ToArray();
-								argAdditionalInfo.Add((validators, typeof(IReadOnlyCollection<IUserCommandArgumentValidator>)));
+								argAdditionalInfo.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValidator>), validators);
 
 								var argDescription = @params[i].GetCustomAttribute<ArgDescriptionAttribute>()?.CreateModel();
-								if(argDescription is not null) argAdditionalInfo.Add((argDescription, argDescription.GetType()));
+								if(argDescription is not null) argAdditionalInfo.Add(argDescription.GetType(), argDescription);
+
+								var map = @params[i].GetCustomAttribute<MapAttribute>()?.GetLocaleMap();
+								if (map is not null) argAdditionalInfo.Add(map.GetType(), map);
+
+								foreach (var infoloader in subloaders)
+								{
+									var info = infoloader.ProcessArgument(@params[i]);
+									foreach (var item in info) argAdditionalInfo.Add(item.Key, item.Value);
+								}
 
 								args[i - 1] = new UserCommandArgument(ptype.IsArray && i == @params.Length - 1, types, ptype, @params[i].Name ?? "no_name",
-									new SimpleModelAdditionalInfoProvider(argAdditionalInfo.ToArray()));
-
-
-								static UserCommandArgument.Type[] parseAndConvertType(Type type)
-								{
-									if (type.IsGenericType && tuples.Contains(type.GetGenericTypeDefinition()))
-										return type.GetGenericArguments().Select(s => argsTypes[s]).ToArray();
-									else return new[] { argsTypes[type] };
-								}
+									new SimpleModelAdditionalInfoProvider(argAdditionalInfo));
 							}
 
 							var additionalInfo = new Dictionary<Type, object> { { typeof(IStringLocalizer), handlerLocalizer } };
@@ -126,7 +124,14 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 							var description = method.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
 							if (description is not null) additionalInfo.Add(description.GetType(), description);
 
-							var readyInfo = new UserCommandInfo(commandName, new Handler(method, instance).HandleAsync, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
+							foreach (var infoloader in subloaders)
+							{
+								var info = infoloader.ProcessMethod(method);
+								foreach (var item in info) additionalInfo.Add(item.Key, item.Value);
+							}
+
+							var handler = new Handler(method, instance, isSync, commandAttr.ReturnLocaleKey is not null ? handlerLocalizer[commandAttr.ReturnLocaleKey] : (string?)null);
+							var readyInfo = new UserCommandInfo(commandName, handler.HandleAsync, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
 
 							rp.AddCommand(instance.ReprocessCommand(readyInfo));
 
@@ -163,7 +168,14 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 			if (@params.Length > 1)
 				if (!Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return false;
 
-			if (info.ReturnType != typeof(Task<UserCommandResult>) && info.ReturnType != typeof(UserCommandResult)) return false;
+			if (attr.ReturnLocaleKey is not null)
+			{
+				if (info.ReturnType != typeof(Task) && info.ReturnType != typeof(void)) return false;
+			}
+			else
+			{
+				if (info.ReturnType != typeof(Task<UserCommandResult>) && info.ReturnType != typeof(UserCommandResult)) return false;
+			}
 
 			return true;
 		}
@@ -173,23 +185,38 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		{
 			private readonly MethodInfo method;
 			private readonly object obj;
-			private readonly bool isSync;
+			private readonly string? returnLocalizedString;
+			private readonly bool asSync;
 
 
-			public Handler(MethodInfo method, object obj)
+			public Handler(MethodInfo method, object obj, bool asSync, string? returnLocalizedString)
 			{
 				this.method = method;
 				this.obj = obj;
-				isSync = method.ReturnType == typeof(UserCommandResult);
+				this.asSync = asSync;
+				this.returnLocalizedString = returnLocalizedString;
 			}
 
 
 			public Task<UserCommandResult> HandleAsync(UserCommandContext ctx)
 			{
-				var callRes = method.Invoke(obj, ctx.Arguments.Values.Select(s => s.ComplexObject).Prepend(ctx).ToArray()) ??
-						throw new NullReferenceException("Handler method's return was null");
+				var callRes = method.Invoke(obj, ctx.Arguments.Values.Select(s => s.ComplexObject).Prepend(ctx).ToArray());
 
-				return isSync ? Task.FromResult((UserCommandResult)callRes) : (Task<UserCommandResult>)callRes;
+				if (returnLocalizedString is not null)
+				{
+					var cache = returnLocalizedString;
+					if (asSync) return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) });
+					else
+					{
+						if (callRes is null) throw new NullReferenceException("Handler method's return was null");
+						return ((Task)callRes).ContinueWith(s => new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) });
+					}
+				}
+				else
+				{
+					if (callRes is null) throw new NullReferenceException("Handler method's return was null");
+					return asSync ? Task.FromResult((UserCommandResult)callRes) : (Task<UserCommandResult>)callRes;
+				}
 			}
 		}
 	}

@@ -5,7 +5,8 @@
 	/// </summary>
 	public class SimpleUserCommandsRepository : IUserCommandsRepository
 	{
-		private readonly List<UserCommandInfo> infos = new();
+		private readonly List<UserCommandInfo> globalInfos = new();
+		private readonly Dictionary<IServer, List<UserCommandInfo>> localInfos = new();
 		private bool built = false;
 
 
@@ -18,28 +19,48 @@
 		/// <inheritdoc/>
 		public IUserCommandsCollection GetCommandsFor(IServer server)
 		{
-			return new UserCommandsCollection(infos);
+			return localInfos.ContainsKey(server) ? new UserCommandsCollection(localInfos[server]) : new UserCommandsCollection(Array.Empty<UserCommandInfo>());
 		}
 
 		/// <inheritdoc/>
 		public void AddCommand(UserCommandInfo commandInfo)
 		{
 			if (built) throw new InvalidOperationException("Object has built");
-			if (infos.Any(s => s.Name == commandInfo.Name))
+			if (globalInfos.Any(s => s.Name == commandInfo.Name))
 				throw new InvalidOperationException("Command with given name already present in repository");
-			infos.Add(commandInfo);
+			globalInfos.Add(commandInfo);
 		}
 
 		/// <inheritdoc/>
-		public void AddCommand(UserCommandInfo cmd, IServer server)
+		public void AddCommand(UserCommandInfo commandInfo, IServer server)
 		{
-			throw new NotImplementedException();
+			if (built) throw new InvalidOperationException("Object has built");
+			if (globalInfos.Any(s => s.Name == commandInfo.Name))
+				throw new InvalidOperationException("Command with given name already present in repository");
+
+			if (localInfos.ContainsKey(server) == false) localInfos.Add(server, new());
+			localInfos[server].Add(commandInfo);
 		}
 
 		/// <inheritdoc/>
 		public void Fix()
 		{
 			built = true;
+		}
+
+		/// <inheritdoc/>
+		public IUserCommandsCollection GetGlobalCommands()
+		{
+			return new UserCommandsCollection(globalInfos);
+		}
+
+		/// <inheritdoc/>
+		public IUserCommandsCollection GetFullCommandList(IServer server)
+		{
+			var list = new List<UserCommandInfo>();
+			list.AddRange(globalInfos);
+			if (localInfos.ContainsKey(server)) list.AddRange(localInfos[server]);
+			return new UserCommandsCollection(list);
 		}
 	}
 }

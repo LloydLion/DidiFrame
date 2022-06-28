@@ -217,6 +217,69 @@
   </table>
   
   
+  <a id="DidiFrame_Extensions_GetStringForAllLocales_" data-uid="DidiFrame.Extensions.GetStringForAllLocales*"></a>
+  <h4 id="DidiFrame_Extensions_GetStringForAllLocales_IStringLocalizer_IReadOnlyCollection_System_Globalization_CultureInfo__System_String_System_Object___" data-uid="DidiFrame.Extensions.GetStringForAllLocales(IStringLocalizer,IReadOnlyCollection{System.Globalization.CultureInfo},System.String,System.Object[])">GetStringForAllLocales(IStringLocalizer, IReadOnlyCollection&lt;CultureInfo&gt;, String, Object[])</h4>
+  <div class="markdown level1 summary"><p>Gets localization of key for each given culture</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IReadOnlyDictionary&lt;CultureInfo, string&gt; GetStringForAllLocales(this IStringLocalizer localizer, IReadOnlyCollection&lt;CultureInfo&gt; infos, string key, params object[] args)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IStringLocalizer</span></td>
+        <td><span class="parametername">localizer</span></td>
+        <td><p>Localizer to get localizations</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">System.Globalization.CultureInfo</span>&gt;</td>
+        <td><span class="parametername">infos</span></td>
+        <td><p>Target cultures</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">key</span></td>
+        <td><p>Key to transcript</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td><span class="parametername">args</span></td>
+        <td><p>Arguments for key</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">System.Globalization.CultureInfo</span>, <span class="xref">System.String</span>&gt;</td>
+        <td><p>Dictionary: culture - localization</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="DidiFrame_Extensions_JoinWords_" data-uid="DidiFrame.Extensions.JoinWords*"></a>
   <h4 id="DidiFrame_Extensions_JoinWords_IEnumerable_System_String__" data-uid="DidiFrame.Extensions.JoinWords(IEnumerable{System.String})">JoinWords(IEnumerable&lt;String&gt;)</h4>
   <div class="markdown level1 summary"><p>Joins words (array elements) to a string useing space as seporator</p>

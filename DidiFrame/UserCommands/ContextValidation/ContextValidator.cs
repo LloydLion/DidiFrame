@@ -1,4 +1,5 @@
 ﻿using DidiFrame.UserCommands.Pipeline;
+using DidiFrame.Utils;
 using DidiFrame.Utils.ExtendableModels;
 
 namespace DidiFrame.UserCommands.ContextValidation
@@ -8,6 +9,12 @@ namespace DidiFrame.UserCommands.ContextValidation
 	/// </summary>
 	public class ContextValidator : AbstractUserCommandPipelineMiddleware<UserCommandContext, ValidatedUserCommandContext>
 	{
+		/// <summary>
+		/// Error code that will be transcipted if a provider give error
+		/// </summary>
+		public const string ProviderErrorCode = "NoObjectProvided";
+
+
 		private readonly IStringLocalizer<ContextValidator> localizer;
 		private readonly IServiceProvider services;
 
@@ -34,19 +41,32 @@ namespace DidiFrame.UserCommands.ContextValidation
 			var cmdLocalizer = cmd.AdditionalInfo.GetExtension<IStringLocalizer>();
 
 			if (filters is not null)
-			foreach (var filter in filters)
 			{
-				failResult = filter.Filter(services, input, pipelineContext.LocalServices);
+				var map = cmd.AdditionalInfo.GetExtension<LocaleMap>();
+
+				foreach (var filter in filters)
+				{
+					failResult = filter.Filter(services, input, pipelineContext.LocalServices);
 					if (failResult is not null)
 					{
-						var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}:{failResult.LocaleKey}"];
-						return fail(localizer["ByFilterBlockedMessage", arg]);
+						string readyText;
+						if (map is null || cmdLocalizer is null) readyText = localizer["NoDataProvided"];
+						else
+						{
+							if (!map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
+							else readyText = cmdLocalizer[map.TranscriptCode(failResult.ErrorCode)];
+						}
+
+						return fail(localizer["ByFilterBlockedMessage", readyText]);
 					}
+				}
 			}
 
 			foreach (var argument in input.Arguments)
 			{
 				var validators = argument.Key.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandArgumentValidator>>();
+				var providers = argument.Key.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandArgumentValuesProvider>>();
+				var map = argument.Key.AdditionalInfo.GetExtension<LocaleMap>();
 
 				if (validators is not null)
 					foreach (var validator in validators)
@@ -54,8 +74,35 @@ namespace DidiFrame.UserCommands.ContextValidation
 						failResult = validator.Validate(services, input, argument.Key, argument.Value, pipelineContext.LocalServices);
 						if (failResult is not null)
 						{
-							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{cmd.Name}.{argument.Key.Name}:{failResult.LocaleKey}", argument.Value.ComplexObject];
-							return fail(localizer["ValidationErrorMessage", arg]);
+							string readyText;
+							if (map is null || cmdLocalizer is null) readyText = localizer["NoDataProvided"];
+							else
+							{
+								if (!map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
+								else readyText = cmdLocalizer[map.TranscriptCode(failResult.ErrorCode)];
+							}
+
+							return fail(localizer["ValidationErrorMessage", readyText]);
+						}
+					}
+				
+				if (providers is not null)
+					foreach (var provider in providers)
+					{
+						var values = provider.ProvideValues(input.Channel.Server, services);
+						if (!values.Contains(argument.Value.ComplexObject))
+						{
+							failResult = new(ProviderErrorCode, UserCommandCode.InvalidInput);
+
+							string readyText;
+							if (map is null || cmdLocalizer is null) readyText = localizer["NoDataProvided"];
+							else
+							{
+								if (!map.CanTranscriptCode(failResult.ErrorCode)) readyText = localizer["NoDataProvided"];
+								else readyText = cmdLocalizer[map.TranscriptCode(failResult.ErrorCode)];
+							}
+
+							return fail(localizer["ValidationErrorMessage", readyText]);
 						}
 					}
 			}

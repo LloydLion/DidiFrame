@@ -5,6 +5,9 @@
 	/// </summary>
 	public class UserCommandPipelineContext
 	{
+		private readonly Action<UserCommandResult> sendResponce;
+
+
 		/// <summary>
 		/// Status of pipeline
 		/// </summary>
@@ -31,10 +34,12 @@
 		/// </summary>
 		/// <param name="localServices">Local services</param>
 		/// <param name="sendData">Send data from dispatcher</param>
-		public UserCommandPipelineContext(IServiceProvider localServices, UserCommandSendData sendData)
+		/// <param name="sendResponce">Delegate that sends responce to dispatcher</param>
+		public UserCommandPipelineContext(IServiceProvider localServices, UserCommandSendData sendData, Action<UserCommandResult> sendResponce)
 		{
 			LocalServices = localServices;
 			SendData = sendData;
+			this.sendResponce = sendResponce;
 		}
 
 
@@ -74,6 +79,12 @@
 		{
 			return ExecutionResult ?? throw new InvalidOperationException("No execution result if status is not BeginFinalize");
 		}
+
+		/// <summary>
+		/// Send responce to dispatcher
+		/// </summary>
+		/// <param name="result">Responce itself</param>
+		public void SendResponce(UserCommandResult result) => sendResponce(result);
 
 
 		/// <summary>

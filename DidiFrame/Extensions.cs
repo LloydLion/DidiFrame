@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace DidiFrame
 {
@@ -41,6 +43,29 @@ namespace DidiFrame
 			services.AddLocalization(options => options.ResourcesPath = resourcesPath);
 			services.Configure<LoggerFilterOptions>(options => options.AddFilter("Microsoft.Extensions.Localization.", LogLevel.None));
 			return services;
+		}
+
+		/// <summary>
+		/// Gets localization of key for each given culture
+		/// </summary>
+		/// <param name="localizer">Localizer to get localizations</param>
+		/// <param name="infos">Target cultures</param>
+		/// <param name="key">Key to transcript</param>
+		/// <param name="args">Arguments for key</param>
+		/// <returns>Dictionary: culture - localization</returns>
+		public static IReadOnlyDictionary<CultureInfo, string> GetStringForAllLocales(this IStringLocalizer localizer, IReadOnlyCollection<CultureInfo> infos, string key, params object[] args)
+		{
+			var ui = Thread.CurrentThread.CurrentUICulture;
+
+			var ret = new Dictionary<CultureInfo, string>();
+			foreach (var info in infos)
+			{
+				Thread.CurrentThread.CurrentUICulture = info;
+				ret.Add(info, localizer[key, args]);
+			}
+
+			Thread.CurrentThread.CurrentUICulture = ui;
+			return ret;
 		}
 	}
 }

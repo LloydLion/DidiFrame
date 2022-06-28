@@ -129,13 +129,13 @@
   
   
   <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_IServiceProvider_System_Collections_IEnumerable_DidiFrame_UserCommands_PreProcessing_IDefaultContextConveterSubConverter__IStringLocalizer_DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor(IServiceProvider,System.Collections.IEnumerable{DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter},IStringLocalizer{DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter})">DefaultUserCommandContextConverter(IServiceProvider, IEnumerable&lt;IDefaultContextConveterSubConverter&gt;, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt;)</h4>
+  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_IServiceProvider_System_Collections_IEnumerable_DidiFrame_UserCommands_PreProcessing_IUserCommandContextSubConverter__IStringLocalizer_DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor(IServiceProvider,System.Collections.IEnumerable{DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter},IStringLocalizer{DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter})">DefaultUserCommandContextConverter(IServiceProvider, IEnumerable&lt;IUserCommandContextSubConverter&gt;, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DefaultUserCommandContextConverter(IServiceProvider services, IEnumerable&lt;IDefaultContextConveterSubConverter&gt; subConverters, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt; localizer)</code></pre>
+    <pre><code class="lang-csharp hljs">public DefaultUserCommandContextConverter(IServiceProvider services, IEnumerable&lt;IUserCommandContextSubConverter&gt; subConverters, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt; localizer)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -154,7 +154,7 @@
 </td>
       </tr>
       <tr>
-        <td><span class="xref">System.Collections.IEnumerable</span>&lt;<a class="xref" href="DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html">IDefaultContextConveterSubConverter</a>&gt;</td>
+        <td><span class="xref">System.Collections.IEnumerable</span>&lt;<a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a>&gt;</td>
         <td><span class="parametername">subConverters</span></td>
         <td><p>Sub converters that converts raw arguments to ready-to-use</p>
 </td>
@@ -169,6 +169,96 @@
   </table>
   <h3 id="methods">Methods
   </h3>
+  
+  
+  <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_GetSubConverter_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.GetSubConverter*"></a>
+  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_GetSubConverter_IReadOnlyList_UserCommandArgument_Type__" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.GetSubConverter(IReadOnlyList{UserCommandArgument.Type})">GetSubConverter(IReadOnlyList&lt;UserCommandArgument.Type&gt;)</h4>
+  <div class="markdown level1 summary"><p>Gets subconverter by target preobjects types</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IUserCommandContextSubConverter GetSubConverter(IReadOnlyList&lt;UserCommandArgument.Type&gt; inputs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyList</span>&lt;<span class="xref">UserCommandArgument.Type</span>&gt;</td>
+        <td><span class="parametername">inputs</span></td>
+        <td><p>Target preobjects types</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a></td>
+        <td><p>Instance of subconverter</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_GetSubConverter_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.GetSubConverter*"></a>
+  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_GetSubConverter_Type_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.GetSubConverter(Type)">GetSubConverter(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets subconverter by target type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IUserCommandContextSubConverter GetSubConverter(Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>Target type of subconverter</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a></td>
+        <td><p>Instance of subconverter</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   
   
   <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_Process_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.Process*"></a>
@@ -221,57 +311,6 @@
   </table>
   <h5 class="overrides">Overrides</h5>
   <div><span class="xref">DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware&lt;UserCommandPreContext, UserCommandContext&gt;.Process(UserCommandPreContext, DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)</span></div>
-  
-  
-  <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_TryGetPreObjectTypes_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.TryGetPreObjectTypes*"></a>
-  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_TryGetPreObjectTypes_Type_System_Nullable_IReadOnlyList_UserCommandArgument_Type____" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.TryGetPreObjectTypes(Type,System.Nullable{IReadOnlyList{UserCommandArgument.Type}}@)">TryGetPreObjectTypes(Type, out Nullable&lt;IReadOnlyList&lt;UserCommandArgument.Type&gt;&gt;)</h4>
-  <div class="markdown level1 summary"><p>Returns true and value only if complex type has only one set of pretypes</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TryGetPreObjectTypes(Type complexType, out IReadOnlyList&lt;UserCommandArgument.Type&gt;? possiblePreObjectTypes)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Type</span></td>
-        <td><span class="parametername">complexType</span></td>
-        <td><p>Complex type for search</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<span class="xref">UserCommandArgument.Type</span>&gt;&gt;</td>
-        <td><span class="parametername">possiblePreObjectTypes</span></td>
-        <td><p>Pretypes of complex type</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p>If has only one set</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.html">IUserCommandContextConverter</a>

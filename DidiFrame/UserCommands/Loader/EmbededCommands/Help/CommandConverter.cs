@@ -6,7 +6,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 	/// <summary>
 	/// Sub converter for DidiFrame.UserCommands.Models.UserCommandInfo type
 	/// </summary>
-	public class CommandConverter : IDefaultContextConveterSubConverter
+	public class CommandConverter : IUserCommandContextSubConverter
 	{
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter
@@ -24,13 +24,37 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		/// <inheritdoc/>
 		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider locals)
 		{
-			var cmds = services.GetRequiredService<IUserCommandsRepository>().GetCommandsFor(preCtx.Channel.Server);
+			var cmds = services.GetRequiredService<IUserCommandsRepository>().GetFullCommandList(preCtx.Channel.Server);
 			var cmdName = (string)preObjects.Single();
 
 			var has = cmds.TryGetCommad(cmdName, out var value);
 
 			if (!has) return ConvertationResult.Failture("NoCommandExist", UserCommandCode.InvalidInput);
 			else return ConvertationResult.Success(value ?? throw new ImpossibleVariantException());
+		}
+
+		/// <inheritdoc/>
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
+		{
+			return new[] { ((UserCommandInfo)convertationResult).Name };
+		}
+
+		/// <inheritdoc/>
+		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()
+		{
+			return new PossibleValues();
+		}
+
+
+		private class PossibleValues : IUserCommandArgumentValuesProvider
+		{
+			public Type TargetType => typeof(UserCommandInfo);
+
+
+			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+			{
+				return services.GetRequiredService<IUserCommandsRepository>().GetFullCommandList(server);
+			}
 		}
 	}
 }

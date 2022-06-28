@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>LloydLion.$(AssemblyName)</PackageId>
+    <Version>1.2.0-beta.1</Version>
+    <Authors>LloydLion</Authors>
+    <Description>LloydLion.DidiFrame module that contains mongo db based data management subsystem</Description>
+    <Copyright>©LloydLion 2022</Copyright>
+    <PackageProjectUrl>https://lloydlion.github.io/DidiFrame/</PackageProjectUrl>
+    <PackageIcon>DidFrameIcon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/LloydLion/DidiFrame</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>discord bot framework discord-framework mongodb</PackageTags>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\DidFrameIcon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.16.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
+  </ItemGroup>
+
+</Project>

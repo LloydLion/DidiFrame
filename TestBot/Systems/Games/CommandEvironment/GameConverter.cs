@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Games.CommandEvironment
 {
-	internal class GameConverter : IDefaultContextConveterSubConverter
+	internal class GameConverter : IUserCommandContextSubConverter
 	{
 		public Type WorkType => typeof(GameLifetime);
 
@@ -16,6 +16,17 @@ namespace TestBot.Systems.Games.CommandEvironment
 			var name = (string)preObjects[0];
 			if (sysCore.HasGame(preCtx.Invoker, name)) return ConvertationResult.Success(sysCore.GetGame(preCtx.Invoker, name));
 			else return ConvertationResult.Failture("NoGameExist", UserCommandCode.InvalidInput);
+		}
+
+		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
+		{
+			var gl = (GameLifetime)convertationResult;
+			return new object[] { gl.GetBaseClone().Name };
+		}
+
+		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()
+		{
+			return null;
 		}
 	}
 }

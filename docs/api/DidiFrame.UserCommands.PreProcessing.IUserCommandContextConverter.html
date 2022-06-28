@@ -95,14 +95,14 @@
   </h3>
   
   
-  <a id="DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_TryGetPreObjectTypes_" data-uid="DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.TryGetPreObjectTypes*"></a>
-  <h4 id="DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_TryGetPreObjectTypes_Type_System_Nullable_IReadOnlyList_UserCommandArgument_Type____" data-uid="DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.TryGetPreObjectTypes(Type,System.Nullable{IReadOnlyList{UserCommandArgument.Type}}@)">TryGetPreObjectTypes(Type, out Nullable&lt;IReadOnlyList&lt;UserCommandArgument.Type&gt;&gt;)</h4>
-  <div class="markdown level1 summary"><p>Returns true and value only if complex type has only one set of pretypes</p>
+  <a id="DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_GetSubConverter_" data-uid="DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.GetSubConverter*"></a>
+  <h4 id="DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_GetSubConverter_IReadOnlyList_UserCommandArgument_Type__" data-uid="DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.GetSubConverter(IReadOnlyList{UserCommandArgument.Type})">GetSubConverter(IReadOnlyList&lt;UserCommandArgument.Type&gt;)</h4>
+  <div class="markdown level1 summary"><p>Gets subconverter by target preobjects types</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">bool TryGetPreObjectTypes(Type complexType, out IReadOnlyList&lt;UserCommandArgument.Type&gt;? possiblePreObjectTypes)</code></pre>
+    <pre><code class="lang-csharp hljs">IUserCommandContextSubConverter GetSubConverter(IReadOnlyList&lt;UserCommandArgument.Type&gt; inputs)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -115,15 +115,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Type</span></td>
-        <td><span class="parametername">complexType</span></td>
-        <td><p>Complex type for search</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<span class="xref">UserCommandArgument.Type</span>&gt;&gt;</td>
-        <td><span class="parametername">possiblePreObjectTypes</span></td>
-        <td><p>Pretypes of complex type</p>
+        <td><span class="xref">IReadOnlyList</span>&lt;<span class="xref">UserCommandArgument.Type</span>&gt;</td>
+        <td><span class="parametername">inputs</span></td>
+        <td><p>Target preobjects types</p>
 </td>
       </tr>
     </tbody>
@@ -138,8 +132,53 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p>If has only one set</p>
+        <td><a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a></td>
+        <td><p>Instance of subconverter</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_GetSubConverter_" data-uid="DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.GetSubConverter*"></a>
+  <h4 id="DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_GetSubConverter_Type_" data-uid="DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.GetSubConverter(Type)">GetSubConverter(Type)</h4>
+  <div class="markdown level1 summary"><p>Gets subconverter by target type</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IUserCommandContextSubConverter GetSubConverter(Type type)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Type</span></td>
+        <td><span class="parametername">type</span></td>
+        <td><p>Target type of subconverter</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a></td>
+        <td><p>Instance of subconverter</p>
 </td>
       </tr>
     </tbody>

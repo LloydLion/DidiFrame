@@ -50,9 +50,9 @@ to add MongoDb based call `AddMongoDataManagement(IConfiguration, bool, bool)` e
 
 We recommend use Json for server's settings and mongo for states.
 
-Json subsystem localated at [DidiFrame.Data.Json](../api/DidiFrame.Data.Json.html) namespace. It uses json files in special directory (set it in configuration), one file per server named as (serverId).json.
+Json subsystem localated at [DidiFrame.Data.Json](../api/DidiFrame.Data.Json.html) namespace in **[LloydLion.DidiFrame.Data.Json](../download.html) package**. It uses json files in special directory (set it in configuration), one file per server named as (serverId).json.
 
-Mongo subsystem localated at [DidiFrame.Data.MongoDB](../api/DidiFrame.Data.MongoDB.html) namespace. It uses mongo database for save data. Set connection string and database name in configuration. Subsystem uses one collection per server.
+Mongo subsystem localated at [DidiFrame.Data.MongoDB](../api/DidiFrame.Data.MongoDB.html) namespace in **[LloydLion.DidiFrame.Data.Mongo](../download.html) package**. It uses mongo database for save data. Set connection string and database name in configuration. Subsystem uses one collection per that named as server id.
 
 ### Model factory provider
 
@@ -89,7 +89,7 @@ This pipeline based on text messages and responses to a command with text.
 ### Discord client 
 
 Discord client is "window" to discord server, we can interact with discord server only using client.
-To add DSharpPlus-based client into di call `AddDSharpClient(IConfiguration)` extension method on service collection.
+To add DSharpPlus-based client into di call `AddDSharpClient(IConfiguration)` extension method on service collection and **add [LloydLion.DidiFrame.Clients.DSharp](../download.html) package**.
 
 ### Localization
 

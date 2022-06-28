@@ -167,7 +167,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void AddCommand(UserCommandInfo cmd, IServer server)</code></pre>
+    <pre><code class="lang-csharp hljs">public void AddCommand(UserCommandInfo commandInfo, IServer server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -181,9 +181,8 @@
     <tbody>
       <tr>
         <td><span class="xref">UserCommandInfo</span></td>
-        <td><span class="parametername">cmd</span></td>
-        <td><p>Command itself</p>
-</td>
+        <td><span class="parametername">commandInfo</span></td>
+        <td></td>
       </tr>
       <tr>
         <td><span class="xref">IServer</span></td>
@@ -208,7 +207,7 @@
   
   <a id="DidiFrame_UserCommands_Repository_SimpleUserCommandsRepository_GetCommandsFor_" data-uid="DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.GetCommandsFor*"></a>
   <h4 id="DidiFrame_UserCommands_Repository_SimpleUserCommandsRepository_GetCommandsFor_IServer_" data-uid="DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.GetCommandsFor(IServer)">GetCommandsFor(IServer)</h4>
-  <div class="markdown level1 summary"><p>Gets command collection for given server</p>
+  <div class="markdown level1 summary"><p>Gets collection of spefic commands for given server</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -233,6 +232,78 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Repository.IUserCommandsCollection.html">IUserCommandsCollection</a></td>
+        <td><p>Command collection</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Repository_SimpleUserCommandsRepository_GetFullCommandList_" data-uid="DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.GetFullCommandList*"></a>
+  <h4 id="DidiFrame_UserCommands_Repository_SimpleUserCommandsRepository_GetFullCommandList_IServer_" data-uid="DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.GetFullCommandList(IServer)">GetFullCommandList(IServer)</h4>
+  <div class="markdown level1 summary"><p>Gets full command collection for given server</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IUserCommandsCollection GetFullCommandList(IServer server)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServer</span></td>
+        <td><span class="parametername">server</span></td>
+        <td><p>Server for that need to search</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Repository.IUserCommandsCollection.html">IUserCommandsCollection</a></td>
+        <td><p>Command collection</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Repository_SimpleUserCommandsRepository_GetGlobalCommands_" data-uid="DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.GetGlobalCommands*"></a>
+  <h4 id="DidiFrame_UserCommands_Repository_SimpleUserCommandsRepository_GetGlobalCommands" data-uid="DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.GetGlobalCommands">GetGlobalCommands()</h4>
+  <div class="markdown level1 summary"><p>Gets collection of global commands</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IUserCommandsCollection GetGlobalCommands()</code></pre>
+  </div>
   <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>

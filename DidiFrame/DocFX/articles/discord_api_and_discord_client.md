@@ -17,7 +17,7 @@ You can see list of all "discord" interfaces  in namespace [DidiFrame.Interfaces
 ## DSharp client
 
 These is DSharp client that based on DSharpPlus library.
-Client type is [DidiFrame.DSharpAdapter.Client](../api/DidiFrame.DSharpAdapter.Client.html).
+Client type is [DidiFrame.Clients.DSharp.Client](../api/DidiFrame.Clients.DSharp.Client.html) from [DidiFrame.Clients.DSharp](../download.html) package.
 
 DSharp client more than simple adaptation of DSharpPlus library, it has got a cache and disconnect-safe methods.
 Many methods of interfaces are sync and DSharp client uses caches to give result at the moment.
