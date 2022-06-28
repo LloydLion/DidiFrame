@@ -120,9 +120,6 @@
   <data name="ArgumentInfoTitle" xml:space="preserve">
     <value>Аргумент "{0}"</value>
   </data>
-  <data name="cmd.command:NoCommandExist" xml:space="preserve">
-    <value>Несуществует команды с таким именем</value>
-  </data>
   <data name="CmdDescription" xml:space="preserve">
     <value>{0}</value>
   </data>
@@ -161,6 +158,9 @@
   </data>
   <data name="LaunchGroup:Special" xml:space="preserve">
     <value>Отдельными группами</value>
+  </data>
+  <data name="NoCommandFound" xml:space="preserve">
+    <value>Несуществует команды с таким именем</value>
   </data>
   <data name="NoDataProvided" xml:space="preserve">
     <value>Информация не предоставлена командой</value>
