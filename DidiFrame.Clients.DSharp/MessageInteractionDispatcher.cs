@@ -25,7 +25,7 @@ namespace DidiFrame.Clients.DSharp
 		public MessageInteractionDispatcher(Message message)
 		{
 			this.message = message;
-			if (message.TextChannel.Server.Client.SelfAccount != message.Author)
+			if (message.TextChannel.Server.Client.SelfAccount.Id != message.Author.Id)
 				throw new ArgumentException("Enable to create InteractionDispatcher if message sent not by bot");
 			if (message.SendModel.ComponentsRows is null || message.SendModel.ComponentsRows.Any() == false)
 				throw new ArgumentException("Enable to create InteractionDispatcher if message no contains components");

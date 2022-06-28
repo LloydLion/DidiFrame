@@ -15,7 +15,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/LloydLion/DidiFrame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>disocrd bot framework discord-framework mongodb</PackageTags>
+    <PackageTags>discord bot framework discord-framework mongodb</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

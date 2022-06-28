@@ -13,7 +13,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/LloydLion/DidiFrame</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>disocrd bot framework discord-framework</PackageTags>
+    <PackageTags>discord bot framework discord-framework</PackageTags>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression> MIT</PackageLicenseExpression>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>

@@ -123,7 +123,7 @@ namespace DidiFrame.Clients.DSharp
 
 				var darg = e.Interaction.Data.Options.Single(s => s.Focused);                           //Focused argument
 				var processedName = darg.Name.Contains('_') ? darg.Name.Split('_')[0] : darg.Name;		//Processed name of arguments that will be used if argumnet is complex
-				var arg = cmd.Key.Arguments.Single(s => s.Name == darg.Name || s.Name == processedName);//Focused DidiFrame's argument
+				var arg = cmd.Key.Arguments.Single(s => s.Name.ToLower() == darg.Name || s.Name.ToLower() == processedName);//Focused DidiFrame's argument
 				var objIndex = processedName == darg.Name ? 0 : int.Parse(darg.Name.Split('_')[1]);
 
 				var providers = arg.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandArgumentValuesProvider>>();
