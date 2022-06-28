@@ -129,6 +129,12 @@
   <data name="ComplexArgumentDescription" xml:space="preserve">
     <value>{0} часть значения для аргумента {1}</value>
   </data>
+  <data name="InvalidDate" xml:space="preserve">
+    <value>Простите, дата которую вы указали имеет неверный формат. Верный формат: d.MM HH:mm</value>
+  </data>
+  <data name="InvalidTime" xml:space="preserve">
+    <value>Простите, время которую вы указали имеет неверный формат. Верный формат: [d.]hh:mm[:ss] ([....] - опционально)</value>
+  </data>
   <data name="SimpleArgumentDescription" xml:space="preserve">
     <value>Значение для аргумента {0}</value>
   </data>

@@ -311,7 +311,7 @@ namespace DidiFrame.Clients.DSharp
 			object? parseDate(object raw, out string? error)
 			{
 				error = null;
-				if (DateTime.TryParse((string)raw, out var res)) return res;
+				if (DateTime.TryParseExact((string)raw, "d.MM HH:mm", out var res)) return res;
 				else error = "InvalidDate";
 				return null;
 			}

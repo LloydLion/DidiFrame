@@ -129,6 +129,12 @@
   <data name="ComplexArgumentDescription" xml:space="preserve">
     <value>{0} part of value for {1} argument</value>
   </data>
+  <data name="InvalidDate" xml:space="preserve">
+    <value>Sorry, date that you put has invalid format. Right format: d.MM HH:mm</value>
+  </data>
+  <data name="InvalidTime" xml:space="preserve">
+    <value>Sorry, time that you put has invalid format. Right format: [d.]hh:mm[:ss] ([....] - is optional)</value>
+  </data>
   <data name="SimpleArgumentDescription" xml:space="preserve">
     <value>Value for {0} argument</value>
   </data>
