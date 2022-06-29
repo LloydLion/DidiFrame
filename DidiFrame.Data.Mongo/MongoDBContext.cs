@@ -60,7 +60,7 @@ namespace DidiFrame.Data.MongoDB
 				else serverCache.Add(key, model);
 			}
 
-			PushChangesAsync(server, key);
+			PushChangesAsync(server, key, typeof(TModel));
 		}
 
 		private TModel Load<TModel>(IServer server, string key) where TModel : class
@@ -79,7 +79,7 @@ namespace DidiFrame.Data.MongoDB
 			return (TModel)serverCache[key];
 		}
 
-		private async void PushChangesAsync(IServer server, string key)
+		private async void PushChangesAsync(IServer server, string key, Type ttype)
 		{
 			var cnames = await db.ListCollectionNames().ToListAsync();
 
@@ -92,7 +92,7 @@ namespace DidiFrame.Data.MongoDB
 				var obj = cache[server][key];
 				var ser = JsonSerializerFactory.CreateWithConverters(server, logger);
 				var jcont = JToken.FromObject(obj, ser);
-				var model = new SaveModel(key, obj.GetType(), (JContainer)jcont);
+				var model = new SaveModel(key, ttype, (JContainer)jcont);
 				var json = new StringBuilder();
 				ser.Serialize(new JsonTextWriter(new StringWriter(json)), model);
 				var raw = json.ToString();
@@ -132,7 +132,7 @@ namespace DidiFrame.Data.MongoDB
 
 					serverCache.Add(model.Key, data);
 
-					if (isRepatchJson) PushChangesAsync(server, model.Key);
+					if (isRepatchJson) PushChangesAsync(server, model.Key, model.Type);
 				}
 			}
 

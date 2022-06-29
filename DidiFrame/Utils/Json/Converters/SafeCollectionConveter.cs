@@ -17,8 +17,11 @@ namespace DidiFrame.Utils.Json.Converters
 
 		public override bool CanConvert(Type objectType)
 		{
-			var isDic = objectType.IsAssignableTo(typeof(IDictionary)) || objectType.GetInterfaces().Any(s => s.IsGenericType && s.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>))
-				|| (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>));
+			var isDic =
+				objectType.IsAssignableTo(typeof(IDictionary)) ||
+				(objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)) ||
+				objectType.GetInterfaces().Any(s => s.IsGenericType && s.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)) ||
+				objectType.GetInterfaces().Any(s => s.IsGenericType && s.GetGenericTypeDefinition() == typeof(IDictionary<,>));
 			return objectType.IsInterface && objectType.GetInterfaces().Any(s => s.IsGenericType && s.GetGenericTypeDefinition() == typeof(IEnumerable<>)) && !isDic;
 		}
 
