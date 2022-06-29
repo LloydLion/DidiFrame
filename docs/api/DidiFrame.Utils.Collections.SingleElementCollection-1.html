@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Struct Color
+    <title>Class SingleElementCollection&lt;T&gt;
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Struct Color
+    <meta name="title" content="Class SingleElementCollection&lt;T&gt;
    ">
     <meta name="generator" content="docfx 2.59.2.0">
     
@@ -68,94 +68,53 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="DidiFrame.Entities.Color">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1">
   
   
-  <h1 id="DidiFrame_Entities_Color" data-uid="DidiFrame.Entities.Color" class="text-break">Struct Color
+  <h1 id="DidiFrame_Utils_Collections_SingleElementCollection_1" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1" class="text-break">Class SingleElementCollection&lt;T&gt;
   </h1>
-  <div class="markdown level0 summary"><p>Represent 24-bit RGB color</p>
+  <div class="markdown level0 summary"><p>Collection that contains only one element</p>
 </div>
   <div class="markdown level0 conceptual"></div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
-    <div>
-      <span class="xref">System.ValueType.Equals(System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.ValueType.GetHashCode()</span>
-    </div>
-    <div>
-      <span class="xref">System.ValueType.ToString()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.GetType()</span>
-    </div>
-    <div>
-      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
-    </div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">SingleElementCollection&lt;T&gt;</span></div>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Entities.html">DidiFrame.Entities</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Utils.Collections.html">DidiFrame.Utils.Collections</a></h6>
   <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
-  <h5 id="DidiFrame_Entities_Color_syntax">Syntax</h5>
+  <h5 id="DidiFrame_Utils_Collections_SingleElementCollection_1_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly struct Color</code></pre>
+    <pre><code class="lang-csharp hljs">public class SingleElementCollection&lt;T&gt; : IReadOnlyList&lt;T&gt;</code></pre>
   </div>
-  <h3 id="constructors">Constructors
-  </h3>
-  
-  
-  <a id="DidiFrame_Entities_Color__ctor_" data-uid="DidiFrame.Entities.Color.#ctor*"></a>
-  <h4 id="DidiFrame_Entities_Color__ctor_System_Byte_System_Byte_System_Byte_" data-uid="DidiFrame.Entities.Color.#ctor(System.Byte,System.Byte,System.Byte)">Color(Byte, Byte, Byte)</h4>
-  <div class="markdown level1 summary"><p>Creates instance of DidiFrame.Entities.Color using 3 channels values</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Color(byte red, byte green, byte blue)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
+  <h5 class="typeParameters">Type Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
-        <th>Type</th>
         <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Byte</span></td>
-        <td><span class="parametername">red</span></td>
-        <td><p>Red channel value</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Byte</span></td>
-        <td><span class="parametername">green</span></td>
-        <td><p>Green channel value</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Byte</span></td>
-        <td><span class="parametername">blue</span></td>
-        <td><p>Blue channel value</p>
+        <td><span class="parametername">T</span></td>
+        <td><p>Collection type</p>
 </td>
       </tr>
     </tbody>
   </table>
+  <h3 id="constructors">Constructors
+  </h3>
   
   
-  <a id="DidiFrame_Entities_Color__ctor_" data-uid="DidiFrame.Entities.Color.#ctor*"></a>
-  <h4 id="DidiFrame_Entities_Color__ctor_System_String_" data-uid="DidiFrame.Entities.Color.#ctor(System.String)">Color(String)</h4>
-  <div class="markdown level1 summary"><p>Creates instance of DidiFrame.Entities.Color using hex color string</p>
+  <a id="DidiFrame_Utils_Collections_SingleElementCollection_1__ctor_" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.#ctor*"></a>
+  <h4 id="DidiFrame_Utils_Collections_SingleElementCollection_1__ctor__0_" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.#ctor(`0)">SingleElementCollection(T)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Utils.Collections.SingleElementCollection`1 using single element</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Color(string hex)</code></pre>
+    <pre><code class="lang-csharp hljs">public SingleElementCollection(T element)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -168,9 +127,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">hex</span></td>
-        <td><p>Hex string in format #RRGGBB</p>
+        <td><span class="xref">T</span></td>
+        <td><span class="parametername">element</span></td>
+        <td><p>Element to store</p>
 </td>
       </tr>
     </tbody>
@@ -179,14 +138,13 @@
   </h3>
   
   
-  <a id="DidiFrame_Entities_Color_Blue_" data-uid="DidiFrame.Entities.Color.Blue*"></a>
-  <h4 id="DidiFrame_Entities_Color_Blue" data-uid="DidiFrame.Entities.Color.Blue">Blue</h4>
-  <div class="markdown level1 summary"><p>Blue channel value</p>
-</div>
+  <a id="DidiFrame_Utils_Collections_SingleElementCollection_1_Count_" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.Count*"></a>
+  <h4 id="DidiFrame_Utils_Collections_SingleElementCollection_1_Count" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.Count">Count</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly byte Blue { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public int Count { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -198,48 +156,38 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Byte</span></td>
+        <td><span class="xref">System.Int32</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
   
   
-  <a id="DidiFrame_Entities_Color_Green_" data-uid="DidiFrame.Entities.Color.Green*"></a>
-  <h4 id="DidiFrame_Entities_Color_Green" data-uid="DidiFrame.Entities.Color.Green">Green</h4>
-  <div class="markdown level1 summary"><p>Green channel value</p>
-</div>
+  <a id="DidiFrame_Utils_Collections_SingleElementCollection_1_Item_" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.Item*"></a>
+  <h4 id="DidiFrame_Utils_Collections_SingleElementCollection_1_Item_System_Int32_" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.Item(System.Int32)">Item[Int32]</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly byte Green { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public T this[int index] { get; }</code></pre>
   </div>
-  <h5 class="propertyValue">Property Value</h5>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Byte</span></td>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">index</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  
-  
-  <a id="DidiFrame_Entities_Color_Red_" data-uid="DidiFrame.Entities.Color.Red*"></a>
-  <h4 id="DidiFrame_Entities_Color_Red" data-uid="DidiFrame.Entities.Color.Red">Red</h4>
-  <div class="markdown level1 summary"><p>Red channel value</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public readonly byte Red { get; }</code></pre>
-  </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
@@ -250,7 +198,61 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Byte</span></td>
+        <td><span class="xref">T</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Utils_Collections_SingleElementCollection_1_GetEnumerator_" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.GetEnumerator*"></a>
+  <h4 id="DidiFrame_Utils_Collections_SingleElementCollection_1_GetEnumerator" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.GetEnumerator">GetEnumerator()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IEnumerator&lt;T&gt; GetEnumerator()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.IEnumerator</span>&lt;T&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="eii">Explicit Interface Implementations
+  </h3>
+  
+  
+  <a id="DidiFrame_Utils_Collections_SingleElementCollection_1_System_Collections_IEnumerable_GetEnumerator_" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.System#Collections#IEnumerable#GetEnumerator*"></a>
+  <h4 id="DidiFrame_Utils_Collections_SingleElementCollection_1_System_Collections_IEnumerable_GetEnumerator" data-uid="DidiFrame.Utils.Collections.SingleElementCollection`1.System#Collections#IEnumerable#GetEnumerator">IEnumerable.GetEnumerator()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IEnumerator IEnumerable.GetEnumerator()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.IEnumerator</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -258,9 +260,6 @@
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>
       <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
-  </div>
-  <div>
-      <a class="xref" href="DidiFrame.Clients.DSharp.Extensions.html#DidiFrame_Clients_DSharp_Extensions_GetDSharp_DidiFrame_Entities_Color_">Extensions.GetDSharp(Color)</a>
   </div>
 </article>
           </div>

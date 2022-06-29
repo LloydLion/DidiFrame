@@ -116,14 +116,14 @@ Sub converters also must provide backward convertation - from ready-object to ra
 Pipeline is main component of all user commands subsystem, it processes validators and filters, pareses and sends messages and also does all other work.
 
 A pipeline works simple: central component is dispatcher ([IUserCommandPipelineDispatcher\`1](../api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher-1.html)).  
-It starts and ends pipeline. It contains single method that sets callback. Dispatcher must trigger callback at some event and transmit call info with special dispatcher's object, it initiate pipeline start.  
-Call info includes [meta info](../api/DidiFrame.UserCommands.Models.UserCommandSendData.html) and second callback that will be called at pipeline end.
+It starts and ends pipeline. It contains three methods that sets callback, finalizes pipeline and responds to command. Dispatcher must trigger callback at some event and transmit call info with special dispatcher's object, it initiate pipeline start.  
+Call info includes [meta info](../api/DidiFrame.UserCommands.Models.UserCommandSendData.html) and special object that will be transmited at pipeline end to dispatcher's Finalize and Respond methods.
 
 Dispatcher triggers the chain of middlewares.  
 [Middleware](../api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html) is middle component and element of chain. Middleware has single method - `TOut? Process(TIn, PipelineContext)` that processes some object into other.
 
 Finnally, we have that execution order:
-Dispatcher \-\> Middleware 1 \-\> Middleware 2 \-\> Middleware 3 \-\> ... \-\> Dispatcher's callback
+Dispatcher \-\> Middleware 1 \-\> Middleware 2 \-\> Middleware 3 \-\> ... \-\> Dispatcher's Respond, Finalize methods
 
 Each link has custom and determined by generic types transit object's type. Dispatcher has special object that will be accepted by first middleware as input, than the middleware processes output object that trasmites to next middleware as input.
 The last middleware must return [UserCommandResult](../api/DidiFrame.UserCommands.Models.UserCommandResult.html) that object dispatcher's callback will accept.
@@ -140,6 +140,9 @@ Note:
 * To drop or finalize pipeline return null from middleware and call special context's method.
 * [IDiscordApplication](../api/DidiFrame.Application.IDiscordApplication.html) automaticlly registers all need for pipeline stuff using special builder.
 * If you want create your middleware use [AbstractUserCommandPipelineMiddleware\`2](../api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html) support class .
+* Dispatcher.Respond can be called in pipeline that means responce will be sent before pipeline ends.
+* Dispatcher.Respond can be called twice (include default call) that means these are two responces
+* Dispatcher.Respond with special object is available from [UserCommandPipelineContext](../api/DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.html)
 
 ## User command pipeline building
 
@@ -148,7 +151,7 @@ Adding pipeline to di container or direct constructing means using builder to cr
 Why we should do it, we can directly create instance of [UserCommandPipeline](../api/DidiFrame.UserCommands.Pipeline.UserCommandPipeline.html) and use it in executor? Answer - builder is more convenient, it: checks type using generic types, support di container to integrate each pipeline element, has extensions methods do something more and builder is required if you use [IDiscordApplication](../api/DidiFrame.Application.IDiscordApplication.html).
 
 Builder is class that implements [IUserCommandPipelineBuilder](../api/DidiFrame.UserCommands.Pipeline.Building.IUserCommandPipelineBuilder.html) interface. Default implementation of it interface is internal class of DidiFrame and you can't access it outside.
-But you has `AddUserCommandPipeline(Action\<IUserCommandPipelineBuilder\>)` extension method for service collection. Builder is standard fluent builder, simple read methods description and don't forget call `Build()` at end.
+But you has `AddUserCommandPipeline(Action<IUserCommandPipelineBuilder>)` extension method for service collection. Builder is standard fluent builder, simple read methods description and don't forget call `Build()` at end.
 Also builder has extension methods that can simplify process.
 
 Note:  

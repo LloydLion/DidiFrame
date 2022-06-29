@@ -102,8 +102,8 @@ Repositories methods are simple and intuitive and in first project guide we won'
 <p>Framework by default has two Data management subsystems: Json based and MongoDb based, to add Json based call <code>AddJsonDataManagement(IConfiguration, bool, bool)</code> extension method on service collection,
 to add MongoDb based call <code>AddMongoDataManagement(IConfiguration, bool, bool)</code> extension method. See documentation for details.</p>
 <p>We recommend use Json for server's settings and mongo for states.</p>
-<p>Json subsystem localated at <a href="../api/DidiFrame.Data.Json.html">DidiFrame.Data.Json</a> namespace. It uses json files in special directory (set it in configuration), one file per server named as (serverId).json.</p>
-<p>Mongo subsystem localated at <a href="../api/DidiFrame.Data.MongoDB.html">DidiFrame.Data.MongoDB</a> namespace. It uses mongo database for save data. Set connection string and database name in configuration. Subsystem uses one collection per server.</p>
+<p>Json subsystem localated at <a href="../api/DidiFrame.Data.Json.html">DidiFrame.Data.Json</a> namespace in <strong><a href="../download.html">LloydLion.DidiFrame.Data.Json</a> package</strong>. It uses json files in special directory (set it in configuration), one file per server named as (serverId).json.</p>
+<p>Mongo subsystem localated at <a href="../api/DidiFrame.Data.MongoDB.html">DidiFrame.Data.MongoDB</a> namespace in <strong><a href="../download.html">LloydLion.DidiFrame.Data.Mongo</a> package</strong>. It uses mongo database for save data. Set connection string and database name in configuration. Subsystem uses one collection per that named as server id.</p>
 <h3 id="model-factory-provider">Model factory provider</h3>
 <p>Each server's state must have default value that value for a type provides <a href="../api/DidiFrame.Data.IModelFactory-1.html">IModelFactory</a>, but somebody must provide model factories that somebody is Model factory provider.
 Default provider is <a href="../api/DidiFrame.Data.DefaultModelFactoryProvider.html">DefaultModelFactoryProvider</a> (that can be added by <code>.AddTransient&lt;IModelFactoryProvider, DefaultModelFactoryProvider&gt;()</code> method on service collection) that takes factories from di container.
@@ -127,7 +127,7 @@ We can call <code>AddUserCommandPipeline(Action&lt;IUserCommandPipelineBuilder&g
 This pipeline based on text messages and responses to a command with text.</p>
 <h3 id="discord-client">Discord client</h3>
 <p>Discord client is &quot;window&quot; to discord server, we can interact with discord server only using client.
-To add DSharpPlus-based client into di call <code>AddDSharpClient(IConfiguration)</code> extension method on service collection.</p>
+To add DSharpPlus-based client into di call <code>AddDSharpClient(IConfiguration)</code> extension method on service collection and <strong>add <a href="../download.html">LloydLion.DidiFrame.Clients.DSharp</a> package</strong>.</p>
 <h3 id="localization">Localization</h3>
 <p>We have to translate bot to different langs to salve this propblem created Microsoft.Extensions.Localization library that included into DidiFrame. To add it call <code>AddLocalization</code> extension method on service collection.
 But we recommend to use <code>AddConfiguratedLocalization</code> extension method from DidiFrame because it also adds logging filters for localizers.</p>

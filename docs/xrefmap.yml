@@ -1281,6 +1281,19 @@ references:
   isSpec: "True"
   fullName: DidiFrame.Clients.DSharp.Member.Member
   nameWithType: Member.Member
+- uid: DidiFrame.Clients.DSharp.Member.BaseMember
+  name: BaseMember
+  href: api/DidiFrame.Clients.DSharp.Member.html#DidiFrame_Clients_DSharp_Member_BaseMember
+  commentId: P:DidiFrame.Clients.DSharp.Member.BaseMember
+  fullName: DidiFrame.Clients.DSharp.Member.BaseMember
+  nameWithType: Member.BaseMember
+- uid: DidiFrame.Clients.DSharp.Member.BaseMember*
+  name: BaseMember
+  href: api/DidiFrame.Clients.DSharp.Member.html#DidiFrame_Clients_DSharp_Member_BaseMember_
+  commentId: Overload:DidiFrame.Clients.DSharp.Member.BaseMember
+  isSpec: "True"
+  fullName: DidiFrame.Clients.DSharp.Member.BaseMember
+  nameWithType: Member.BaseMember
 - uid: DidiFrame.Clients.DSharp.Member.BaseServer
   name: BaseServer
   href: api/DidiFrame.Clients.DSharp.Member.html#DidiFrame_Clients_DSharp_Member_BaseServer
@@ -2250,6 +2263,19 @@ references:
   isSpec: "True"
   fullName: DidiFrame.Clients.DSharp.User.User
   nameWithType: User.User
+- uid: DidiFrame.Clients.DSharp.User.BaseUser
+  name: BaseUser
+  href: api/DidiFrame.Clients.DSharp.User.html#DidiFrame_Clients_DSharp_User_BaseUser
+  commentId: P:DidiFrame.Clients.DSharp.User.BaseUser
+  fullName: DidiFrame.Clients.DSharp.User.BaseUser
+  nameWithType: User.BaseUser
+- uid: DidiFrame.Clients.DSharp.User.BaseUser*
+  name: BaseUser
+  href: api/DidiFrame.Clients.DSharp.User.html#DidiFrame_Clients_DSharp_User_BaseUser_
+  commentId: Overload:DidiFrame.Clients.DSharp.User.BaseUser
+  isSpec: "True"
+  fullName: DidiFrame.Clients.DSharp.User.BaseUser
+  nameWithType: User.BaseUser
 - uid: DidiFrame.Clients.DSharp.User.Client
   name: Client
   href: api/DidiFrame.Clients.DSharp.User.html#DidiFrame_Clients_DSharp_User_Client
@@ -11167,6 +11193,131 @@ references:
   commentId: N:DidiFrame.Utils
   fullName: DidiFrame.Utils
   nameWithType: DidiFrame.Utils
+- uid: DidiFrame.Utils.Collections
+  name: DidiFrame.Utils.Collections
+  href: api/DidiFrame.Utils.Collections.html
+  commentId: N:DidiFrame.Utils.Collections
+  fullName: DidiFrame.Utils.Collections
+  nameWithType: DidiFrame.Utils.Collections
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1
+  name: SingleElementCollection<T>
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html
+  commentId: T:DidiFrame.Utils.Collections.SingleElementCollection`1
+  name.vb: SingleElementCollection(Of T)
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T)
+  nameWithType: SingleElementCollection<T>
+  nameWithType.vb: SingleElementCollection(Of T)
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.#ctor(`0)
+  name: SingleElementCollection(T)
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1__ctor__0_
+  commentId: M:DidiFrame.Utils.Collections.SingleElementCollection`1.#ctor(`0)
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.SingleElementCollection(T)
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).SingleElementCollection(T)
+  nameWithType: SingleElementCollection<T>.SingleElementCollection(T)
+  nameWithType.vb: SingleElementCollection(Of T).SingleElementCollection(T)
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.#ctor*
+  name: SingleElementCollection
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1__ctor_
+  commentId: Overload:DidiFrame.Utils.Collections.SingleElementCollection`1.#ctor
+  isSpec: "True"
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.SingleElementCollection
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).SingleElementCollection
+  nameWithType: SingleElementCollection<T>.SingleElementCollection
+  nameWithType.vb: SingleElementCollection(Of T).SingleElementCollection
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.Count
+  name: Count
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1_Count
+  commentId: P:DidiFrame.Utils.Collections.SingleElementCollection`1.Count
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.Count
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).Count
+  nameWithType: SingleElementCollection<T>.Count
+  nameWithType.vb: SingleElementCollection(Of T).Count
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.Count*
+  name: Count
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1_Count_
+  commentId: Overload:DidiFrame.Utils.Collections.SingleElementCollection`1.Count
+  isSpec: "True"
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.Count
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).Count
+  nameWithType: SingleElementCollection<T>.Count
+  nameWithType.vb: SingleElementCollection(Of T).Count
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.GetEnumerator
+  name: GetEnumerator()
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1_GetEnumerator
+  commentId: M:DidiFrame.Utils.Collections.SingleElementCollection`1.GetEnumerator
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.GetEnumerator()
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).GetEnumerator()
+  nameWithType: SingleElementCollection<T>.GetEnumerator()
+  nameWithType.vb: SingleElementCollection(Of T).GetEnumerator()
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.GetEnumerator*
+  name: GetEnumerator
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1_GetEnumerator_
+  commentId: Overload:DidiFrame.Utils.Collections.SingleElementCollection`1.GetEnumerator
+  isSpec: "True"
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.GetEnumerator
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).GetEnumerator
+  nameWithType: SingleElementCollection<T>.GetEnumerator
+  nameWithType.vb: SingleElementCollection(Of T).GetEnumerator
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.Item(System.Int32)
+  name: Item[Int32]
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1_Item_System_Int32_
+  commentId: P:DidiFrame.Utils.Collections.SingleElementCollection`1.Item(System.Int32)
+  name.vb: Item(Int32)
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.Item[System.Int32]
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).Item(System.Int32)
+  nameWithType: SingleElementCollection<T>.Item[Int32]
+  nameWithType.vb: SingleElementCollection(Of T).Item(Int32)
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.Item*
+  name: Item
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1_Item_
+  commentId: Overload:DidiFrame.Utils.Collections.SingleElementCollection`1.Item
+  isSpec: "True"
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.Item
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).Item
+  nameWithType: SingleElementCollection<T>.Item
+  nameWithType.vb: SingleElementCollection(Of T).Item
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.System#Collections#IEnumerable#GetEnumerator
+  name: IEnumerable.GetEnumerator()
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1_System_Collections_IEnumerable_GetEnumerator
+  commentId: M:DidiFrame.Utils.Collections.SingleElementCollection`1.System#Collections#IEnumerable#GetEnumerator
+  name.vb: System.Collections.IEnumerable.GetEnumerator()
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.System.Collections.IEnumerable.GetEnumerator()
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).System.Collections.IEnumerable.GetEnumerator()
+  nameWithType: SingleElementCollection<T>.IEnumerable.GetEnumerator()
+  nameWithType.vb: SingleElementCollection(Of T).System.Collections.IEnumerable.GetEnumerator()
+- uid: DidiFrame.Utils.Collections.SingleElementCollection`1.System#Collections#IEnumerable#GetEnumerator*
+  name: IEnumerable.GetEnumerator
+  href: api/DidiFrame.Utils.Collections.SingleElementCollection-1.html#DidiFrame_Utils_Collections_SingleElementCollection_1_System_Collections_IEnumerable_GetEnumerator_
+  commentId: Overload:DidiFrame.Utils.Collections.SingleElementCollection`1.System#Collections#IEnumerable#GetEnumerator
+  isSpec: "True"
+  name.vb: System.Collections.IEnumerable.GetEnumerator
+  fullName: DidiFrame.Utils.Collections.SingleElementCollection<T>.System.Collections.IEnumerable.GetEnumerator
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollection(Of T).System.Collections.IEnumerable.GetEnumerator
+  nameWithType: SingleElementCollection<T>.IEnumerable.GetEnumerator
+  nameWithType.vb: SingleElementCollection(Of T).System.Collections.IEnumerable.GetEnumerator
+- uid: DidiFrame.Utils.Collections.SingleElementCollectionExtensions
+  name: SingleElementCollectionExtensions
+  href: api/DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html
+  commentId: T:DidiFrame.Utils.Collections.SingleElementCollectionExtensions
+  fullName: DidiFrame.Utils.Collections.SingleElementCollectionExtensions
+  nameWithType: SingleElementCollectionExtensions
+- uid: DidiFrame.Utils.Collections.SingleElementCollectionExtensions.StoreSingle*
+  name: StoreSingle
+  href: api/DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle_
+  commentId: Overload:DidiFrame.Utils.Collections.SingleElementCollectionExtensions.StoreSingle
+  isSpec: "True"
+  fullName: DidiFrame.Utils.Collections.SingleElementCollectionExtensions.StoreSingle
+  nameWithType: SingleElementCollectionExtensions.StoreSingle
+- uid: DidiFrame.Utils.Collections.SingleElementCollectionExtensions.StoreSingle``1(``0)
+  name: StoreSingle<T>(T)
+  href: api/DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_
+  commentId: M:DidiFrame.Utils.Collections.SingleElementCollectionExtensions.StoreSingle``1(``0)
+  name.vb: StoreSingle(Of T)(T)
+  fullName: DidiFrame.Utils.Collections.SingleElementCollectionExtensions.StoreSingle<T>(T)
+  fullName.vb: DidiFrame.Utils.Collections.SingleElementCollectionExtensions.StoreSingle(Of T)(T)
+  nameWithType: SingleElementCollectionExtensions.StoreSingle<T>(T)
+  nameWithType.vb: SingleElementCollectionExtensions.StoreSingle(Of T)(T)
 - uid: DidiFrame.Utils.ExtendableModels
   name: DidiFrame.Utils.ExtendableModels
   href: api/DidiFrame.Utils.ExtendableModels.html

@@ -111,6 +111,13 @@ About return: if <code>Validate</code> methods returns null it means that all ok
 To apply it in reflection loader use <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ValidatorAttribute.html">ValidatorAttribute</a> on argument.</p>
 <p>Tip 1: you can see error locale key of default validators in them description.</p>
 <p>Tip 2: abstract class <a href="../api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html">AbstractArgumentValidator</a> can help in validators createtion.</p>
+<h2 id="arguments-values-providing">Arguments values providing</h2>
+<p>Usually argument can accept only limited list of values, you can filter it using validators, but framework has more simple solution: Argument values providers.
+Argument values provider implements <a href="../api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValuesProvider.html">IUserCommandArgumentValuesProvider</a>.</p>
+<p>In context validation process providers will be checked and if argument contains no allowed data validation error will produced (Error code is one for each provider: &quot;NoObjectProvided&quot; from <a href="../api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.html">ContextValidator.ProviderErrorCode</a>).
+We recomend use providers where it possible.</p>
+<p>To add provider to argument use <a href="../api/DidiFrame.UserCommands.Loader.Reflection.ValuesProviderAttribute.html">ValuesProviderAttribute</a> in relflection provider or add IReadOnlyCollection&lt;<a href="../api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValuesProvider.html">IUserCommandArgumentValuesProvider</a>&gt; into additional info of argument.</p>
+<p>Note: multiple providers allowed values will be crossed.</p>
 <h2 id="invoker-filtration">Invoker filtration</h2>
 <p>Filters for invoker are useful if need to check permission level or some timeouts.</p>
 <p>Filter is class that implements <a href="../api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html">IUserCommandInvokerFilter</a> interface.<br>
@@ -123,7 +130,7 @@ To apply it in reflection loader use <a href="../api/DidiFrame.UserCommands.Load
 <h2 id="custom-arguments-types">Custom arguments types</h2>
 <p>As command's argumetns you can use constrained set of types, each of them listed in <a href="../api/DidiFrame.UserCommands.Models.UserCommandArgument.Type.html">UserCommandArgument.Type</a> enum, but what if you want use more.</p>
 <p>Command arguments before they are intercepted by the executor, passed to the command, go through a conversion process.</p>
-<p>To create custom type implementate <a href="api/DidiFrame.UserCommands.PreProcessing.IDefaultContextConveterSubConverter.html">IDefaultContextConveterSubConverter</a> interface and add it into di container.</p>
+<p>To create custom type implementate <a href="api/DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a> interface and add it into di container.</p>
 <p>It works like it:</p>
 <p>\cmd <ins>&quot;text&quot;</ins> <ins>42 @Nobody</ins> <ins>02.12|12:23:22</ins></p>
 <pre><code class="lang-raw">|Type  |Raw            |Convertation|Result        |  
@@ -133,15 +140,16 @@ To apply it in reflection loader use <a href="../api/DidiFrame.UserCommands.Load
 |member|@Nobody        | --} ---&gt;   |Custom model  |  
 |date  |02.12|12:23:22 | ----&gt;      |02.12|12:23:22|
 </code></pre>
+<p>Sub converters also must provide backward convertation - from ready-object to raw arguments and can (it is optional) provide custom values provider that will be automaticlly (in loading proccess) applied to argument.</p>
 <h2 id="user-command-pipeline">User command pipeline</h2>
 <p>Pipeline is main component of all user commands subsystem, it processes validators and filters, pareses and sends messages and also does all other work.</p>
 <p>A pipeline works simple: central component is dispatcher (<a href="../api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher-1.html">IUserCommandPipelineDispatcher`1</a>).<br>
-It starts and ends pipeline. It contains single method that sets callback. Dispatcher must trigger callback at some event and transmit call info with special dispatcher's object, it initiate pipeline start.<br>
-Call info includes <a href="../api/DidiFrame.UserCommands.Models.UserCommandSendData.html">meta info</a> and second callback that will be called at pipeline end.</p>
+It starts and ends pipeline. It contains three methods that sets callback, finalizes pipeline and responds to command. Dispatcher must trigger callback at some event and transmit call info with special dispatcher's object, it initiate pipeline start.<br>
+Call info includes <a href="../api/DidiFrame.UserCommands.Models.UserCommandSendData.html">meta info</a> and special object that will be transmited at pipeline end to dispatcher's Finalize and Respond methods.</p>
 <p>Dispatcher triggers the chain of middlewares.<br>
 <a href="../api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html">Middleware</a> is middle component and element of chain. Middleware has single method - <code>TOut? Process(TIn, PipelineContext)</code> that processes some object into other.</p>
 <p>Finnally, we have that execution order:
-Dispatcher -&gt; Middleware 1 -&gt; Middleware 2 -&gt; Middleware 3 -&gt; ... -&gt; Dispatcher's callback</p>
+Dispatcher -&gt; Middleware 1 -&gt; Middleware 2 -&gt; Middleware 3 -&gt; ... -&gt; Dispatcher's Respond, Finalize methods</p>
 <p>Each link has custom and determined by generic types transit object's type. Dispatcher has special object that will be accepted by first middleware as input, than the middleware processes output object that trasmites to next middleware as input.
 The last middleware must return <a href="../api/DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a> that object dispatcher's callback will accept.</p>
 <p>About support classes:</p>
@@ -158,12 +166,15 @@ The last middleware must return <a href="../api/DidiFrame.UserCommands.Models.Us
 <li>To drop or finalize pipeline return null from middleware and call special context's method.</li>
 <li><a href="../api/DidiFrame.Application.IDiscordApplication.html">IDiscordApplication</a> automaticlly registers all need for pipeline stuff using special builder.</li>
 <li>If you want create your middleware use <a href="../api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html">AbstractUserCommandPipelineMiddleware`2</a> support class .</li>
+<li>Dispatcher.Respond can be called in pipeline that means responce will be sent before pipeline ends.</li>
+<li>Dispatcher.Respond can be called twice (include default call) that means these are two responces</li>
+<li>Dispatcher.Respond with special object is available from <a href="../api/DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.html">UserCommandPipelineContext</a></li>
 </ul>
 <h2 id="user-command-pipeline-building">User command pipeline building</h2>
 <p>Adding pipeline to di container or direct constructing means using builder to create pipeline.</p>
 <p>Why we should do it, we can directly create instance of <a href="../api/DidiFrame.UserCommands.Pipeline.UserCommandPipeline.html">UserCommandPipeline</a> and use it in executor? Answer - builder is more convenient, it: checks type using generic types, support di container to integrate each pipeline element, has extensions methods do something more and builder is required if you use <a href="../api/DidiFrame.Application.IDiscordApplication.html">IDiscordApplication</a>.</p>
 <p>Builder is class that implements <a href="../api/DidiFrame.UserCommands.Pipeline.Building.IUserCommandPipelineBuilder.html">IUserCommandPipelineBuilder</a> interface. Default implementation of it interface is internal class of DidiFrame and you can't access it outside.
-But you has <code>AddUserCommandPipeline(Action\&lt;IUserCommandPipelineBuilder\&gt;)</code> extension method for service collection. Builder is standard fluent builder, simple read methods description and don't forget call <code>Build()</code> at end.
+But you has <code>AddUserCommandPipeline(Action&lt;IUserCommandPipelineBuilder&gt;)</code> extension method for service collection. Builder is standard fluent builder, simple read methods description and don't forget call <code>Build()</code> at end.
 Also builder has extension methods that can simplify process.</p>
 <p>Note:<br>
 Framework has ready pipeline that can be added using <code>ClassicMessageUserCommandPipeline(IConfiguration textCommandParserConfig, IConfiguration defaultCommandsExecutorConfig)</code> extension method on service collection.<br>
