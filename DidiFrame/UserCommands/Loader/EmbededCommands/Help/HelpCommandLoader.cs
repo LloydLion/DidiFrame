@@ -1,5 +1,7 @@
-﻿using DidiFrame.UserCommands.ContextValidation.Arguments.Providers;
+﻿using DidiFrame.UserCommands.ContextValidation;
+using DidiFrame.UserCommands.ContextValidation.Arguments.Providers;
 using DidiFrame.UserCommands.PreProcessing;
+using DidiFrame.Utils;
 using DidiFrame.Utils.ExtendableModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
@@ -36,10 +38,17 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		/// <inheritdoc/>
 		public void LoadTo(IUserCommandsRepository rp)
 		{
-			var dic = new Dictionary<Type, object>();
+			var dic = new Dictionary<Type, object>
+			{
+				{ typeof(ArgumentDescription), new ArgumentDescription("TargetCmd", null) },
+			};
+
 			var provider = converter.GetSubConverter(typeof(UserCommandInfo)).CreatePossibleValuesProvider();
-			if(provider is not null) dic.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), new[] { provider });
-			dic.Add(typeof(ArgumentDescription), new ArgumentDescription("TargetCmd", null));
+			if (provider is not null)
+			{
+				dic.Add(typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), new[] { provider });
+				dic.Add(typeof(LocaleMap), new LocaleMap(new Dictionary<string, string>() { { ContextValidator.ProviderErrorCode, "NoCommandFound" } }));
+			}
 
 			rp.AddCommand(new UserCommandInfo("cmd", CmdHandler, new UserCommandArgument[]
 			{
@@ -53,6 +62,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			dic = new Dictionary<Type, object>
 			{
 				{ typeof(IReadOnlyCollection<IUserCommandArgumentValuesProvider>), new IUserCommandArgumentValuesProvider[] { new Provider(rp) } },
+				{ typeof(LocaleMap), new LocaleMap(new Dictionary<string, string>() { { ContextValidator.ProviderErrorCode, "NoPage" } }) },
 				{ typeof(ArgumentDescription), new ArgumentDescription("TargetPage", null) }
 			};
 
@@ -72,10 +82,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 
 			var embedBuilder = new MessageEmbedBuilder(localizer["HelpTitle"], localizer["HelpDescription"], new("#44dca5"));
 
-			var error = Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(localizer["NoPage"]) });
-			if (page <= 0) return error;
 			var data = cmds.Skip((page - 1) * MaxCmdsInOnePage).Take(MaxCmdsInOnePage);
-			if (!data.Any()) return error;
 
 			foreach (var cmd in data)
 			{

@@ -24,6 +24,11 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public override string UserName => member.DisplayName;
 
+		/// <summary>
+		/// Base DiscordMember from DSharp
+		/// </summary>
+		public DiscordMember BaseMember => member;
+
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Member
