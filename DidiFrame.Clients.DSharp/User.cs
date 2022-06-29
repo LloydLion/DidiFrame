@@ -28,6 +28,11 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public bool IsBot => user.IsBot;
 
+		/// <summary>
+		/// Base DiscordUser from DSharp
+		/// </summary>
+		public DiscordUser BaseUser => user;
+
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.User

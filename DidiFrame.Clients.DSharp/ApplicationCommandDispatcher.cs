@@ -7,6 +7,7 @@ using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.PreProcessing;
 using DidiFrame.UserCommands.Repository;
+using DidiFrame.Utils.Collections;
 using DidiFrame.Utils.ExtendableModels;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -22,7 +23,7 @@ namespace DidiFrame.Clients.DSharp
 	public class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>
 	{
 		private DispatcherSyncCallback<UserCommandPreContext>? callback;
-		private readonly Dictionary<UserCommandInfo, DiscordApplicationCommand> convertedCommands;
+		private readonly Dictionary<string, ApplicationCommandPair> convertedCommands;
 		private readonly Client client;
 		private readonly IStringLocalizer<ApplicationCommandDispatcher> localizer;
 		private readonly IUserCommandContextConverter converter;
@@ -49,10 +50,10 @@ namespace DidiFrame.Clients.DSharp
 			foreach (var cmd in commands.GetGlobalCommands())
 			{
 				var converted = ConvertCommand(cmd);
-				convertedCommands.Add(cmd, converted);
+				convertedCommands.Add(converted.DSharpCommand.Name, converted);
 			}
 
-			client.BaseClient.BulkOverwriteGlobalApplicationCommandsAsync(convertedCommands.Values).Wait();
+			client.BaseClient.BulkOverwriteGlobalApplicationCommandsAsync(convertedCommands.Select(s => s.Value.DSharpCommand)).Wait();
 		}
 
 
@@ -60,24 +61,23 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Interaction.Type == InteractionType.ApplicationCommand)
 			{
-				var server = (Server)client.Servers.Single(s => s.Id == e.Interaction.GuildId);			//Get server where interaction was created
-				var channel = server.GetChannel(e.Interaction.ChannelId).AsText();						//Get channel where interaction was created
-				var member = server.GetMember(e.Interaction.User.Id);									//Get member who created interaction
-				var cmdName = e.Interaction.Data.Name;                                                  //Name of called command
-				var cmd = convertedCommands.Single(s => s.Value.Name == cmdName);						//Command that was called (pair - AppCmd|DidiFrameCmd)
+				var server = (Server)client.Servers.Single(s => s.Id == e.Interaction.GuildId);	//Get server where interaction was created
+				var channel = server.GetChannel(e.Interaction.ChannelId).AsText();				//Get channel where interaction was created
+				var member = server.GetMember(e.Interaction.User.Id);							//Get member who created interaction
+				var cmd = convertedCommands[e.Interaction.Data.Name];							//Command that was called (pair - AppCmd|DidiFrameCmd)
 
 				var preArgs = new List<object>();
 				if (e.Interaction.Data.Options is not null)
 					foreach (var para in e.Interaction.Data.Options) preArgs.Add(para.Value);
 
 				var list = new Dictionary<UserCommandArgument, IReadOnlyList<object>>();
-				foreach (var arg in cmd.Key.Arguments)
+				foreach (var arg in cmd.DidiFrameCommand.Arguments)
 				{
 					if (arg.IsArray)
 					{
 						var ttype = arg.OriginTypes.Single();
 						string? error = null;
-						var preObjs = preArgs.Select(s => ReConvert(server, s, ttype, out error)).ToArray();
+						var preObjs = preArgs.Select(s => ConvertValueUp(server, s, ttype, out error)).ToArray();
 						preArgs.Clear();
 
 						if (error is not null)
@@ -95,7 +95,7 @@ namespace DidiFrame.Clients.DSharp
 						var types = arg.OriginTypes;
 						var pre = preArgs.Take(types.Count).ToArray();
 						string? error = null;
-						var preObjs = pre.Select((s, i) => ReConvert(server, s, types[i], out error)).ToArray();
+						var preObjs = pre.Select((s, i) => ConvertValueUp(server, s, types[i], out error)).ToArray();
 						preArgs.RemoveRange(0, types.Count);
 
 						if (error is not null)
@@ -111,20 +111,20 @@ namespace DidiFrame.Clients.DSharp
 				}
 
 				e.Interaction.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral()).Wait();
-				callback?.Invoke(this, new(member, channel, cmd.Key, list), new(member, channel), new StateObject(e.Interaction));
+				callback?.Invoke(this, new(member, channel, cmd.DidiFrameCommand, list), new(member, channel), new StateObject(e.Interaction));
 			}
 			else if (e.Interaction.Type == InteractionType.AutoComplete)
 			{
 				var server = (Server)client.Servers.Single(s => s.Id == e.Interaction.GuildId);			//Get server where interaction was created
 				var channel = server.GetChannel(e.Interaction.ChannelId).AsText();						//Get channel where interaction was created
 				var member = server.GetMember(e.Interaction.User.Id);									//Get member who created interaction
-				var cmdName = e.Interaction.Data.Name;													//Name of called command
-				var cmd = convertedCommands.Single(s => s.Value.Name == cmdName);						//Command that was called (pair - AppCmd|DidiFrameCmd)
+				var cmd = convertedCommands[e.Interaction.Data.Name];									//Command that was called (pair - AppCmd|DidiFrameCmd)
 
 				var darg = e.Interaction.Data.Options.Single(s => s.Focused);                           //Focused argument
-				var processedName = darg.Name.Contains('_') ? darg.Name.Split('_')[0] : darg.Name;		//Processed name of arguments that will be used if argumnet is complex
-				var arg = cmd.Key.Arguments.Single(s => s.Name.ToLower() == darg.Name || s.Name.ToLower() == processedName);//Focused DidiFrame's argument
-				var objIndex = processedName == darg.Name ? 0 : int.Parse(darg.Name.Split('_')[1]);
+				var argInfo = cmd.ApplicationArguments[darg.Name];										//Focused DidiFrame's argument
+				var objIndex = argInfo.PutIndex;
+				var arg = argInfo.Argument;
+				var type = argInfo.Type;
 
 				var providers = arg.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandArgumentValuesProvider>>();
 				if (providers is not null)
@@ -148,30 +148,13 @@ namespace DidiFrame.Clients.DSharp
 					var autoComplite = baseCollection.Where(s => s is not string str || str.StartsWith((string)darg.Value))
 						.Select(s =>
 						{
-							var ready = tConvert(arg.OriginTypes[objIndex], s);
+							var ready = ConvertValueDown(s, arg.OriginTypes[objIndex]);
 							return new DiscordAutoCompleteChoice(ready.ToString(), ready);
 						})
 						.Take(25)
 						.ToArray();
 
 					e.Interaction.CreateResponseAsync(InteractionResponseType.AutoCompleteResult, new DiscordInteractionResponseBuilder().AddAutoCompleteChoices(autoComplite)).Wait();
-
-
-					static object tConvert(UserCommandArgument.Type type, object originalObj)
-					{
-						return type switch
-						{
-							UserCommandArgument.Type.Integer => originalObj,
-							UserCommandArgument.Type.Double => originalObj,
-							UserCommandArgument.Type.String => originalObj,
-							UserCommandArgument.Type.Member => ((IMember)originalObj).Id,
-							UserCommandArgument.Type.Role => ((IRole)originalObj).Id,
-							UserCommandArgument.Type.Mentionable => originalObj is IMember member ? member.Id : ((IRole)originalObj).Id,
-							UserCommandArgument.Type.TimeSpan => originalObj.ToString() ?? throw new ImpossibleVariantException(),
-							UserCommandArgument.Type.DateTime => originalObj.ToString() ?? throw new ImpossibleVariantException(),
-							_ => throw new NotSupportedException()
-						};
-					}
 				}
 				else
 				{
@@ -218,56 +201,52 @@ namespace DidiFrame.Clients.DSharp
 			this.callback = callback;
 		}
 
-		private DiscordApplicationCommand ConvertCommand(UserCommandInfo info)
+		private ApplicationCommandPair ConvertCommand(UserCommandInfo info)
 		{
 			var name = info.Name.Replace(" ", "_");
+
+			var argsInfo = new Dictionary<string, ApplicationCommandPair.ApplicationArgumnetInfo>();
+
 			var args = info.Arguments.Select(s =>
 			{
 				if (s.IsArray)
 				{
-					var type = castType(s.OriginTypes.Single());
+					var type = ConvertTypeDown(s.OriginTypes.Single());
 					var array = new DiscordApplicationCommandOption[5];
 					for (int i = 0; i < array.Length; i++)
 					{
-						var name = s.Name + "_" + i;
+						var name = convertArgName(s.Name) + "_" + i;
 						var descLocs = getDCLocs(localizer, DiscordStatic.SupportedCultures, "ArrayElementArgumentDescription", s.Name, i);
 						array[i] = new(name, localizer["ArrayElementArgumentDescription", s.Name, i], type, required: false, description_localizations: descLocs);
+						argsInfo.Add(name, new(i, s.OriginTypes.Single(), s));
 					}
 
 					return array;
 				}
 				else if (s.OriginTypes.Count == 1)
 				{
-					var type = castType(s.OriginTypes.Single());
+					var type = ConvertTypeDown(s.OriginTypes.Single());
 					var autoComp = !(type == ApplicationCommandOptionType.Mentionable || type == ApplicationCommandOptionType.Role || type == ApplicationCommandOptionType.User);
+					var name = convertArgName(s.Name);
 					var descLocs = getDCLocs(localizer, DiscordStatic.SupportedCultures, "SimpleArgumentDescription", s.Name);
-					return new[] { new DiscordApplicationCommandOption(s.Name.ToLower(), localizer["SimpleArgumentDescription", s.Name], type, required: true, autocomplete: autoComp, description_localizations: descLocs) };
+					argsInfo.Add(name, new(0, s.OriginTypes.Single(), s));
+					return new DiscordApplicationCommandOption(name, localizer["SimpleArgumentDescription", s.Name], type, required: true, autocomplete: autoComp, description_localizations: descLocs).StoreSingle();
 				}
 				else return s.OriginTypes.Select((a, i) =>
 				{
-					var type = castType(a);
-					var name = s.Name + "_" + i;
+					var type = ConvertTypeDown(a);
+					var name = convertArgName(s.Name) + "_" + i;
 					var autoComp = !(type == ApplicationCommandOptionType.Mentionable || type == ApplicationCommandOptionType.Role || type == ApplicationCommandOptionType.User);
 					var descLocs = getDCLocs(localizer, DiscordStatic.SupportedCultures, "ComplexArgumentDescription", i, s.Name);
-					return new DiscordApplicationCommandOption(name.ToLower(), localizer["ComplexArgumentDescription", i, s.Name], type, required: true, autocomplete: autoComp, description_localizations: descLocs);
+					argsInfo.Add(name, new(i, a, s));
+					return new DiscordApplicationCommandOption(name, localizer["ComplexArgumentDescription", i, s.Name], type, required: true, autocomplete: autoComp, description_localizations: descLocs);
 				}).ToArray();
 			}).SelectMany(s => s).ToArray();
 
 			var cmdDescLocs = getDCLocs(localizer, DiscordStatic.SupportedCultures, "CommandDescription", info.Name);
-			return new(name, localizer["CommandDescription", info.Name], args, description_localizations: cmdDescLocs);
+			var cmd = new DiscordApplicationCommand(name, localizer["CommandDescription", info.Name], args, description_localizations: cmdDescLocs);
+			return new(info, cmd, argsInfo);
 
-			static ApplicationCommandOptionType castType(UserCommandArgument.Type input) => input switch
-			{
-				UserCommandArgument.Type.Member => ApplicationCommandOptionType.User,
-				UserCommandArgument.Type.DateTime => ApplicationCommandOptionType.String,
-				UserCommandArgument.Type.TimeSpan => ApplicationCommandOptionType.String,
-				UserCommandArgument.Type.Role => ApplicationCommandOptionType.Role,
-				UserCommandArgument.Type.Double => ApplicationCommandOptionType.Number,
-				UserCommandArgument.Type.String => ApplicationCommandOptionType.String,
-				UserCommandArgument.Type.Mentionable => ApplicationCommandOptionType.Mentionable,
-				UserCommandArgument.Type.Integer => ApplicationCommandOptionType.Integer,
-				_ => throw new NotSupportedException(),
-			};
 
 			static IReadOnlyDictionary<string, string> getDCLocs(IStringLocalizer localizer, IReadOnlyCollection<string> cultures, string key, params object[] args)
 			{
@@ -275,9 +254,15 @@ namespace DidiFrame.Clients.DSharp
 				var ret = localizer.GetStringForAllLocales(r.Keys, key, args).ToDictionary(s => r[s.Key], s => s.Value);
 				return ret;
 			}
+			
+			static string convertArgName(string orinalName)
+			{
+				var splits = SplitCamelCaseString(orinalName);
+				return string.Join('-', splits);
+			}
 		}
 
-		private static object? ReConvert(Server server, object raw, UserCommandArgument.Type type, out string? error)
+		private static object? ConvertValueUp(Server server, object raw, UserCommandArgument.Type type, out string? error)
 		{
 			error = null;
 
@@ -311,16 +296,101 @@ namespace DidiFrame.Clients.DSharp
 			object? parseDate(object raw, out string? error)
 			{
 				error = null;
-				if (DateTime.TryParseExact((string)raw, "d.MM HH:mm", out var res)) return res;
+				if (DateTime.TryParseExact((string)raw, "d.MM HH:mm", null, DateTimeStyles.None, out var res)) return res;
 				else error = "InvalidDate";
 				return null;
 			}
+		}
+
+		private static object ConvertValueDown(object didiFramePrimitive, UserCommandArgument.Type type)
+		{
+			return type switch
+			{
+				UserCommandArgument.Type.Integer => didiFramePrimitive,
+				UserCommandArgument.Type.Double => didiFramePrimitive,
+				UserCommandArgument.Type.String => didiFramePrimitive,
+				UserCommandArgument.Type.Member => ((Member)didiFramePrimitive).Id,
+				UserCommandArgument.Type.Role => ((Role)didiFramePrimitive).Id,
+				UserCommandArgument.Type.Mentionable => didiFramePrimitive is Member member ? member.Id : ((Role)didiFramePrimitive).Id,
+				UserCommandArgument.Type.TimeSpan => ((TimeSpan)didiFramePrimitive).ToString(),
+				UserCommandArgument.Type.DateTime => ((DateTime)didiFramePrimitive).ToString("d.MM HH:mm"),
+				_ => throw new NotSupportedException(),
+			};
+		}
+
+		private static ApplicationCommandOptionType ConvertTypeDown(UserCommandArgument.Type type)
+		{
+			return type switch
+			{
+				UserCommandArgument.Type.Integer => ApplicationCommandOptionType.Integer,
+				UserCommandArgument.Type.Double => ApplicationCommandOptionType.Number,
+				UserCommandArgument.Type.String => ApplicationCommandOptionType.String,
+				UserCommandArgument.Type.Member => ApplicationCommandOptionType.User,
+				UserCommandArgument.Type.Role => ApplicationCommandOptionType.Role,
+				UserCommandArgument.Type.Mentionable => ApplicationCommandOptionType.Mentionable,
+				UserCommandArgument.Type.TimeSpan => ApplicationCommandOptionType.String,
+				UserCommandArgument.Type.DateTime => ApplicationCommandOptionType.String,
+				_ => throw new NotSupportedException(),
+			};
+		}
+		
+		private static string[] SplitCamelCaseString(string str)
+		{
+			var ca = str.ToCharArray();
+			var res = new List<string>();
+			int last = 0;
+
+			for (int i = 0; i < ca.Length; i++)
+			{
+				if (char.IsUpper(ca[i]))
+				{
+					res.Add(str.Substring(last, i - last + 1).ToLower());
+					last = i + 1;
+				}
+			}
+
+			return res.ToArray();
 		}
 
 
 		private record StateObject(DiscordInteraction Interaction)
 		{
 			public bool Responded { get; set; }
+		}
+
+		private readonly struct ApplicationCommandPair
+		{
+			public ApplicationCommandPair(UserCommandInfo didiFrameCommand, DiscordApplicationCommand dSharpCommand, IReadOnlyDictionary<string, ApplicationArgumnetInfo> applicationArgumnets)
+			{
+				DidiFrameCommand = didiFrameCommand;
+				DSharpCommand = dSharpCommand;
+				ApplicationArguments = applicationArgumnets;
+			}
+
+
+			public UserCommandInfo DidiFrameCommand { get; }
+
+			public DiscordApplicationCommand DSharpCommand { get; }
+
+			public IReadOnlyDictionary<string, ApplicationArgumnetInfo> ApplicationArguments { get; }
+
+
+			public readonly struct ApplicationArgumnetInfo
+			{
+				public ApplicationArgumnetInfo(int putIndex, UserCommandArgument.Type type, UserCommandArgument argument)
+				{
+					PutIndex = putIndex;
+					Type = type;
+					Argument = argument;
+				}
+
+
+				public int PutIndex { get; }
+
+				public UserCommandArgument.Type Type { get; }
+
+				public UserCommandArgument Argument { get; }
+			}
 		}
 	}
 }
