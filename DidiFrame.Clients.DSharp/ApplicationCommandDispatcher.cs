@@ -344,10 +344,12 @@ namespace DidiFrame.Clients.DSharp
 			{
 				if (char.IsUpper(ca[i]))
 				{
-					res.Add(str.Substring(last, i - last + 1).ToLower());
-					last = i + 1;
+					res.Add(str[last..i].ToLower());
+					last = i;
 				}
 			}
+
+			res.Add(str[last..].ToLower());
 
 			return res.ToArray();
 		}
@@ -391,6 +393,14 @@ namespace DidiFrame.Clients.DSharp
 
 				public UserCommandArgument Argument { get; }
 			}
+		}
+
+		/// <summary>
+		/// Options for DidiFrame.Clients.DSharp.ApplicationCommandDispatcher
+		/// </summary>
+		public class Options
+		{
+			
 		}
 	}
 }

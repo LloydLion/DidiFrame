@@ -737,6 +737,12 @@ references:
   isSpec: "True"
   fullName: DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.FinalizePipeline
   nameWithType: ApplicationCommandDispatcher.FinalizePipeline
+- uid: DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.Options
+  name: ApplicationCommandDispatcher.Options
+  href: api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.Options.html
+  commentId: T:DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.Options
+  fullName: DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.Options
+  nameWithType: ApplicationCommandDispatcher.Options
 - uid: DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.Respond(System.Object,DidiFrame.UserCommands.Models.UserCommandResult)
   name: Respond(Object, UserCommandResult)
   href: api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.html#DidiFrame_Clients_DSharp_ApplicationCommandDispatcher_Respond_System_Object_DidiFrame_UserCommands_Models_UserCommandResult_
@@ -2123,6 +2129,19 @@ references:
   commentId: T:DidiFrame.Clients.DSharp.ServicesExtensions
   fullName: DidiFrame.Clients.DSharp.ServicesExtensions
   nameWithType: ServicesExtensions
+- uid: DidiFrame.Clients.DSharp.ServicesExtensions.AddApplicationCommandsUserCommandsPipeline(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.IConfiguration)
+  name: AddApplicationCommandsUserCommandsPipeline(IServiceCollection, IConfiguration, IConfiguration)
+  href: api/DidiFrame.Clients.DSharp.ServicesExtensions.html#DidiFrame_Clients_DSharp_ServicesExtensions_AddApplicationCommandsUserCommandsPipeline_Microsoft_Extensions_DependencyInjection_IServiceCollection_Microsoft_Extensions_Configuration_IConfiguration_Microsoft_Extensions_Configuration_IConfiguration_
+  commentId: M:DidiFrame.Clients.DSharp.ServicesExtensions.AddApplicationCommandsUserCommandsPipeline(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Configuration.IConfiguration)
+  fullName: DidiFrame.Clients.DSharp.ServicesExtensions.AddApplicationCommandsUserCommandsPipeline(Microsoft.Extensions.DependencyInjection.IServiceCollection, Microsoft.Extensions.Configuration.IConfiguration, Microsoft.Extensions.Configuration.IConfiguration)
+  nameWithType: ServicesExtensions.AddApplicationCommandsUserCommandsPipeline(IServiceCollection, IConfiguration, IConfiguration)
+- uid: DidiFrame.Clients.DSharp.ServicesExtensions.AddApplicationCommandsUserCommandsPipeline*
+  name: AddApplicationCommandsUserCommandsPipeline
+  href: api/DidiFrame.Clients.DSharp.ServicesExtensions.html#DidiFrame_Clients_DSharp_ServicesExtensions_AddApplicationCommandsUserCommandsPipeline_
+  commentId: Overload:DidiFrame.Clients.DSharp.ServicesExtensions.AddApplicationCommandsUserCommandsPipeline
+  isSpec: "True"
+  fullName: DidiFrame.Clients.DSharp.ServicesExtensions.AddApplicationCommandsUserCommandsPipeline
+  nameWithType: ServicesExtensions.AddApplicationCommandsUserCommandsPipeline
 - uid: DidiFrame.Clients.DSharp.ServicesExtensions.AddDSharpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)
   name: AddDSharpClient(IServiceCollection, IConfiguration)
   href: api/DidiFrame.Clients.DSharp.ServicesExtensions.html#DidiFrame_Clients_DSharp_ServicesExtensions_AddDSharpClient_Microsoft_Extensions_DependencyInjection_IServiceCollection_Microsoft_Extensions_Configuration_IConfiguration_
