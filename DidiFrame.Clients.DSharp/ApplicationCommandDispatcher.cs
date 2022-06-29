@@ -394,5 +394,13 @@ namespace DidiFrame.Clients.DSharp
 				public UserCommandArgument Argument { get; }
 			}
 		}
+
+		/// <summary>
+		/// Options for DidiFrame.Clients.DSharp.ApplicationCommandDispatcher
+		/// </summary>
+		public class Options
+		{
+			
+		}
 	}
 }
