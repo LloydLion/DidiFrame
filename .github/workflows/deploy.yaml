@@ -1,0 +1,46 @@
+name: deploy_nuget
+
+on:
+  push:
+    tags:
+    - '*'
+
+env:
+  PROJECT_PATH_1: 'DidiFrame/DidiFrame.csproj'
+  PROJECT_PATH_2: 'DidiFrame.Clients.DSharp/DidiFrame.Clients.DSharp.csproj'
+  PROJECT_PATH_3: 'DidiFrame.Data.Json/DidiFrame.Data.Json.csproj'
+  PROJECT_PATH_4: 'DidiFrame.Data.Mongo/DidiFrame.Data.Mongo.csproj'
+  NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
+  
+jobs:
+  deploy:
+    name: 'Deploy'
+    runs-on: 'windows-latest'
+    steps:
+
+    - name: 'Checkout'
+      uses: actions/checkout@v2
+
+    - name: 'Install dotnet'
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.x.x'
+
+    - name: 'Get Version'
+      id: version
+      uses: battila7/get-version-action@v2
+
+    - name: 'Pack project 1'
+      run: dotnet pack ${{ env.PROJECT_PATH_1 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+    
+    - name: 'Pack project 2'
+      run: dotnet pack ${{ env.PROJECT_PATH_2 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+    
+    - name: 'Pack project 3'
+      run: dotnet pack ${{ env.PROJECT_PATH_3 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+
+    - name: 'Pack project 4'
+      run: dotnet pack ${{ env.PROJECT_PATH_4 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+
+    - name: 'Push package'
+      run: dotnet nuget push "output\*.nupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
