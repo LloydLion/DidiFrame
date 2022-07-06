@@ -87,11 +87,11 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 		//Must be invoked from Server objects
-		internal void OnMessageCreated(Message message)
+		internal void OnMessageCreated(Message message, bool isModified)
 		{
 			try
 			{
-				MessageSent?.Invoke(this, message);
+				MessageSent?.Invoke(this, message, isModified);
 			}
 			catch (Exception ex)
 			{

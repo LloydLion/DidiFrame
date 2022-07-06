@@ -8,7 +8,7 @@ namespace DidiFrame.Clients.DSharp
 		private readonly Server server;
 
 
-		public TextChannel(DiscordChannel channel, Server server) : base(channel, server)
+		public TextChannel(DiscordChannel channel, Server server, ChannelMessagesCache cache) : base(channel, server, cache)
 		{
 			this.server = server;
 		}

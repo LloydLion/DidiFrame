@@ -72,12 +72,12 @@ namespace DidiFrame.Clients.DSharp
 
 
 		/// <inheritdoc/>
-		public static Channel Construct(DiscordChannel channel, Server server)
+		public static Channel Construct(DiscordChannel channel, Server server, ChannelMessagesCache? messages = null)
 		{
 			return channel.Type.GetAbstract() switch
 			{
-				ChannelType.TextCompatible => new TextChannelBase(channel, server),
-				ChannelType.Voice => new VoiceChannel(channel, server),
+				ChannelType.TextCompatible => new TextChannel(channel, server, messages ?? throw new NullReferenceException()),
+				ChannelType.Voice => new VoiceChannel(channel, server, messages ?? throw new NullReferenceException()),
 				_ => new Channel(channel, server)
 			};
 		}

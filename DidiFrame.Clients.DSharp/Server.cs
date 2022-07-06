@@ -152,10 +152,27 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.ChannelDeleted += OnChannelDeleted;
 			client.BaseClient.MessageDeleted += OnMessageDeleted;
 			client.BaseClient.ThreadDeleted += OnThreadDeleted;
+			
+			client.BaseClient.MessageUpdated += OnMessageUpdated;
 
 			globalCacheUpdateTask = CreateServerCacheUpdateTask(cts.Token);
 		}
 
+
+		private Task OnMessageUpdated(DiscordClient sender, MessageUpdateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+			if (e.Message.Author.Id == Client.SelfAccount.Id) return Task.CompletedTask;
+
+			var channel = (TextChannelBase)GetChannel(e.Channel.Id);
+			if (messages.HasMessage(e.Message.Id, channel))
+			{
+				var ready = messages.GetReadyMessage(e.Message.Id, channel);
+				if (ready is not null) ready.ModifyInternal(e.Message);
+			}
+
+			return Task.CompletedTask;
+		}
 
 		private Task OnThreadDeleted(DiscordClient sender, ThreadDeleteEventArgs e)
 		{
@@ -282,7 +299,7 @@ namespace DidiFrame.Clients.DSharp
 			var message = new Message(e.Message, channel, model);
 			messages.AddMessage(message);
 			client.CultureProvider.SetupCulture(this);
-			SourceClient.OnMessageCreated(message);
+			SourceClient.OnMessageCreated(message, false);
 			return Task.CompletedTask;
 		}
 
@@ -470,10 +487,10 @@ namespace DidiFrame.Clients.DSharp
 			}
 
 
-			public void Handle(IClient client, IMessage message)
+			public void Handle(IClient client, IMessage message, bool isModified)
 			{
 				if (message.TextChannel.Server.Id == serverId)
-					handler.Invoke(client, message);
+					handler.Invoke(client, message, isModified);
 			}
 		}
 	}

@@ -7,7 +7,7 @@ namespace DidiFrame.Clients.DSharp
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IMessage
 	/// </summary>
-	public class Message : IMessage, IDisposable
+	public class Message : IMessage
 	{
 		private DiscordMessage message;
 		private readonly TextChannelBase owner;
@@ -24,7 +24,7 @@ namespace DidiFrame.Clients.DSharp
 		public ulong Id => message.Id;
 
 		/// <inheritdoc/>
-		public ITextChannel TextChannel => owner;
+		public ITextChannelBase TextChannel => owner;
 
 		/// <inheritdoc/>
 		public IMember Author { get; }
@@ -50,15 +50,7 @@ namespace DidiFrame.Clients.DSharp
 			this.owner = owner;
 			SendModel = sendModel;
 			Author = owner.Server.GetMember(message.Author.Id);
-			mid = new Lazy<MessageInteractionDispatcher>(() => new MessageInteractionDispatcher(this));
-		}
-
-		/// <summary>
-		/// Finalizes message object usgin Dispose method
-		/// </summary>
-		~Message()
-		{
-			Dispose();
+			mid = new Lazy<MessageInteractionDispatcher>(() => owner.BaseServer.CreateInteractionDispatcherFor(this));
 		}
 
 
@@ -72,13 +64,6 @@ namespace DidiFrame.Clients.DSharp
 		public IInteractionDispatcher GetInteractionDispatcher() => mid.Value;
 
 		/// <inheritdoc/>
-		public void Dispose()
-		{
-			if (mid.IsValueCreated) mid.Value.Dispose();
-			GC.SuppressFinalize(this);
-		}
-
-		/// <inheritdoc/>
 		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
 		{
 			return owner.BaseServer.SourceClient.DoSafeOperationAsync(async () =>
@@ -86,6 +71,12 @@ namespace DidiFrame.Clients.DSharp
 				if (resetDispatcher) ResetInteractionDispatcher();
 				message = await message.ModifyAsync(MessageConverter.ConvertUp(SendModel = sendModel));
 			}, new(Client.MessageName, Id));
+		}
+
+		internal void ModifyInternal(DiscordMessage message)
+		{
+			SendModel = MessageConverter.ConvertDown(message);
+			this.message = message;
 		}
 
 		/// <inheritdoc/>

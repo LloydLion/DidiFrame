@@ -12,7 +12,7 @@ namespace DidiFrame.UserCommands.Models
 	/// <param name="AdditionalInfo">A model additional info provider to provide additional and dynamic data about model</param>
 	public record UserCommandContext(
 		IMember Invoker,
-		ITextChannel Channel,
+		ITextChannelBase Channel,
 		UserCommandInfo Command,
 		IReadOnlyDictionary<UserCommandArgument, UserCommandContext.ArgumentValue> Arguments,
 		IModelAdditionalInfoProvider AdditionalInfo)
