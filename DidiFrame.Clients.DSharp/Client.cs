@@ -86,7 +86,7 @@ namespace DidiFrame.Clients.DSharp
 			Services = servicesForExtensions;
 		}
 
-		//Must be invoked from TextChannel objects
+		//Must be invoked from Server objects
 		internal void OnMessageCreated(Message message)
 		{
 			try

@@ -11,6 +11,7 @@ namespace DidiFrame.Clients.DSharp
 	{
 		private readonly DiscordChannel channel;
 		private readonly Server server;
+		private readonly Func<ChannelCategory> targetCategoryGetter;
 
 
 		/// <inheritdoc/>
@@ -20,7 +21,7 @@ namespace DidiFrame.Clients.DSharp
 		public ulong Id => channel.Id;
 
 		/// <inheritdoc/>
-		public IChannelCategory Category => server.GetCategory(channel.ParentId);
+		public IChannelCategory Category => targetCategoryGetter();
 
 		/// <inheritdoc/>
 		public IServer Server => server;
@@ -43,13 +44,23 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="channel">Base DiscordChannel from DSharp</param>
 		/// <param name="server">Owner server wrap object</param>
 		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
-		public Channel(DiscordChannel channel, Server server)
+		public Channel(DiscordChannel channel, Server server) : this(channel, server, () => (ChannelCategory)server.GetCategory(channel.ParentId)) { }
+
+		/// <summary>
+		/// Creates new instance of DidiFrame.Clients.DSharp.Channel with overrided category
+		/// </summary>
+		/// <param name="channel">Base DiscordChannel from DSharp</param>
+		/// <param name="server">Owner server wrap object</param>
+		/// <param name="targetCategoryGetter">Custom category source</param>
+		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
+		public Channel(DiscordChannel channel, Server server, Func<ChannelCategory> targetCategoryGetter)
 		{
 			if (channel.GuildId != server.Id)
 				throw new ArgumentException("Base channel's server and transmited server wrap are different", nameof(server));
 
 			this.channel = channel;
 			this.server = server;
+			this.targetCategoryGetter = targetCategoryGetter;
 		}
 
 
@@ -65,7 +76,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			return channel.Type.GetAbstract() switch
 			{
-				ChannelType.TextCompatible => new TextChannel(channel, server),
+				ChannelType.TextCompatible => new TextChannelBase(channel, server),
 				ChannelType.Voice => new VoiceChannel(channel, server),
 				_ => new Channel(channel, server)
 			};

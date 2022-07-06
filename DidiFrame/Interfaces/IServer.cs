@@ -5,6 +5,11 @@
 	/// </summary>
 	public interface IServer : IEquatable<IServer>
 	{
+		public event MessageSentEventHandler MessageSent;
+
+		public event MessageDeletedEventHandler MessageDeleted;
+
+
 		/// <summary>
 		/// Provides all server's members
 		/// </summary>

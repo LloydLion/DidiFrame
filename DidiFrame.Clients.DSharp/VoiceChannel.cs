@@ -6,7 +6,7 @@ namespace DidiFrame.Clients.DSharp
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IVoiceChannel
 	/// </summary>
-	public class VoiceChannel : Channel, IVoiceChannel
+	public class VoiceChannel : TextChannelBase, IVoiceChannel
 	{
 		private readonly DiscordChannel channel;
 		private readonly Server server;
@@ -19,7 +19,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="server">Owner server wrap object</param>
 		/// <exception cref="ArgumentException">If channel isn't voice</exception>
 		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
-		public VoiceChannel(DiscordChannel channel, Server server) : base(channel, server)
+		public VoiceChannel(DiscordChannel channel, Server server, ChannelMessagesCache cache) : base(channel, server, cache)
 		{
 			if (channel.Type.GetAbstract() != Entities.ChannelType.Voice)
 			{

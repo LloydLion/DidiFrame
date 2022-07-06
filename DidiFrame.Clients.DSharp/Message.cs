@@ -10,12 +10,12 @@ namespace DidiFrame.Clients.DSharp
 	public class Message : IMessage, IDisposable
 	{
 		private DiscordMessage message;
-		private readonly TextChannel owner;
+		private readonly TextChannelBase owner;
 		private Lazy<MessageInteractionDispatcher> mid;
 
 
 		/// <inheritdoc/>
-		public TextChannel BaseChannel => owner;
+		public TextChannelBase BaseChannel => owner;
 
 		/// <inheritdoc/>
 		public MessageSendModel SendModel { get; private set; }
@@ -44,7 +44,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="message">Base DiscordMessage from DSharp</param>
 		/// <param name="owner">Owner text channel's wrap object</param>
 		/// <param name="sendModel">Send model that was used to send it</param>
-		public Message(DiscordMessage message, TextChannel owner, MessageSendModel sendModel)
+		public Message(DiscordMessage message, TextChannelBase owner, MessageSendModel sendModel)
 		{
 			this.message = message;
 			this.owner = owner;
