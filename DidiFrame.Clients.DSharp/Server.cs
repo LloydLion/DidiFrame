@@ -2,6 +2,7 @@
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DidiFrame.Utils;
+using DidiFrame.Utils.Collections;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -19,14 +20,17 @@ namespace DidiFrame.Clients.DSharp
 		private readonly Task globalCacheUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 
-		private readonly List<Member> members = new();
-		private readonly List<ChannelCategory> categories = new();
-		private readonly List<Channel> channels = new();
-		private readonly List<Role> roles = new();
-		private readonly Dictionary<TextChannel, Dictionary<ulong, TextThread>> threads = new();
+		//private readonly List<Member> members = new();
+		//private readonly List<ChannelCategory> categories = new();
+		//private readonly List<Channel> channels = new();
+		//private readonly List<Role> roles = new();
+		//private readonly Dictionary<TextChannel, Dictionary<ulong, TextThread>> threads = new();
+		//private readonly ThreadLocker<IList> cacheUpdateLocker = new();
 		private readonly ThreadsChannelsCollection threadsAndChannels;
+		private readonly ChannelCategory globalCategory;
+		private readonly ObjectsCache<ulong> serverCache = new();
 		private readonly ChannelMessagesCache messages = new();
-		private readonly ThreadLocker<IList> cacheUpdateLocker = new();
+		private readonly TextChannelThreadsCache threads;
 
 
 		/// <inheritdoc/>
@@ -39,9 +43,10 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public event MessageSentEventHandler MessageSent
 		{
-			add => SourceClient.MessageDeleted += new MessageSentSubscriber(Id, value).Handle;
-			remove => SourceClient.MessageDeleted -= new MessageSentSubscriber(Id, value).Handle;
+			add => SourceClient.MessageSent += new MessageSentSubscriber(Id, value).Handle;
+			remove => SourceClient.MessageSent -= new MessageSentSubscriber(Id, value).Handle;
 		}
+
 
 		/// <inheritdoc/>
 		public string Name => guild.Name;
@@ -63,42 +68,40 @@ namespace DidiFrame.Clients.DSharp
 		public DiscordGuild Guild => guild;
 
 
-		public IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel) => threads[channel].Values;
-
-		public ITextChannel GetBaseChannel(TextThread thread) => threads.Single(s => s.Value.ContainsKey(thread.Id)).Key;
+		public IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel) => threads.GetThreadsFor(channel);
 
 		/// <inheritdoc/>
-		public IMember GetMember(ulong id) => GetMembers().Single(s => s.Id == id);
+		public IMember GetMember(ulong id) => serverCache.GetFrame<Member>().GetObject(id);
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IMember> GetMembers() => members;
+		public IReadOnlyCollection<IMember> GetMembers() => serverCache.GetFrame<Member>().GetObjects();
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IChannelCategory> GetCategories() => categories;
+		public IReadOnlyCollection<IChannelCategory> GetCategories() => new CategoriesCollection(serverCache.GetFrame<ChannelCategory>(), globalCategory);
 
 		/// <inheritdoc/>
-		public IChannelCategory GetCategory(ulong? id) => GetCategories().Single(s => s.Id == id);
+		public IChannelCategory GetCategory(ulong? id) => id is null ? globalCategory : serverCache.GetFrame<ChannelCategory>().GetObject(id.Value);
 
 		/// <inheritdoc/>
 		public IReadOnlyCollection<IChannel> GetChannels() => threadsAndChannels;
 
 		/// <inheritdoc/>
-		public IChannel GetChannel(ulong id) => GetChannels().Single(s => s.Id == id);
+		public IChannel GetChannel(ulong id) => threadsAndChannels.GetChannel(id);
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IRole> GetRoles() => roles;
+		public IReadOnlyCollection<IRole> GetRoles() => serverCache.GetFrame<Role>().GetObjects();
 
 		/// <inheritdoc/>
-		public IRole GetRole(ulong id) => GetRoles().Single(s => s.Id == id);
+		public IRole GetRole(ulong id) => serverCache.GetFrame<Role>().GetObject(id);
 
 		/// <inheritdoc/>
 		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
 
 		/// <inheritdoc/>
-		public bool HasChannel(ulong id) => GetChannels().Any(s => s.Id == id);
+		public bool HasChannel(ulong id) => threadsAndChannels.HasChannel(id);
 
 		/// <inheritdoc/>
-		public bool HasChannel(IChannel channel) => GetChannels().Contains(channel);
+		public bool HasChannel(IChannel channel) => threadsAndChannels.HasChannel(channel.Id);
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Server);
@@ -136,10 +139,33 @@ namespace DidiFrame.Clients.DSharp
 		{
 			this.guild = guild;
 			this.client = client;
+			globalCategory = new(this);
 
-			threadsAndChannels = new(channels, threads);
 
-			categories.Add(new ChannelCategory(this)); //Global category
+			threads = new(
+			(thread) =>
+			{
+				messages.InitChannelAsync(thread).Wait();
+			},
+
+			(thread) =>
+			{
+				messages.DeleteChannelCache(thread);
+			});
+
+			serverCache.SetRemoveActionHandler<Channel>((id, channel) =>
+			{
+				if (channel is TextChannelBase btch) messages.DeleteChannelCache(btch);
+				if (channel is TextChannel tch) threads.RemoveAllThreadsThatAssociatedWith(tch);
+			});
+
+			serverCache.SetAddActionHandler<Channel>((id, channel) =>
+			{
+				if (channel is TextChannelBase btch) messages.InitChannelAsync(btch).Wait();
+			});
+
+			threadsAndChannels = new(serverCache.GetFrame<Channel>(), threads);
+
 
 			client.BaseClient.GuildMemberAdded += OnGuildMemberAdded;
 			client.BaseClient.GuildRoleCreated += OnGuildRoleCreated;
@@ -154,6 +180,7 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.ThreadDeleted += OnThreadDeleted;
 			
 			client.BaseClient.MessageUpdated += OnMessageUpdated;
+
 
 			globalCacheUpdateTask = CreateServerCacheUpdateTask(cts.Token);
 		}
@@ -178,11 +205,9 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
-			using (cacheUpdateLocker.Lock(channels))
+			lock (threads)
 			{
-				var tch = (TextChannel)GetChannel(e.Parent.Id);
-				var cache = threads[tch];
-				cache.Remove(e.Thread.Id);
+				threads.RemoveThread(e.Thread.Id);
 			}
 
 			return Task.CompletedTask;
@@ -192,11 +217,11 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
-			using (cacheUpdateLocker.Lock(channels))
+			lock (threads)
 			{
-				var tch = (TextChannel)GetChannel(e.Parent.Id);
-				var cache = threads[tch];
-				cache.Add(e.Thread.Id, new(e.Thread, this, () => (ChannelCategory)GetCategory(e.Parent.ParentId)));
+				var thread = new TextThread(e.Thread, this, () => (ChannelCategory)GetCategory(e.Thread.Parent.ParentId));
+
+				threads.AddThread(thread);
 			}
 
 			return Task.CompletedTask;
@@ -207,19 +232,8 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			if (e.Channel.IsCategory)
-				using (cacheUpdateLocker.Lock(categories))
-					categories.RemoveAll(s => s.Id == e.Channel.Id);
-			else
-				using (cacheUpdateLocker.Lock(channels))
-				{
-					var channel = (TextChannel)GetChannel(e.Channel.Id);
-					channels.Remove(channel);
-					if (channel is TextChannelBase btch)
-					{
-						messages.DeleteChannelCache(btch);
-						if (channel is TextChannel tch) threads.Remove(tch);
-					}
-				}
+				serverCache.DeleteObject<ChannelCategory>(e.Channel.Id);
+			else serverCache.DeleteObject<Channel>(e.Channel.Id);
 			return Task.CompletedTask;
 		}
 
@@ -227,8 +241,8 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
-			using (cacheUpdateLocker.Lock(roles))
-				roles.RemoveAll(s => s.Id == e.Role.Id);
+			serverCache.DeleteObject<Role>(e.Role.Id);
+
 			return Task.CompletedTask;
 		}
 
@@ -236,8 +250,8 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
-			using (cacheUpdateLocker.Lock(members))
-				members.RemoveAll(s => s.Id == e.Member.Id);
+			serverCache.DeleteObject<Member>(e.Member.Id);
+
 			return Task.CompletedTask;
 		}
 
@@ -257,27 +271,17 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return;
 
 			if (e.Channel.IsCategory)
-				using (cacheUpdateLocker.Lock(categories))
-					categories.Add(new ChannelCategory(e.Channel, this));
+				serverCache.AddObject(e.Channel.Id, new ChannelCategory(e.Channel, this));
 			else
-				using (cacheUpdateLocker.Lock(channels))
-				{
-					var channel = Channel.Construct(e.Channel, this);
-					channels.Add(channel);
-					if (channel is TextChannelBase btch)
-					{
-						await messages.InitChannelAsync(btch);
-						if (channel is TextChannel tch) threads.Add(tch, new());
-					}
-				}
+				serverCache.AddObject(e.Channel.Id, Channel.Construct(e.Channel, this));
 		}
 
 		private Task OnGuildRoleCreated(DiscordClient sender, GuildRoleCreateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
-			using (cacheUpdateLocker.Lock(roles))
-				roles.Add(new Role(e.Role, this));
+			serverCache.AddObject(e.Role.Id, new Role(e.Role, this));
+
 			return Task.CompletedTask;
 		}
 
@@ -285,8 +289,8 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
-			using (cacheUpdateLocker.Lock(members))
-				members.Add(new Member(e.Member, this));
+			serverCache.AddObject(e.Member.Id, new Member(e.Member, this));
+
 			return Task.CompletedTask;
 		}
 
@@ -316,112 +320,80 @@ namespace DidiFrame.Clients.DSharp
 
 			Task update() => client.DoSafeOperationAsync(async () =>
 				{
-					using (cacheUpdateLocker.Lock(members))
+					var memebersFrame = serverCache.GetFrame<Member>();
+					lock (memebersFrame)
 					{
-						var temp = members.ToList();
-						members.Clear();
-						var newMembers = await guild.GetAllMembersAsync();
-
-						foreach (var item in newMembers)
-						{
-							var maybe = temp.SingleOrDefault(s => s.Id == item.Id);
-							if (maybe is not null)
+						var from = guild.GetAllMembersAsync().Result.ToDictionary(s => s.Id);
+						var difference = new CollectionDifference<DiscordMember, Member, ulong>(from.Values, memebersFrame.GetObjects(), s => s.Id, s => s.Id);
+						foreach (var item in difference.CalculateDifference())
+							if (item.Type == CollectionDifference<DiscordMember, Member, ulong>.OperationType.Add)
 							{
-								members.Add(maybe);
-								temp.Remove(maybe);
+								var member = from[item.Key];
+								memebersFrame.AddObject(item.Key, new(member, this));
 							}
-							else members.Add(new Member(item, this));
-						}
+							else memebersFrame.DeleteObject(item.Key);
 					}
 
-					using (cacheUpdateLocker.Lock(roles))
+					var rolesFrame = serverCache.GetFrame<Role>();
+					lock (rolesFrame)
 					{
-						var temp = roles.ToList();
-						roles.Clear();
-						var newRoles = guild.Roles;
-
-						foreach (var item in newRoles)
-						{
-							var maybe = temp.SingleOrDefault(s => s.Id == item.Key);
-							if (maybe is not null)
+						var from = guild.Roles;
+						var difference = new CollectionDifference<DiscordRole, Role, ulong>(from.Values.ToArray(), rolesFrame.GetObjects(), s => s.Id, s => s.Id);
+						foreach (var item in difference.CalculateDifference())
+							if (item.Type == CollectionDifference<DiscordRole, Role, ulong>.OperationType.Add)
 							{
-								roles.Add(maybe);
-								temp.Remove(maybe);
+								var role = from[item.Key];
+								rolesFrame.AddObject(item.Key, new(role, this));
 							}
-							else roles.Add(new Role(item.Value, this));
-						}
+							else rolesFrame.DeleteObject(item.Key);
 					}
 
-					using (cacheUpdateLocker.Lock(channels))
+					var channelsFrame = serverCache.GetFrame<Channel>();
+					var categoriesFrame = serverCache.GetFrame<ChannelCategory>();
+					lock (channelsFrame)
 					{
-						using (cacheUpdateLocker.Lock(categories))
+						lock (categoriesFrame)
 						{
-							var newChannels = await guild.GetChannelsAsync();
-
-							var catTmp = categories.Where(s => s.Id.HasValue).ToDictionary(s => s.Id ?? throw new ImpossibleVariantException());
-							var chTmp = channels.ToDictionary(s => s.Id);
-
-							categories.RemoveAll(s => s.Id.HasValue); //Remove all except global category
-							channels.Clear();
-
-							foreach (var baseChannel in newChannels)
+							lock (threads)
 							{
-								if (baseChannel.IsCategory)
-								{
-									//If category was in list readd else create new
-									if (catTmp.TryGetValue(baseChannel.Id, out var sod))
-									{
-										categories.Add(sod);
-										catTmp.Remove(baseChannel.Id);
-									}
-									else categories.Add(new ChannelCategory(baseChannel, this));
-								}
-								else
-								{
-									//If channel was in list readd else create new
-									if (chTmp.TryGetValue(baseChannel.Id, out var sod))
-										chTmp.Remove(baseChannel.Id);
-									else sod = Channel.Construct(baseChannel, this);
+								var newData = guild.GetChannelsAsync().Result;
 
-									channels.Add(sod);
-
-									if (sod is TextChannelBase btch) //If channel is support text mode add it to messages cache
-									{
-										await messages.InitChannelAsync(btch);
-										if (sod is TextChannel tch) //If channel is text add it to threads cache
+								{
+									var from = newData.Where(s => s.IsCategory).ToDictionary(s => s.Id);
+									var difference = new CollectionDifference<DiscordChannel, ChannelCategory, ulong>(from.Values.ToArray(), categoriesFrame.GetObjects(), s => s.Id, s => s.Id ?? throw new ImpossibleVariantException());
+									foreach (var item in difference.CalculateDifference())
+										if (item.Type == CollectionDifference<DiscordChannel, ChannelCategory, ulong>.OperationType.Add)
 										{
-											Dictionary<ulong, TextThread> cache;
-											//Get or create cache dictionary
-											if (threads.ContainsKey(tch)) cache = threads[tch];
-											else threads.Add(tch, cache = new());
+											var category = from[item.Key];
+											categoriesFrame.AddObject(item.Key, new(category, this));
+										}
+										else categoriesFrame.DeleteObject(item.Key);
+								}
 
+								{
+									var from = newData.Where(s => !s.IsCategory).ToDictionary(s => s.Id);
+									var difference = new CollectionDifference<DiscordChannel, Channel, ulong>(from.Values.ToArray(), channelsFrame.GetObjects(), s => s.Id, s => s.Id);
+									foreach (var item in difference.CalculateDifference())
+										if (item.Type == CollectionDifference<DiscordChannel, Channel, ulong>.OperationType.Add)
+										{
+											var channel = from[item.Key];
+											var readyChannel = Channel.Construct(channel, this);
+											channelsFrame.AddObject(item.Key, readyChannel);
 
-											var cacheClone = cache.ToDictionary(s => s.Key, s => s.Value);
-											cache.Clear();
-
-											foreach (var thread in baseChannel.Threads)
+											//Load threads
+											if (readyChannel is TextChannel tch)
 											{
-												//If thread was in list readd else create new
-												if (cacheClone.TryGetValue(thread.Id, out var val))
-												{
-													cache.Add(thread.Id, val);
-													cacheClone.Remove(thread.Id);
-												}
-												else cache.Add(thread.Id, new TextThread(thread, this, () => (ChannelCategory)GetCategory(baseChannel.ParentId)));
+												var newThreads = channel.Threads.ToDictionary(s => s.Id);
+												var threadDiff = new CollectionDifference<DiscordThreadChannel, TextThread, ulong>(newThreads.Values, threads.GetThreads(), s => s.Id, s => s.Id);
+												foreach (var diff in threadDiff.CalculateDifference())
+													if (diff.Type == CollectionDifference<DiscordThreadChannel, TextThread, ulong>.OperationType.Add)
+														threads.AddThread(new TextThread(newThreads[diff.Key], this, () => (ChannelCategory)readyChannel.Category));
+													else threads.RemoveThread(diff.Key);
 											}
 										}
-									}
+										else channelsFrame.DeleteObject(item.Key);
 								}
 							}
-
-							//Delete caches for all deleted text-like channels
-							foreach (var deletedChannel in chTmp)
-								if (deletedChannel.Value is TextChannelBase btch)
-								{
-									messages.DeleteChannelCache(btch);
-									if (deletedChannel.Value is TextChannel tch)
-										threads.Remove(tch);
-								}
 						}
 					}
 				});
@@ -430,14 +402,14 @@ namespace DidiFrame.Clients.DSharp
 
 		private class ThreadsChannelsCollection : IReadOnlyCollection<IChannel>
 		{
-			private readonly List<Channel> channels;
-			private readonly Dictionary<TextChannel, Dictionary<ulong, TextThread>> threads;
+			private readonly ObjectsCache<ulong>.Frame<Channel> channels;
+			private readonly TextChannelThreadsCache threads;
 
 
-			public int Count => channels.Count + threads.Select(s => s.Value.Count).Sum();
+			public int Count => channels.GetObjects().Count + threads.GetThreads().Count;
 
 
-			public ThreadsChannelsCollection(List<Channel> channels, Dictionary<TextChannel, Dictionary<ulong, TextThread>> threads)
+			public ThreadsChannelsCollection(ObjectsCache<ulong>.Frame<Channel> channels, TextChannelThreadsCache threads)
 			{
 				this.channels = channels;
 				this.threads = threads;
@@ -446,9 +418,37 @@ namespace DidiFrame.Clients.DSharp
 
 			public IEnumerator<IChannel> GetEnumerator()
 			{
-				foreach (var item in channels) yield return item;
-				foreach (var pair in threads.Values)
-					foreach (var item in pair.Values) yield return item;
+				lock (channels)
+				{
+					lock (threads)
+					{
+						foreach (var item in channels.GetObjects()) yield return item;
+						foreach (var item in threads.GetThreads()) yield return item;
+					}
+				}
+			}
+
+			public IChannel GetChannel(ulong id)
+			{
+				lock (channels)
+				{
+					lock (threads)
+					{
+						if (channels.HasObject(id)) return channels.GetObject(id);
+						else return threads.GetThread(id);
+					}
+				}
+			}
+
+			public bool HasChannel(ulong id)
+			{
+				lock (channels)
+				{
+					lock (threads)
+					{
+						return channels.HasObject(id) || threads.HasThread(id);
+					}
+				}
 			}
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -492,6 +492,117 @@ namespace DidiFrame.Clients.DSharp
 				if (message.TextChannel.Server.Id == serverId)
 					handler.Invoke(client, message, isModified);
 			}
+		}
+
+		private class TextChannelThreadsCache
+		{
+			private readonly Dictionary<ulong, TextThread> threads = new();
+			private readonly Action<TextThread> addAction;
+			private readonly Action<TextThread> removeAction;
+
+
+			public TextChannelThreadsCache(Action<TextThread> addAction, Action<TextThread> removeAction)
+			{
+				this.addAction = addAction;
+				this.removeAction = removeAction;
+			}
+
+
+			public void AddThread(TextThread thread)
+			{
+				lock (this)
+				{
+					threads.Add(thread.Id, thread);
+					addAction(thread);
+				}
+			}
+
+			public void RemoveThread(ulong threadId)
+			{
+				lock (this)
+				{
+					var removed = GetThread(threadId);
+					threads.Remove(threadId);
+					removeAction(removed);
+				}
+			}
+
+			public TextThread GetThread(ulong threadId)
+			{
+				lock (this)
+				{
+					return threads[threadId];
+				}
+			}
+
+			public IReadOnlyCollection<TextThread> GetThreads()
+			{
+				lock (this)
+				{
+					return threads.Values;
+				}
+			}
+
+			public void RemoveAllThreadsThatAssociatedWith(TextChannel channel)
+			{
+				lock (this)
+				{
+					var toRemove = new List<ulong>();
+
+					foreach (var item in threads)
+						if (item.Value.Parent == channel)
+							toRemove.Add(item.Key);
+
+					foreach (var item in toRemove) RemoveThread(item);
+				}
+			}
+
+			public IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel)
+			{
+				lock (this)
+				{
+					var toRet = new List<TextThread>();
+
+					foreach (var item in threads.Values)
+						if (item.Parent == channel)
+							toRet.Add(item);
+
+					return toRet;
+				}
+			}
+
+			public bool HasThread(ulong id)
+			{
+				lock (this)
+				{
+					return threads.ContainsKey(id);
+				}
+			}
+		}
+
+		private class CategoriesCollection : IReadOnlyCollection<ChannelCategory>
+		{
+			private readonly ChannelCategory globalCategory;
+			private readonly IReadOnlyCollection<ChannelCategory> categories;
+
+
+			public int Count => categories.Count + 1;
+
+
+			public CategoriesCollection(ObjectsCache<ulong>.Frame<ChannelCategory> frame, ChannelCategory globalCategory)
+			{
+				this.globalCategory = globalCategory;
+				categories = frame.GetObjects();
+			}
+
+
+			public IEnumerator<ChannelCategory> GetEnumerator()
+			{
+				foreach (var item in categories) yield return item;
+				yield return globalCategory;
+			}
+
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 	}
 }

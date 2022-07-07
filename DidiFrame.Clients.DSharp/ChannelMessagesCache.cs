@@ -30,48 +30,86 @@ namespace DidiFrame.Clients.DSharp
 
 		public void AddMessage(Message msg)
 		{
-			var cache = messages[msg.BaseChannel];
+			lock (msg.BaseChannel)
+			{
+				var cache = messages[msg.BaseChannel];
 
-			cache.Messages.Add(msg);
-			cache.MessageIds.Add(msg.Id);
+				cache.Messages.Add(msg);
+				cache.MessageIds.Add(msg.Id);
 
-			if (cache.Messages.Count > MessagesLimit)
-				cache.Messages.RemoveAt(0);
-			if (cache.MessageIds.Count > MessagesIdLimit)
-				cache.MessageIds.RemoveAt(0);
+				if (cache.Messages.Count > MessagesLimit)
+					cache.Messages.RemoveAt(0);
+				if (cache.MessageIds.Count > MessagesIdLimit)
+					cache.MessageIds.RemoveAt(0);
+			}
 		}
 
 		public Message DeleteMessage(ulong msgId, TextChannelBase textChannel)
 		{
-			var cache = messages[textChannel];
+			lock (textChannel)
+			{
+				var cache = messages[textChannel];
 
-			var message = cache.Messages.Single(s => s.Id == msgId);
-			cache.Messages.Remove(message);
-			cache.MessageIds.Remove(msgId);
-			return message;
+				var message = cache.Messages.Single(s => s.Id == msgId);
+				cache.Messages.Remove(message);
+				cache.MessageIds.Remove(msgId);
+				return message;
+			}
 		}
 
-		public IReadOnlyCollection<Message> GetMessages(TextChannelBase textChannel) => messages[textChannel].Messages;
-
-		public bool HasMessage(ulong id, TextChannelBase textChannel) => messages[textChannel].MessageIds.Contains(id);
-
-		public async Task InitChannelAsync(TextChannelBase textChannel)
+		public IReadOnlyCollection<Message> GetMessages(TextChannelBase textChannel)
 		{
-			messages.TryAdd(textChannel, new());
-			var cache = messages[textChannel];
+			lock (textChannel)
+			{
+				return messages[textChannel].Messages;
+			}
+		}
 
-			var msgs = await textChannel.BaseChannel.GetMessagesAsync(MessagesIdLimit);
-			foreach (var item in msgs.Take(MessagesLimit))
-				AddMessage(new(item, textChannel, MessageConverter.ConvertDown(item)));
-			 cache.MessageIds.AddRange(msgs.Skip(MessagesLimit).Select(s => s.Id));
+		public bool HasMessage(ulong id, TextChannelBase textChannel)
+		{
+			lock (textChannel)
+			{
+				messages[textChannel].MessageIds.Contains(id);
+			}
+		}
+
+		/// <summary>
+		/// Deadlock alarm!!!
+		/// </summary>
+		/// <param name="textChannel"></param>
+		/// <returns></returns>
+		public Task InitChannelAsync(TextChannelBase textChannel)
+		{
+			return Task.Run(() =>
+			{
+				lock (textChannel)
+				{
+					messages.TryAdd(textChannel, new());
+					var cache = messages[textChannel];
+
+					var msgs = textChannel.BaseChannel.GetMessagesAsync(MessagesIdLimit).Result;
+					foreach (var item in msgs.Take(MessagesLimit))
+						AddMessage(new(item, textChannel, MessageConverter.ConvertDown(item)));
+					cache.MessageIds.AddRange(msgs.Skip(MessagesLimit).Select(s => s.Id));
+				}
+			});
 		}
 
 		public void DeleteChannelCache(TextChannelBase textChannel)
 		{
-			messages.Remove(textChannel);
+			lock (textChannel)
+			{
+				messages.Remove(textChannel);
+			}
 		}
 
-		public Message? GetReadyMessage(ulong id, TextChannelBase textChannelBase) => messages[textChannelBase].Messages.SingleOrDefault(s => s.Id == id);
+		public Message? GetReadyMessage(ulong id, TextChannelBase textChannelBase)
+		{
+			lock (textChannelBase)
+			{
+				return messages[textChannelBase].Messages.SingleOrDefault(s => s.Id == id);
+			}
+		}
 
 
 		private struct CacheItem
