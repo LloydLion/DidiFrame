@@ -9,5 +9,7 @@
 		/// Server that contains it
 		/// </summary>
 		public IServer Server { get; }
+
+		public bool IsExist { get; }
 	}
 }

@@ -37,5 +37,7 @@
 		/// <param name="model">Send model of message</param>
 		/// <returns>Wait task</returns>
 		Task SendDirectMessageAsync(MessageSendModel model);
+
+		Task<bool> GetIsUserExist();
 	}
 }

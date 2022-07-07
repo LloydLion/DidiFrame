@@ -1,5 +1,6 @@
 ﻿using DidiFrame.Entities;
 using DidiFrame.Entities.Message;
+using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DidiFrame.Utils;
 using DSharpPlus.Entities;
@@ -58,6 +59,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public IMessage GetMessage(ulong id)
 		{
+			if (IsExist == false)
+				throw new ObjectDoesNotExistException(nameof(GetMessage));
+
 			if (cache.HasMessage(id, this) == false)
 				throw new ArgumentException("No such message with same id", nameof(id));
 
@@ -74,24 +78,36 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public IReadOnlyList<IMessage> GetMessages(int count = -1)
 		{
+			if (IsExist == false)
+				throw new ObjectDoesNotExistException(nameof(GetMessages));
+
 			var messages = cache.GetMessages(this);
 			if (count == -1) return (IReadOnlyList<IMessage>)messages;
 			return messages.AsEnumerable().Reverse().Take(Math.Min(count, messages.Count)).ToArray();
 		}
 
 		/// <inheritdoc/>
-		public bool HasMessage(ulong id) => cache.HasMessage(id, this);
+		public bool HasMessage(ulong id)
+		{
+			if (IsExist == false)
+				throw new ObjectDoesNotExistException(nameof(HasMessage));
+			return cache.HasMessage(id, this);
+		}
 
 
 		/// <inheritdoc/>
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
+			if (IsExist == false)
+				throw new ObjectDoesNotExistException(nameof(HasMessage));
+
 			var builder = MessageConverter.ConvertUp(messageSendModel);
 
 			var msg = await server.SourceClient.DoSafeOperationAsync(async () =>
-				new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder)), new(Client.ChannelName, Id, Name));
+			{
+				return new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder));
+			}, new(Client.ChannelName, Id, Name));
 
-			cache.AddMessage(msg);
 			return msg;
 		}
 	}

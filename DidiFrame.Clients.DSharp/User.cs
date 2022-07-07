@@ -1,6 +1,7 @@
 ﻿using DidiFrame.Entities.Message;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -9,15 +10,33 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class User : IUser
 	{
-		private readonly DiscordUser user;
+		private DiscordUser user;
 		private readonly Client client;
 
 
 		/// <inheritdoc/>
-		public virtual string UserName => user.Username;
+		public virtual string UserName
+		{
+			get
+			{
+				lock (this)
+				{
+					return user.Username;
+				}
+			}
+		}
 
 		/// <inheritdoc/>
-		public string Mention => user.Mention;
+		public string Mention
+		{
+			get
+			{
+				lock (this)
+				{
+					return user.Mention;
+				}
+			}
+		}
 
 		/// <inheritdoc/>
 		public ulong Id => user.Id;
@@ -31,7 +50,16 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Base DiscordUser from DSharp
 		/// </summary>
-		public DiscordUser BaseUser => user;
+		public DiscordUser BaseUser
+		{
+			get
+			{
+				lock (this)
+				{
+					return user;
+				}
+			}
+		}
 
 
 		/// <summary>
@@ -60,5 +88,30 @@ namespace DidiFrame.Clients.DSharp
 
 		/// <inheritdoc/>
 		public override int GetHashCode() => Id.GetHashCode();
+
+		/// <inheritdoc/>
+		public Task<bool> GetIsUserExist()
+		{
+			return client.DoSafeOperationAsync(async () =>
+			{
+				try
+				{
+					await client.BaseClient.GetUserAsync(Id);
+					return true;
+				}
+				catch (NotFoundException)
+				{
+					return false;
+				}
+			});
+		}
+
+		protected internal void ModifyInternal(DiscordUser user)
+		{
+			lock (this)
+			{
+				this.user = user;
+			}
+		}
 	}
 }

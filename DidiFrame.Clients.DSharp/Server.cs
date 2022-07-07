@@ -97,11 +97,11 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
 
-		/// <inheritdoc/>
-		public bool HasChannel(ulong id) => threadsAndChannels.HasChannel(id);
-
-		/// <inheritdoc/>
 		public bool HasChannel(IChannel channel) => threadsAndChannels.HasChannel(channel.Id);
+
+		public bool HasMember(IMember member) => serverCache.GetFrame<Member>().HasObject(member.Id);
+
+		public bool HasRole(IRole member) => serverCache.GetFrame<Role>().HasObject(member.Id);
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Server);
@@ -117,11 +117,19 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.GuildRoleCreated -= OnGuildRoleCreated;
 			client.BaseClient.ChannelCreated -= OnChannelCreated;
 			client.BaseClient.MessageCreated -= OnMessageCreated;
+			client.BaseClient.ThreadCreated -= OnThreadCreated;
 
 			client.BaseClient.GuildMemberRemoved -= OnGuildMemberRemoved;
 			client.BaseClient.GuildRoleDeleted -= OnGuildRoleDeleted;
 			client.BaseClient.ChannelDeleted -= OnChannelDeleted;
 			client.BaseClient.MessageDeleted -= OnMessageDeleted;
+			client.BaseClient.ThreadDeleted -= OnThreadDeleted;
+
+			client.BaseClient.GuildMemberUpdated -= OnMemberUpdated;
+			client.BaseClient.GuildRoleUpdated -= OnRoleUpdated;
+			client.BaseClient.ChannelUpdated -= OnChannelUpdated;
+			client.BaseClient.ThreadUpdated -= OnThreadUpdated;
+			client.BaseClient.MessageUpdated -= OnMessageUpdated;
 
 			cts.Cancel();
 			globalCacheUpdateTask.Wait();
@@ -179,6 +187,10 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.MessageDeleted += OnMessageDeleted;
 			client.BaseClient.ThreadDeleted += OnThreadDeleted;
 			
+			client.BaseClient.GuildMemberUpdated += OnMemberUpdated;
+			client.BaseClient.GuildRoleUpdated += OnRoleUpdated;
+			client.BaseClient.ChannelUpdated += OnChannelUpdated;
+			client.BaseClient.ThreadUpdated += OnThreadUpdated;
 			client.BaseClient.MessageUpdated += OnMessageUpdated;
 
 
@@ -186,16 +198,73 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
+		private Task OnThreadUpdated(DiscordClient sender, ThreadUpdateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			lock (threads)
+			{
+				var thread = threads.GetThread(e.ThreadAfter.Id);
+				thread.ModifyInternal(e.ThreadAfter);
+			}
+
+			return Task.CompletedTask;
+		}
+
+		private Task OnChannelUpdated(DiscordClient sender, ChannelUpdateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			var frame = serverCache.GetFrame<Channel>();
+			lock (frame)
+			{
+				var channel = frame.GetObject(e.ChannelAfter.Id);
+				channel.ModifyInternal(e.ChannelAfter);
+			}
+
+			return Task.CompletedTask;
+		}
+
+		private Task OnRoleUpdated(DiscordClient sender, GuildRoleUpdateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			var frame = serverCache.GetFrame<Role>();
+			lock (frame)
+			{
+				var role = frame.GetObject(e.RoleAfter.Id);
+				role.ModifyInternal(e.RoleAfter);
+			}
+
+			return Task.CompletedTask;
+		}
+
+		private Task OnMemberUpdated(DiscordClient sender, GuildMemberUpdateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			var frame = serverCache.GetFrame<Member>();
+			lock (frame)
+			{
+				var member = frame.GetObject(e.Member.Id);
+				member.ModifyInternal(e.Member);
+			}
+
+			return Task.CompletedTask;
+		}
+
 		private Task OnMessageUpdated(DiscordClient sender, MessageUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-			if (e.Message.Author.Id == Client.SelfAccount.Id) return Task.CompletedTask;
 
 			var channel = (TextChannelBase)GetChannel(e.Channel.Id);
-			if (messages.HasMessage(e.Message.Id, channel))
+			lock (channel)
 			{
-				var ready = messages.GetReadyMessage(e.Message.Id, channel);
-				if (ready is not null) ready.ModifyInternal(e.Message);
+				if (messages.HasMessage(e.Message.Id, channel))
+				{
+					var ready = messages.GetReadyMessage(e.Message.Id, channel);
+					if (ready is not null) ready.ModifyInternal(e.Message);
+				}
 			}
 
 			return Task.CompletedTask;
@@ -266,14 +335,16 @@ namespace DidiFrame.Clients.DSharp
 			return Task.CompletedTask;
 		}
 
-		private async Task OnChannelCreated(DiscordClient sender, ChannelCreateEventArgs e)
+		private Task OnChannelCreated(DiscordClient sender, ChannelCreateEventArgs e)
 		{
-			if (e.Guild != guild) return;
+			if (e.Guild != guild) return Task.CompletedTask;
 
 			if (e.Channel.IsCategory)
 				serverCache.AddObject(e.Channel.Id, new ChannelCategory(e.Channel, this));
 			else
 				serverCache.AddObject(e.Channel.Id, Channel.Construct(e.Channel, this));
+
+			return Task.CompletedTask;
 		}
 
 		private Task OnGuildRoleCreated(DiscordClient sender, GuildRoleCreateEventArgs e)
@@ -309,16 +380,14 @@ namespace DidiFrame.Clients.DSharp
 
 		private async Task CreateServerCacheUpdateTask(CancellationToken token)
 		{
-			update().Wait(token);
-
 			while (token.IsCancellationRequested)
 			{
-				await update();
+				update();
 				await Task.Delay(new TimeSpan(0, 5, 0), token);
 			}
 
 
-			Task update() => client.DoSafeOperationAsync(async () =>
+			void update() => client.DoSafeOperation(() =>
 				{
 					var memebersFrame = serverCache.GetFrame<Member>();
 					lock (memebersFrame)
