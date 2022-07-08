@@ -37,20 +37,10 @@ namespace TestBot.Systems.Test
 			await core.SendDisplayMessageAsync(ctx.Invoker.Server);
 		}
 
-		[Command("reply")]
-		[SuppressMessage("Performance", "CA1822")]
-		public UserCommandResult Reply(UserCommandContext ctx,
-			[Lazy()][ValuesProvider(typeof(MyProv), 3, 5)] string choose)
+		[Command("printname")]
+		public UserCommandResult PrintChannelName(UserCommandContext ctx)
 		{
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new("All ok! You choose is " + choose) };
-		}
-
-		[Command("replym")]
-		[SuppressMessage("Performance", "CA1822")]
-		public UserCommandResult ReplyMap(UserCommandContext ctx,
-			[Map(MapAttribute.ProviderErrorCode, "ProviderError")][ValuesProvider(typeof(MyProv), 3, 5)] string choose)
-		{
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new("All ok! You choose is " + choose) };
+			return new(UserCommandCode.Sucssesful) { RespondMessage = new("Welcome to the " + ctx.Channel.Name) };
 		}
 
 		[Command("get reactions")]
@@ -62,6 +52,19 @@ namespace TestBot.Systems.Test
 			var count = msg.GetReactions(":apple:");
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new($"You setted {count} 🍎") };
 		}
+
+		[Command("get msg")]
+		[SuppressMessage("Performance", "CA1822")]
+		public async Task<UserCommandResult> GetMessage(UserCommandContext ctx, string ulongId)
+		{
+			var id = ulong.Parse(ulongId);
+			var msg = ctx.Channel.GetMessage(id);
+			var content = msg.Content;
+			await Task.Delay(5000);
+			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new($"Now - {msg.Content}, Was - {content}") };
+		}
+
+
 
 		public class MyProv : IUserCommandArgumentValuesProvider
 		{

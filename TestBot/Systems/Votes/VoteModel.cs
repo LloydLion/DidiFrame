@@ -11,7 +11,7 @@ namespace TestBot.Systems.Votes
 		private static int nextId;
 
 
-		public VoteModel(IMember creator, IReadOnlyList<string> options, string title, ITextChannel channel)
+		public VoteModel(IMember creator, IReadOnlyList<string> options, string title, ITextChannelBase channel)
 		{
 			Options = options.ToDictionary(s => s, s => 0);
 			Creator = creator;

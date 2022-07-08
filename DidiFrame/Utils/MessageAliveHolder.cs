@@ -68,7 +68,7 @@ namespace DidiFrame.Utils
 		/// <summary>
 		/// Target channel
 		/// </summary>
-		public ITextChannel Channel => model.Channel;
+		public ITextChannelBase Channel => model.Channel;
 
 		/// <summary>
 		/// If need display message always unless only by request
@@ -164,7 +164,7 @@ namespace DidiFrame.Utils
 			/// </summary>
 			/// <param name="possibleMessageId">Possible message id</param>
 			/// <param name="channel">Channel where need to create message</param>
-			public Model(ulong possibleMessageId, ITextChannel channel)
+			public Model(ulong possibleMessageId, ITextChannelBase channel)
 			{
 				PossibleMessageId = possibleMessageId;
 				Channel = channel;
@@ -174,7 +174,7 @@ namespace DidiFrame.Utils
 			/// Creates DidiFrame.Utils.MessageAliveHolder.Model using channel
 			/// </summary>
 			/// <param name="channel">Channel where need to create message</param>
-			public Model(ITextChannel channel)
+			public Model(ITextChannelBase channel)
 			{
 				Channel = channel;
 			}
@@ -190,7 +190,7 @@ namespace DidiFrame.Utils
 			/// Channel where need to create message
 			/// </summary>
 			[ConstructorAssignableProperty(1, "channel")]
-			public ITextChannel Channel { get; }
+			public ITextChannelBase Channel { get; }
 		}
 	}
 }

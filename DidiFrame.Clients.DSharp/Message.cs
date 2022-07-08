@@ -1,33 +1,34 @@
 ﻿using DidiFrame.Entities.Message;
+using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
+using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IMessage
 	/// </summary>
-	public class Message : IMessage, IDisposable
+	public class Message : IMessage
 	{
-		private DiscordMessage message;
-		private readonly TextChannel owner;
-		private Lazy<MessageInteractionDispatcher> mid;
+		private readonly ObjectSourceDelegate<DiscordMessage> message;
+		private readonly TextChannelBase owner;
 
 
 		/// <inheritdoc/>
-		public TextChannel BaseChannel => owner;
+		public TextChannelBase BaseChannel => owner;
 
 		/// <inheritdoc/>
-		public MessageSendModel SendModel { get; private set; }
+		public MessageSendModel SendModel => MessageConverter.ConvertDown(AccessBase());
 
 		/// <inheritdoc/>
-		public ulong Id => message.Id;
+		public ulong Id { get; }
 
 		/// <inheritdoc/>
-		public ITextChannel TextChannel => owner;
+		public ITextChannelBase TextChannel => owner;
 
 		/// <inheritdoc/>
-		public IMember Author { get; }
+		public IMember Author => TextChannel.Server.GetMember(AccessBase().Id);
 
 		/// <inheritdoc/>
 		public bool IsExist => owner.HasMessage(Id);
@@ -35,7 +36,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Base DiscordMessage from DSharp
 		/// </summary>
-		public DiscordMessage BaseMessage => message;
+		public DiscordMessage BaseMessage => AccessBase();
 
 
 		/// <summary>
@@ -43,22 +44,11 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		/// <param name="message">Base DiscordMessage from DSharp</param>
 		/// <param name="owner">Owner text channel's wrap object</param>
-		/// <param name="sendModel">Send model that was used to send it</param>
-		public Message(DiscordMessage message, TextChannel owner, MessageSendModel sendModel)
+		public Message(ulong id, ObjectSourceDelegate<DiscordMessage> message, TextChannelBase owner)
 		{
+			Id = id;
 			this.message = message;
 			this.owner = owner;
-			SendModel = sendModel;
-			Author = owner.Server.GetMember(message.Author.Id);
-			mid = new Lazy<MessageInteractionDispatcher>(() => new MessageInteractionDispatcher(this));
-		}
-
-		/// <summary>
-		/// Finalizes message object usgin Dispose method
-		/// </summary>
-		~Message()
-		{
-			Dispose();
 		}
 
 
@@ -66,17 +56,10 @@ namespace DidiFrame.Clients.DSharp
 		public bool Equals(IMessage? other) => other is Message msg && msg.Id == Id && msg.TextChannel == TextChannel;
 
 		/// <inheritdoc/>
-		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => message.DeleteAsync(), new(Client.MessageName, Id));
+		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().DeleteAsync(), new(Client.MessageName, Id));
 
 		/// <inheritdoc/>
-		public IInteractionDispatcher GetInteractionDispatcher() => mid.Value;
-
-		/// <inheritdoc/>
-		public void Dispose()
-		{
-			if (mid.IsValueCreated) mid.Value.Dispose();
-			GC.SuppressFinalize(this);
-		}
+		public IInteractionDispatcher GetInteractionDispatcher() => ((Server)owner.Server).GetInteractionDispatcherFor(this);
 
 		/// <inheritdoc/>
 		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
@@ -84,18 +67,23 @@ namespace DidiFrame.Clients.DSharp
 			return owner.BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
 				if (resetDispatcher) ResetInteractionDispatcher();
-				message = await message.ModifyAsync(MessageConverter.ConvertUp(SendModel = sendModel));
+				var message = await AccessBase().ModifyAsync(MessageConverter.ConvertUp(sendModel));
+				((Server)TextChannel.Server).CacheMessage(message);
 			}, new(Client.MessageName, Id));
 		}
 
 		/// <inheritdoc/>
 		public void ResetInteractionDispatcher()
 		{
-			if (mid.IsValueCreated)
-			{
-				mid.Value.Dispose();
-				mid = new Lazy<MessageInteractionDispatcher>(() => new MessageInteractionDispatcher(this));
-			}
+			((Server)owner.Server).ResetInteractionDispatcherFor(Id);
+		}
+
+		private DiscordMessage AccessBase([CallerMemberName] string nameOfCaller = "")
+		{
+			var obj = message();
+			if (obj is null)
+				throw new ObjectDoesNotExistException(nameOfCaller);
+			else return obj;
 		}
 	}
 }

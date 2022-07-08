@@ -5,5 +5,5 @@
 	/// </summary>
 	/// <param name="Invoker">A member that has called a command</param>
 	/// <param name="Channel">A channel where it has written</param>
-	public record UserCommandSendData(IMember Invoker, ITextChannel Channel);
+	public record UserCommandSendData(IMember Invoker, ITextChannelBase Channel);
 }

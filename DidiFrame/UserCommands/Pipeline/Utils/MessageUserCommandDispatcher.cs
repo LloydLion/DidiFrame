@@ -82,7 +82,7 @@
 			this.callback = callback;
 		}
 
-		private void Client_MessageSent(IClient sender, IMessage message)
+		private void Client_MessageSent(IClient sender, IMessage message, bool isModified)
 		{
 			callback?.Invoke(this, message, new(message.Author, message.TextChannel), new StateStruct(sender, message));
 		}

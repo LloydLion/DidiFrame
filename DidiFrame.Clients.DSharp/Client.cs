@@ -82,16 +82,16 @@ namespace DidiFrame.Clients.DSharp
 			});
 
 			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
-			selfAccount = new(() => new User(client.CurrentUser, this));
+			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
 			Services = servicesForExtensions;
 		}
 
-		//Must be invoked from TextChannel objects
-		internal void OnMessageCreated(Message message)
+		//Must be invoked from Server objects
+		internal void OnMessageCreated(Message message, bool isModified)
 		{
 			try
 			{
-				MessageSent?.Invoke(this, message);
+				MessageSent?.Invoke(this, message, isModified);
 			}
 			catch (Exception ex)
 			{

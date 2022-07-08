@@ -7,7 +7,7 @@ namespace DidiFrame.Interfaces
 	/// </summary>
 	/// <param name="sender">Discord client that sent the event</param>
 	/// <param name="message">Message that has created</param>
-	public delegate void MessageSentEventHandler(IClient sender, IMessage message);
+	public delegate void MessageSentEventHandler(IClient sender, IMessage message, bool isModified);
 
 	/// <summary>
 	/// Message deleted event handler delegate
