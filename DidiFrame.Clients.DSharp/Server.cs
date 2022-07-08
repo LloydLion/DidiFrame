@@ -21,17 +21,12 @@ namespace DidiFrame.Clients.DSharp
 		private readonly Task globalCacheUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 
-		//private readonly List<Member> members = new();
-		//private readonly List<ChannelCategory> categories = new();
-		//private readonly List<Channel> channels = new();
-		//private readonly List<Role> roles = new();
-		//private readonly Dictionary<TextChannel, Dictionary<ulong, TextThread>> threads = new();
-		//private readonly ThreadLocker<IList> cacheUpdateLocker = new();
 		private readonly ThreadsChannelsCollection threadsAndChannels;
 		private readonly ChannelCategory globalCategory;
 		private readonly ObjectsCache<ulong> serverCache = new();
 		private readonly ChannelMessagesCache messages = new();
 		private readonly TextChannelThreadsCache threads;
+		private readonly InteractionDispatcherFactory dispatcherFactory;
 
 
 		/// <inheritdoc/>
@@ -91,6 +86,10 @@ namespace DidiFrame.Clients.DSharp
 				return new TextThread(threadId, channel, () => threads.GetThread(threadId), this, () => (ChannelCategory?)channel.Category);
 			}).ToArray();
 		}
+
+		public IInteractionDispatcher GetInteractionDispatcherFor(Message message) => dispatcherFactory.CreateInstance(message);
+
+		public void ResetInteractionDispatcherFor(ulong messageId) => dispatcherFactory.ResetInstance(messageId);
 
 		/// <inheritdoc/>
 		public IMember GetMember(ulong id) => new Member(id, () => serverCache.GetFrame<DiscordMember>().GetNullableObject(id), this);
@@ -170,6 +169,7 @@ namespace DidiFrame.Clients.DSharp
 			this.guild = guild;
 			this.client = client;
 			globalCategory = new(this);
+			dispatcherFactory = new(this);
 
 
 			threads = new(
@@ -199,7 +199,12 @@ namespace DidiFrame.Clients.DSharp
 					messages.InitChannelAsync(channel).Wait();
 			});
 
-			threadsAndChannels = new(serverCache.GetFrame<DiscordChannel>(), threads, messages, this);
+			messages.MessageDeleted += (msg) =>
+			{
+				dispatcherFactory.DisposeInstance(msg.Id);
+			};
+
+			threadsAndChannels = new(serverCache.GetFrame<DiscordChannel>(), threads, this);
 
 
 			client.BaseClient.GuildMemberAdded += OnMemberAdded;
@@ -474,18 +479,16 @@ namespace DidiFrame.Clients.DSharp
 		{
 			private readonly ObjectsCache<ulong>.Frame<DiscordChannel> channels;
 			private readonly TextChannelThreadsCache threads;
-			private readonly ChannelMessagesCache cache;
 			private readonly Server server;
 
 
 			public int Count => channels.GetObjects().Count + threads.GetThreads().Count;
 
 
-			public ThreadsChannelsCollection(ObjectsCache<ulong>.Frame<DiscordChannel> channels, TextChannelThreadsCache threads, ChannelMessagesCache cache, Server server)
+			public ThreadsChannelsCollection(ObjectsCache<ulong>.Frame<DiscordChannel> channels, TextChannelThreadsCache threads, Server server)
 			{
 				this.channels = channels;
 				this.threads = threads;
-				this.cache = cache;
 				this.server = server;
 			}
 
@@ -499,7 +502,7 @@ namespace DidiFrame.Clients.DSharp
 						foreach (var item in channels.GetObjects())
 						{
 							var id = item.Id;
-							yield return Channel.Construct(id, () => channels.GetNullableObject(id), server, cache);
+							yield return Channel.Construct(id, () => channels.GetNullableObject(id), server);
 						}
 						foreach (var item in threads.GetThreads())
 						{
@@ -518,7 +521,7 @@ namespace DidiFrame.Clients.DSharp
 					lock (threads)
 					{
 						if (channels.HasObject(id))
-							return Channel.Construct(id, () => channels.GetNullableObject(id), server, cache);
+							return Channel.Construct(id, () => channels.GetNullableObject(id), server);
 						else
 						{
 							var parentId = threads.GetThread(id).Parent.Id;

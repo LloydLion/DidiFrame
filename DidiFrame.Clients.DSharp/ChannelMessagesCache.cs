@@ -19,6 +19,9 @@ namespace DidiFrame.Clients.DSharp
 		private readonly Dictionary<DiscordChannel, CacheItem> messages;
 
 
+		public event Action<DiscordMessage>? MessageDeleted;
+
+
 		public ChannelMessagesCache()
 		{
 
@@ -34,7 +37,11 @@ namespace DidiFrame.Clients.DSharp
 				cache.Messages.Add(msg);
 
 				if (cache.Messages.Count > MessagesLimit)
+				{
+					var last = cache.Messages[0];
 					cache.Messages.RemoveAt(0);
+					MessageDeleted?.Invoke(last);
+				}
 			}
 		}
 
@@ -45,7 +52,10 @@ namespace DidiFrame.Clients.DSharp
 				var cache = messages[textChannel];
 
 				var message = cache.Messages.Single(s => s.Id == msgId);
+
 				cache.Messages.Remove(message);
+				MessageDeleted?.Invoke(message);
+
 				return message;
 			}
 		}

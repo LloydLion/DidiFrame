@@ -82,7 +82,7 @@ namespace DidiFrame.Clients.DSharp
 			});
 
 			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
-			selfAccount = new(() => new User(client.CurrentUser, this));
+			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
 			Services = servicesForExtensions;
 		}
 

@@ -46,8 +46,10 @@
 			ReputationChanged?.Invoke(rp.Object);
 		}
 
-		private void MessageSent(IClient _, IMessage message)
+		private void MessageSent(IClient _, IMessage message, bool isModified)
 		{
+			if (isModified) return;
+
 			using var rp = repository.GetReputation(message.Author);
 
 			var setting = settings.Get(message.TextChannel.Server);

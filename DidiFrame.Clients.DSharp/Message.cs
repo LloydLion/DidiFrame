@@ -13,7 +13,6 @@ namespace DidiFrame.Clients.DSharp
 	{
 		private readonly ObjectSourceDelegate<DiscordMessage> message;
 		private readonly TextChannelBase owner;
-		private Lazy<MessageInteractionDispatcher> mid;
 
 
 		/// <inheritdoc/>
@@ -50,7 +49,6 @@ namespace DidiFrame.Clients.DSharp
 			Id = id;
 			this.message = message;
 			this.owner = owner;
-			mid = new Lazy<MessageInteractionDispatcher>(() => owner.BaseServer.CreateInteractionDispatcherFor(this));
 		}
 
 
@@ -61,7 +59,7 @@ namespace DidiFrame.Clients.DSharp
 		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().DeleteAsync(), new(Client.MessageName, Id));
 
 		/// <inheritdoc/>
-		public IInteractionDispatcher GetInteractionDispatcher() => mid.Value;
+		public IInteractionDispatcher GetInteractionDispatcher() => ((Server)owner.Server).GetInteractionDispatcherFor(this);
 
 		/// <inheritdoc/>
 		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
@@ -77,11 +75,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public void ResetInteractionDispatcher()
 		{
-			if (mid.IsValueCreated)
-			{
-				mid.Value.Dispose();
-				mid = new Lazy<MessageInteractionDispatcher>(() => new MessageInteractionDispatcher(this));
-			}
+			((Server)owner.Server).ResetInteractionDispatcherFor(Id);
 		}
 
 		private DiscordMessage AccessBase([CallerMemberName] string nameOfCaller = "")
