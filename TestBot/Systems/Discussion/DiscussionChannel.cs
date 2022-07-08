@@ -7,7 +7,7 @@ namespace TestBot.Systems.Discussion
 	[DataKey(StatesKeys.DiscussionSystem)]
 	internal class DiscussionChannel : ILifetimeBase
 	{
-		public DiscussionChannel(ITextChannel channel, IMessage askMessage)
+		public DiscussionChannel(ITextChannelBase channel, IMessage askMessage)
 		{
 			Channel = channel;
 			AskMessage = askMessage;
@@ -15,7 +15,7 @@ namespace TestBot.Systems.Discussion
 
 
 		[ConstructorAssignableProperty(0, "channel")]
-		public ITextChannel Channel { get; }
+		public ITextChannelBase Channel { get; }
 
 		[ConstructorAssignableProperty(1, "askMessage")]
 		public IMessage AskMessage { get; }

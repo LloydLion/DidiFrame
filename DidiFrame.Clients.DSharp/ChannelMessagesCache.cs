@@ -16,7 +16,7 @@ namespace DidiFrame.Clients.DSharp
 		public const int MessagesLimit = 25;
 
 
-		private readonly Dictionary<DiscordChannel, CacheItem> messages;
+		private readonly Dictionary<DiscordChannel, CacheItem> messages = new();
 
 
 		public event Action<DiscordMessage>? MessageDeleted;
@@ -87,11 +87,11 @@ namespace DidiFrame.Clients.DSharp
 			{
 				lock (Lock(textChannel))
 				{
-					messages.TryAdd(textChannel, new());
+					if(messages.ContainsKey(textChannel) == false) messages.Add(textChannel, new());
 					var cache = messages[textChannel];
 
-					var msgs = textChannel.GetMessagesAsync(MessagesLimit).Result;
-					foreach (var item in msgs)
+					var msgs = textChannel.GetMessagesAsync(MessagesLimit).Result.Where(s => s.MessageType == DSharpPlus.MessageType.Default);
+					foreach (var item in msgs.Reverse())
 						AddMessage(item);
 				}
 			});
@@ -115,6 +115,7 @@ namespace DidiFrame.Clients.DSharp
 
 		public object Lock(DiscordChannel textChannel)
 		{
+			if (messages.ContainsKey(textChannel) == false) messages.Add(textChannel, new());
 			return messages[textChannel].LockObject;
 		}
 

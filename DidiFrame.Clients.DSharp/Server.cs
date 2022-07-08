@@ -233,7 +233,7 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnThreadUpdated(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-
+			
 			lock (threads)
 			{
 				threads.RemoveThread(e.ThreadAfter.Id);
@@ -288,9 +288,9 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnMessageUpdated(DiscordClient sender, MessageUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
+			if (e.Message.MessageType != MessageType.Default) return Task.CompletedTask;
 
-			var channel = (TextChannelBase)GetChannel(e.Channel.Id);
-			lock (channel)
+			lock (messages.Lock(e.Channel))
 			{
 				messages.DeleteMessage(e.Message.Id, e.Channel);
 				messages.AddMessage(e.Message);
@@ -311,6 +311,7 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnThreadCreated(DiscordClient sender, ThreadCreateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
+			if (e.NewlyCreated == false) return Task.CompletedTask;
 
 			threads.AddThread(e.Thread);
 
@@ -347,6 +348,7 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnMessageDeleted(DiscordClient sender, MessageDeleteEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
+			if (e.Message.MessageType != MessageType.Default) return Task.CompletedTask;
 
 			lock (messages.Lock(e.Channel))
 			{
@@ -388,6 +390,7 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
+			if (e.Message.MessageType != MessageType.Default) return Task.CompletedTask;
 
 			lock (messages.Lock(e.Channel))
 			{
@@ -404,7 +407,7 @@ namespace DidiFrame.Clients.DSharp
 
 		private async Task CreateServerCacheUpdateTask(CancellationToken token)
 		{
-			while (token.IsCancellationRequested)
+			while (!token.IsCancellationRequested)
 			{
 				update();
 				await Task.Delay(new TimeSpan(0, 5, 0), token);
@@ -461,7 +464,7 @@ namespace DidiFrame.Clients.DSharp
 									if (type == Entities.ChannelType.TextCompatible)
 									{
 										var newThreads = channel.Threads.ToDictionary(s => s.Id);
-										var threadDiff = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(newThreads.Values, threads.GetThreads(), s => s.Id, s => s.Id);
+										var threadDiff = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(newThreads.Values, threads.GetThreadsFor(channel), s => s.Id, s => s.Id);
 										foreach (var diff in threadDiff.CalculateDifference())
 											if (diff.Type == CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>.OperationType.Add)
 												threads.AddThread(newThreads[diff.Key]);

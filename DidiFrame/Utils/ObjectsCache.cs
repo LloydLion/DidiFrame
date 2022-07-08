@@ -27,7 +27,7 @@
 
 		private Frame<TObject> GetFrameInternal<TObject>() where TObject : notnull
 		{
-			if (frames.ContainsKey(typeof(TObject))) frames.Add(typeof(TObject), new Frame<TObject>(this));
+			if (!frames.ContainsKey(typeof(TObject))) frames.Add(typeof(TObject), new Frame<TObject>(this));
 			return (Frame<TObject>)frames[typeof(TObject)];
 		}
 
@@ -43,7 +43,7 @@
 
 			public new TObject? GetNullableObject(TKey key) => (TObject?)base.GetNullableObject(key);
 
-			public IReadOnlyCollection<TObject> GetObjects() => (IReadOnlyCollection<TObject>)base.GetObjects();
+			public IReadOnlyCollection<TObject> GetObjects() => base.GetObjects().Cast<TObject>().ToArray();
 		}
 
 		public class Frame
@@ -65,7 +65,7 @@
 				lock (this)
 				{
 					objects.Add(key, obj);
-					owner.addHandlers[ttype].Invoke(key, obj);
+					if (owner.addHandlers.ContainsKey(ttype)) owner.addHandlers[ttype].Invoke(key, obj);
 				}
 			}
 
@@ -74,7 +74,7 @@
 				lock (this)
 				{
 					var removed = objects.Remove(key);
-					owner.removeHandlers[ttype].Invoke(key, removed);
+					if (owner.removeHandlers.ContainsKey(ttype)) owner.removeHandlers[ttype].Invoke(key, removed);
 				}
 			}
 
