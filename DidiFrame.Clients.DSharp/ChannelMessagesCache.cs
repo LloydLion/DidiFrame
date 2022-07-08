@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSharpPlus.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,16 +11,12 @@ namespace DidiFrame.Clients.DSharp
 	{
 		/// <summary>
 		/// Limit of messages that channel will cache
-		/// </summary>
-		public const int MessagesLimit = 10;
-		/// <summary>
-		/// Limit of message that channel will provide.
 		/// All messages out the limit is not exist
 		/// </summary>
-		public const int MessagesIdLimit = 70;
+		public const int MessagesLimit = 25;
 
 
-		private readonly Dictionary<TextChannelBase, CacheItem> messages;
+		private readonly Dictionary<DiscordChannel, CacheItem> messages;
 
 
 		public ChannelMessagesCache()
@@ -28,48 +25,44 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
-		public void AddMessage(Message msg)
+		public void AddMessage(DiscordMessage msg)
 		{
-			lock (msg.BaseChannel)
+			lock (Lock(msg.Channel))
 			{
-				var cache = messages[msg.BaseChannel];
+				var cache = messages[msg.Channel];
 
 				cache.Messages.Add(msg);
-				cache.MessageIds.Add(msg.Id);
 
 				if (cache.Messages.Count > MessagesLimit)
 					cache.Messages.RemoveAt(0);
-				if (cache.MessageIds.Count > MessagesIdLimit)
-					cache.MessageIds.RemoveAt(0);
 			}
 		}
 
-		public Message DeleteMessage(ulong msgId, TextChannelBase textChannel)
+		public DiscordMessage DeleteMessage(ulong msgId, DiscordChannel textChannel)
 		{
-			lock (textChannel)
+			lock (Lock(textChannel))
 			{
 				var cache = messages[textChannel];
 
 				var message = cache.Messages.Single(s => s.Id == msgId);
 				cache.Messages.Remove(message);
-				cache.MessageIds.Remove(msgId);
 				return message;
 			}
 		}
 
-		public IReadOnlyCollection<Message> GetMessages(TextChannelBase textChannel)
+		public IReadOnlyList<DiscordMessage> GetMessages(DiscordChannel textChannel)
 		{
-			lock (textChannel)
+			lock (Lock(textChannel))
 			{
 				return messages[textChannel].Messages;
 			}
 		}
 
-		public bool HasMessage(ulong id, TextChannelBase textChannel)
+		public bool HasMessage(ulong id, DiscordChannel textChannel)
 		{
-			lock (textChannel)
+			lock (Lock(textChannel))
 			{
-				messages[textChannel].MessageIds.Contains(id);
+				return messages[textChannel].Messages.Any(s => s.Id == id);
 			}
 		}
 
@@ -78,37 +71,41 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		/// <param name="textChannel"></param>
 		/// <returns></returns>
-		public Task InitChannelAsync(TextChannelBase textChannel)
+		public Task InitChannelAsync(DiscordChannel textChannel)
 		{
 			return Task.Run(() =>
 			{
-				lock (textChannel)
+				lock (Lock(textChannel))
 				{
 					messages.TryAdd(textChannel, new());
 					var cache = messages[textChannel];
 
-					var msgs = textChannel.BaseChannel.GetMessagesAsync(MessagesIdLimit).Result;
-					foreach (var item in msgs.Take(MessagesLimit))
-						AddMessage(new(item, textChannel, MessageConverter.ConvertDown(item)));
-					cache.MessageIds.AddRange(msgs.Skip(MessagesLimit).Select(s => s.Id));
+					var msgs = textChannel.GetMessagesAsync(MessagesLimit).Result;
+					foreach (var item in msgs)
+						AddMessage(item);
 				}
 			});
 		}
 
-		public void DeleteChannelCache(TextChannelBase textChannel)
+		public void DeleteChannelCache(DiscordChannel textChannel)
 		{
-			lock (textChannel)
+			lock (Lock(textChannel))
 			{
 				messages.Remove(textChannel);
 			}
 		}
 
-		public Message? GetReadyMessage(ulong id, TextChannelBase textChannelBase)
+		public DiscordMessage GetMessage(ulong id, DiscordChannel textChannel)
 		{
-			lock (textChannelBase)
+			lock (Lock(textChannel))
 			{
-				return messages[textChannelBase].Messages.SingleOrDefault(s => s.Id == id);
+				return messages[textChannel].Messages.Single(s => s.Id == id);
 			}
+		}
+
+		public object Lock(DiscordChannel textChannel)
+		{
+			return messages[textChannel].LockObject;
 		}
 
 
@@ -117,13 +114,13 @@ namespace DidiFrame.Clients.DSharp
 			public CacheItem()
 			{
 				Messages = new();
-				MessageIds = new();
+				LockObject = new();
 			}
 			
 
-			public List<Message> Messages { get; }
+			public List<DiscordMessage> Messages { get; }
 
-			public List<ulong> MessageIds { get; }
+			public object LockObject { get; }
 		}
 	}
 }

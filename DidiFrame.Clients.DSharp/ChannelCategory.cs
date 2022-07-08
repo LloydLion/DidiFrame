@@ -1,6 +1,8 @@
 ﻿using DidiFrame.Entities;
+using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
+using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -9,22 +11,24 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class ChannelCategory : IChannelCategory
 	{
-		private readonly DiscordChannel? category;
+		private readonly ObjectSourceDelegate<DiscordChannel>? category;
 		private readonly Server server;
 
 
 		/// <inheritdoc/>
-		public string? Name => category?.Name;
+		public string? Name => AccessBase()?.Name;
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IChannel> Channels =>
-			server.GetChannels().Where(s => s.Category == this).ToArray();
+		public IReadOnlyCollection<IChannel> Channels => server.GetChannels().Where(s => s.Category == this).ToArray();
 
 		/// <inheritdoc/>
-		public ulong? Id => category?.Id;
+		public ulong? Id { get; }
 
 		/// <inheritdoc/>
 		public IServer Server => server;
+
+		/// <inheritdoc/>
+		public bool IsExist => category is null || category.Invoke() is not null;
 
 
 		/// <summary>
@@ -33,12 +37,10 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="category">Base DiscordChannel that will be used as category</param>
 		/// <param name="server">Owner server wrap object</param>
 		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
-		public ChannelCategory(DiscordChannel category, Server server)
+		public ChannelCategory(ulong id, ObjectSourceDelegate<DiscordChannel> category, Server server)
 		{
-			if (category.GuildId != server.Id)
-				throw new ArgumentException("Base channel's server and transmited server wrap are different", nameof(server));
-
-				this.category = category;
+			Id = id;
+			this.category = category;
 			this.server = server;
 		}
 
@@ -48,6 +50,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="server">Owner server wrap object</param>
 		public ChannelCategory(Server server)
 		{
+			Id = null;
+			category = null;
 			this.server = server;
 		}
 
@@ -59,7 +63,20 @@ namespace DidiFrame.Clients.DSharp
 		public bool Equals(IChannelCategory? other) => other is ChannelCategory category && category.Id == Id;
 
 		/// <inheritdoc/>
-		public async Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel) =>
-			Channel.Construct(await server.SourceClient.DoSafeOperationAsync(() => server.Guild.CreateChannelAsync(creationModel.Name, creationModel.ChannelType.GetDSharp(), category)), server);
+		public async Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel)
+		{
+			var obj = AccessBase();
+			var channel = await server.SourceClient.DoSafeOperationAsync(() => server.Guild.CreateChannelAsync(creationModel.Name, creationModel.ChannelType.GetDSharp(), parent: obj));
+			return server.GetChannel(channel.Id);
+		}
+
+		private DiscordChannel? AccessBase([CallerMemberName] string nameOfCaller = "")
+		{
+			if (category is null) return null;
+			var obj = category();
+			if (obj is null)
+				throw new ObjectDoesNotExistException(nameOfCaller);
+			else return obj;
+		}
 	}
 }

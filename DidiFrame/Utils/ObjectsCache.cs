@@ -41,6 +41,8 @@
 
 			public new TObject GetObject(TKey key) => (TObject)base.GetObject(key);
 
+			public new TObject? GetNullableObject(TKey key) => (TObject?)base.GetNullableObject(key);
+
 			public IReadOnlyCollection<TObject> GetObjects() => (IReadOnlyCollection<TObject>)base.GetObjects();
 		}
 
@@ -81,6 +83,14 @@
 				lock (this)
 				{
 					return objects[key];
+				}
+			}
+
+			public object? GetNullableObject(TKey key)
+			{
+				lock (this)
+				{
+					return objects.ContainsKey(key) ? objects[key] : null;
 				}
 			}
 

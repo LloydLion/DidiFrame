@@ -8,7 +8,6 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class VoiceChannel : TextChannelBase, IVoiceChannel
 	{
-		private readonly DiscordChannel channel;
 		private readonly Server server;
 
 
@@ -19,19 +18,13 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="server">Owner server wrap object</param>
 		/// <exception cref="ArgumentException">If channel isn't voice</exception>
 		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
-		public VoiceChannel(DiscordChannel channel, Server server, ChannelMessagesCache cache) : base(channel, server, cache)
+		public VoiceChannel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : base(id, channel, server)
 		{
-			if (channel.Type.GetAbstract() != Entities.ChannelType.Voice)
-			{
-				throw new ArgumentException("Channel must be voice", nameof(channel));
-			}
-
-			this.channel = channel;
 			this.server = server;
 		}
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IMember> ConnectedMembers => channel.Users.Select(s => server.GetMember(s.Id)).ToArray();
+		public IReadOnlyCollection<IMember> ConnectedMembers => AccessBase().Users.Select(s => server.GetMember(s.Id)).ToArray();
 	}
 }

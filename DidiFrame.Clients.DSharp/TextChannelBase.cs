@@ -4,6 +4,7 @@ using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DidiFrame.Utils;
 using DSharpPlus.Entities;
+using System.Threading.Channels;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -12,9 +13,8 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class TextChannelBase : Channel, ITextChannelBase
 	{
-		private readonly DiscordChannel channel;
+		private readonly ObjectSourceDelegate<DiscordChannel> channel;
 		private readonly Server server;
-		private readonly ChannelMessagesCache cache;
 
 
 		/// <inheritdoc/>
@@ -31,84 +31,79 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="server">Owner server object wrap</param>
 		/// <exception cref="ArgumentException">If channel is not text (or text compatible)</exception>
 		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
-		public TextChannelBase(DiscordChannel channel, Server server, ChannelMessagesCache cache) : base(channel, server)
+		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : base(id, channel, server)
 		{
-			if (channel.Type.GetAbstract() != ChannelType.TextCompatible)
-			{
-				throw new ArgumentException("Channel must be text", nameof(channel));
-			}
-
 			this.channel = channel;
 			this.server = server;
-			this.cache = cache;
 		}
 
-		public TextChannelBase(DiscordChannel channel, Server server, ChannelMessagesCache cache, Func<ChannelCategory> targetCategoryGetter) : base(channel, server, targetCategoryGetter)
+		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server, ObjectSourceDelegate<ChannelCategory> targetCategory) : base(id, channel, server, targetCategory)
 		{
-			if (channel.Type.GetAbstract() != ChannelType.TextCompatible)
-			{
-				throw new ArgumentException("Channel must be text", nameof(channel));
-			}
-
 			this.channel = channel;
 			this.server = server;
-			this.cache = cache;
 		}
 
 
 		/// <inheritdoc/>
 		public IMessage GetMessage(ulong id)
 		{
-			if (IsExist == false)
-				throw new ObjectDoesNotExistException(nameof(GetMessage));
+			var obj = AccessBase();
 
-			if (cache.HasMessage(id, this) == false)
+			if (server.GetMessagesCache().HasMessage(id, obj) == false)
 				throw new ArgumentException("No such message with same id", nameof(id));
 
-			var msg = cache.GetReadyMessage(id, this);
-			if (msg is not null) return msg;
-			else
-			{
-				//If not exist throw
-				var discord = channel.GetMessageAsync(id).Result;
-				return new Message(discord, this, MessageConverter.ConvertDown(discord));
-			}
+			return new Message(id, () => server.GetMessagesCache().GetMessage(id, AccessBase()), this);
 		}
 
 		/// <inheritdoc/>
 		public IReadOnlyList<IMessage> GetMessages(int count = -1)
 		{
-			if (IsExist == false)
-				throw new ObjectDoesNotExistException(nameof(GetMessages));
+			var obj = AccessBase();
 
-			var messages = cache.GetMessages(this);
-			if (count == -1) return (IReadOnlyList<IMessage>)messages;
-			return messages.AsEnumerable().Reverse().Take(Math.Min(count, messages.Count)).ToArray();
+			var messages = server.GetMessagesCache().GetMessages(obj);
+			if (count == -1) return castCollection(messages);
+			else
+			{
+				var taken = messages.AsEnumerable().Reverse().Take(Math.Min(count, messages.Count)).ToArray();
+				return castCollection(taken);
+			}
+
+
+			IReadOnlyList<IMessage> castCollection(IReadOnlyList<DiscordMessage> messages)
+			{
+				return messages.Select(s =>
+				{
+					var id = s.Id;
+					return new Message(id, () => server.GetMessagesCache().GetMessage(id, AccessBase()), this);
+				}).ToArray();
+			}
 		}
 
 		/// <inheritdoc/>
 		public bool HasMessage(ulong id)
 		{
-			if (IsExist == false)
-				throw new ObjectDoesNotExistException(nameof(HasMessage));
-			return cache.HasMessage(id, this);
+			var obj = AccessBase();
+			return server.GetMessagesCache().HasMessage(id, obj);
 		}
 
 
 		/// <inheritdoc/>
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
-			if (IsExist == false)
-				throw new ObjectDoesNotExistException(nameof(HasMessage));
+			var obj = AccessBase();
 
 			var builder = MessageConverter.ConvertUp(messageSendModel);
 
 			var msg = await server.SourceClient.DoSafeOperationAsync(async () =>
 			{
-				return new Message(owner: this, sendModel: messageSendModel, message: await channel.SendMessageAsync(builder));
+				var msg = await obj.SendMessageAsync(builder);
+				server.CacheMessage(msg);
+				return server.GetMessagesCache().GetMessage(msg.Id, obj);
 			}, new(Client.ChannelName, Id, Name));
 
-			return msg;
+
+			var id = msg.Id;
+			return new Message(id, () => server.GetMessagesCache().GetMessage(id, AccessBase()), this);
 		}
 	}
 }

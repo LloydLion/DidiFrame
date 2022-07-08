@@ -38,6 +38,6 @@
 		/// <returns>Wait task</returns>
 		Task SendDirectMessageAsync(MessageSendModel model);
 
-		Task<bool> GetIsUserExist();
+		Task<bool> GetIsUserExistAsync();
 	}
 }

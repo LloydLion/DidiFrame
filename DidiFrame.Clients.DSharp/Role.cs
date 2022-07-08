@@ -2,12 +2,7 @@
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -16,7 +11,7 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class Role : IRole
 	{
-		private DiscordRole role;
+		private readonly ObjectSourceDelegate<DiscordRole> role;
 		private readonly Server server;
 
 
@@ -25,32 +20,22 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		/// <param name="role">Base DiscordRole from DSharp</param>
 		/// <param name="server">Base server object wrap</param>
-		public Role(DiscordRole role, Server server)
+		public Role(ulong id, ObjectSourceDelegate<DiscordRole> role, Server server)
 		{
+			Id = id;
 			this.role = role;
 			this.server = server;
 		}
 
 
 		/// <inheritdoc/>
-		public Permissions Permissions => role.Permissions.GetAbstract();
+		public Permissions Permissions => AccessBase().Permissions.GetAbstract();
 
 		/// <inheritdoc/>
-		public string Name
-		{
-			get
-			{
-				lock (this)
-				{
-					if (IsExist == false)
-						throw new ObjectDoesNotExistException(nameof(Name));
-					return role.Name;
-				}
-			}
-		}
+		public string Name => AccessBase().Name;
 
 		/// <inheritdoc/>
-		public ulong Id => role.Id;
+		public ulong Id { get; }
 
 		/// <inheritdoc/>
 		public IServer Server => server;
@@ -58,21 +43,10 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Base discord role from DSharp
 		/// </summary>
-		public DiscordRole BaseRole
-		{
-			get
-			{
-				lock (this)
-				{
-					if (IsExist == false)
-						throw new ObjectDoesNotExistException(nameof(BaseRole));
-					return role;
-				}
-			}
-		}
+		public DiscordRole BaseRole => AccessBase();
 
 		/// <inheritdoc/>
-		public bool IsExist => server.HasRole(this);
+		public bool IsExist => role() is not null;
 
 
 		/// <inheritdoc/>
@@ -87,15 +61,12 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public override int GetHashCode() => Id.GetHashCode();
 
-		internal void ModifyInternal(DiscordRole role)
+		private DiscordRole AccessBase([CallerMemberName] string nameOfCaller = "")
 		{
-			if (this.role.Id != role.Id)
-				throw new InvalidOperationException("This operation can't modify id of model");
-
-			lock (this)
-			{
-				this.role = role;
-			}
+			var obj = role();
+			if (obj is null)
+				throw new ObjectDoesNotExistException(nameOfCaller);
+			else return obj;
 		}
 	}
 }
