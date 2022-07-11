@@ -77,5 +77,7 @@
 		/// Id of the server
 		/// </summary>
 		public ulong Id { get; }
+
+		public bool IsClosed { get; }
 	}
 }

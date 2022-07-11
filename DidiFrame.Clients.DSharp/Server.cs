@@ -7,6 +7,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using System.Threading.Channels;
 
 namespace DidiFrame.Clients.DSharp
@@ -45,7 +46,7 @@ namespace DidiFrame.Clients.DSharp
 
 
 		/// <inheritdoc/>
-		public string Name => guild.Name;
+		public string Name => AccessBase().Name;
 
 		/// <inheritdoc/>
 		public IClient Client => client;
@@ -56,13 +57,26 @@ namespace DidiFrame.Clients.DSharp
 		public Client SourceClient => client;
 
 		/// <inheritdoc/>
-		public ulong Id => guild.Id;
+		public ulong Id => AccessBase().Id;
 
 		/// <summary>
 		/// Base DiscordGuild from DSharp
 		/// </summary>
-		public DiscordGuild Guild => guild;
+		public DiscordGuild Guild => AccessBase();
 
+		public bool IsClosed { get; private set; }
+
+
+		public void CacheChannel(DiscordChannel channel)
+		{
+			var frame = serverCache.GetFrame<DiscordChannel>();
+			lock (frame)
+			{
+				if (frame.HasObject(channel.Id))
+					frame.DeleteObject(channel.Id);
+				frame.AddObject(channel.Id, channel);
+			}
+		}
 
 		public void CacheMessage(DiscordMessage message)
 		{
@@ -118,11 +132,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
 
-		//public bool HasChannel(IChannel channel) => threadsAndChannels.HasChannel(channel.Id);
-
-		//public bool HasMember(IMember member) => serverCache.GetFrame<Member>().HasObject(member.Id);
-
-		//public bool HasRole(IRole member) => serverCache.GetFrame<Role>().HasObject(member.Id);
+		private DiscordGuild AccessBase([CallerMemberName] string nameOfCaller = "") =>
+			IsClosed ? throw new ObjectDoesNotExistException(nameOfCaller) : guild;
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Server);
@@ -154,6 +165,8 @@ namespace DidiFrame.Clients.DSharp
 
 			cts.Cancel();
 			globalCacheUpdateTask.Wait();
+
+			IsClosed = true;
 
 			GC.SuppressFinalize(this);
 		}
@@ -289,6 +302,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 			if (e.Message.MessageType != MessageType.Default) return Task.CompletedTask;
+			if (e.Message.Author.Id == client.SelfAccount.Id) return Task.CompletedTask;
 
 			lock (messages.Lock(e.Channel))
 			{
@@ -349,6 +363,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 			if (e.Message.MessageType != MessageType.Default) return Task.CompletedTask;
+			if (e.Message.Author.Id == client.SelfAccount.Id) return Task.CompletedTask;
 
 			lock (messages.Lock(e.Channel))
 			{
@@ -391,6 +406,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 			if (e.Message.MessageType != MessageType.Default) return Task.CompletedTask;
+			if (e.Message.Author.Id == client.SelfAccount.Id) return Task.CompletedTask;
 
 			lock (messages.Lock(e.Channel))
 			{
@@ -416,6 +432,8 @@ namespace DidiFrame.Clients.DSharp
 
 			void update() => client.DoSafeOperation(() =>
 				{
+					var guild = AccessBase(nameof(CreateServerCacheUpdateTask));
+
 					var memebersFrame = serverCache.GetFrame<DiscordMember>();
 					lock (memebersFrame)
 					{
@@ -447,32 +465,30 @@ namespace DidiFrame.Clients.DSharp
 					var channelsFrame = serverCache.GetFrame<DiscordChannel>();
 					lock (channelsFrame)
 					{
-						lock (threads)
-						{
-							var newData = guild.GetChannelsAsync().Result;
+						var newData = guild.GetChannelsAsync().Result;
 
-							var from = newData.ToDictionary(s => s.Id);
-							var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channelsFrame.GetObjects(), s => s.Id, s => s.Id);
-							foreach (var item in difference.CalculateDifference())
-								if (item.Type == CollectionDifference<DiscordChannel, DiscordChannel, ulong>.OperationType.Add)
-								{
-									var channel = from[item.Key];
-									channelsFrame.AddObject(item.Key, channel);
+						var from = newData.ToDictionary(s => s.Id);
+						var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channelsFrame.GetObjects(), s => s.Id, s => s.Id);
+						foreach (var item in difference.CalculateDifference())
+							if (item.Type == CollectionDifference<DiscordChannel, DiscordChannel, ulong>.OperationType.Add)
+							{
+								var channel = from[item.Key];
+								channelsFrame.AddObject(item.Key, channel);
+							}
+							else channelsFrame.DeleteObject(item.Key);
+					}
 
-									//Load threads
-									var type = channel.Type.GetAbstract();
-									if (type == Entities.ChannelType.TextCompatible)
-									{
-										var newThreads = channel.Threads.ToDictionary(s => s.Id);
-										var threadDiff = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(newThreads.Values, threads.GetThreadsFor(channel), s => s.Id, s => s.Id);
-										foreach (var diff in threadDiff.CalculateDifference())
-											if (diff.Type == CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>.OperationType.Add)
-												threads.AddThread(newThreads[diff.Key]);
-											else threads.RemoveThread(diff.Key);
-									}
-								}
-								else channelsFrame.DeleteObject(item.Key);
-						}
+					lock (threads)
+					{
+						var from = guild.ListActiveThreadsAsync().Result.Threads.ToDictionary(s => s.Id);
+						var difference = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(from.Values.ToArray(), threads.GetThreads(), s => s.Id, s => s.Id);
+						foreach (var item in difference.CalculateDifference())
+							if (item.Type == CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>.OperationType.Add)
+							{
+								var thread = from[item.Key];
+								threads.AddThread(thread);
+							}
+							else threads.RemoveThread(item.Key);
 					}
 				});
 		}

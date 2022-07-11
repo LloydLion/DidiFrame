@@ -44,6 +44,7 @@ namespace DidiFrame.Clients.DSharp
 		public Member(ulong id, ObjectSourceDelegate<DiscordMember> member, Server server) : base(id, member, server.SourceClient)
 		{
 			baseServer = server;
+			this.member = member;
 		}
 
 

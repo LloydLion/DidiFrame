@@ -67,6 +67,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			var obj = AccessBase();
 			var channel = await server.SourceClient.DoSafeOperationAsync(() => server.Guild.CreateChannelAsync(creationModel.Name, creationModel.ChannelType.GetDSharp(), parent: obj));
+			server.CacheChannel(channel);
 			return server.GetChannel(channel.Id);
 		}
 

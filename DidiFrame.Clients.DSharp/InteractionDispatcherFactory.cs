@@ -3,18 +3,18 @@ using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.EventArgs;
 using DSharpPlus;
+using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp
 {
 	internal class InteractionDispatcherFactory
 	{
-		private readonly Server server;
 		private readonly Dictionary<ulong, List<EventHolder>> subs = new();
 
 
 		public InteractionDispatcherFactory(Server server)
 		{
-			this.server = server;
+			server.SourceClient.BaseClient.ComponentInteractionCreated += InteractionCreated;
 		}
 
 
@@ -38,23 +38,49 @@ namespace DidiFrame.Clients.DSharp
 		{
 			lock (this)
 			{
-				if (server.Client.SelfAccount.Id != message.Author.Id)
-					throw new ArgumentException("Enable to create InteractionDispatcher if message sent not by bot");
-				if (subs.ContainsKey(message.Id)) subs.Add(message.Id, new());
+				//if (server.Client.SelfAccount.Id != message.Author.Id)
+				//	throw new ArgumentException("Enable to create InteractionDispatcher if message sent not by bot");
+				if (!subs.ContainsKey(message.Id)) subs.Add(message.Id, new());
 				var list = subs[message.Id];
-				return new Instance(message, list);
+				return new Instance(this, message, list);
+			}
+		}
+
+		private Task InteractionCreated(DiscordClient client, ComponentInteractionCreateEventArgs args)
+		{
+			lock (this)
+			{
+				if (!subs.ContainsKey(args.Message.Id))
+					return Task.CompletedTask;
+
+				foreach (var item in subs[args.Message.Id])
+				{
+					var result = item.Handle(args);
+					if (result is null) continue;
+					else
+					{
+						args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+							new DiscordInteractionResponseBuilder(MessageConverter.ConvertUp(result.Result.Respond)).AsEphemeral()).Wait();
+
+						break;
+					}
+				}
+
+				return Task.CompletedTask;
 			}
 		}
 
 
 		private class Instance : IInteractionDispatcher
 		{
+			private readonly object syncRoot;
 			private readonly Message message;
 			private readonly List<EventHolder> holders;
 
 
-			public Instance(Message message, List<EventHolder> holders)
+			public Instance(object syncRoot, Message message, List<EventHolder> holders)
 			{
+				this.syncRoot = syncRoot;
 				this.message = message;
 				this.holders = holders;
 			}
@@ -62,12 +88,18 @@ namespace DidiFrame.Clients.DSharp
 
 			public void Attach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent
 			{
-				holders.Add(new EventHolder<TComponent>(message, id, callback));
+				lock (syncRoot)
+				{
+					holders.Add(new EventHolder<TComponent>(message, id, callback));
+				}
 			}
 
 			public void Detach<TComponent>(string id, AsyncInteractionCallback<TComponent> callback) where TComponent : IInteractionComponent
 			{
-				holders.RemoveAll(s => s is EventHolder<TComponent> ev && (ev.Id, ev.Callback) == (id, callback));
+				lock (syncRoot)
+				{
+					holders.RemoveAll(s => s is EventHolder<TComponent> ev && (ev.Id, ev.Callback) == (id, callback));
+				}
 			}
 		}
 

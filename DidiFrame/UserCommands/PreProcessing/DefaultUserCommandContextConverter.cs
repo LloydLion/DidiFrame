@@ -55,37 +55,36 @@ namespace DidiFrame.UserCommands.PreProcessing
 			{
 				if (failture) return null;
 
-				if (s.Value[0].GetType().IsAssignableTo(s.Key.TargetType) && s.Value.Count == 1) //Simple argument case
-				{
-					return new UserCommandContext.ArgumentValue(s.Key, s.Value[0], s.Value);
-				}
-				else if (s.Key.IsArray && (s.Key.TargetType.GetElementType()?.IsAssignableFrom(s.Value[0].GetType()) ?? throw new ImpossibleVariantException())) //Array case
+				if (s.Key.IsArray) //Array case
 				{
 					var newArray = (IList)(Activator.CreateInstance(s.Key.TargetType, s.Value.Count) ?? throw new ImpossibleVariantException());
 					for (int i = 0; i < s.Value.Count; i++) newArray[i] = s.Value[i];
 					return new UserCommandContext.ArgumentValue(s.Key, newArray, s.Value);
 				}
-				else if (s.Key.IsArray == false) //Complex non-array argument case
+				else //Non-array case
 				{
-					var converter = GetSubConverter(s.Key.TargetType);
-					var convertationResult = converter.Convert(services, preCtx, s.Value, pipelineContext.LocalServices);
-					if (convertationResult.IsSuccessful == false)
+					if (s.Value[0].GetType().IsAssignableTo(s.Key.TargetType) && s.Value.Count == 1) //Simple argument case
 					{
-						convertationResult.DeconstructAsFailture(out var localeKey, out var code);
-
-						var cmdLocalizer = preCtx.Command.AdditionalInfo.GetExtension<IStringLocalizer>();
-						var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{preCtx.Command.Name}.{s.Key.Name}:{localeKey}"];
-						var msgContent = localizer["ConvertationErrorMessage", arg];
-
-						pipelineContext.FinalizePipeline(new UserCommandResult(code) { RespondMessage = new MessageSendModel(msgContent) });
-						failture = true;
-						return null;
+						return new UserCommandContext.ArgumentValue(s.Key, s.Value[0], s.Value);
 					}
-					else return new UserCommandContext.ArgumentValue(s.Key, convertationResult.DeconstructAsSuccess(), s.Value);
-				}
-				else //Complex array case (disallowed)
-				{
-					throw new ArgumentException("Command contains argument with complex type array");
+					else //Complex non-array argument case
+					{
+						var converter = GetSubConverter(s.Key.TargetType);
+						var convertationResult = converter.Convert(services, preCtx, s.Value, pipelineContext.LocalServices);
+						if (convertationResult.IsSuccessful == false)
+						{
+							convertationResult.DeconstructAsFailture(out var localeKey, out var code);
+
+							var cmdLocalizer = preCtx.Command.AdditionalInfo.GetExtension<IStringLocalizer>();
+							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{preCtx.Command.Name}.{s.Key.Name}:{localeKey}"];
+							var msgContent = localizer["ConvertationErrorMessage", arg];
+
+							pipelineContext.FinalizePipeline(new UserCommandResult(code) { RespondMessage = new MessageSendModel(msgContent) });
+							failture = true;
+							return null;
+						}
+						else return new UserCommandContext.ArgumentValue(s.Key, convertationResult.DeconstructAsSuccess(), s.Value);
+					}
 				}
 			});
 
