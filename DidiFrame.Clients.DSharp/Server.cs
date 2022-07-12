@@ -19,13 +19,14 @@ namespace DidiFrame.Clients.DSharp
 	{
 		private readonly DiscordGuild guild;
 		private readonly Client client;
+		private readonly Options options;
 		private readonly Task globalCacheUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 
 		private readonly ThreadsChannelsCollection threadsAndChannels;
 		private readonly ChannelCategory globalCategory;
 		private readonly ObjectsCache<ulong> serverCache = new();
-		private readonly ChannelMessagesCache messages = new();
+		private readonly ChannelMessagesCache messages;
 		private readonly TextChannelThreadsCache threads;
 		private readonly InteractionDispatcherFactory dispatcherFactory;
 
@@ -64,6 +65,7 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		public DiscordGuild Guild => AccessBase();
 
+		/// <inheritdoc/>
 		public bool IsClosed { get; private set; }
 
 
@@ -97,7 +99,7 @@ namespace DidiFrame.Clients.DSharp
 			return channelThreads.Select(s =>
 			{
 				var threadId = s.Id;
-				return new TextThread(threadId, channel, () => threads.GetThread(threadId), this, () => (ChannelCategory?)channel.Category);
+				return new TextThread(threadId, channel, () => threads.GetNullableThread(threadId), this, () => (ChannelCategory?)channel.Category);
 			}).ToArray();
 		}
 
@@ -160,8 +162,8 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.GuildMemberUpdated -= OnMemberUpdated;
 			client.BaseClient.GuildRoleUpdated -= OnRoleUpdated;
 			client.BaseClient.ChannelUpdated -= OnChannelUpdated;
-			client.BaseClient.ThreadUpdated -= OnThreadUpdated;
 			client.BaseClient.MessageUpdated -= OnMessageUpdated;
+			client.BaseClient.ThreadUpdated -= OnThreadUpdated;
 
 			cts.Cancel();
 			globalCacheUpdateTask.Wait();
@@ -177,12 +179,14 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		/// <param name="guild">Base DiscordGuild from DSharp</param>
 		/// <param name="client">Owner client object</param>
-		public Server(DiscordGuild guild, Client client)
+		public Server(DiscordGuild guild, Client client, Options options)
 		{
 			this.guild = guild;
 			this.client = client;
+			this.options = options;
 			globalCategory = new(this);
 			dispatcherFactory = new(this);
+			messages = new(this, options.MessageCache.CachePolicy, options.MessageCache.CacheSize);
 
 
 			threads = new(
@@ -194,10 +198,11 @@ namespace DidiFrame.Clients.DSharp
 			(thread) =>
 			{
 				messages.DeleteChannelCache(thread);
-			});
+			}, options.ThreadCache);
 
 			serverCache.SetRemoveActionHandler<DiscordChannel>((id, channel) =>
 			{
+				if (channel.IsCategory) return;
 				var type = channel.Type.GetAbstract();
 				if (type == Entities.ChannelType.TextCompatible || type == Entities.ChannelType.Voice)
 					messages.DeleteChannelCache(channel);
@@ -207,15 +212,11 @@ namespace DidiFrame.Clients.DSharp
 
 			serverCache.SetAddActionHandler<DiscordChannel>((id, channel) =>
 			{
+				if (channel.IsCategory) return;
 				var type = channel.Type.GetAbstract();
 				if (type == Entities.ChannelType.TextCompatible || type == Entities.ChannelType.Voice)
 					messages.InitChannelAsync(channel).Wait();
 			});
-
-			messages.MessageDeleted += (msg) =>
-			{
-				dispatcherFactory.DisposeInstance(msg.Id);
-			};
 
 			threadsAndChannels = new(serverCache.GetFrame<DiscordChannel>(), threads, this);
 
@@ -368,9 +369,10 @@ namespace DidiFrame.Clients.DSharp
 			lock (messages.Lock(e.Channel))
 			{
 				var channel = (TextChannelBase)GetChannel(e.Message.ChannelId);
-				var deletedMsg = messages.DeleteMessage(e.Message.Id, e.Channel);
+				messages.DeleteMessage(e.Message.Id, e.Channel);
+				dispatcherFactory.DisposeInstance(e.Message.Id);
 				client.CultureProvider.SetupCulture(this);
-				SourceClient.OnMessageDeleted(new Message(e.Message.Id, () => deletedMsg, channel));
+				SourceClient.OnMessageDeleted(new Message(e.Message.Id, () => e.Message, channel));
 			}
 			return Task.CompletedTask;
 		}
@@ -476,19 +478,21 @@ namespace DidiFrame.Clients.DSharp
 								channelsFrame.AddObject(item.Key, channel);
 							}
 							else channelsFrame.DeleteObject(item.Key);
-					}
 
-					lock (threads)
-					{
-						var from = guild.ListActiveThreadsAsync().Result.Threads.ToDictionary(s => s.Id);
-						var difference = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(from.Values.ToArray(), threads.GetThreads(), s => s.Id, s => s.Id);
-						foreach (var item in difference.CalculateDifference())
-							if (item.Type == CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>.OperationType.Add)
-							{
-								var thread = from[item.Key];
-								threads.AddThread(thread);
-							}
-							else threads.RemoveThread(item.Key);
+						lock (threads)
+						{
+							var archivedThreads = channelsFrame.GetObjects().SelectMany(s => s.ListPublicArchivedThreadsAsync().Result.Threads.Concat(s.ListPrivateArchivedThreadsAsync().Result.Threads));
+							var activeThreads = guild.ListActiveThreadsAsync().Result.Threads;
+							var fromT = (options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? activeThreads.Concat(archivedThreads) : activeThreads).ToDictionary(s => s.Id);
+							var differenceT = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(fromT.Values.ToArray(), threads.GetThreads(), s => s.Id, s => s.Id);
+							foreach (var item in differenceT.CalculateDifference())
+								if (item.Type == CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>.OperationType.Add)
+								{
+									var thread = fromT[item.Key];
+									threads.AddThread(thread);
+								}
+								else threads.RemoveThread(item.Key);
+						}
 					}
 				});
 		}
@@ -518,11 +522,12 @@ namespace DidiFrame.Clients.DSharp
 				{
 					lock (threads)
 					{
-						foreach (var item in channels.GetObjects())
+						foreach (var item in channels.GetObjects().Where(s => !s.IsCategory))
 						{
 							var id = item.Id;
-							yield return Channel.Construct(id, () => channels.GetNullableObject(id), server);
+							yield return Channel.Construct(id, item.Type.GetAbstract(), () => channels.GetNullableObject(id), server);
 						}
+
 						foreach (var item in threads.GetThreads())
 						{
 							var id = item.Id;
@@ -540,12 +545,14 @@ namespace DidiFrame.Clients.DSharp
 					lock (threads)
 					{
 						if (channels.HasObject(id))
-							return Channel.Construct(id, () => channels.GetNullableObject(id), server);
-						else
+							return Channel.Construct(id, channels.GetObject(id).Type.GetAbstract(), () => channels.GetNullableObject(id), server);
+						else if (threads.HasThread(id))
 						{
+							var categoryId = threads.GetThread(id).Parent.ParentId;
 							var parentId = threads.GetThread(id).Parent.Id;
-							return new TextThread(id, (TextChannel)server.GetChannel(parentId), () => threads.GetThread(id), server, () => (ChannelCategory?)server.GetChannel(parentId).Category);
+							return new TextThread(id, (TextChannel)server.GetChannel(parentId), () => threads.GetThread(id), server, () => (ChannelCategory?)server.GetCategory(categoryId));
 						}
+						else return new NullChannel(id);
 					}
 				}
 			}
@@ -609,17 +616,21 @@ namespace DidiFrame.Clients.DSharp
 			private readonly Dictionary<ulong, DiscordThreadChannel> threads = new();
 			private readonly Action<DiscordThreadChannel> addAction;
 			private readonly Action<DiscordThreadChannel> removeAction;
+			private readonly Options.ThreadCacheBehavior cacheBehavior;
 
 
-			public TextChannelThreadsCache(Action<DiscordThreadChannel> addAction, Action<DiscordThreadChannel> removeAction)
+			public TextChannelThreadsCache(Action<DiscordThreadChannel> addAction, Action<DiscordThreadChannel> removeAction, Options.ThreadCacheBehavior cacheBehavior)
 			{
 				this.addAction = addAction;
 				this.removeAction = removeAction;
+				this.cacheBehavior = cacheBehavior;
 			}
 
 
 			public void AddThread(DiscordThreadChannel thread)
 			{
+				if (cacheBehavior == Options.ThreadCacheBehavior.CacheActive && thread.ThreadMetadata.IsArchived) return;
+
 				lock (this)
 				{
 					threads.Add(thread.Id, thread);
@@ -641,7 +652,16 @@ namespace DidiFrame.Clients.DSharp
 			{
 				lock (this)
 				{
+					if (threads[threadId].ThreadMetadata.IsArchived && cacheBehavior == Options.ThreadCacheBehavior.CacheActive) threads.Remove(threadId);
 					return threads[threadId];
+				}
+			}
+			
+			public DiscordThreadChannel? GetNullableThread(ulong threadId)
+			{
+				lock (this)
+				{
+					return threads.ContainsKey(threadId) ? threads[threadId] : null;
 				}
 			}
 
@@ -674,7 +694,7 @@ namespace DidiFrame.Clients.DSharp
 					var toRet = new List<DiscordThreadChannel>();
 
 					foreach (var item in threads.Values)
-						if (item.Parent == channel)
+						if (item.Parent == channel && (!item.ThreadMetadata.IsArchived || cacheBehavior != Options.ThreadCacheBehavior.CacheActive))
 							toRet.Add(item);
 
 					return toRet;
@@ -692,31 +712,49 @@ namespace DidiFrame.Clients.DSharp
 
 		private class CategoriesCollection : IReadOnlyCollection<ChannelCategory>
 		{
-			private readonly ChannelCategory globalCategory;
 			private readonly IReadOnlyCollection<ChannelCategory> categories;
 
 
-			public int Count => categories.Count + 1;
+			public int Count => categories.Count;
 
 
 			public CategoriesCollection(ObjectsCache<ulong>.Frame<DiscordChannel> frame, ChannelCategory globalCategory, Server server)
 			{
-				this.globalCategory = globalCategory;
-				categories = frame.GetObjects().Select(s =>
+				categories = frame.GetObjects().Where(s => s.IsCategory).Select(s =>
 				{
 					var id = s.Id;
 					return new ChannelCategory(id, () => frame.GetNullableObject(id), server);
-				}).ToArray();
+				}).Append(globalCategory).ToArray();
 			}
 
 
 			public IEnumerator<ChannelCategory> GetEnumerator()
 			{
 				foreach (var item in categories) yield return item;
-				yield return globalCategory;
 			}
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+		}
+
+		public class Options
+		{
+			public MessageCacheOptions MessageCache { get; set; } = new();
+
+			public ThreadCacheBehavior ThreadCache { get; set; } = ThreadCacheBehavior.CacheActive;
+
+
+			public class MessageCacheOptions
+			{
+				public int CacheSize { get; set; } = 25;
+
+				public ChannelMessagesCache.CachePolicy CachePolicy { get; set; } = ChannelMessagesCache.CachePolicy.EnableForAll;
+			}
+
+			public enum ThreadCacheBehavior
+			{
+				CacheAll,
+				CacheActive
+			}
 		}
 	}
 }

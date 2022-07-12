@@ -84,12 +84,9 @@ namespace DidiFrame.Clients.DSharp
 
 
 		/// <inheritdoc/>
-		public static Channel Construct(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server)
+		public static Channel Construct(ulong id, ChannelType? type, ObjectSourceDelegate<DiscordChannel> channel, Server server)
 		{
-			var nowChannel = channel();
-			if (nowChannel is null) return new Channel(id, channel, server);
-
-			return nowChannel.Type.GetAbstract() switch
+			return type switch
 			{
 				ChannelType.TextCompatible => new TextChannel(id, channel, server),
 				ChannelType.Voice => new VoiceChannel(id, channel, server),

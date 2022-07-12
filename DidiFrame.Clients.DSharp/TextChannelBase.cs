@@ -56,18 +56,11 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 		/// <inheritdoc/>
-		public IReadOnlyList<IMessage> GetMessages(int count = -1)
+		public IReadOnlyList<IMessage> GetMessages(int count = 25)
 		{
 			var obj = AccessBase();
 
-			var messages = server.GetMessagesCache().GetMessages(obj);
-			if (count == -1) return castCollection(messages);
-			else
-			{
-				var taken = messages.AsEnumerable().Reverse().Take(Math.Min(count, messages.Count)).ToArray();
-				return castCollection(taken);
-			}
-
+			return castCollection(server.GetMessagesCache().GetMessages(obj, count));
 
 			IReadOnlyList<IMessage> castCollection(IReadOnlyList<DiscordMessage> messages)
 			{
@@ -101,9 +94,8 @@ namespace DidiFrame.Clients.DSharp
 				return server.GetMessagesCache().GetMessage(msg.Id, obj);
 			}, new(Client.ChannelName, Id, Name));
 
-
 			var id = msg.Id;
-			return new Message(id, () => server.GetMessagesCache().GetMessage(id, AccessBase()), this);
+			return new Message(id, () => server.GetMessagesCache().GetNullableMessage(id, AccessBase()), this);
 		}
 	}
 }

@@ -30,6 +30,7 @@ namespace DidiFrame.Clients.DSharp
 		private readonly List<Server> servers = new();
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
+		private readonly Options options;
 		private readonly ILogger<Client> logger;
 		private readonly Lazy<IUser> selfAccount;
 
@@ -68,12 +69,12 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>
 		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null)
 		{
-			var opt = options.Value;
+			this.options = options.Value;
 			logger = factory.CreateLogger<Client>();
 
 			client = new DiscordClient(new DiscordConfiguration
 			{
-				Token = opt.Token,
+				Token = options.Value.Token,
 				AutoReconnect = true,
 				HttpTimeout = new TimeSpan(0, 1, 0),
 				TokenType = TokenType.Bot,
@@ -155,7 +156,7 @@ namespace DidiFrame.Clients.DSharp
 						servers.Add(maybe);
 						temp.Remove(maybe);
 					}
-					else servers.Add(new Server(server.Value, this));
+					else servers.Add(new Server(server.Value, this, options.ServerOptions));
 				}
 
 				foreach (var item in temp) item.Dispose();
@@ -356,6 +357,8 @@ namespace DidiFrame.Clients.DSharp
 			/// Discord's bot token, see discord documentation
 			/// </summary>
 			public string Token { get; set; } = "";
+
+			public Server.Options ServerOptions { get; set; } = new();
 		}
 
 
