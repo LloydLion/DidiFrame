@@ -186,7 +186,8 @@ namespace DidiFrame.Clients.DSharp
 			this.options = options;
 			globalCategory = new(this);
 			dispatcherFactory = new(this);
-			messages = new(this, options.MessageCache.CachePolicy, options.MessageCache.CacheSize);
+			messages = new(this, options.MessageCache.CachePolicy, options.MessageCache.CacheSize,
+				options.MessageCache.PreloadPolicy, options.MessageCache.MessagesPrealodCount);
 
 
 			threads = new(
@@ -747,7 +748,11 @@ namespace DidiFrame.Clients.DSharp
 			{
 				public int CacheSize { get; set; } = 25;
 
-				public ChannelMessagesCache.CachePolicy CachePolicy { get; set; } = ChannelMessagesCache.CachePolicy.EnableForAll;
+				public ChannelMessagesCache.CachePolicy CachePolicy { get; set; } = ChannelMessagesCache.CachePolicy.CacheAll;
+
+				public int MessagesPrealodCount { get; set; } = -1;
+
+				public ChannelMessagesCache.MessagesPreloadingPolicy PreloadPolicy { get; set; } = ChannelMessagesCache.MessagesPreloadingPolicy.CacheFull;
 			}
 
 			public enum ThreadCacheBehavior
