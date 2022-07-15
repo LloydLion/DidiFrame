@@ -26,7 +26,7 @@ namespace DidiFrame.Clients.DSharp
 		private readonly ThreadsChannelsCollection threadsAndChannels;
 		private readonly ChannelCategory globalCategory;
 		private readonly ObjectsCache<ulong> serverCache = new();
-		private readonly ChannelMessagesCache messages;
+		private readonly IChannelMessagesCache messages;
 		private readonly TextChannelThreadsCache threads;
 		private readonly InteractionDispatcherFactory dispatcherFactory;
 
@@ -90,7 +90,7 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
-		public ChannelMessagesCache GetMessagesCache() => messages;
+		public IChannelMessagesCache GetMessagesCache() => messages;
 
 		public IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel)
 		{
@@ -179,15 +179,14 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		/// <param name="guild">Base DiscordGuild from DSharp</param>
 		/// <param name="client">Owner client object</param>
-		public Server(DiscordGuild guild, Client client, Options options)
+		public Server(DiscordGuild guild, Client client, Options options, IChannelMessagesCache messagesCache)
 		{
 			this.guild = guild;
 			this.client = client;
 			this.options = options;
 			globalCategory = new(this);
 			dispatcherFactory = new(this);
-			messages = new(this, options.MessageCache.CachePolicy, options.MessageCache.CacheSize,
-				options.MessageCache.PreloadPolicy, options.MessageCache.MessagesPrealodCount);
+			messages = messagesCache;
 
 
 			threads = new(
@@ -739,21 +738,8 @@ namespace DidiFrame.Clients.DSharp
 
 		public class Options
 		{
-			public MessageCacheOptions MessageCache { get; set; } = new();
-
 			public ThreadCacheBehavior ThreadCache { get; set; } = ThreadCacheBehavior.CacheActive;
 
-
-			public class MessageCacheOptions
-			{
-				public int CacheSize { get; set; } = 25;
-
-				public ChannelMessagesCache.CachePolicy CachePolicy { get; set; } = ChannelMessagesCache.CachePolicy.CacheAll;
-
-				public int MessagesPrealodCount { get; set; } = -1;
-
-				public ChannelMessagesCache.MessagesPreloadingPolicy PreloadPolicy { get; set; } = ChannelMessagesCache.MessagesPreloadingPolicy.CacheFull;
-			}
 
 			public enum ThreadCacheBehavior
 			{

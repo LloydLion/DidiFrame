@@ -30,9 +30,11 @@ namespace DidiFrame.Clients.DSharp
 		private readonly List<Server> servers = new();
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
-		private readonly Options options;
 		private readonly ILogger<Client> logger;
 		private readonly Lazy<IUser> selfAccount;
+		private readonly Options options;
+		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
+
 
 		/// <inheritdoc/>
 		public event MessageSentEventHandler? MessageSent;
@@ -67,7 +69,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="options">Configuration of DSharp client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>
-		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null)
+		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null, IChannelMessagesCacheFactory? messagesCacheFactory = null)
 		{
 			this.options = options.Value;
 			logger = factory.CreateLogger<Client>();
@@ -85,6 +87,8 @@ namespace DidiFrame.Clients.DSharp
 			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
 			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
 			Services = servicesForExtensions;
+			this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
+				?? throw new ArgumentException("Cache options can't be null if no custom messages cache factory provided", nameof(options)));
 		}
 
 		//Must be invoked from Server objects
@@ -156,7 +160,7 @@ namespace DidiFrame.Clients.DSharp
 						servers.Add(maybe);
 						temp.Remove(maybe);
 					}
-					else servers.Add(new Server(server.Value, this, options.ServerOptions));
+					else servers.Add(new Server(server.Value, this, options.ServerOptions, messagesCacheFactory.Create(server.Value, this)));
 				}
 
 				foreach (var item in temp) item.Dispose();
@@ -359,6 +363,8 @@ namespace DidiFrame.Clients.DSharp
 			public string Token { get; set; } = "";
 
 			public Server.Options ServerOptions { get; set; } = new();
+
+			public ChannelMessagesCache.Options? CacheOptions { get; set; } = new();
 		}
 
 

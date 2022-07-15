@@ -1,36 +1,37 @@
 ﻿using DidiFrame.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
+using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DidiFrame.Clients.DSharp
 {
-	public class ChannelMessagesCache
+	public class ChannelMessagesCache : IChannelMessagesCache
 	{
 		private readonly Dictionary<DiscordChannel, CacheItem> messages = new();
 		private readonly List<DiscordChannel>? cacheEnabled;
-		private readonly Server server;
+		private readonly Client client;
 		private readonly CachePolicy policy;
 		private readonly int cacheSize;
 		private readonly MessagesPreloadingPolicy preloadingPolicy;
 		private readonly int messagesToPreload;
 
 
-		public ChannelMessagesCache(Server server, CachePolicy policy, int cacheSize, MessagesPreloadingPolicy preloadingPolicy, int messagesToPreload = -1)
+		public ChannelMessagesCache(Client client, Options options)
 		{
 			if (preloadingPolicy == MessagesPreloadingPolicy.FixedCount)
 			{
-				if (messagesToPreload <= 0)
+				if (options.MessagesPreloadCount <= 0)
 					throw new ArgumentOutOfRangeException(nameof(messagesToPreload), "Preload messages count must be setted and positive if FixedCount messages preloading policy used");
-				if (messagesToPreload > cacheSize)
+				if (options.MessagesPreloadCount > options.CacheSize)
 					throw new ArgumentOutOfRangeException(nameof(messagesToPreload), "Cannot preload more messages then cache size");
 			}
 
-			this.server = server;
-			this.policy = policy;
-			this.cacheSize = cacheSize;
-			this.preloadingPolicy = preloadingPolicy;
-			this.messagesToPreload = messagesToPreload;
+			this.client = client;
+			policy = options.CachePolicy;
+			cacheSize = options.CacheSize;
+			preloadingPolicy = options.PreloadingPolicy;
+			messagesToPreload = options.MessagesPreloadCount;
 			if (policy == CachePolicy.CacheChannelByRequest || policy == CachePolicy.CacheChannelByRequestWithoutREST) cacheEnabled = new();
 		}
 
@@ -98,7 +99,7 @@ namespace DidiFrame.Clients.DSharp
 				switch (policy)
 				{
 					case CachePolicy.Disable or CachePolicy.CacheMessageByRequest:
-						return server.SourceClient.DoSafeOperation(() => textChannel.GetMessagesAsync(quantity).Result);
+						return client.DoSafeOperation(() => textChannel.GetMessagesAsync(quantity).Result);
 					case CachePolicy.CacheAll or CachePolicy.CacheAllWithoutREST:
 						return messages[textChannel].Messages.AsEnumerable().Take(quantity).ToArray();
 					case CachePolicy.CacheChannelByRequest or CachePolicy.CacheChannelByRequestWithoutREST:
@@ -107,7 +108,7 @@ namespace DidiFrame.Clients.DSharp
 						{
 							CacheEnabled.Add(textChannel);
 							PreloadMessages(textChannel);
-							var result = server.SourceClient.DoSafeOperation(() => textChannel.GetMessagesAsync(quantity).Result);
+							var result = client.DoSafeOperation(() => textChannel.GetMessagesAsync(quantity).Result);
 							foreach (var item in result.Reverse())
 								AddMessage(item);
 							return result;
@@ -152,7 +153,7 @@ namespace DidiFrame.Clients.DSharp
 
 			bool checkRESTExistance()
 			{
-				return server.SourceClient.DoSafeOperation(() =>
+				return client.DoSafeOperation(() =>
 				{
 					try
 					{
@@ -257,7 +258,7 @@ namespace DidiFrame.Clients.DSharp
 
 			DiscordMessage sendRESTRequest()
 			{
-				return server.SourceClient.DoSafeOperation(() => textChannel.GetMessageAsync(id, true).Result, new(Client.MessageName, id));
+				return client.DoSafeOperation(() => textChannel.GetMessageAsync(id, true).Result, new(Client.MessageName, id));
 			}
 		}
 
@@ -351,6 +352,33 @@ namespace DidiFrame.Clients.DSharp
 			FixedCount
 		}
 
+		public class Options
+		{
+			public MessagesPreloadingPolicy PreloadingPolicy { get; set; } = MessagesPreloadingPolicy.CacheFull;
+
+			public int MessagesPreloadCount { get; set; } = -1;
+
+			public CachePolicy CachePolicy { get; set; }
+
+			public int CacheSize { get; set; } = 25;
+		}
+
+		public class Factory : IChannelMessagesCacheFactory
+		{
+			private readonly Options options;
+
+
+			public Factory(Options options)
+			{
+				this.options = options;
+			}
+
+
+			public IChannelMessagesCache Create(DiscordGuild server, Client client)
+			{
+				return new ChannelMessagesCache(client, options);
+			}
+		}
 
 		private class MessagesCache : IReadOnlyDictionary<ulong, DiscordMessage>, IList<DiscordMessage>
 		{
