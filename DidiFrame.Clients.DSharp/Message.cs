@@ -2,6 +2,8 @@
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp
@@ -13,13 +15,22 @@ namespace DidiFrame.Clients.DSharp
 	{
 		private readonly ObjectSourceDelegate<DiscordMessage> message;
 		private readonly TextChannelBase owner;
+		private readonly IValidator<MessageSendModel> validator;
 
 
 		/// <inheritdoc/>
 		public TextChannelBase BaseChannel => owner;
 
 		/// <inheritdoc/>
-		public MessageSendModel SendModel => MessageConverter.ConvertDown(AccessBase());
+		public MessageSendModel SendModel
+		{
+			get
+			{
+				var sm = MessageConverter.ConvertDown(AccessBase());
+				validator.ValidateAndThrow(sm);
+				return sm;
+			}
+		}
 
 		/// <inheritdoc/>
 		public ulong Id { get; }
@@ -49,6 +60,7 @@ namespace DidiFrame.Clients.DSharp
 			Id = id;
 			this.message = message;
 			this.owner = owner;
+			validator = owner.BaseServer.SourceClient.Services.GetRequiredService<IValidator<MessageSendModel>>();
 		}
 
 
@@ -64,6 +76,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
 		{
+			validator.ValidateAndThrow(sendModel);
+
 			return owner.BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
 				if (resetDispatcher) ResetInteractionDispatcher();

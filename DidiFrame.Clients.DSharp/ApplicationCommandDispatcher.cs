@@ -12,6 +12,7 @@ using DidiFrame.Utils.ExtendableModels;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using FluentValidation;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 
@@ -27,6 +28,7 @@ namespace DidiFrame.Clients.DSharp
 		private readonly Client client;
 		private readonly BehaviorModel behaviorModel;
 		private readonly IStringLocalizer<ApplicationCommandDispatcher> localizer;
+		private readonly IValidator<UserCommandResult> resultValidator;
 
 
 		/// <summary>
@@ -37,7 +39,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="localizer">Localizer to send error messages and write cmds' descriptions</param>
 		/// <param name="converter">Converter to provide subconverters for autocomplite</param>
 		/// <param name="services">Services for values providers</param>
-		public ApplicationCommandDispatcher(BehaviorModel? behaviorModel, IClient dsharp, IUserCommandsRepository commands, IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter, IServiceProvider services)
+		public ApplicationCommandDispatcher(BehaviorModel? behaviorModel, IClient dsharp, IUserCommandsRepository commands, 
+			IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter,
+			IValidator<UserCommandResult> resultValidator, IServiceProvider services)
 		{
 			client = (Client)dsharp;
 			client.BaseClient.InteractionCreated += BaseClient_InteractionCreated;
@@ -46,7 +50,7 @@ namespace DidiFrame.Clients.DSharp
 			behaviorModel.Init(client, commands, localizer, converter, services);
 
 			this.localizer = localizer;
-
+			this.resultValidator = resultValidator;
 			convertedCommands = new();
 			foreach (var cmd in commands.GetGlobalCommands())
 			{
@@ -89,7 +93,10 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public void Respond(object stateObject, UserCommandResult result)
 		{
+			resultValidator.ValidateAndThrow(result);
+
 			var state = (StateObject)stateObject;
+
 			if (result.RespondMessage is not null)
 			{
 				var builder = new DiscordWebhookBuilder();
@@ -161,13 +168,11 @@ namespace DidiFrame.Clients.DSharp
 
 		public class BehaviorModel
 		{
-#nullable disable
-			private Client dsharp;
-			private IUserCommandsRepository commands;
-			private IStringLocalizer localizer;
-			private IUserCommandContextConverter converter;
-			private IServiceProvider services;
-#nullable restore
+			private Client? dsharp;
+			private IUserCommandsRepository? commands;
+			private IStringLocalizer? localizer;
+			private IUserCommandContextConverter? converter;
+			private IServiceProvider? services;
 
 
 			protected IUserCommandContextConverter Converter => converter ?? throw new NullReferenceException();
@@ -251,8 +256,8 @@ namespace DidiFrame.Clients.DSharp
 					var values = new HashSet<object>();
 					if (providers.Any())
 					{
-						foreach (var item in providers.First().ProvideValues(server, services)) values.Add(item);
-						foreach (var prov in providers.Skip(1)) values.IntersectWith(prov.ProvideValues(server, services));
+						foreach (var item in providers.First().ProvideValues(server, Services)) values.Add(item);
+						foreach (var prov in providers.Skip(1)) values.IntersectWith(prov.ProvideValues(server, Services));
 					}
 
 					object[] baseCollection;
@@ -260,8 +265,8 @@ namespace DidiFrame.Clients.DSharp
 						baseCollection = values.ToArray();
 					else
 					{
-						var subconverter = converter.GetSubConverter(arg.TargetType);
-						baseCollection = values.Select(s => subconverter.ConvertBack(services, s)[objIndex]).ToArray();
+						var subconverter = Converter.GetSubConverter(arg.TargetType);
+						baseCollection = values.Select(s => subconverter.ConvertBack(Services, s)[objIndex]).ToArray();
 					}
 
 					var autoComplite = baseCollection.Where(s => s is not string str || str.StartsWith((string)darg.Value))
@@ -398,29 +403,29 @@ namespace DidiFrame.Clients.DSharp
 
 			protected virtual IReadOnlyDictionary<string, string> GetCommandDescription(UserCommandInfo command, out string mainDescription)
 			{
-				mainDescription = localizer["CommandDescription", command.Name];
+				mainDescription = Localizer["CommandDescription", command.Name];
 				var r = DiscordStatic.SupportedCultures.ToDictionary(s => new CultureInfo(s));
-				return localizer.GetStringForAllLocales(r.Keys, "CommandDescription", command.Name).ToDictionary(s => r[s.Key], s => s.Value);
+				return Localizer.GetStringForAllLocales(r.Keys, "CommandDescription", command.Name).ToDictionary(s => r[s.Key], s => s.Value);
 			}
 
 			protected virtual IReadOnlyDictionary<string, string> GetCommandArgumentDescription(ApplicationCommandPair.ApplicationArgumnetInfo argument, out string mainDescription)
 			{
 				if (argument.Argument.IsArray)
 				{
-					mainDescription = localizer["ArrayElementArgumentDescription", argument.Argument.Name, argument.PutIndex];
-					return getDCLocs(localizer, "ArrayElementArgumentDescription", argument.Argument.Name, argument.PutIndex);
+					mainDescription = Localizer["ArrayElementArgumentDescription", argument.Argument.Name, argument.PutIndex];
+					return getDCLocs(Localizer, "ArrayElementArgumentDescription", argument.Argument.Name, argument.PutIndex);
 				}
 				else
 				{
 					if (argument.Argument.OriginTypes.Count == 1)
 					{
-						mainDescription = localizer["SimpleArgumentDescription", argument.Argument.Name];
-						return getDCLocs(localizer, "SimpleArgumentDescription", argument.Argument.Name);
+						mainDescription = Localizer["SimpleArgumentDescription", argument.Argument.Name];
+						return getDCLocs(Localizer, "SimpleArgumentDescription", argument.Argument.Name);
 					}
 					else
 					{
-						mainDescription = localizer["ComplexArgumentDescription", argument.Argument.Name, argument.PutIndex];
-						return getDCLocs(localizer, "ComplexArgumentDescription", argument.Argument.Name, argument.PutIndex);
+						mainDescription = Localizer["ComplexArgumentDescription", argument.Argument.Name, argument.PutIndex];
+						return getDCLocs(Localizer, "ComplexArgumentDescription", argument.Argument.Name, argument.PutIndex);
 					}
 				}
 

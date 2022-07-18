@@ -1,5 +1,7 @@
-﻿using DidiFrame.UserCommands.Pipeline;
+﻿using DidiFrame.UserCommands.Models.FluentValidation;
+using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.Utils.ExtendableModels;
+using FluentValidation;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
@@ -11,6 +13,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 	public class DefaultUserCommandContextConverter : AbstractUserCommandPipelineMiddleware<UserCommandPreContext, UserCommandContext>, IUserCommandContextConverter
 	{
 		private readonly IReadOnlyCollection<IUserCommandContextSubConverter> subConverters;
+		private readonly IValidator<UserCommandPreContext> preCtxValidator;
 		private readonly IServiceProvider services;
 		private readonly IStringLocalizer<DefaultUserCommandContextConverter> localizer;
 
@@ -21,9 +24,10 @@ namespace DidiFrame.UserCommands.PreProcessing
 		/// <param name="services">Services that will be provided to sub converters</param>
 		/// <param name="subConverters">Sub converters that converts raw arguments to ready-to-use</param>
 		/// <param name="localizer">Localizer that will be used for print error messages</param>
-		public DefaultUserCommandContextConverter(IServiceProvider services, IEnumerable<IUserCommandContextSubConverter> subConverters, IStringLocalizer<DefaultUserCommandContextConverter> localizer)
+		public DefaultUserCommandContextConverter(IValidator<UserCommandPreContext> preCtxValidator, IServiceProvider services, IEnumerable<IUserCommandContextSubConverter> subConverters, IStringLocalizer<DefaultUserCommandContextConverter> localizer)
 		{
 			this.subConverters = subConverters.ToArray();
+			this.preCtxValidator = preCtxValidator;
 			this.services = services;
 			this.localizer = localizer;
 		}
@@ -49,50 +53,54 @@ namespace DidiFrame.UserCommands.PreProcessing
 			// #note: Target type is element type of array (not array type)
 			// array of complex object are DISALLOWED!
 
-			bool failture = false;
+			preCtxValidator.ValidateAndThrow(preCtx);
 
-			var arguments = preCtx.Arguments.ToDictionary(s => s.Key, s =>
+			try
 			{
-				if (failture) return null;
-
-				if (s.Key.IsArray) //Array case
+				var arguments = preCtx.Arguments.ToDictionary(s => s.Key, s =>
 				{
-					var newArray = (IList)(Activator.CreateInstance(s.Key.TargetType, s.Value.Count) ?? throw new ImpossibleVariantException());
-					for (int i = 0; i < s.Value.Count; i++) newArray[i] = s.Value[i];
-					return new UserCommandContext.ArgumentValue(s.Key, newArray, s.Value);
-				}
-				else //Non-array case
-				{
-					if (s.Value[0].GetType().IsAssignableTo(s.Key.TargetType) && s.Value.Count == 1) //Simple argument case
+					if (s.Key.IsArray) //Array case
 					{
-						return new UserCommandContext.ArgumentValue(s.Key, s.Value[0], s.Value);
+						var newArray = (IList)(Activator.CreateInstance(s.Key.TargetType, s.Value.Count) ?? throw new ImpossibleVariantException());
+						for (int i = 0; i < s.Value.Count; i++) newArray[i] = s.Value[i];
+						return new UserCommandContext.ArgumentValue(s.Key, newArray, s.Value);
 					}
-					else //Complex non-array argument case
+					else //Non-array case
 					{
-						var converter = GetSubConverter(s.Key.TargetType);
-						var convertationResult = converter.Convert(services, preCtx, s.Value, pipelineContext.LocalServices);
-						if (convertationResult.IsSuccessful == false)
+						if (s.Value[0].GetType().IsAssignableTo(s.Key.TargetType) && s.Value.Count == 1) //Simple argument case
 						{
-							convertationResult.DeconstructAsFailture(out var localeKey, out var code);
-
-							var cmdLocalizer = preCtx.Command.AdditionalInfo.GetExtension<IStringLocalizer>();
-							var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{preCtx.Command.Name}.{s.Key.Name}:{localeKey}"];
-							var msgContent = localizer["ConvertationErrorMessage", arg];
-
-							pipelineContext.FinalizePipeline(new UserCommandResult(code) { RespondMessage = new MessageSendModel(msgContent) });
-							failture = true;
-							return null;
+							return new UserCommandContext.ArgumentValue(s.Key, s.Value[0], s.Value);
 						}
-						else return new UserCommandContext.ArgumentValue(s.Key, convertationResult.DeconstructAsSuccess(), s.Value);
+						else //Complex non-array argument case
+						{
+							var converter = GetSubConverter(s.Key.TargetType);
+							var convertationResult = converter.Convert(services, preCtx, s.Value, pipelineContext.LocalServices);
+							if (convertationResult.IsSuccessful == false)
+							{
+								convertationResult.DeconstructAsFailture(out var localeKey, out var code);
+
+								var cmdLocalizer = preCtx.Command.AdditionalInfo.GetExtension<IStringLocalizer>();
+								var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{preCtx.Command.Name}.{s.Key.Name}:{localeKey}"];
+								var msgContent = localizer["ConvertationErrorMessage", arg];
+
+								pipelineContext.FinalizePipeline(new UserCommandResult(code) { RespondMessage = new MessageSendModel(msgContent) });
+								throw new ConvertationException();
+							}
+							else return new UserCommandContext.ArgumentValue(s.Key, convertationResult.DeconstructAsSuccess(), s.Value);
+						}
 					}
-				}
-			});
+				});
 
-			if (failture) return null;
 
-#pragma warning disable CS8620
-			return new UserCommandContext(preCtx.Invoker, preCtx.Channel, preCtx.Command, arguments, new SimpleModelAdditionalInfoProvider((pipelineContext.LocalServices, typeof(IServiceProvider))));
-#pragma warning restore CS8620
+				return new UserCommandContext(preCtx.Invoker, preCtx.Channel, preCtx.Command, arguments, new SimpleModelAdditionalInfoProvider((pipelineContext.LocalServices, typeof(IServiceProvider))));
+			}
+			catch (ConvertationException)
+			{
+				return null;
+			}
 		}
+
+
+		private class ConvertationException : Exception { }
 	}
 }

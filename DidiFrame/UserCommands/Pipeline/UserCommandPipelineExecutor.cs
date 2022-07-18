@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Pipeline
+﻿using FluentValidation;
+
+namespace DidiFrame.UserCommands.Pipeline
 {
 	/// <summary>
 	/// Simple implementation for DidiFrame.UserCommands.Pipeline.IUserCommandPipelineExecutor
@@ -7,6 +9,8 @@
 	{
 		private readonly IReadOnlyCollection<IUserCommandLocalServiceDescriptor> descriptors;
 		private readonly IServiceProvider sp;
+		private readonly IValidator<UserCommandSendData> sendDataValidator;
+		private readonly IValidator<UserCommandResult> resultValidator;
 
 
 		/// <summary>
@@ -14,17 +18,20 @@
 		/// </summary>
 		/// <param name="descriptors">Enumerable of local services' descriptors</param>
 		/// <param name="sp">Global service provider</param>
-		public UserCommandPipelineExecutor(IEnumerable<IUserCommandLocalServiceDescriptor> descriptors, IServiceProvider sp)
+		public UserCommandPipelineExecutor(IEnumerable<IUserCommandLocalServiceDescriptor> descriptors, IServiceProvider sp, IValidator<UserCommandSendData> sendDataValidator, IValidator<UserCommandResult> resultValidator)
 		{
 			this.descriptors = descriptors.ToArray();
 			this.sp = sp;
+			this.sendDataValidator = sendDataValidator;
+			this.resultValidator = resultValidator;
 		}
-
 
 
 		/// <inheritdoc/>
 		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData, object dispatcherState)
 		{
+			sendDataValidator.ValidateAndThrow(sendData);
+
 			return Task.Run(() =>
 			{
 				using var services = new UserCommandLocalServicesProvider(descriptors.Select(s => s.CreateInstance(sp)).ToArray());
@@ -46,7 +53,9 @@
 					else currentValue = newValue;
 				}
 
-				return (UserCommandResult)currentValue;
+				var casted = (UserCommandResult)currentValue;
+				resultValidator.Validate(casted);
+				return casted;
 			});
 		}
 	}

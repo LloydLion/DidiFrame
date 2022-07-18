@@ -1,5 +1,6 @@
 ﻿using DidiFrame.Culture;
 using DidiFrame.UserCommands.Pipeline;
+using FluentValidation;
 
 namespace DidiFrame.UserCommands.Executing
 {
@@ -14,6 +15,7 @@ namespace DidiFrame.UserCommands.Executing
 
 
 		private readonly Options options;
+		private readonly IValidator<UserCommandContext> ctxValidator;
 		private readonly ILogger<DefaultUserCommandsExecutor> logger;
 		private readonly IServerCultureProvider cultureProvider;
 
@@ -24,9 +26,10 @@ namespace DidiFrame.UserCommands.Executing
 		/// <param name="options">Option for executor (DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options)</param>
 		/// <param name="logger">Logger to log command operations</param>
 		/// <param name="cultureProvider">Culture provider to provide culture into commands' handlers</param>
-		public DefaultUserCommandsExecutor(IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IServerCultureProvider cultureProvider)
+		public DefaultUserCommandsExecutor(IValidator<UserCommandContext> ctxValidator, IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IServerCultureProvider cultureProvider)
 		{
 			this.options = options.Value;
+			this.ctxValidator = ctxValidator;
 			this.logger = logger;
 			this.cultureProvider = cultureProvider;
 		}
@@ -35,6 +38,8 @@ namespace DidiFrame.UserCommands.Executing
 		/// <inheritdoc/>
 		public override UserCommandResult? Process(ValidatedUserCommandContext ctx, UserCommandPipelineContext pipelineContext)
 		{
+			ctxValidator.ValidateAndThrow(ctx);
+
 			try
 			{
 				UserCommandResult result;

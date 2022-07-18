@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Pipeline.Utils
+﻿using FluentValidation;
+
+namespace DidiFrame.UserCommands.Pipeline.Utils
 {
 	/// <summary>
 	/// Dispatcher that based on simple discord messages
@@ -10,6 +12,7 @@
 
 		private readonly IClient client;
 		private readonly ILogger<MessageUserCommandDispatcher> logger;
+		private readonly IValidator<UserCommandResult> resultValidator;
 		private DispatcherSyncCallback<IMessage>? callback = null;
 
 
@@ -18,10 +21,11 @@
 		/// </summary>
 		/// <param name="client">Discord clint to access to discord</param>
 		/// <param name="logger">Logger for dispatcher</param>
-		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger)
+		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger, IValidator<UserCommandResult> resultValidator)
 		{
 			this.client = client;
 			this.logger = logger;
+			this.resultValidator = resultValidator;
 			client.MessageSent += Client_MessageSent;
 		}
 
@@ -59,6 +63,8 @@
 		/// <inheritdoc/>
 		public void Respond(object stateObject, UserCommandResult result)
 		{
+			resultValidator.ValidateAndThrow(result);
+
 			var ss = (StateStruct)stateObject;
 
 			IMessage? message = null;

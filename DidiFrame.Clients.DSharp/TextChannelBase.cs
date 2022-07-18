@@ -4,6 +4,9 @@ using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DidiFrame.Utils;
 using DSharpPlus.Entities;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Channels;
 
 namespace DidiFrame.Clients.DSharp
@@ -13,8 +16,8 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class TextChannelBase : Channel, ITextChannelBase
 	{
-		private readonly ObjectSourceDelegate<DiscordChannel> channel;
 		private readonly Server server;
+		private readonly IValidator<MessageSendModel> validator;
 
 
 		/// <inheritdoc/>
@@ -33,14 +36,14 @@ namespace DidiFrame.Clients.DSharp
 		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
 		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : base(id, channel, server)
 		{
-			this.channel = channel;
 			this.server = server;
+			validator = server.SourceClient.Services.GetRequiredService<IValidator<MessageSendModel>>();
 		}
 
 		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server, ObjectSourceDelegate<ChannelCategory> targetCategory) : base(id, channel, server, targetCategory)
 		{
-			this.channel = channel;
 			this.server = server;
+			validator = server.SourceClient.Services.GetRequiredService<IValidator<MessageSendModel>>();
 		}
 
 
@@ -83,6 +86,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
+			validator.ValidateAndThrow(messageSendModel);
+
 			var obj = AccessBase();
 
 			var builder = MessageConverter.ConvertUp(messageSendModel);
