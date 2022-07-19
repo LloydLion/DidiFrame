@@ -15,6 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Translations\DidiFrame\UserCommands\ContextValidation\ContextValidator.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Translations\Systems\Test\CommandsHandler.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

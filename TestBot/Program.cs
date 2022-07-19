@@ -35,6 +35,7 @@ using DidiFrame.UserCommands.PreProcessing;
 using DidiFrame.UserCommands.Executing;
 using DidiFrame.UserCommands.Pipeline.Services;
 using DidiFrame.UserCommands.ContextValidation;
+using DidiFrame.Localization;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -56,7 +57,7 @@ appBuilder.AddServices((services, config) =>
 		.AddHelpCommands()
 		.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
 		.AddSettingsBasedCultureProvider()
-		.AddConfiguratedLocalization()
+		.AddDidiFrameLocalization(optionsAction: s => s.ResourcesPath = "Translations")
 		.AddLifetimes()
 		.AddGlobalEvents()
 		.AddStateBasedStatisticTools()
