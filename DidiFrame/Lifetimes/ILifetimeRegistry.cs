@@ -1,14 +1,11 @@
 ﻿namespace DidiFrame.Lifetimes
 {
-	/// <summary>
-	/// Need to restore all lifetime at bot startup from them state objects in servers' states
-	/// </summary>
-	public interface ILifetimesRegistry
+	public interface ILifetimesRegistry<TLifetime, TBase> : ILifetimesLoader where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
-		/// <summary>
-		/// Restores and starts all lifetime at server from them state objects. It must be called at start for each server
-		/// </summary>
-		/// <param name="server">Server where need to restore and start lifetimes</param>
-		public void LoadAndRunAll(IServer server);
+		public TLifetime RegistryLifetime(TBase baseObject);
+
+		public TLifetime GetLifetime(IServer server, Guid baseGuid);
+
+		public IReadOnlyCollection<TLifetime> GetAllLifetimes(IServer server);
 	}
 }

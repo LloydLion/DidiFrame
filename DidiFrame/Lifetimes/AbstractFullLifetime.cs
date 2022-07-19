@@ -21,9 +21,7 @@ namespace DidiFrame.Lifetimes
 		/// <summary>
 		/// Creates new instance of DidiFrame.Lifetimes.AbstractFullLifetime`2
 		/// </summary>
-		/// <param name="services">Serivces that will be available in the future</param>
-		/// <param name="baseObj">Base object of that lifetime</param>
-		public AbstractFullLifetime(IServiceProvider services, TBase baseObj) : base(services, baseObj)
+		public AbstractFullLifetime(ILogger logger) : base(logger)
 		{
 			AddTransit(new ResetTransitWorker<TState>(null, waitForClose.Await));
 		}
@@ -110,7 +108,7 @@ namespace DidiFrame.Lifetimes
 		protected virtual void OnRunInternal(TState state) { }
 
 		//Will has subscribed only if has report
-		private void OnReportCreated(IMessage obj) => GetUpdater().Update(this);
+		private void OnReportCreated(IMessage obj) => .Update(this);
 
 		//Will has subscribed only if has report
 		private void OnStateChanged(IStateMachine<TState> sm, TState oldState)

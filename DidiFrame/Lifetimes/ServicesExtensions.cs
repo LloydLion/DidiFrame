@@ -8,17 +8,6 @@ namespace DidiFrame.Lifetimes
 	public static class ServicesExtensions
 	{
 		/// <summary>
-		/// Adds DidiFrame.Lifetimes.ServersLifetimesRepositoryFactory into collection
-		/// </summary>
-		/// <param name="services">Service collection</param>
-		/// <returns>Given collection to be chained</returns>
-		public static IServiceCollection AddLifetimes(this IServiceCollection services)
-		{
-			services.AddSingleton<IServersLifetimesRepositoryFactory, ServersLifetimesRepositoryFactory>();
-			return services;
-		}
-
-		/// <summary>
 		/// Adds default lifetime registry for given lifetime and registers given factory type as transient
 		/// </summary>
 		/// <typeparam name="TFactory">Lifetime factory type to be registered as transient in collection</typeparam>
@@ -32,10 +21,14 @@ namespace DidiFrame.Lifetimes
 			where TLifetime : ILifetime<TBase>
 			where TBase : class, ILifetimeBase
 		{
-			services.AddSingleton<ILifetimesRegistry, LifetimeRegistry<TLifetime, TBase>>(provider =>
-				new LifetimeRegistry<TLifetime, TBase>(
-				provider.GetRequiredService<IServersLifetimesRepositoryFactory>().Create<TLifetime, TBase>(stateKey),
-				provider.GetRequiredService<IServersStatesRepositoryFactory>().Create<ICollection<TBase>>(stateKey)));
+			services.AddSingleton<ILifetimesRegistry<TLifetime, TBase>, LifetimeRegistry<TLifetime, TBase>>(provider =>
+				new LifetimeRegistry<TLifetime, TBase>
+				(
+					provider.GetRequiredService<IServersStatesRepositoryFactory>().Create<ICollection<TBase>>(stateKey),
+					provider.GetRequiredService<TFactory>()
+				));
+
+			services.AddSingleton<ILifetimesLoader>(sp => sp.GetRequiredService<ILifetimesRegistry<TLifetime, TBase>>());
 			services.AddTransient<ILifetimeFactory<TLifetime, TBase>, TFactory>();
 			return services;
 		}
@@ -51,6 +44,6 @@ namespace DidiFrame.Lifetimes
 		public static IServiceCollection AddLifetime<TLifetime, TBase>(this IServiceCollection services, string stateKey)
 			where TLifetime : ILifetime<TBase>
 			where TBase : class, ILifetimeBase =>
-			AddLifetime<DefaultLTFactory<TLifetime, TBase>, TLifetime, TBase>(services, stateKey);
+			AddLifetime<ReflectionLifetimeFactory<TLifetime, TBase>, TLifetime, TBase>(services, stateKey);
 	}
 }

@@ -8,8 +8,8 @@ namespace DidiFrame.Data
 {
 	public class ServerStateHolder<TModel> where TModel : class
 	{
-		private readonly Func<TModel> modelSource;
-		private readonly Action<TModel> finalizer;
+		private readonly Func<TModel>? modelSource;
+		private readonly Action<TModel>? finalizer;
 
 
 		public ServerStateHolder(Func<TModel> modelSource, Action<TModel> finalizer)
@@ -25,12 +25,17 @@ namespace DidiFrame.Data
 			this.finalizer = recaster.FinalizerModel;
 		}
 
-
-		public IDisposable Open(out TModel model)
+		protected ServerStateHolder()
 		{
-			var savedModel = modelSource();
+			
+		}
+
+
+		public virtual IDisposable Open(out TModel model)
+		{
+			var savedModel = modelSource?.Invoke() ?? throw new NotImplementedException();
 			model = savedModel;
-			return new Disposable(finalizer, savedModel);
+			return new Disposable(finalizer ?? throw new NotImplementedException(), savedModel);
 		}
 
 

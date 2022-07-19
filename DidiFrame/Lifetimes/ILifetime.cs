@@ -9,13 +9,7 @@
 		/// <summary>
 		/// Starts lifetime processing
 		/// </summary>
-		/// <param name="updater">Updater to notify about internal state changed</param>
-		public void Run(ILifetimeStateUpdater<TBase> updater);
-
-		/// <summary>
-		/// Gets internal state object clone
-		/// </summary>
-		/// <returns>Clone object</returns>
-		public TBase GetBaseClone();
+		/// <param name="context">Context where lifetime runs</param>
+		public void Run(TBase initialBase, ILifetimeContext<TBase> context);
 	}
 }

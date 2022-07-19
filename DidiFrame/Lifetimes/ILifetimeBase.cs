@@ -9,5 +9,7 @@
 		/// Server where lifetime was started
 		/// </summary>
 		public IServer Server { get; }
+
+		public Guid Guid { get; }
 	}
 }

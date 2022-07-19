@@ -13,8 +13,7 @@ namespace DidiFrame.Lifetimes
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
-		private readonly TBase baseObj;
-		private ILifetimeStateUpdater<TBase>? updater;
+		private ILifetimeContext<TBase>? context;
 		private readonly StateMachineBuilder<TState> smBuilder;
 		private IStateMachine<TState>? machine;
 		private bool hasBuilt = false;
@@ -26,14 +25,10 @@ namespace DidiFrame.Lifetimes
 		/// <summary>
 		/// Creates new instance of DidiFrame.Lifetimes.AbstractStateBasedLifetime`2
 		/// </summary>
-		/// <param name="services">Serivces that will be available in the future</param>
 		/// <param name="baseObj">Base object of that lifetime</param>
-		public AbstractStateBasedLifetime(IServiceProvider services, TBase baseObj)
+		public AbstractStateBasedLifetime(ILogger logger)
 		{
-			this.baseObj = baseObj;
-
-			var tname = GetType().FullName ?? throw new ImpossibleVariantException();
-			smBuilder = new StateMachineBuilder<TState>(services.GetRequiredService<ILoggerFactory>().CreateLogger(tname));
+			smBuilder = new StateMachineBuilder<TState>(logger);
 		}
 
 
@@ -48,22 +43,22 @@ namespace DidiFrame.Lifetimes
 			var lockFree = baseLocker.Lock(this);
 			smFreeze = smFreezeIn;
 
-			var startState = baseObj.State;
+			var toDipose = GetContext().AccessBase(out var baseObject);
+			var startState = baseObject.State;
 
-			return new ObjectHolder<TBase>(baseObj, (holder) =>
+			return new ObjectHolder<TBase>(baseObject, (holder) =>
 			{
 				Exception? ex = null;
 
-				if (!startState.Equals(baseObj.State))
+				if (!startState.Equals(baseObject.State))
 				{
 					ex = new InvalidOperationException("Enable to change state in base object of lifetime. State reverted and object saved");
-					baseObj.State = startState;
+					baseObject.State = startState;
 				}
 
+				toDipose.Dispose();
 				lockFree.Dispose();
 				smFreezeIn.Dispose();
-
-				GetUpdater().Update(this);
 
 				if (ex is not null) throw ex;
 			});
@@ -76,28 +71,19 @@ namespace DidiFrame.Lifetimes
 		protected ObjectHolder<TBase> GetBase() => GetBase(out _);
 
 		/// <inheritdoc/>
-		public TBase GetBaseClone()
+		public void Run(TBase initinalBase, ILifetimeContext<TBase> context)
 		{
-			using (baseLocker.Lock(this))
-			{
-				return (TBase)baseObj.Clone();
-			}
-		}
-
-		/// <inheritdoc/>
-		public void Run(ILifetimeStateUpdater<TBase> updater)
-		{
-			this.updater = updater;
+			this.context = context;
 			machine = smBuilder.Build();
 			machine.StateChanged += Machine_StateChanged;
 			hasBuilt = true;
 
-			OnRun(baseObj.State);
+			OnRun(initinalBase.State);
 
 			foreach (var item in startupHandlers)
 				foreach (var handler in item.Value) handler();
 
-			machine.Start(baseObj.State);
+			machine.Start(initinalBase.State);
 			
 		}
 
@@ -107,13 +93,16 @@ namespace DidiFrame.Lifetimes
 			if (cs.HasValue == false)
 			{
 				OnDispose();
-				GetUpdater().Finish(this);
+				GetContext().FinalizeLifetime();
 			}
 			else
 			{
-				baseObj.State = cs.Value;
+				using (var b = GetBase())
+				{
+					b.Object.State = cs.Value;
+				}
+
 				foreach (var handler in stateHandlers) handler(oldState);
-				GetUpdater().Update(this);
 			}
 		}
 
@@ -122,26 +111,11 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		/// <returns>The cached updater</returns>
 		/// <exception cref="InvalidOperationException">If invoked before Run() call (example in ctor)</exception>
-		protected ILifetimeStateUpdater<TBase> GetUpdater()
+		protected ILifetimeContext<TBase> GetContext()
 		{
 			if (!hasBuilt)
 				throw new InvalidOperationException("Enable to get updater before starting");
-			return updater ?? throw new ImpossibleVariantException();
-		}
-
-		/// <summary>
-		/// Gets base object directly.
-		/// WARNING! Returned object is readonly!
-		/// If changed changed will be not writen to state.
-		/// This operation is thread-safe
-		/// </summary>
-		/// <returns>Base object itself</returns>
-		protected TBase GetBaseDirect()
-		{
-			using (baseLocker.Lock(this))
-			{
-				return baseObj;
-			}
+			return context ?? throw new ImpossibleVariantException();
 		}
 
 		/// <summary>

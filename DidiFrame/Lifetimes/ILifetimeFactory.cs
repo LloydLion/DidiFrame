@@ -14,6 +14,6 @@
 		/// </summary>
 		/// <param name="baseObject"></param>
 		/// <returns></returns>
-		public TLifetime Create(TBase baseObject);
+		public TLifetime Create();
 	}
 }
