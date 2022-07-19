@@ -13,6 +13,6 @@ namespace DidiFrame.Data
 		/// </summary>
 		/// <param name="server">Target server</param>
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 which must be disposed after use</returns>
-		public ObjectHolder<TModel> GetState(IServer server);
+		public ServerStateHolder<TModel> GetState(IServer server);
 	}
 }
