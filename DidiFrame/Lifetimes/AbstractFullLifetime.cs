@@ -1,10 +1,10 @@
 ﻿using DidiFrame.Utils;
 using DidiFrame.Utils.StateMachine;
 
-namespace DidiFrame.Data.Lifetime
+namespace DidiFrame.Lifetimes
 {
 	/// <summary>
-	/// Useful extension for DidiFrame.Data.Lifetime.AbstractStateBasedLifetime`2
+	/// Useful extension for DidiFrame.Lifetimes.AbstractStateBasedLifetime`2
 	/// </summary>
 	/// <typeparam name="TState">Internal statemachine state type</typeparam>
 	/// <typeparam name="TBase">Type of base object of that lifetime </typeparam>
@@ -19,7 +19,7 @@ namespace DidiFrame.Data.Lifetime
 
 
 		/// <summary>
-		/// Creates new instance of DidiFrame.Data.Lifetime.AbstractFullLifetime`2
+		/// Creates new instance of DidiFrame.Lifetimes.AbstractFullLifetime`2
 		/// </summary>
 		/// <param name="services">Serivces that will be available in the future</param>
 		/// <param name="baseObj">Base object of that lifetime</param>
@@ -39,7 +39,7 @@ namespace DidiFrame.Data.Lifetime
 
 		/// <summary>
 		/// Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed.
-		/// This method is overrided by DidiFrame.Data.Lifetime.AbstractFullLifetime`2
+		/// This method is overrided by DidiFrame.Lifetimes.AbstractFullLifetime`2
 		/// </summary>
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
 		protected new ObjectHolder<TBase> GetBase()
@@ -60,7 +60,7 @@ namespace DidiFrame.Data.Lifetime
 
 		/// <summary>
 		/// Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed.
-		/// This method is overrided by DidiFrame.Data.Lifetime.AbstractFullLifetime`2
+		/// This method is overrided by DidiFrame.Lifetimes.AbstractFullLifetime`2
 		/// </summary>
 		/// <param name="smFreeze">Statemachine freeze information, it will be automaticly disposed</param>
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
@@ -82,7 +82,7 @@ namespace DidiFrame.Data.Lifetime
 		}
 
 		/// <summary>
-		/// Don't override, it used by DidiFrame.Data.Lifetime.AbstractFullLifetime`2. If overriding is important use OnRunInternal(TState)
+		/// Don't override, it used by DidiFrame.Lifetimes.AbstractFullLifetime`2. If overriding is important use OnRunInternal(TState)
 		/// </summary>
 		/// <param name="state">Initial statemachine state</param>
 		protected async override void OnRun(TState state)

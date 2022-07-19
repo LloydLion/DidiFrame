@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace DidiFrame.Data.Lifetime
+namespace DidiFrame.Lifetimes
 {
 	/// <summary>
-	/// Simple implementation of DidiFrame.Data.Lifetime.IServersLifetimesRepositoryFactory
+	/// Simple implementation of DidiFrame.Lifetimes.IServersLifetimesRepositoryFactory
 	/// </summary>
 	public class ServersLifetimesRepositoryFactory : IServersLifetimesRepositoryFactory
 	{
@@ -13,7 +13,7 @@ namespace DidiFrame.Data.Lifetime
 
 
 		/// <summary>
-		/// Creates new instance of DidiFrame.Data.Lifetime.ServersLifetimesRepositoryFactory
+		/// Creates new instance of DidiFrame.Lifetimes.ServersLifetimesRepositoryFactory
 		/// </summary>
 		/// <param name="factory">Servers' states repository factory to provide state objects</param>
 		/// <param name="provider">Services to provide lifetimes factories</param>

@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Data.Lifetime
+﻿namespace DidiFrame.Lifetimes
 {
 	internal class ServersLifetimesRepository<TLifetime, TBase> : IServersLifetimesRepository<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{

@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Data.Lifetime
+﻿namespace DidiFrame.Lifetimes
 {
 	/// <summary>
 	/// The lifeitme object of bot that can be "alive" outside of any commands and events handlers

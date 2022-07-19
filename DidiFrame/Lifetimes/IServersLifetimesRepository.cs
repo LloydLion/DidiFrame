@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Data.Lifetime
+﻿namespace DidiFrame.Lifetimes
 {
 	/// <summary>
 	/// Repository that provides the servers' lifetimes
@@ -8,7 +8,7 @@
 	public interface IServersLifetimesRepository<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
 		/// <summary>
-		/// Creates and registers new lifetime by its state object using DidiFrame.Data.Lifetime.ILifetimeFactory`2
+		/// Creates and registers new lifetime by its state object using DidiFrame.Lifetimes.ILifetimeFactory`2
 		/// </summary>
 		/// <param name="baseObject">Internal state object</param>
 		/// <returns>New lifetime object</returns>

@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Data.Lifetime
+﻿namespace DidiFrame.Lifetimes
 {
 	/// <summary>
 	/// Creates repositories that provide the servers' lifetimes

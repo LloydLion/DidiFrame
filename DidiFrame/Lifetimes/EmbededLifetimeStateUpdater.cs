@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Data.Lifetime
+﻿namespace DidiFrame.Lifetimes
 {
 	/// <summary>
 	/// State updater for embeded lifetiems (lifetimes in lifetimes)
@@ -17,7 +17,7 @@
 
 
 		/// <summary>
-		/// Create new instance of DidiFrame.Data.Lifetime.EmbededLifetimeStateUpdater`2 using apply delegate
+		/// Create new instance of DidiFrame.Lifetimes.EmbededLifetimeStateUpdater`2 using apply delegate
 		/// </summary>
 		/// <param name="applyDelegate">Delegate that applies embeded lifetime base to external lifetime base</param>
 		/// <param name="baseLifetime">External lifetime object</param>

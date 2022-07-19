@@ -2,7 +2,7 @@
 using DidiFrame.Utils.StateMachine;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DidiFrame.Data.Lifetime
+namespace DidiFrame.Lifetimes
 {
 	/// <summary>
 	/// Base class of statemachine-based lifetime
@@ -24,7 +24,7 @@ namespace DidiFrame.Data.Lifetime
 
 
 		/// <summary>
-		/// Creates new instance of DidiFrame.Data.Lifetime.AbstractStateBasedLifetime`2
+		/// Creates new instance of DidiFrame.Lifetimes.AbstractStateBasedLifetime`2
 		/// </summary>
 		/// <param name="services">Serivces that will be available in the future</param>
 		/// <param name="baseObj">Base object of that lifetime</param>

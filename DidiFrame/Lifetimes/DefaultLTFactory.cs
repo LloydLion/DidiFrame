@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Data.Lifetime
+﻿namespace DidiFrame.Lifetimes
 {
 	/// <summary>
 	/// Default factory for lifetimes that uses them ctors, requires singnature: TBase, IServiceProvider
@@ -13,7 +13,7 @@
 
 
 		/// <summary>
-		/// Creates new instance of DidiFrame.Data.Lifetime.DefaultLTFactory`2
+		/// Creates new instance of DidiFrame.Lifetimes.DefaultLTFactory`2
 		/// </summary>
 		/// <param name="provider"></param>
 		public DefaultLTFactory(IServiceProvider provider)

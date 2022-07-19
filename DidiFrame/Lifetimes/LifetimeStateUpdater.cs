@@ -1,7 +1,7 @@
-﻿namespace DidiFrame.Data.Lifetime
+﻿namespace DidiFrame.Lifetimes
 {
 	/// <summary>
-	/// Simple implementation of DidiFrame.Data.Lifetime.ILifetimeStateUpdater`1
+	/// Simple implementation of DidiFrame.Lifetimes.ILifetimeStateUpdater`1
 	/// </summary>
 	/// <typeparam name="TBase"></typeparam>
 	public class LifetimeStateUpdater<TBase> : ILifetimeStateUpdater<TBase> where TBase : class, ILifetimeBase
@@ -14,7 +14,7 @@
 
 
 		/// <summary>
-		/// Creates new instance of DidiFrame.Data.Lifetime.LifetimeStateUpdater`1
+		/// Creates new instance of DidiFrame.Lifetimes.LifetimeStateUpdater`1
 		/// </summary>
 		/// <param name="repository">Repository to provide states</param>
 		public LifetimeStateUpdater(IServersStatesRepository<ICollection<TBase>> repository)

@@ -1,7 +1,7 @@
-﻿namespace DidiFrame.Data.Lifetime
+﻿namespace DidiFrame.Lifetimes
 {
 	/// <summary>
-	/// Simple implementation of DidiFrame.Data.Lifetime.ILifetimesRegistry`2
+	/// Simple implementation of DidiFrame.Lifetimes.ILifetimesRegistry`2
 	/// </summary>
 	/// <typeparam name="TLifetime">Type of target lifetime</typeparam>
 	/// <typeparam name="TBase">Type of base object of that lifetime</typeparam>
@@ -12,7 +12,7 @@
 
 
 		/// <summary>
-		/// Creates new instance of DidiFrame.Data.Lifetime.LifetimeRegistry`2
+		/// Creates new instance of DidiFrame.Lifetimes.LifetimeRegistry`2
 		/// </summary>
 		/// <param name="repository">Repository for push lifetimes</param>
 		/// <param name="baseRepository">Repository to provide states</param>

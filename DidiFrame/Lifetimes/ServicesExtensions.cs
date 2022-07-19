@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace DidiFrame.Data.Lifetime
+namespace DidiFrame.Lifetimes
 {
 	/// <summary>
-	/// Extensions for DidiFrame.Data.Lifetime namespace for service collection
+	/// Extensions for DidiFrame.Lifetimes namespace for service collection
 	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>
-		/// Adds DidiFrame.Data.Lifetime.ServersLifetimesRepositoryFactory into collection
+		/// Adds DidiFrame.Lifetimes.ServersLifetimesRepositoryFactory into collection
 		/// </summary>
 		/// <param name="services">Service collection</param>
 		/// <returns>Given collection to be chained</returns>
@@ -41,7 +41,7 @@ namespace DidiFrame.Data.Lifetime
 		}
 
 		/// <summary>
-		/// Adds default lifetime registry for given lifetime and registers DidiFrame.Data.Lifetime.DefaultLTFactory`2 as factory
+		/// Adds default lifetime registry for given lifetime and registers DidiFrame.Lifetimes.DefaultLTFactory`2 as factory
 		/// </summary>
 		/// <typeparam name="TLifetime">Type of target lifetime</typeparam>
 		/// <typeparam name="TBase">Type of base object of that lifetime</typeparam>
