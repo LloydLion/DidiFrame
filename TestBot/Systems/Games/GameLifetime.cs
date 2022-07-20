@@ -1,8 +1,5 @@
-﻿using DidiFrame.Data.Lifetime;
-using DidiFrame.Entities.Message;
-using DidiFrame.Entities.Message.Components;
+﻿using DidiFrame.Lifetimes;
 using DidiFrame.Utils;
-using DidiFrame.Utils.StateMachine;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Games
@@ -17,43 +14,55 @@ namespace TestBot.Systems.Games
 
 		private readonly WaitFor waitForStartButton = new();
 		private readonly WaitFor waitForFinishButton = new();
-
-
 		private readonly UIHelper uiHelper;
 		private readonly IStringLocalizer<GameLifetime> localizer;
 
 
-		public GameLifetime(GameModel baseObj, IServiceProvider services) : base(services, baseObj)
+		public GameLifetime(ILogger<GameLifetime> logger, UIHelper uiHelper, IStringLocalizer<GameLifetime> localizer) : base(logger)
 		{
-			Validate(baseObj);
-
-
-			uiHelper = services.GetRequiredService<UIHelper>();
-			localizer = services.GetRequiredService<IStringLocalizer<GameLifetime>>();
-
-
-			AddReport(new MessageAliveHolder(baseObj.ReportMessage, true, CreateReportMessage, AttachEvents));
-
-			AddTransit(GameState.WaitingPlayers, GameState.WaitingCreator, WaitingPlayersWaitingCreatorTransit);
-			AddTransit(GameState.WaitingCreator, GameState.WaitingPlayers, () => !WaitingPlayersWaitingCreatorTransit());
-			AddTransit(GameState.WaitingCreator, GameState.Running, waitForStartButton.Await);
-			AddTransit(GameState.Running, null, waitForFinishButton.Await);
+			this.uiHelper = uiHelper;
+			this.localizer = localizer;
 		}
 
 
+		public IMember GetCreator()
+		{
+			using var b = GetBase();
+			return b.Object.Creator;
+		}
+
+		public string GetName()
+		{
+			using var b = GetBase();
+			return b.Object.Name;
+		}
+
 		public void Invite(IReadOnlyCollection<IMember> members)
 		{
+			using var baseObj = GetBase();
 			foreach (var member in members)
-				if (member.Server != GetBaseDirect().Server)
+				if (member.Server != baseObj.Object.Server)
 					throw new ArgumentException("Some member from other server", nameof(members));
 
-			using var baseObj = GetBase();
 			foreach (var member in members)
 				if (baseObj.Object.Invited.Contains(member) == false)
 					baseObj.Object.Invited.Add(member);
 
 			if (baseObj.Object.Invited.Contains(baseObj.Object.Creator))
 				baseObj.Object.Invited.Remove(baseObj.Object.Creator);
+		}
+
+		protected override void OnBuild(GameModel initialBase, ILifetimeContext<GameModel> context)
+		{
+			Validate(initialBase);
+
+			var controller = new SelectObjectContoller<GameModel, MessageAliveHolder.Model>(context.AccessBase(), s => s.ReportMessage);
+			AddReport(new MessageAliveHolder(controller, true, CreateReportMessage, AttachEvents));
+
+			AddTransit(GameState.WaitingPlayers, GameState.WaitingCreator, WaitingPlayersWaitingCreatorTransit);
+			AddTransit(GameState.WaitingCreator, GameState.WaitingPlayers, () => !WaitingPlayersWaitingCreatorTransit());
+			AddTransit(GameState.WaitingCreator, GameState.Running, waitForStartButton.Await);
+			AddTransit(GameState.Running, null, waitForFinishButton.Await);
 		}
 
 		public void ClearInvites()
@@ -92,7 +101,8 @@ namespace TestBot.Systems.Games
 
 		private bool WaitingPlayersWaitingCreatorTransit()
 		{
-			var b = GetBaseDirect();
+			using var holder = GetBase();
+			var b = holder.Object;
 			var cond1 = b.InGame.Count >= b.StartAtMembers - 1;
 			var cond2 = b.WaitEveryoneInvited == false || b.Invited.All(s => b.InGame.Contains(s));
 			return cond1 && cond2;
@@ -100,7 +110,8 @@ namespace TestBot.Systems.Games
 
 		private void AttachEvents(IMessage message)
 		{
-			var b = GetBaseDirect();
+			using var holder = GetBase();
+			var b = holder.Object;
 
 			//Every state contains components
 			var di = message.GetInteractionDispatcher();
@@ -127,20 +138,21 @@ namespace TestBot.Systems.Games
 
 			ComponentInteractionResult joinHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				using var b = GetBase(); //It is not bug!! These is musn't be GetBaseProtected()
+				using var holder = GetBase();
+				var b = holder.Object;
 
-				if (b.Object.InGame.Contains(ctx.Invoker)) return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyInGame"]));
-				else if (b.Object.Creator == ctx.Invoker) return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorAlreadyInGame"]));
+				if (b.InGame.Contains(ctx.Invoker)) return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyInGame"]));
+				else if (b.Creator == ctx.Invoker) return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorAlreadyInGame"]));
 				else
 				{
-					b.Object.InGame.Add(ctx.Invoker);
+					b.InGame.Add(ctx.Invoker);
 					return new ComponentInteractionResult(new MessageSendModel(localizer["JoinOk"]));
 				}
 			}
 
 			ComponentInteractionResult exitHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				using var b = GetBase(); //It is not bug!! These is musn't be GetBaseProtected()
+				using var b = GetBase();
 
 				if (b.Object.Creator == ctx.Invoker) return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorMustBeInGame"]));
 				else if (!b.Object.InGame.Contains(ctx.Invoker)) return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyOutGame"]));
@@ -153,7 +165,9 @@ namespace TestBot.Systems.Games
 
 			ComponentInteractionResult startHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				var b = GetBaseDirect();
+				using var holder = GetBase();
+				var b = holder.Object;
+
 				if (ctx.Invoker == b.Creator)
 				{
 					waitForStartButton.Callback();
@@ -164,7 +178,9 @@ namespace TestBot.Systems.Games
 
 			ComponentInteractionResult finishHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				var b = GetBaseDirect();
+				using var holder = GetBase();
+				var b = holder.Object;
+
 				if (ctx.Invoker == b.Creator)
 				{
 					waitForFinishButton.Callback();
@@ -176,9 +192,15 @@ namespace TestBot.Systems.Games
 			AsyncInteractionCallback<MessageButton> adaptate(Func<ComponentInteractionContext<MessageButton>, ComponentInteractionResult> func) => (ctx) => Task.FromResult(func(ctx));
 		}
 
+		public IReadOnlyCollection<IMember> GetInvited()
+		{
+			return (IReadOnlyCollection<IMember>)GetBaseAuto(s => s.Invited);
+		}
+
 		private MessageSendModel CreateReportMessage()
 		{
-			var b = GetBaseDirect();
+			using var holder = GetBase();
+			var b = holder.Object;
 
 			return b.State switch
 			{
@@ -191,7 +213,7 @@ namespace TestBot.Systems.Games
 			};
 		}
 
-		private void Validate(GameModel baseObj)
+		private static void Validate(GameModel baseObj)
 		{
 			foreach (var member in baseObj.Invited)
 				if (member.Server != baseObj.Server)
@@ -199,7 +221,7 @@ namespace TestBot.Systems.Games
 				else if (member == baseObj.Creator)
 					throw new ArgumentException("Some invited member was creator", nameof(baseObj));
 			foreach (var member in baseObj.InGame)
-				if (member.Server != GetBaseDirect().Server)
+				if (member.Server != baseObj.Server)
 					throw new ArgumentException("Some in-game member from other server", nameof(baseObj));
 				else if (member == baseObj.Creator)
 					throw new ArgumentException("Some in-game member was creator", nameof(baseObj));

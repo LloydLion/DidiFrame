@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Data.AutoKeys;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 using DidiFrame.Data.Model;
 using DidiFrame.Utils;
 
@@ -8,22 +8,18 @@ namespace TestBot.Systems.Voice
 	[DataKey(SettingsKeys.VoiceSystem)]
 	public class CreatedVoiceChannel : IStateBasedLifetimeBase<VoiceChannelState>
 	{
-		private static int nextId = 0;
-
-
-		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, MessageAliveHolder.Model report, IMember creator, VoiceChannelState state, int id)
+		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, MessageAliveHolder.Model report, IMember creator, VoiceChannelState state, Guid id)
 		{
 			Name = name;
 			BaseChannel = baseChannel;
 			Creator = creator;
 			State = state;
 			ReportMessage = report;
-			Id = id;
-			nextId = Math.Max(nextId, id); //if id from saved state
+			Guid = id;
 		}
 
 		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, ITextChannel reportChannel, IMember creator)
-			: this(name, baseChannel, new(reportChannel), creator, default, ++nextId) { }
+			: this(name, baseChannel, new(reportChannel), creator, default, Guid.NewGuid()) { }
 
 
 		[ConstructorAssignableProperty(0, "name")] public string Name { get; set; }
@@ -36,19 +32,15 @@ namespace TestBot.Systems.Voice
 
 		[ConstructorAssignableProperty(4, "state")] public VoiceChannelState State { get; set; }
 
-		[ConstructorAssignableProperty(5, "id")] public int Id { get; }
+		[ConstructorAssignableProperty(5, "id")] public Guid Guid { get; }
 
 		public IServer Server => Creator.Server;
 		
 
-		public object Clone() => new CreatedVoiceChannel(Name, BaseChannel, ReportMessage, Creator, State, Id);
-
 		public override bool Equals(object? obj) =>
-			obj is CreatedVoiceChannel channel && channel.Id == Id;
+			obj is CreatedVoiceChannel channel && channel.Guid == Guid;
 
-		public override int GetHashCode() => Id.GetHashCode();
-
-		public bool Equals(IStateBasedLifetimeBase<VoiceChannelState>? other) => Equals(other as object);
+		public override int GetHashCode() => Guid.GetHashCode();
 
 		public static bool operator ==(CreatedVoiceChannel? left, CreatedVoiceChannel? right) =>
 			EqualityComparer<CreatedVoiceChannel>.Default.Equals(left, right);

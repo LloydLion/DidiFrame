@@ -1,7 +1,5 @@
-﻿using DidiFrame.Data.Lifetime;
-using DidiFrame.Entities.Message;
+﻿using DidiFrame.Lifetimes;
 using DidiFrame.Utils;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Voice
 {
@@ -14,36 +12,41 @@ namespace TestBot.Systems.Voice
 		private readonly UIHelper uiHelper;
 
 
-		public CreatedVoiceChannelLifetime(CreatedVoiceChannel baseChannel, IServiceProvider services) : base(services, baseChannel)
+		public CreatedVoiceChannelLifetime(ILogger<CreatedVoiceChannelLifetime> logger, UIHelper uiHelper) : base(logger)
 		{
-			logger = services.GetRequiredService<ILoggerFactory>().CreateLogger<CreatedVoiceChannelLifetime>();
-			uiHelper = services.GetRequiredService<UIHelper>();
-
-			AddReport(new MessageAliveHolder(baseChannel.ReportMessage, true, CreateReport, (_) => { }));
-
-
-			AddTransit(VoiceChannelState.Timeout, VoiceChannelState.Alive, 10000);
-			AddTransit(VoiceChannelState.Alive, null, AliveDisposingTransit);
+			this.logger = logger;
+			this.uiHelper = uiHelper;
 		}
 
 
 		protected async override void OnDispose()
 		{
-			var baseObj = GetBaseDirect();
+			using var baseObj = GetBase();
 
-			try { await baseObj.BaseChannel.DeleteAsync(); }
+			try { await baseObj.Object.BaseChannel.DeleteAsync(); }
 			catch (Exception ex) { logger.Log(LogLevel.Warning, ChannelDeleteErrorID, ex, "Enbale to delete created voice channel"); }
 		}
 
 		public async Task<bool> AliveDisposingTransit(CancellationToken token)
 		{
-			var baseObj = GetBaseDirect();
-
 			await Task.Delay(1000, token);
 
-			return baseObj.BaseChannel.ConnectedMembers.Count == 0;
+			return GetBaseAuto(s => s.BaseChannel.ConnectedMembers.Count) == 0;
 		}
 
-		private MessageSendModel CreateReport() => uiHelper.CreateReport(GetBaseDirect().Name, GetBaseDirect().Creator);
+		private MessageSendModel CreateReport() => uiHelper.CreateReport(GetBaseAuto(s => s.Name), GetBaseAuto(s => s.Creator));
+
+		public IMember GetCreator() => GetBaseAuto(s => s.Creator);
+
+		public string GetName() => GetBaseAuto(s => s.Name);
+
+		protected override void OnBuild(CreatedVoiceChannel initialBase, ILifetimeContext<CreatedVoiceChannel> context)
+		{
+			var controller = new SelectObjectContoller<CreatedVoiceChannel, MessageAliveHolder.Model>(context.AccessBase(), s => s.ReportMessage);
+			AddReport(new MessageAliveHolder(controller, true, CreateReport, (_) => { }));
+
+			AddTransit(VoiceChannelState.Timeout, VoiceChannelState.Alive, 10000);
+			AddTransit(VoiceChannelState.Alive, null, AliveDisposingTransit);
+		}
 	}
 }

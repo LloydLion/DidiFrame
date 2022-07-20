@@ -34,7 +34,7 @@ namespace TestBot.Systems.Streaming
 		{
 			stream.Replan(plannedStartDate);
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamReplanned", stream.GetBaseClone().Name]) });
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamReplanned", stream.GetName()]) });
 		}
 
 		[Command("stream rename")]
@@ -43,7 +43,7 @@ namespace TestBot.Systems.Streaming
 		{
 			stream.Rename(newName);
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamRenamed", stream.GetBaseClone().Name]) });
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamRenamed", stream.GetName()]) });
 		}
 
 		[Command("stream move")]
@@ -54,7 +54,7 @@ namespace TestBot.Systems.Streaming
 
 			stream.Move(newPlace);
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamMoved", stream.GetBaseClone().Name]) });
+			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamMoved", stream.GetName()]) });
 		}
 
 

@@ -1,10 +1,12 @@
-﻿namespace DidiFrame.Lifetimes
+﻿using DidiFrame.Utils;
+
+namespace DidiFrame.Lifetimes
 {
-	public interface ILifetimeContext<TBase> where TBase : ILifetimeBase
+	public interface ILifetimeContext<TBase> where TBase : class, ILifetimeBase
 	{
 		public bool IsNewlyCreated { get; }
 
-		public IDisposable AccessBase(out TBase baseObject);
+		public IObjectController<TBase> AccessBase();
 
 		public void FinalizeLifetime(Exception? ifFailed = null);
 	}

@@ -21,12 +21,7 @@ namespace DidiFrame.Lifetimes
 
 
 		/// <inheritdoc/>
-		public IDisposable AccessBase(out TBase baseObject)
-		{
-			var holder = controller.Open();
-			baseObject = holder.Object;
-			return holder;
-		}
+		public IObjectController<TBase> AccessBase() => controller;
 
 		/// <inheritdoc/>
 		public void FinalizeLifetime(Exception? ifFailed = null)

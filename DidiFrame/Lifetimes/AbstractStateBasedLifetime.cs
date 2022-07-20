@@ -43,20 +43,20 @@ namespace DidiFrame.Lifetimes
 			var lockFree = baseLocker.Lock(this);
 			smFreeze = smFreezeIn;
 
-			var toDipose = GetContext().AccessBase(out var baseObject);
-			var startState = baseObject.State;
+			var baseObject = GetContext().AccessBase().Open();
+			var startState = baseObject.Object.State;
 
-			return new ObjectHolder<TBase>(baseObject, (holder) =>
+			return new ObjectHolder<TBase>(baseObject.Object, (holder) =>
 			{
 				Exception? ex = null;
 
-				if (!startState.Equals(baseObject.State))
+				if (!startState.Equals(baseObject.Object.State))
 				{
 					ex = new InvalidOperationException("Enable to change state in base object of lifetime. State reverted and object saved");
-					baseObject.State = startState;
+					baseObject.Object.State = startState;
 				}
 
-				toDipose.Dispose();
+				baseObject.Dispose();
 				lockFree.Dispose();
 				smFreezeIn.Dispose();
 
@@ -70,10 +70,21 @@ namespace DidiFrame.Lifetimes
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
 		protected ObjectHolder<TBase> GetBase() => GetBase(out _);
 
+		protected TTarget GetBaseAuto<TTarget>(Func<TBase, TTarget> selector)
+		{
+			var baseObj = GetBase();
+			var value = selector(baseObj.Object);
+			baseObj.Dispose();
+			return value;
+		}
+
 		/// <inheritdoc/>
 		public void Run(TBase initinalBase, ILifetimeContext<TBase> context)
 		{
 			this.context = context;
+
+			OnBuild(initinalBase, context);
+
 			machine = smBuilder.Build();
 			machine.StateChanged += Machine_StateChanged;
 			hasBuilt = true;
@@ -84,7 +95,6 @@ namespace DidiFrame.Lifetimes
 				foreach (var handler in item.Value) handler();
 
 			machine.Start(initinalBase.State);
-			
 		}
 
 		private void Machine_StateChanged(IStateMachine<TState> stateMahcine, TState oldState)
@@ -117,6 +127,8 @@ namespace DidiFrame.Lifetimes
 				throw new InvalidOperationException("Enable to get updater before starting");
 			return context ?? throw new ImpossibleVariantException();
 		}
+
+		protected abstract void OnBuild(TBase initialBase, ILifetimeContext<TBase> context);
 
 		/// <summary>
 		/// Gets internal statemahcine

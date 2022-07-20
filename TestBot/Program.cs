@@ -20,7 +20,7 @@ using DidiFrame.AutoInjecting;
 using DidiFrame.Data.Json;
 using DidiFrame.Culture;
 using DidiFrame.GlobalEvents;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 using DidiFrame.UserCommands.Loader.Reflection;
 using DidiFrame.Clients.DSharp;
 using DidiFrame;
@@ -58,7 +58,6 @@ appBuilder.AddServices((services, config) =>
 		.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
 		.AddSettingsBasedCultureProvider()
 		.AddDidiFrameLocalization(optionsAction: s => s.ResourcesPath = "Translations")
-		.AddLifetimes()
 		.AddGlobalEvents()
 		.AddStateBasedStatisticTools()
 		.InjectAutoDependencies(new ReflectionAutoInjector());
