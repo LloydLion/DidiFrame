@@ -1,5 +1,7 @@
 ﻿//#define DEADLOCK_DETECTOR
 
+using System.Collections.Concurrent;
+
 namespace DidiFrame.Utils
 {
 	/// <summary>
@@ -8,11 +10,7 @@ namespace DidiFrame.Utils
 	/// <typeparam name="TLock">Type of synch root objects</typeparam>
 	public class ThreadLocker<TLock> where TLock : class
 	{
-		private readonly List<TLock> locked = new();
-		private readonly IEqualityComparer<TLock> comparer;
-#if DEBUG && DEADLOCK_DETECTOR
-		private readonly Dictionary<TLock, DebugInfo> debug = new();
-#endif
+		private readonly ConcurrentDictionary<TLock, AutoResetEvent> locked;
 
 
 		/// <summary>
@@ -26,23 +24,9 @@ namespace DidiFrame.Utils
 		/// <param name="comparer">Some equality comparer for TLock</param>
 		public ThreadLocker(IEqualityComparer<TLock> comparer)
 		{
-			this.comparer = comparer;
+			locked = new(comparer);
 		}
 
-
-		/// <summary>
-		/// Wait for object unlock
-		/// </summary>
-		/// <param name="obj">Object that need wait</param>
-		/// <returns>Wait task</returns>
-		public async Task AwaitUnlock(TLock obj)
-		{
-			while (true)
-			{
-				lock (locked) { if (locked.Contains(obj) == false) return; }
-				await Task.Delay(50);
-			}
-		}
 
 		/// <summary>
 		/// Locks objects if it has already locked waits for unlock
@@ -51,35 +35,18 @@ namespace DidiFrame.Utils
 		/// <returns>Disposable object that should dispose when need to release object</returns>
 		public IDisposable Lock(TLock obj)
 		{
-			AwaitUnlock(obj).Wait();
-
-			lock (locked)
-			{
-				locked.Add(obj);
-#if DEBUG && DEADLOCK_DETECTOR
-				var stack = new StackTrace();
-				debug.Add(obj, new DebugInfo(stack, stack.GetHashCode(), Thread.CurrentThread, Task.CurrentId));
-#endif
-			}
+			locked.GetOrAdd(obj, _ => new(true)).WaitOne();
 
 			return new Hanlder(this, obj);
 		}
 
+		public AutoResetEvent GetLockObject(TLock obj) => locked.GetOrAdd(obj, _ => new(true));
+
 		private void Unlock(TLock obj)
 		{
-			lock (locked)
-			{
-				locked.RemoveAll(s => comparer.Equals(obj, s));
-#if DEBUG && DEADLOCK_DETECTOR
-			debug.Remove(obj);
-#endif
-			}
+			locked.GetOrAdd(obj, _ => new(true)).Set();
 		}
 
-
-#if DEBUG && DEADLOCK_DETECTOR
-		private record DebugInfo(StackTrace Trace, int StackHash, Thread Thread, int? Task);
-#endif
 
 		private class Hanlder : IDisposable
 		{

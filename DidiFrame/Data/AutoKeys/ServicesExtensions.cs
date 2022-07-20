@@ -1,5 +1,4 @@
-﻿using DidiFrame.Data.Lifetime;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Data.AutoKeys
 {
@@ -17,7 +16,6 @@ namespace DidiFrame.Data.AutoKeys
 		{
 			services.AddTransient(typeof(IServersStatesRepository<>), typeof(AutoKeyStatesRepository<>));
 			services.AddTransient(typeof(IServersSettingsRepository<>), typeof(AutoKeySettingsRepository<>));
-			services.AddTransient(typeof(IServersLifetimesRepository<,>), typeof(AutoKeyLifetimesRepository<,>));
 			return services;
 		}
 	}

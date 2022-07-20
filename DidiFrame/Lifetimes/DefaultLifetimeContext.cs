@@ -1,15 +1,17 @@
-﻿namespace DidiFrame.Lifetimes
+﻿using DidiFrame.Utils;
+
+namespace DidiFrame.Lifetimes
 {
 	public class DefaultLifetimeContext<TBase> : ILifetimeContext<TBase> where TBase : class, ILifetimeBase
 	{
-		private readonly ServerStateHolder<TBase> baseStateHolder;
+		private readonly IObjectController<TBase> controller;
 		private readonly Action<Exception?> finalizer;
 
 
-		public DefaultLifetimeContext(bool isNewlyCreated, ServerStateHolder<TBase> baseStateHolder, Action<Exception?> finalizer)
+		public DefaultLifetimeContext(bool isNewlyCreated, IObjectController<TBase> controller, Action<Exception?> finalizer)
 		{
 			IsNewlyCreated = isNewlyCreated;
-			this.baseStateHolder = baseStateHolder;
+			this.controller = controller;
 			this.finalizer = finalizer;
 		}
 
@@ -21,7 +23,9 @@
 		/// <inheritdoc/>
 		public IDisposable AccessBase(out TBase baseObject)
 		{
-			return baseStateHolder.Open(out baseObject);
+			var holder = controller.Open();
+			baseObject = holder.Object;
+			return holder;
 		}
 
 		/// <inheritdoc/>

@@ -24,7 +24,7 @@ namespace DidiFrame.Statistic
 		/// <inheritdoc/>
 		public void Collect(StatisticAction action, StatisticEntry entry, IServer server, long defaultValue = 0)
 		{
-			using var state = repository.GetState(server);
+			using var state = repository.GetState(server).Open();
 			var sod = state.Object.SingleOrDefault(s => s.EntryKey == entry.Key);
 			if (sod is null)
 			{
@@ -38,7 +38,7 @@ namespace DidiFrame.Statistic
 		/// <inheritdoc/>
 		public long Get(StatisticEntry entry, IServer server, long defaultValue = 0)
 		{
-			using var state = repository.GetState(server);
+			using var state = repository.GetState(server).Open();
 			var sod = state.Object.SingleOrDefault(s => s.EntryKey == entry.Key);
 			return sod?.Value ?? defaultValue;
 		}

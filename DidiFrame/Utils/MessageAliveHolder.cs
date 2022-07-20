@@ -8,10 +8,11 @@ namespace DidiFrame.Utils
 	public class MessageAliveHolder : IDisposable
 	{
 		private readonly Func<MessageSendModel> messageCreator;
-		private readonly Action<IMessage> messageWoker;
+		private readonly Action<IMessage> messageWorker;
 		private readonly static ThreadLocker<MessageAliveHolder> threadLocker = new();
-		private readonly Model model;
+		private readonly IObjectController<Model> model;
 		private readonly bool active;
+		private bool targetMessageState = true;
 
 
 		/// <summary>
@@ -21,20 +22,15 @@ namespace DidiFrame.Utils
 		/// <param name="active">If need display message always unless only by request</param>
 		/// <param name="messageCreator">Creator of message that can create msg's send model by request</param>
 		/// <param name="messageWorker">Post propessor for created message</param>
-		public MessageAliveHolder(Model model, bool active, Func<MessageSendModel> messageCreator, Action<IMessage> messageWorker)
+		public MessageAliveHolder(IObjectController<Model> model, bool active, Func<MessageSendModel> messageCreator, Action<IMessage> messageWorker)
 		{
+			using var instance = model.Open();
 			this.model = model;
 			this.messageCreator = messageCreator;
-			this.messageWoker = messageWorker;
+			this.messageWorker = messageWorker;
 			this.active = active;
-			if (active) model.Channel.MessageDeleted += OnMessageDeleted;
+			if (active) instance.Object.Channel.MessageDeleted += OnMessageDeleted;
 		}
-
-
-		/// <summary>
-		/// Event that fires when message was deleted and automaticly regenerated
-		/// </summary>
-		public event Action<IMessage>? AutoMessageCreated;
 
 
 		/// <summary>
@@ -44,6 +40,9 @@ namespace DidiFrame.Utils
 		{
 			get
 			{
+				if (targetMessageState == false)
+					throw new InvalidOperationException("Message has been deleted manually");
+
 				using (threadLocker.Lock(this))
 				{
 					if (Channel.HasMessage(PossibleMessageId) == false) CheckAsync().Wait();
@@ -52,23 +51,36 @@ namespace DidiFrame.Utils
 			}
 		}
 
-		/// <summary>
-		/// Processes message through given message worker
-		/// </summary>
-		public void ProcessMessage()
+
+		public async Task StartupMessageAsync()
 		{
-			messageWoker(Channel.GetMessage(PossibleMessageId));
+			if (IsExist) messageWorker(Channel.GetMessage(PossibleMessageId));
+			else await RestoreAsync();
 		}
 
 		/// <summary>
 		/// Id of message that can exist but can dotn't exist
 		/// </summary>
-		public ulong PossibleMessageId => model.PossibleMessageId;
+		public ulong PossibleMessageId
+		{
+			get
+			{
+				using var instance = model.Open();
+				return instance.Object.PossibleMessageId;
+			}
+		}
 
 		/// <summary>
 		/// Target channel
 		/// </summary>
-		public ITextChannelBase Channel => model.Channel;
+		public ITextChannelBase Channel
+		{
+			get
+			{
+				using var instance = model.Open();
+				return instance.Object.Channel;
+			}
+		}
 
 		/// <summary>
 		/// If need display message always unless only by request
@@ -89,8 +101,27 @@ namespace DidiFrame.Utils
 		{
 			using (threadLocker.Lock(this))
 			{
+				if (targetMessageState == false) return Task.CompletedTask;
+				targetMessageState = false;
+
 				if (Channel.HasMessage(PossibleMessageId)) return Channel.GetMessage(PossibleMessageId).DeleteAsync();
 				else return Task.CompletedTask;
+			}
+		}
+
+		public async Task RestoreAsync()
+		{
+			using (threadLocker.Lock(this))
+			{
+				if (targetMessageState == true) return;
+				targetMessageState = true;
+
+				if (Channel.HasMessage(PossibleMessageId) == false)
+				{
+					using var instance = model.Open();
+					var message = await SendMessageAsync();
+					instance.Object.PossibleMessageId = message.Id;
+				}
 			}
 		}
 
@@ -102,13 +133,17 @@ namespace DidiFrame.Utils
 		{
 			using (threadLocker.Lock(this))
 			{
+				if (targetMessageState == false) return;
+
+				using var instance = model.Open();
+
 				if (Channel.HasMessage(PossibleMessageId) == false)
-					model.PossibleMessageId = (await SendMessageAsync()).Id;
+					instance.Object.PossibleMessageId = (await SendMessageAsync()).Id;
 				else
 				{
-					var message = Channel.GetMessage(model.PossibleMessageId);
+					var message = Channel.GetMessage(instance.Object.PossibleMessageId);
 					await message.ModifyAsync(messageCreator(), true);
-					messageWoker(message);
+					messageWorker(message);
 				}
 			}
 		}
@@ -117,13 +152,14 @@ namespace DidiFrame.Utils
 		{
 			var send = messageCreator();
 			var msg = await Channel.SendMessageAsync(send);
-			messageWoker(msg);
+			messageWorker(msg);
 			return msg;
 		}
 
 		private void OnMessageDeleted(IClient _, IMessage message)
 		{
 			if (PossibleMessageId != message.Id) return;
+			if (targetMessageState == false) return;
 
 			using (threadLocker.Lock(this))
 			{
@@ -132,24 +168,21 @@ namespace DidiFrame.Utils
 		}
 
 		/// <inheritdoc/>
-		public async void Dispose()
+		public void Dispose()
 		{
-			if(active) Channel.MessageDeleted -= OnMessageDeleted;
+			if (targetMessageState == true)
+				throw new InvalidOperationException("Delete message manually before dispose alive holder");
+			if (active) Channel.MessageDeleted -= OnMessageDeleted;
 			GC.SuppressFinalize(this);
-			await DeleteAsync();
 		}
 
-		/// <summary>
-		/// Checks message existance and if dotn't exist creates, calls AutoMessageCreated event
-		/// </summary>
-		/// <returns>Wait task</returns>
-		public async Task CheckAsync()
+		private async Task CheckAsync()
 		{
 			if (Channel.HasMessage(PossibleMessageId) == false)
 			{
+				using var instance = model.Open();
 				var message = await SendMessageAsync();
-				model.PossibleMessageId = message.Id;
-				AutoMessageCreated?.Invoke(message);
+				instance.Object.PossibleMessageId = message.Id;
 			}
 		}
 

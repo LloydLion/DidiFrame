@@ -51,6 +51,7 @@ namespace DidiFrame.Lifetimes
 				if (hasReport)
 				{
 					var update = smFreeze.GetResult();
+					//If state chaged StateChanged event handler will update report
 					if (update.HasStateUpdated == false) await GetReport().Update();
 				}
 			});
@@ -74,6 +75,7 @@ namespace DidiFrame.Lifetimes
 				if (hasReport)
 				{
 					var update = internalFreeze.GetResult();
+					//If state chaged StateChanged event handler will update report
 					if (update.HasStateUpdated == false) await GetReport().Update();
 				}
 			});
@@ -85,20 +87,25 @@ namespace DidiFrame.Lifetimes
 		/// <param name="state">Initial statemachine state</param>
 		protected async override void OnRun(TState state)
 		{
-			hasBuilt = true;
-
-			if (hasReport)
+			try
 			{
-				var report = GetReport();
+				hasBuilt = true;
 
-				report.AutoMessageCreated += OnReportCreated;
-				GetStateMachine().StateChanged += OnStateChanged;
+				if (hasReport)
+				{
+					var report = GetReport();
 
-				if (report.IsExist) report.ProcessMessage();
-				else await report.CheckAsync();
+					GetStateMachine().StateChanged += OnStateChanged;
+
+					await report.StartupMessageAsync();
+				}
+
+				OnRunInternal(state);
 			}
-
-			OnRunInternal(state);
+			catch (Exception ex)
+			{
+				GetContext().FinalizeLifetime(ex);
+			}
 		}
 
 		/// <summary>
@@ -108,12 +115,14 @@ namespace DidiFrame.Lifetimes
 		protected virtual void OnRunInternal(TState state) { }
 
 		//Will has subscribed only if has report
-		private void OnReportCreated(IMessage obj) => .Update(this);
-
-		//Will has subscribed only if has report
 		private void OnStateChanged(IStateMachine<TState> sm, TState oldState)
 		{
-			if (GetStateMachine().CurrentState is null) GetReport().Dispose();
+			if (GetStateMachine().CurrentState is null)
+			{
+				var report = GetReport();
+				report.DeleteAsync().Wait();
+				report.Dispose();
+			}
 			else GetReport().Update().Wait();
 		}
 

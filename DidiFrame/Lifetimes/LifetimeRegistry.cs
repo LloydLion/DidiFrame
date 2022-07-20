@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using DidiFrame.Utils;
+using System.Collections.Concurrent;
 
 namespace DidiFrame.Lifetimes
 {
@@ -30,11 +31,9 @@ namespace DidiFrame.Lifetimes
 		public void RestoreLifetimes(IServer server)
 		{
 			var state = states.GetState(server);
-			using (state.Open(out var collection))
-			{
-				foreach (var item in collection)
-					CreateLifetimeInstance(item, true);
-			}
+			using var collection = state.Open();
+			foreach (var item in collection.Object)
+				CreateLifetimeInstance(item, true);
 		}
 
 		public TLifetime RegistryLifetime(TBase baseObject) => CreateLifetimeInstance(baseObject, false);
@@ -52,20 +51,18 @@ namespace DidiFrame.Lifetimes
 		private TLifetime CreateLifetimeInstance(TBase baseObject, bool isRestore)
 		{
 			var state = states.GetState(baseObject.Server);
-			using (state.Open(out var collection))
-			{
-				var lifetime = lifetimeFactory.Create();
-				var sls = lifetimes.GetOrAdd(baseObject.Server, _ => new());
-				collection.Add(baseObject);
-				sls.Lifetimes.TryAdd(baseObject.Guid, lifetime);
+			using var collection = state.Open();
+			var lifetime = lifetimeFactory.Create();
+			var sls = lifetimes.GetOrAdd(baseObject.Server, _ => new());
+			collection.Object.Add(baseObject);
+			sls.Lifetimes.TryAdd(baseObject.Guid, lifetime);
 
-				var holder = new BaseObjectHolder(state, sls, baseObject.Guid);
-				var context = new DefaultLifetimeContext<TBase>(!isRestore, holder, holder.FinalizeObject);
+			var holder = new BaseObjectHolder(state, sls, baseObject.Guid);
+			var context = new DefaultLifetimeContext<TBase>(!isRestore, holder, holder.FinalizeObject);
 
-				lifetime.Run(context);
+			lifetime.Run(baseObject, context);
 
-				return lifetime;
-			}
+			return lifetime;
 		}
 
 
@@ -80,14 +77,14 @@ namespace DidiFrame.Lifetimes
 			public ConcurrentDictionary<Guid, TLifetime> Lifetimes { get; }
 		}
 
-		private class BaseObjectHolder : ServerStateHolder<TBase>
+		private class BaseObjectHolder : IObjectController<TBase>
 		{
-			private readonly ServerStateHolder<ICollection<TBase>> state;
+			private readonly IObjectController<ICollection<TBase>> state;
 			private readonly ServerLifetimeState sls;
 			private readonly Guid baseId;
 
 
-			public BaseObjectHolder(ServerStateHolder<ICollection<TBase>> state, ServerLifetimeState sls, Guid baseId)
+			public BaseObjectHolder(IObjectController<ICollection<TBase>> state, ServerLifetimeState sls, Guid baseId)
 			{
 				this.state = state;
 				this.sls = sls;
@@ -95,29 +92,27 @@ namespace DidiFrame.Lifetimes
 			}
 
 
-			public override IDisposable Open(out TBase model)
+			public ObjectHolder<TBase> Open()
 			{
-				var disToRet = state.Open(out var collection);
+				var holder = state.Open();
 
 				try
 				{
-					model = collection.Single(s => s.Guid == baseId);
-					return disToRet;
+					var model = holder.Object.Single(s => s.Guid == baseId);
+					return new ObjectHolder<TBase>(model, _ => { holder.Dispose(); });
 				}
 				catch (Exception)
-				{ 
-					disToRet.Dispose();
+				{
+					holder.Dispose();
 					throw;
 				}
 			}
 
 			public void FinalizeObject(Exception? _1)
 			{
-				using (state.Open(out var collection))
-				{
-					collection.Remove(collection.Single(s => s.Guid == baseId));
-					sls.Lifetimes.TryRemove(baseId, out _);
-				}
+				using var collection = state.Open();
+				collection.Object.Remove(collection.Object.Single(s => s.Guid == baseId));
+				sls.Lifetimes.TryRemove(baseId, out _);
 			}
 		}
 	}
