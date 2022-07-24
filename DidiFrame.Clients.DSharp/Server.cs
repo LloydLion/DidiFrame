@@ -363,8 +363,6 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnMessageDeleted(DiscordClient sender, MessageDeleteEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-			if (e.Message.MessageType != MessageType.Default) return Task.CompletedTask;
-			if (e.Message.Author.Id == client.SelfAccount.Id) return Task.CompletedTask;
 
 			lock (messages.Lock(e.Channel))
 			{
@@ -372,7 +370,7 @@ namespace DidiFrame.Clients.DSharp
 				messages.DeleteMessage(e.Message.Id, e.Channel);
 				dispatcherFactory.DisposeInstance(e.Message.Id);
 				client.CultureProvider.SetupCulture(this);
-				SourceClient.OnMessageDeleted(new Message(e.Message.Id, () => e.Message, channel));
+				SourceClient.OnMessageDeleted(e.Message.Id, channel);
 			}
 			return Task.CompletedTask;
 		}
@@ -415,9 +413,9 @@ namespace DidiFrame.Clients.DSharp
 				var channel = (TextChannelBase)GetChannel(e.Channel.Id);
 				messages.AddMessage(e.Message);
 				var id = e.Message.Id;
-				var message = new Message(id, () => messages.GetMessage(id, channel.BaseChannel), channel);
+				var messageModel = new Message(id, () => messages.GetMessage(id, channel.BaseChannel), channel);
 				client.CultureProvider.SetupCulture(this);
-				SourceClient.OnMessageCreated(message, false);
+				SourceClient.OnMessageCreated(messageModel, false);
 			}
 
 			return Task.CompletedTask;
@@ -584,10 +582,10 @@ namespace DidiFrame.Clients.DSharp
 			}
 
 
-			public void Handle(IClient client, IMessage message)
+			public void Handle(IClient client, ITextChannelBase textChannel, ulong messageId)
 			{
-				if (message.TextChannel.Server.Id == serverId)
-					handler.Invoke(client, message);
+				if (textChannel.Server.Id == serverId)
+					handler.Invoke(client, textChannel, messageId);
 			}
 		}
 

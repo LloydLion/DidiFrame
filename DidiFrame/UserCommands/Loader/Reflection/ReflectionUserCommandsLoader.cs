@@ -1,5 +1,6 @@
 ﻿using DidiFrame.UserCommands.PreProcessing;
 using DidiFrame.Utils.ExtendableModels;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -24,16 +25,16 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// <param name="stringLocalizerFactory">Localizer factory to provide localizers for commands</param>
 		/// <param name="converter">Converter to resolve complex arguments</param>
 		/// <param name="subloaders">Subloaders that extends loader functional</param>
-		public ReflectionUserCommandsLoader(IReadOnlyCollection<ICommandsModule> modules,
+		public ReflectionUserCommandsLoader(IEnumerable<ICommandsModule> modules,
 			ILogger<ReflectionUserCommandsLoader> logger,
 			IStringLocalizerFactory stringLocalizerFactory,
 			IUserCommandContextConverter converter,
-			IReadOnlyCollection<IReflectionCommandAdditionalInfoLoader> subloaders,
+			IEnumerable<IReflectionCommandAdditionalInfoLoader> subloaders,
 			BehaviorModel? behaviorModel = null)
 		{
-			this.modules = modules;
+			this.modules = modules.ToArray();
 			behaviorModel = this.behaviorModel = behaviorModel ?? new BehaviorModel();
-			behaviorModel.Init(logger, stringLocalizerFactory, converter, subloaders);
+			behaviorModel.Init(logger, stringLocalizerFactory, converter, subloaders.ToArray());
 		}
 
 
@@ -101,7 +102,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 						{
 							try
 							{
-								var command = LoadCommand(Delegate.CreateDelegate(type, module, method));
+								var command = LoadCommand(method, module);
 
 								target.AddCommand(module.ReprocessCommand(command));
 
@@ -116,7 +117,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				}
 			}
 
-			protected virtual UserCommandArgument LoadArgument(Delegate method, ParameterInfo parameter)
+			protected virtual UserCommandArgument LoadArgument(MethodInfo method, ParameterInfo parameter, ICommandsModule module)
 			{
 				var ptype = parameter.ParameterType;
 				UserCommandArgument.Type[] types;
@@ -157,37 +158,35 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				return new UserCommandArgument(ptype.IsArray, types, ptype, parameter.Name ?? "no_name", new SimpleModelAdditionalInfoProvider(argAdditionalInfo));
 			}
 
-			protected virtual UserCommandInfo LoadCommand(Delegate method)
+			protected virtual UserCommandInfo LoadCommand(MethodInfo method, ICommandsModule instance)
 			{
-				var instance = method.Target ?? throw new NullReferenceException("Method target can't be null");
 				var type = instance.GetType();
 				var handlerLocalizer = StringLocalizerFactory.Create(type);
 
-				var methodInfo = method.Method;
-				var commandAttr = (CommandAttribute)methodInfo.GetCustomAttributes(typeof(CommandAttribute), false)[0];
+				var commandAttr = method.GetCustomAttribute<CommandAttribute>() ?? throw new ImpossibleVariantException();
 				var commandName = commandAttr.Name;
-				var isSync = !methodInfo.ReturnType.IsAssignableTo(typeof(Task));
+				var isSync = !method.ReturnType.IsAssignableTo(typeof(Task));
 
-				var @params = methodInfo.GetParameters();
+				var @params = method.GetParameters();
 				var args = new UserCommandArgument[@params.Length - 1];
 				for (int i = 1; i < @params.Length; i++)
-					args[i - 1] = LoadArgument(method, @params[i]);
+					args[i - 1] = LoadArgument(method, @params[i], instance);
 
 				var additionalInfo = new Dictionary<Type, object> { { typeof(IStringLocalizer), handlerLocalizer } };
 
-				var filters = methodInfo.GetCustomAttributes<InvokerFilter>().Select(s => s.Filter).ToArray();
+				var filters = method.GetCustomAttributes<InvokerFilter>().Select(s => s.Filter).ToArray();
 				additionalInfo.Add(typeof(IReadOnlyCollection<IUserCommandInvokerFilter>), filters);
 
-				var description = methodInfo.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
+				var description = method.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
 				if (description is not null) additionalInfo.Add(description.GetType(), description);
 
 				foreach (var infoloader in Subloaders)
 				{
-					var info = infoloader.ProcessMethod(methodInfo);
+					var info = infoloader.ProcessMethod(method);
 					foreach (var item in info) additionalInfo.Add(item.Key, item.Value);
 				}
 
-				var handler = CreateHandler(methodInfo, instance, isSync, commandAttr.ReturnLocaleKey is not null ? handlerLocalizer[commandAttr.ReturnLocaleKey] : (string?)null);
+				var handler = CreateHandler(method, instance, isSync, commandAttr.ReturnLocaleKey is not null ? handlerLocalizer[commandAttr.ReturnLocaleKey] : (string?)null);
 				var readyInfo = new UserCommandInfo(commandName, handler, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
 
 				return readyInfo;
@@ -281,6 +280,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				/// Method is not command
 				/// </summary>
 				NoCommand
+			
 			}
 		}
 	}

@@ -73,7 +73,7 @@ namespace DidiFrame.Clients.DSharp
 				{
 					case CachePolicy.Disable:
 						{
-							var message = GetMessage(msgId, textChannel);
+
 						}
 						break;
 					case CachePolicy.CacheAll or CachePolicy.CacheChannelByRequest or CachePolicy.CacheAllWithoutREST or CachePolicy.CacheChannelByRequestWithoutREST:
@@ -160,7 +160,12 @@ namespace DidiFrame.Clients.DSharp
 						textChannel.GetMessageAsync(id, true).Wait();
 						return true;
 					}
-					catch (NotFoundException) { return false; }
+					catch (AggregateException aex)
+					{
+						if (aex.InnerExceptions.Count == 1 && aex.InnerExceptions.Single() is NotFoundException)
+							return false;
+						else throw;
+					}
 				});
 			}
 		}

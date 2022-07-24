@@ -2,17 +2,19 @@
 
 namespace DidiFrame.Lifetimes
 {
-	public class DefaultLifetimeContext<TBase> : ILifetimeContext<TBase> where TBase : class, ILifetimeBase
+	internal class DefaultLifetimeContext<TBase> : ILifetimeContext<TBase> where TBase : class, ILifetimeBase
 	{
 		private readonly IObjectController<TBase> controller;
-		private readonly Action<Exception?> finalizer;
+		private readonly Action finalizer;
+		private readonly Action<Exception, bool> loggingAction;
 
 
-		public DefaultLifetimeContext(bool isNewlyCreated, IObjectController<TBase> controller, Action<Exception?> finalizer)
+		public DefaultLifetimeContext(bool isNewlyCreated, IObjectController<TBase> controller, Action finalizer, Action<Exception, bool> loggingAction)
 		{
 			IsNewlyCreated = isNewlyCreated;
 			this.controller = controller;
 			this.finalizer = finalizer;
+			this.loggingAction = loggingAction;
 		}
 
 
@@ -24,9 +26,16 @@ namespace DidiFrame.Lifetimes
 		public IObjectController<TBase> AccessBase() => controller;
 
 		/// <inheritdoc/>
-		public void FinalizeLifetime(Exception? ifFailed = null)
+		public void CrashPipeline(Exception ex, bool isInvalidBase)
 		{
-			finalizer(ifFailed);
+			FinalizeLifetime();
+			loggingAction(ex, isInvalidBase);
+		}
+
+		/// <inheritdoc/>
+		public void FinalizeLifetime()
+		{
+			finalizer();
 		}
 	}
 }

@@ -10,7 +10,8 @@ namespace DidiFrame.UserCommands.Models.FluentValidation
 			RuleForEach(s => s.Arguments).SetValidator(cmdArgumentValidator);
 			RuleForEach(s => s.Arguments.Select((a, i) => new { Value = a, Index = i }).ToArray())
 				.Must((obj, s) => s.Index == obj.Arguments.Count - 1 || !s.Value.IsArray)
-				.WithMessage("Argument at [{CollectionIndex}] is array, but isn't last");
+				.WithMessage("Argument at [{CollectionIndex}] is array, but isn't last")
+				.OverridePropertyName(nameof(UserCommandInfo.Arguments));
 		}
 	}
 }

@@ -33,5 +33,17 @@
 			callback(this);
 			GC.SuppressFinalize(this);
 		}
+
+		public TSelect SelectAndClose<TSelect>(Func<TObject, TSelect> selector)
+		{
+			var value = selector(Object);
+			Dispose();
+			return value;
+		}
+
+		public ObjectHolder<TSelect> SelectHolder<TSelect>(Func<TObject, TSelect> selector) where TSelect : class
+		{
+			return new ObjectHolder<TSelect>(selector(Object), _ => Dispose());
+		}
 	}
 }

@@ -7,7 +7,7 @@ namespace DidiFrame.Entities.FluentValidation
 	{
 		public MessageComponentRowValidator(IValidator<IInteractionComponent> iicValidator)
 		{
-			RuleFor(s => s.Components).NotEmpty().Must(s => s.Count > 5).WithMessage("Components row is empty or contains more then 5 components");
+			RuleFor(s => s.Components).NotEmpty().Must(s => s.Count <= 5).WithMessage("Components row is empty or contains more then 5 components");
 			RuleForEach(s => s.Components).SetValidator(new ComponentValidator(iicValidator));
 		}
 

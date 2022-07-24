@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01149" />
+    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01159" />
   </ItemGroup>
 
   <ItemGroup>

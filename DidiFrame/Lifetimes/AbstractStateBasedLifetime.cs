@@ -1,6 +1,5 @@
 ﻿using DidiFrame.Utils;
 using DidiFrame.Utils.StateMachine;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Lifetimes
 {
@@ -17,9 +16,19 @@ namespace DidiFrame.Lifetimes
 		private readonly StateMachineBuilder<TState> smBuilder;
 		private IStateMachine<TState>? machine;
 		private bool hasBuilt = false;
+		private Guid? guid;
+		private IServer? server;
 		private readonly Dictionary<TState, List<Action>> startupHandlers = new();
 		private readonly List<Action<TState>> stateHandlers = new();
-		private static readonly ThreadLocker<AbstractStateBasedLifetime<TState, TBase>> baseLocker = new();
+
+
+		protected bool IsNewlyCreated => GetContext().IsNewlyCreated;
+
+		protected bool IsFinalized { get; private set; }
+
+		public Guid Guid => guid ?? throw new InvalidOperationException("Enable to get GUID before starting");
+
+		public IServer Server => server ?? throw new InvalidOperationException("Enable to get GUID before starting");
 
 
 		/// <summary>
@@ -37,10 +46,9 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		/// <param name="smFreeze">Statemachine freeze information, it will be automaticly disposed</param>
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
-		protected ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
+		protected virtual ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
 		{
 			var smFreezeIn = GetStateMachine().Freeze();
-			var lockFree = baseLocker.Lock(this);
 			smFreeze = smFreezeIn;
 
 			var baseObject = GetContext().AccessBase().Open();
@@ -57,7 +65,6 @@ namespace DidiFrame.Lifetimes
 				}
 
 				baseObject.Dispose();
-				lockFree.Dispose();
 				smFreezeIn.Dispose();
 
 				if (ex is not null) throw ex;
@@ -70,26 +77,51 @@ namespace DidiFrame.Lifetimes
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
 		protected ObjectHolder<TBase> GetBase() => GetBase(out _);
 
-		protected TTarget GetBaseAuto<TTarget>(Func<TBase, TTarget> selector)
+		protected TTarget GetBaseProperty<TTarget>(Func<TBase, TTarget> selector)
 		{
-			var baseObj = GetBase();
+			var baseObj = GetReadOnlyBase();
 			var value = selector(baseObj.Object);
 			baseObj.Dispose();
 			return value;
+		}
+
+		protected virtual ObjectHolder<TBase> GetReadOnlyBase()
+		{
+			var objectHolder = GetContext().AccessBase().Open();
+			var baseObject = objectHolder.Object;
+			var prevHashCode = baseObject.GetHashCode();
+
+			return new ObjectHolder<TBase>(baseObject, _ =>
+			{
+				objectHolder.Dispose();
+				if (prevHashCode != baseObject.GetHashCode())
+				{
+					var ex = new InvalidOperationException("Error, base was changed in readonly base accessor. Lifetime is collapsing");
+					GetContext().CrashPipeline(ex, false);
+					throw ex;
+				}
+			});
+		}
+
+		protected IObjectController<TBase> GetBaseController(bool asReadOnly = true)
+		{
+			return new BaseWrapController(this, asReadOnly);
 		}
 
 		/// <inheritdoc/>
 		public void Run(TBase initinalBase, ILifetimeContext<TBase> context)
 		{
 			this.context = context;
+			server = initinalBase.Server;
+			guid = initinalBase.Guid;
 
-			OnBuild(initinalBase, context);
+			OnBuild(initinalBase);
 
 			machine = smBuilder.Build();
 			machine.StateChanged += Machine_StateChanged;
 			hasBuilt = true;
 
-			OnRun(initinalBase.State);
+			OnRun(initinalBase.State, initinalBase);
 
 			foreach (var item in startupHandlers)
 				foreach (var handler in item.Value) handler();
@@ -102,12 +134,11 @@ namespace DidiFrame.Lifetimes
 			var cs = stateMahcine.CurrentState;
 			if (cs.HasValue == false)
 			{
-				OnDispose();
-				GetContext().FinalizeLifetime();
+				FinalizeLifetime();
 			}
 			else
 			{
-				using (var b = GetBase())
+				using (var b = GetContext().AccessBase().Open()) //It is not bug
 				{
 					b.Object.State = cs.Value;
 				}
@@ -121,14 +152,51 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		/// <returns>The cached updater</returns>
 		/// <exception cref="InvalidOperationException">If invoked before Run() call (example in ctor)</exception>
-		protected ILifetimeContext<TBase> GetContext()
+		private ILifetimeContext<TBase> GetContext()
 		{
-			if (!hasBuilt)
-				throw new InvalidOperationException("Enable to get updater before starting");
-			return context ?? throw new ImpossibleVariantException();
+			lock (this)
+			{
+				if (!hasBuilt)
+					throw new InvalidOperationException("Enable to get context before starting");
+				return context ?? throw new ImpossibleVariantException();
+			}
 		}
 
-		protected abstract void OnBuild(TBase initialBase, ILifetimeContext<TBase> context);
+		protected void ThrowIfFinalized()
+		{
+			lock (this)
+			{
+				if (IsFinalized)
+					throw new InvalidOperationException("Lifetime is finalized");
+			}
+		}
+
+		protected abstract void OnBuild(TBase initialBase);
+
+		protected void FinalizeLifetime()
+		{
+			lock (this)
+			{
+				if (IsFinalized == false)
+				{
+					IsFinalized = true;
+					OnDispose();
+					GetContext().FinalizeLifetime();
+				}
+			}
+		}
+
+		protected void CrashLifetime(Exception exception, bool isInvalidBase)
+		{
+			lock (this)
+			{
+				if (IsFinalized == false)
+				{
+					IsFinalized = true;
+					GetContext().CrashPipeline(exception, isInvalidBase);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Gets internal statemahcine
@@ -146,7 +214,7 @@ namespace DidiFrame.Lifetimes
 		/// Event handler. Calls on start. You mustn't call base.OnRun(TState)
 		/// </summary>
 		/// <param name="state">Initial statemachine state</param>
-		protected virtual void OnRun(TState state)
+		protected virtual void OnRun(TState state, TBase initialBase)
 		{
 
 		}
@@ -231,7 +299,7 @@ namespace DidiFrame.Lifetimes
 		protected void AddStartup(TState state, Action handler)
 		{
 			ThrowIfBuilt();
-			if(startupHandlers.ContainsKey(state) == false) startupHandlers.Add(state, new());
+			if (startupHandlers.ContainsKey(state) == false) startupHandlers.Add(state, new());
 			startupHandlers[state].Add(handler);
 		}
 
@@ -245,6 +313,26 @@ namespace DidiFrame.Lifetimes
 			ThrowIfBuilt();
 			stateHandlers.Add((old) =>
 				{ if (GetStateMachine().CurrentState.Equals(state)) handler.Invoke(old); });
+		}
+
+
+		private class BaseWrapController : IObjectController<TBase>
+		{
+			private readonly AbstractStateBasedLifetime<TState, TBase> lifetime;
+			private readonly bool asReadOnly;
+
+
+			public BaseWrapController(AbstractStateBasedLifetime<TState, TBase> lifetime, bool asReadOnly)
+			{
+				this.lifetime = lifetime;
+				this.asReadOnly = asReadOnly;
+			}
+
+
+			public ObjectHolder<TBase> Open()
+			{
+				return asReadOnly ? lifetime.GetReadOnlyBase() : lifetime.GetBase();
+			}
 		}
 	}
 }

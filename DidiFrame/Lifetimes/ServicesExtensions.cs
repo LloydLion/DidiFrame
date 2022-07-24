@@ -25,7 +25,8 @@ namespace DidiFrame.Lifetimes
 				new LifetimeRegistry<TLifetime, TBase>
 				(
 					provider.GetRequiredService<IServersStatesRepositoryFactory>().Create<ICollection<TBase>>(stateKey),
-					provider.GetRequiredService<TFactory>()
+					provider.GetRequiredService<ILifetimeFactory<TLifetime, TBase>>(),
+					provider.GetRequiredService<ILogger<LifetimeRegistry<TLifetime, TBase>>>()
 				));
 
 			services.AddSingleton<ILifetimesLoader>(sp => sp.GetRequiredService<ILifetimesRegistry<TLifetime, TBase>>());

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 
 namespace DidiFrame.Lifetimes
 {
+	//TODO: Add logging
 	/// <summary>
 	/// Simple implementation of DidiFrame.Lifetimes.ILifetimesRegistry`2
 	/// </summary>
@@ -10,9 +11,13 @@ namespace DidiFrame.Lifetimes
 	/// <typeparam name="TBase">Type of base object of that lifetime</typeparam>
 	public class LifetimeRegistry<TLifetime, TBase> : ILifetimesRegistry<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
+		private static readonly EventId LifetimeCrachedID = new(11, "LifetimeCrashed");
+
+
 		private readonly IServersStatesRepository<ICollection<TBase>> states;
 		private readonly ILifetimeFactory<TLifetime, TBase> lifetimeFactory;
-		private readonly ConcurrentDictionary<IServer, ServerLifetimeState> lifetimes;
+		private readonly ILogger<LifetimeRegistry<TLifetime, TBase>> logger;
+		private readonly ConcurrentDictionary<IServer, ServerLifetimeState> lifetimes = new();
 
 
 		/// <summary>
@@ -20,10 +25,11 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		/// <param name="repository">Repository for push lifetimes</param>
 		/// <param name="baseRepository">Repository to provide states</param>
-		public LifetimeRegistry(IServersStatesRepository<ICollection<TBase>> states, ILifetimeFactory<TLifetime, TBase> lifetimeFactory)
+		public LifetimeRegistry(IServersStatesRepository<ICollection<TBase>> states, ILifetimeFactory<TLifetime, TBase> lifetimeFactory, ILogger<LifetimeRegistry<TLifetime, TBase>> logger)
 		{
 			this.states = states;
 			this.lifetimeFactory = lifetimeFactory;
+			this.logger = logger;
 		}
 
 
@@ -31,12 +37,61 @@ namespace DidiFrame.Lifetimes
 		public void RestoreLifetimes(IServer server)
 		{
 			var state = states.GetState(server);
+			var failed = new List<TBase>();
+
 			using var collection = state.Open();
+
 			foreach (var item in collection.Object)
-				CreateLifetimeInstance(item, true);
+			{
+				var lifetime = lifetimeFactory.Create();
+				var sls = lifetimes.GetOrAdd(item.Server, _ => new());
+				sls.Lifetimes.TryAdd(item.Guid, lifetime);
+
+				var holder = new BaseObjectHolder(state, sls, item.Guid);
+				var context = new DefaultLifetimeContext<TBase>(false, holder, holder.FinalizeObject, LogError);
+
+				try
+				{
+					lifetime.Run(item, context);
+				}
+				catch (Exception)
+				{
+					//If lifetime will have called context.Finalize pipeline all will ok
+					failed.Add(item);
+					sls.Lifetimes.TryRemove(item.Guid, out _);
+				}
+			}
+
+			foreach (var item in failed) collection.Object.Remove(item);
 		}
 
-		public TLifetime RegistryLifetime(TBase baseObject) => CreateLifetimeInstance(baseObject, false);
+		public TLifetime RegistryLifetime(TBase baseObject)
+		{
+			var state = states.GetState(baseObject.Server);
+
+			using var collection = state.Open();
+
+			var lifetime = lifetimeFactory.Create();
+			var sls = lifetimes.GetOrAdd(baseObject.Server, _ => new());
+			collection.Object.Add(baseObject);
+			sls.Lifetimes.TryAdd(baseObject.Guid, lifetime);
+
+			var holder = new BaseObjectHolder(state, sls, baseObject.Guid);
+			var context = new DefaultLifetimeContext<TBase>(true, holder, holder.FinalizeObject, LogError);
+
+			try
+			{
+				lifetime.Run(baseObject, context);
+				return lifetime;
+			}
+			catch (Exception)
+			{
+				//If lifetime will have called context.Finalize pipeline all will ok
+				collection.Object.Remove(baseObject);
+				sls.Lifetimes.TryRemove(baseObject.Guid, out _);
+				throw;
+			}
+		}
 
 		public TLifetime GetLifetime(IServer server, Guid baseGuid)
 		{
@@ -48,21 +103,9 @@ namespace DidiFrame.Lifetimes
 			return lifetimes.GetOrAdd(server, _ => new()).Lifetimes.Values.ToArray();
 		}
 
-		private TLifetime CreateLifetimeInstance(TBase baseObject, bool isRestore)
+		private void LogError(Exception exception, bool isInvalidModel)
 		{
-			var state = states.GetState(baseObject.Server);
-			using var collection = state.Open();
-			var lifetime = lifetimeFactory.Create();
-			var sls = lifetimes.GetOrAdd(baseObject.Server, _ => new());
-			collection.Object.Add(baseObject);
-			sls.Lifetimes.TryAdd(baseObject.Guid, lifetime);
-
-			var holder = new BaseObjectHolder(state, sls, baseObject.Guid);
-			var context = new DefaultLifetimeContext<TBase>(!isRestore, holder, holder.FinalizeObject);
-
-			lifetime.Run(baseObject, context);
-
-			return lifetime;
+			logger.Log(LogLevel.Error, LifetimeCrachedID, exception, "Lifetime has crashed! Model was {InvalidStatus}", isInvalidModel ? "Invalid" : "Valid");
 		}
 
 
@@ -108,7 +151,7 @@ namespace DidiFrame.Lifetimes
 				}
 			}
 
-			public void FinalizeObject(Exception? _1)
+			public void FinalizeObject()
 			{
 				using var collection = state.Open();
 				collection.Object.Remove(collection.Object.Single(s => s.Guid == baseId));

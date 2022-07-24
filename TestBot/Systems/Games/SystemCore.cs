@@ -17,7 +17,7 @@ namespace TestBot.Systems.Games
 
 		public void CancelGame(IMember creator, string name)
 		{
-			GetGame(creator, name).Close();
+			GetGame(creator, name).CloseAsync();
 		}
 
 		public GameLifetime CreateGame(IMember creator, string name, bool waitEveryoneInvited, string description, IReadOnlyCollection<IMember> invited, int startAtMembers)

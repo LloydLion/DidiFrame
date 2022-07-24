@@ -46,15 +46,9 @@ namespace TestBot.Systems.Streaming
 			baseObj.Object.Name = newName;
 		}
 
-		public string GetName()
-		{
-			return GetBaseAuto(s => s.Name);
-		}
+		public string GetName() => GetBaseProperty(s => s.Name);
 
-		public IMember GetOwner()
-		{
-			return GetBaseAuto(s => s.Owner);
-		}
+		public IMember GetOwner() => GetBaseProperty(s => s.Owner);
 
 		public void Move(string newPlace)
 		{
@@ -67,9 +61,9 @@ namespace TestBot.Systems.Streaming
 			baseObj.Object.Place = newPlace;
 		}
 
-		private void AttachEvents(IMessage message)
+		private void AttachEvents(object? parameter, IMessage message)
 		{
-			using var holder = GetBase();
+			using var holder = WrapOrGetReadOnlyBase((StreamModel?)parameter);
 			var b = holder.Object;
 
 			switch (b.State)
@@ -80,7 +74,7 @@ namespace TestBot.Systems.Streaming
 					var di = message.GetInteractionDispatcher();
 					di.Attach<MessageButton>(StartStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker == b.Owner)
+						if (ctx.Invoker.Equals((IUser)b.Owner))
 						{
 							waitForStartButton.Callback();
 							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["StartOk"])));
@@ -92,7 +86,7 @@ namespace TestBot.Systems.Streaming
 					var di2 = message.GetInteractionDispatcher();
 					di2.Attach<MessageButton>(FinishStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker == b.Owner)
+						if (ctx.Invoker.Equals((IUser)b.Owner))
 						{
 							waitForFinishButton.Callback();
 							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["FinishOk"])));
@@ -105,9 +99,9 @@ namespace TestBot.Systems.Streaming
 			}
 		}
 
-		private MessageSendModel CreateReportMessage()
+		private MessageSendModel CreateReportMessage(object? parameter)
 		{
-			using var holder = GetBase();
+			using var holder = WrapOrGetReadOnlyBase((StreamModel?)parameter);
 			var b = holder.Object;
 
 			return b.State switch
@@ -119,13 +113,12 @@ namespace TestBot.Systems.Streaming
 			};
 		}
 
-		protected override void OnBuild(StreamModel initialBase, ILifetimeContext<StreamModel> context)
+		protected override void OnBuild(StreamModel initialBase)
 		{
-			var controller = new SelectObjectContoller<StreamModel, MessageAliveHolder.Model>(context.AccessBase(), s => s.ReportMessage);
-			AddReport(new MessageAliveHolder(controller, true, CreateReportMessage, AttachEvents));
+			AddReport(new MessageAliveHolder(initialBase.ReportMessage, parameter => WrapOrGetReadOnlyBase((StreamModel?)parameter).SelectHolder(s => s.ReportMessage), true, CreateReportMessage, AttachEvents));
 
-			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseAuto(s => s.PlanedStartTime));
-			AddTransit(StreamState.WaitingForStreamer, StreamState.Announced, () => DateTime.UtcNow < GetBaseAuto(s => s.PlanedStartTime));
+			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseProperty(s => s.PlanedStartTime));
+			AddTransit(StreamState.WaitingForStreamer, StreamState.Announced, () => DateTime.UtcNow < GetBaseProperty(s => s.PlanedStartTime));
 			AddTransit(StreamState.WaitingForStreamer, StreamState.Running, (token) => waitForStartButton.Await(token));
 			AddTransit(StreamState.Running, null, (token) => waitForFinishButton.Await(token));
 		}

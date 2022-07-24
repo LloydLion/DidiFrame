@@ -12,7 +12,13 @@ namespace DidiFrame.Lifetimes
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
+		private static readonly EventId FailedToUpdateReportID = new(22, "FailedToUpdateReport");
+		private static readonly EventId FailedToDeleteReportID = new(23, "FailedToDeleteReport");
+
+
 		private readonly WaitFor waitForClose = new();
+		private readonly WaitFor waitForTermination = new();
+		private readonly ILogger logger;
 		private MessageAliveHolder? optionalReport = null;
 		private bool hasReport = false;
 		private bool hasBuilt = false;
@@ -24,37 +30,24 @@ namespace DidiFrame.Lifetimes
 		public AbstractFullLifetime(ILogger logger) : base(logger)
 		{
 			AddTransit(new ResetTransitWorker<TState>(null, waitForClose.Await));
+			AddTransit(new ResetTransitWorker<TState>(null, waitForTermination.Await));
+			this.logger = logger;
 		}
 
 
 		/// <summary>
-		/// Finilize and closes this lifetime. Call is async and cann't be tracked
+		/// Finilize and closes this lifetime
 		/// </summary>
-		public void Close()
+		public Task CloseAsync()
 		{
 			waitForClose.Callback();
+			return GetStateMachine().AwaitForState(null);
 		}
 
-		/// <summary>
-		/// Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed.
-		/// This method is overrided by DidiFrame.Lifetimes.AbstractFullLifetime`2
-		/// </summary>
-		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
-		protected new ObjectHolder<TBase> GetBase()
+		protected void Terminate(string reason = "Manual termination", Exception? exception = null)
 		{
-			var bo = base.GetBase(out var smFreeze);
-
-			return new ObjectHolder<TBase>(bo.Object, async (_) =>
-			{
-				bo.Dispose();
-
-				if (hasReport)
-				{
-					var update = smFreeze.GetResult();
-					//If state chaged StateChanged event handler will update report
-					if (update.HasStateUpdated == false) await GetReport().Update();
-				}
-			});
+			CrashLifetime(new LifetimeTerminatedException(GetType(), Guid, reason, exception), false);
+			waitForTermination.Callback();
 		}
 
 		/// <summary>
@@ -63,7 +56,7 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		/// <param name="smFreeze">Statemachine freeze information, it will be automaticly disposed</param>
 		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
-		protected new ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
+		protected override ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
 		{
 			var bo = base.GetBase(out var internalFreeze);
 			smFreeze = internalFreeze;
@@ -74,38 +67,62 @@ namespace DidiFrame.Lifetimes
 
 				if (hasReport)
 				{
-					var update = internalFreeze.GetResult();
-					//If state chaged StateChanged event handler will update report
-					if (update.HasStateUpdated == false) await GetReport().Update();
+					try
+					{
+						using var baseObj = GetReadOnlyBase();
+						await GetReport().Update(baseObj.Object);
+					}
+					catch (Exception ex)
+					{
+						logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message");
+					}
 				}
 			});
+		}
+
+		protected override ObjectHolder<TBase> GetReadOnlyBase()
+		{
+			return base.GetReadOnlyBase();
 		}
 
 		/// <summary>
 		/// Don't override, it used by DidiFrame.Lifetimes.AbstractFullLifetime`2. If overriding is important use OnRunInternal(TState)
 		/// </summary>
 		/// <param name="state">Initial statemachine state</param>
-		protected async override void OnRun(TState state)
+		protected override void OnRun(TState state, TBase initalBase)
 		{
-			try
-			{
-				hasBuilt = true;
+			hasBuilt = true;
 
-				if (hasReport)
+			if (initalBase.Server.IsClosed)
+			{
+				throw new ArgumentException("Target server has been closed");
+			}
+
+			if (hasReport)
+			{
+				var report = GetReport();
+
+				report.StartupMessageAsync(initalBase).Wait();
+			}
+
+			OnRunInternal(state);
+		}
+
+		protected override void OnDispose()
+		{
+			if (hasReport)
+			{
+				try
 				{
-					var report = GetReport();
-
-					GetStateMachine().StateChanged += OnStateChanged;
-
-					await report.StartupMessageAsync();
+					GetReport().DeleteAsync(null).Wait();
 				}
+				catch (Exception ex)
+				{
+					logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message");
+				}
+			}
 
-				OnRunInternal(state);
-			}
-			catch (Exception ex)
-			{
-				GetContext().FinalizeLifetime(ex);
-			}
+			OnDisposeInternal();
 		}
 
 		/// <summary>
@@ -114,16 +131,12 @@ namespace DidiFrame.Lifetimes
 		/// <param name="state">Initial statemachine state</param>
 		protected virtual void OnRunInternal(TState state) { }
 
-		//Will has subscribed only if has report
-		private void OnStateChanged(IStateMachine<TState> sm, TState oldState)
+		protected virtual void OnDisposeInternal() { }
+
+		protected ObjectHolder<TBase> WrapOrGetReadOnlyBase(TBase? possibleBase)
 		{
-			if (GetStateMachine().CurrentState is null)
-			{
-				var report = GetReport();
-				report.DeleteAsync().Wait();
-				report.Dispose();
-			}
-			else GetReport().Update().Wait();
+			if (possibleBase is null) return GetReadOnlyBase();
+			else return new ObjectHolder<TBase>(possibleBase, _ => { });
 		}
 
 		/// <summary>

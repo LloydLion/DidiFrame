@@ -25,17 +25,9 @@ namespace TestBot.Systems.Games
 		}
 
 
-		public IMember GetCreator()
-		{
-			using var b = GetBase();
-			return b.Object.Creator;
-		}
+		public IMember GetCreator() => GetBaseProperty(s => s.Creator);
 
-		public string GetName()
-		{
-			using var b = GetBase();
-			return b.Object.Name;
-		}
+		public string GetName() => GetBaseProperty(s => s.Name);
 
 		public void Invite(IReadOnlyCollection<IMember> members)
 		{
@@ -52,12 +44,11 @@ namespace TestBot.Systems.Games
 				baseObj.Object.Invited.Remove(baseObj.Object.Creator);
 		}
 
-		protected override void OnBuild(GameModel initialBase, ILifetimeContext<GameModel> context)
+		protected override void OnBuild(GameModel initialBase)
 		{
 			Validate(initialBase);
 
-			var controller = new SelectObjectContoller<GameModel, MessageAliveHolder.Model>(context.AccessBase(), s => s.ReportMessage);
-			AddReport(new MessageAliveHolder(controller, true, CreateReportMessage, AttachEvents));
+			AddReport(new MessageAliveHolder(initialBase.ReportMessage, parameter => WrapOrGetReadOnlyBase((GameModel?)parameter).SelectHolder(s => s.ReportMessage), true, CreateReportMessage, AttachEvents));
 
 			AddTransit(GameState.WaitingPlayers, GameState.WaitingCreator, WaitingPlayersWaitingCreatorTransit);
 			AddTransit(GameState.WaitingCreator, GameState.WaitingPlayers, () => !WaitingPlayersWaitingCreatorTransit());
@@ -101,16 +92,16 @@ namespace TestBot.Systems.Games
 
 		private bool WaitingPlayersWaitingCreatorTransit()
 		{
-			using var holder = GetBase();
+			using var holder = GetReadOnlyBase();
 			var b = holder.Object;
 			var cond1 = b.InGame.Count >= b.StartAtMembers - 1;
 			var cond2 = b.WaitEveryoneInvited == false || b.Invited.All(s => b.InGame.Contains(s));
 			return cond1 && cond2;
 		}
 
-		private void AttachEvents(IMessage message)
+		private void AttachEvents(object? parameter, IMessage message)
 		{
-			using var holder = GetBase();
+			using var holder = WrapOrGetReadOnlyBase((GameModel?)parameter);
 			var b = holder.Object;
 
 			//Every state contains components
@@ -138,34 +129,57 @@ namespace TestBot.Systems.Games
 
 			ComponentInteractionResult joinHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				using var holder = GetBase();
+				var holder = GetReadOnlyBase();
 				var b = holder.Object;
 
-				if (b.InGame.Contains(ctx.Invoker)) return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyInGame"]));
-				else if (b.Creator == ctx.Invoker) return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorAlreadyInGame"]));
+				if (b.InGame.Contains(ctx.Invoker))
+				{
+					holder.Dispose();
+					return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyInGame"]));
+				}
+				else if (b.Creator.Equals((IUser)ctx.Invoker))
+				{
+					holder.Dispose();
+					return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorAlreadyInGame"]));
+				}
 				else
 				{
-					b.InGame.Add(ctx.Invoker);
+
+					//If all ok
+					holder.Dispose();
+					using var writableHolder = GetBase();
+					writableHolder.Object.InGame.Add(ctx.Invoker);
 					return new ComponentInteractionResult(new MessageSendModel(localizer["JoinOk"]));
 				}
 			}
 
 			ComponentInteractionResult exitHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				using var b = GetBase();
+				var holder = GetReadOnlyBase();
 
-				if (b.Object.Creator == ctx.Invoker) return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorMustBeInGame"]));
-				else if (!b.Object.InGame.Contains(ctx.Invoker)) return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyOutGame"]));
+				if (holder.Object.Creator == ctx.Invoker)
+				{
+					holder.Dispose();
+					return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorMustBeInGame"]));
+				}
+				else if (!holder.Object.InGame.Contains(ctx.Invoker))
+				{
+					holder.Dispose();
+					return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyOutGame"]));
+				}
 				else
 				{
-					b.Object.InGame.Remove(ctx.Invoker);
+					//If all ok
+					holder.Dispose();
+					using var writableHolder = GetBase();
+					writableHolder.Object.InGame.Remove(ctx.Invoker);
 					return new ComponentInteractionResult(new MessageSendModel(localizer["ExitOk"]));
 				}
 			}
 
 			ComponentInteractionResult startHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				using var holder = GetBase();
+				using var holder = GetReadOnlyBase();
 				var b = holder.Object;
 
 				if (ctx.Invoker == b.Creator)
@@ -178,10 +192,10 @@ namespace TestBot.Systems.Games
 
 			ComponentInteractionResult finishHandler(ComponentInteractionContext<MessageButton> ctx)
 			{
-				using var holder = GetBase();
+				using var holder = GetReadOnlyBase();
 				var b = holder.Object;
 
-				if (ctx.Invoker == b.Creator)
+				if (ctx.Invoker.Equals((IUser)b.Creator))
 				{
 					waitForFinishButton.Callback();
 					return new ComponentInteractionResult(new MessageSendModel(localizer["FinishOk"]));
@@ -192,14 +206,11 @@ namespace TestBot.Systems.Games
 			AsyncInteractionCallback<MessageButton> adaptate(Func<ComponentInteractionContext<MessageButton>, ComponentInteractionResult> func) => (ctx) => Task.FromResult(func(ctx));
 		}
 
-		public IReadOnlyCollection<IMember> GetInvited()
-		{
-			return (IReadOnlyCollection<IMember>)GetBaseAuto(s => s.Invited);
-		}
+		public IReadOnlyCollection<IMember> GetInvited() => (IReadOnlyCollection<IMember>)GetBaseProperty(s => s.Invited);
 
-		private MessageSendModel CreateReportMessage()
+		private MessageSendModel CreateReportMessage(object? parameter)
 		{
-			using var holder = GetBase();
+			using var holder = WrapOrGetReadOnlyBase((GameModel?)parameter);
 			var b = holder.Object;
 
 			return b.State switch

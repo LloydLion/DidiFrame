@@ -8,6 +8,8 @@ namespace DidiFrame.Lifetimes
 
 		public IObjectController<TBase> AccessBase();
 
-		public void FinalizeLifetime(Exception? ifFailed = null);
+		public void FinalizeLifetime();
+
+		public void CrashPipeline(Exception ex, bool isInvalidBase);
 	}
 }

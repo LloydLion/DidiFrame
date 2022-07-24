@@ -25,21 +25,26 @@ namespace TestBot.Systems.Votes
 			try
 			{
 				this.context = context;
-				var controller = new SelectObjectContoller<VoteModel, MessageAliveHolder.Model>(context.AccessBase(), s => s.Message);
-				message = new MessageAliveHolder(controller, true, CreateMessage, MessageWorker);
+				message = new MessageAliveHolder(initialBase.Message, modelGetter, true, CreateMessage, MessageWorker);
 
-				message.StartupMessageAsync().Wait();
+				message.StartupMessageAsync(initialBase).Wait();
 			}
 			catch (Exception ex)
 			{
-				context.FinalizeLifetime(ex);
+				context.CrashPipeline(ex, true);
+			}
+
+
+			ObjectHolder<MessageAliveHolder.Model> modelGetter(object? parameter)
+			{
+				return parameter is null ? Context.AccessBase().Open().SelectHolder(s => s.Message)
+					: new ObjectHolder<MessageAliveHolder.Model>(((VoteModel)parameter).Message, _ => { });
 			}
 		}
 
-		private MessageSendModel CreateMessage()
+		private MessageSendModel CreateMessage(object? parameter)
 		{
-			using var holder = Context.AccessBase().Open();
-
+			using var holder = parameter is null ? Context.AccessBase().Open() : new ObjectHolder<VoteModel>((VoteModel)parameter, _ => { });
 			var options = holder.Object.Options.Select(s => new MessageSelectMenuOption($"{s.Key} [{s.Value}]", s.Key, $"Vote for {s.Key} option [{s.Value}]")).ToArray();
 
 			return new("Do your choose")
@@ -59,7 +64,7 @@ namespace TestBot.Systems.Votes
 			};
 		}
 
-		private void MessageWorker(IMessage message)
+		private void MessageWorker(object? parameter, IMessage message)
 		{
 			var id = message.GetInteractionDispatcher();
 
@@ -72,9 +77,9 @@ namespace TestBot.Systems.Votes
 					var state = (MessageSelectMenuState)(ctx.ComponentState ?? throw new NullReferenceException());
 					select = state.SelectedValues.Single();
 					holder.Object.Options[select]++;
+					await Message.Update(holder.Object);
 				}
 
-				await Message.Update();
 				return new(new("Ok! You vote " + select));
 			});
 
@@ -86,14 +91,14 @@ namespace TestBot.Systems.Votes
 					{
 						if (ctx.Invoker != holder.Object.Creator)
 							return new(new("You aren't invoker"));
+						await Message.DeleteAsync(holder.Object);
 					}
 
-					await Message.DeleteAsync();
 					Message.Dispose();
 				}
 				catch (Exception ex)
 				{
-					Context.FinalizeLifetime(ex);
+					Context.CrashPipeline(ex, false);
 				}
 
 				Context.FinalizeLifetime();

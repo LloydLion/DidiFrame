@@ -1,8 +1,5 @@
 ﻿using DidiFrame.Lifetimes;
-using DidiFrame.Entities.Message;
-using DidiFrame.Entities.Message.Components;
 using DidiFrame.Utils;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Discussion
 {
@@ -69,7 +66,7 @@ namespace TestBot.Systems.Discussion
 				}
 				catch (Exception ex)
 				{
-					context.FinalizeLifetime(ex);
+					context.CrashPipeline(ex, false);
 				}
 			}, token);
 		}

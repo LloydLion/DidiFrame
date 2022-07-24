@@ -60,6 +60,7 @@ appBuilder.AddServices((services, config) =>
 		.AddDidiFrameLocalization(optionsAction: s => s.ResourcesPath = "Translations")
 		.AddGlobalEvents()
 		.AddStateBasedStatisticTools()
+		.Configure<LoggerFilterOptions>(opt => opt.AddFilter("Microsoft.Extensions.Localization.ResourceManagerStringLocalizer", LogLevel.None))
 		.InjectAutoDependencies(new ReflectionAutoInjector());
 
 	services.Configure<DefaultUserCommandsExecutor.Options>(config.GetSection("Commands:Executing"));

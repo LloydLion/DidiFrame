@@ -14,7 +14,7 @@ namespace DidiFrame.Interfaces
 	/// </summary>
 	/// <param name="sender">Discord client that sent the event</param>
 	/// <param name="message">Message that has deleted</param>
-	public delegate void MessageDeletedEventHandler(IClient sender, IMessage message);
+	public delegate void MessageDeletedEventHandler(IClient sender, ITextChannelBase textChannel, ulong messageId);
 
 
 	/// <summary>

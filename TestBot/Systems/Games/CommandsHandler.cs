@@ -101,7 +101,7 @@ namespace TestBot.Systems.Games
 		[Command("game cancel")]
 		public UserCommandResult CancelGame(UserCommandContext _, GameLifetime game)
 		{
-			game.Close();
+			game.CloseAsync();
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameHasCanceled"]) };
 		}

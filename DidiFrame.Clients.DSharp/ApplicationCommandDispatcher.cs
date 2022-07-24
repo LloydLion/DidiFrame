@@ -39,9 +39,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="localizer">Localizer to send error messages and write cmds' descriptions</param>
 		/// <param name="converter">Converter to provide subconverters for autocomplite</param>
 		/// <param name="services">Services for values providers</param>
-		public ApplicationCommandDispatcher(BehaviorModel? behaviorModel, IClient dsharp, IUserCommandsRepository commands, 
+		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands, 
 			IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter,
-			IValidator<UserCommandResult> resultValidator, IServiceProvider services)
+			IValidator<UserCommandResult> resultValidator, IServiceProvider services, BehaviorModel? behaviorModel = null)
 		{
 			client = (Client)dsharp;
 			client.BaseClient.InteractionCreated += BaseClient_InteractionCreated;

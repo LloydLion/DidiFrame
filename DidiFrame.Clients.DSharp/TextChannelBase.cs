@@ -1,13 +1,8 @@
-﻿using DidiFrame.Entities;
-using DidiFrame.Entities.Message;
-using DidiFrame.Exceptions;
+﻿using DidiFrame.Entities.Message;
 using DidiFrame.Interfaces;
-using DidiFrame.Utils;
 using DSharpPlus.Entities;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Channels;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -21,10 +16,18 @@ namespace DidiFrame.Clients.DSharp
 
 
 		/// <inheritdoc/>
-		public event MessageSentEventHandler? MessageSent;
+		public event MessageSentEventHandler? MessageSent
+		{
+			add { server.MessageSent += new MessageSentEventSubscriber(Id, value ?? throw new NullReferenceException()).Handle; }
+			remove { server.MessageSent -= new MessageSentEventSubscriber(Id, value ?? throw new NullReferenceException()).Handle; }
+		}
 
 		/// <inheritdoc/>
-		public event MessageDeletedEventHandler? MessageDeleted;
+		public event MessageDeletedEventHandler? MessageDeleted
+		{
+			add { server.MessageDeleted += new MessageDeleteEventSubscriber(Id, value ?? throw new NullReferenceException()).Handle; }
+			remove { server.MessageDeleted -= new MessageDeleteEventSubscriber(Id, value ?? throw new NullReferenceException()).Handle; }
+		}
 
 
 		/// <summary>
@@ -101,6 +104,45 @@ namespace DidiFrame.Clients.DSharp
 
 			var id = msg.Id;
 			return new Message(id, () => server.GetMessagesCache().GetNullableMessage(id, AccessBase()), this);
+		}
+
+
+		private struct MessageSentEventSubscriber
+		{
+			private readonly ulong channelId;
+			private readonly MessageSentEventHandler handler;
+
+
+			public MessageSentEventSubscriber(ulong channelId, MessageSentEventHandler handler)
+			{
+				this.channelId = channelId;
+				this.handler = handler;
+			}
+
+
+			public void Handle(IClient sender, IMessage message, bool isModified)
+			{
+				if (message.TextChannel.Id == channelId) handler(sender, message, isModified);
+			}
+		}
+
+		private struct MessageDeleteEventSubscriber
+		{
+			private readonly ulong channelId;
+			private readonly MessageDeletedEventHandler handler;
+
+
+			public MessageDeleteEventSubscriber(ulong channelId, MessageDeletedEventHandler handler)
+			{
+				this.channelId = channelId;
+				this.handler = handler;
+			}
+
+
+			public void Handle(IClient sender, ITextChannelBase textChannel, ulong messageId)
+			{
+				if (textChannel.Id == channelId) handler(sender, textChannel, messageId);
+			}
 		}
 	}
 }

@@ -19,9 +19,9 @@ namespace TestBot.Systems.Voice
 		}
 
 
-		protected async override void OnDispose()
+		protected async override void OnDisposeInternal()
 		{
-			using var baseObj = GetBase();
+			using var baseObj = GetReadOnlyBase();
 
 			try { await baseObj.Object.BaseChannel.DeleteAsync(); }
 			catch (Exception ex) { logger.Log(LogLevel.Warning, ChannelDeleteErrorID, ex, "Enbale to delete created voice channel"); }
@@ -31,19 +31,22 @@ namespace TestBot.Systems.Voice
 		{
 			await Task.Delay(1000, token);
 
-			return GetBaseAuto(s => s.BaseChannel.ConnectedMembers.Count) == 0;
+			return GetBaseProperty(s => s.BaseChannel.ConnectedMembers.Count) == 0;
 		}
 
-		private MessageSendModel CreateReport() => uiHelper.CreateReport(GetBaseAuto(s => s.Name), GetBaseAuto(s => s.Creator));
-
-		public IMember GetCreator() => GetBaseAuto(s => s.Creator);
-
-		public string GetName() => GetBaseAuto(s => s.Name);
-
-		protected override void OnBuild(CreatedVoiceChannel initialBase, ILifetimeContext<CreatedVoiceChannel> context)
+		private MessageSendModel CreateReport(object? parameter)
 		{
-			var controller = new SelectObjectContoller<CreatedVoiceChannel, MessageAliveHolder.Model>(context.AccessBase(), s => s.ReportMessage);
-			AddReport(new MessageAliveHolder(controller, true, CreateReport, (_) => { }));
+			using var baseObj = WrapOrGetReadOnlyBase((CreatedVoiceChannel?)parameter);
+			return uiHelper.CreateReport(baseObj.Object.Name, baseObj.Object.Creator);
+		}
+
+		public IMember GetCreator() => GetBaseProperty(s => s.Creator);
+
+		public string GetName() => GetBaseProperty(s => s.Name);
+
+		protected override void OnBuild(CreatedVoiceChannel initialBase)
+		{
+			AddReport(new MessageAliveHolder(initialBase.ReportMessage, parameter => WrapOrGetReadOnlyBase((CreatedVoiceChannel?)parameter).SelectHolder(s => s.ReportMessage), true, CreateReport, (_1, _2) => { }));
 
 			AddTransit(VoiceChannelState.Timeout, VoiceChannelState.Alive, 10000);
 			AddTransit(VoiceChannelState.Alive, null, AliveDisposingTransit);

@@ -104,11 +104,11 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
-		internal void OnMessageDeleted(Message message)
+		internal void OnMessageDeleted(ulong msgId, TextChannelBase textChannel)
 		{
 			try
 			{
-				MessageDeleted?.Invoke(this, message);
+				MessageDeleted?.Invoke(this, textChannel, msgId);
 			}
 			catch (Exception ex)
 			{

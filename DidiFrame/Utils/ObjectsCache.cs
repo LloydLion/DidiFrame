@@ -64,8 +64,8 @@
 			{
 				lock (this)
 				{
-					objects.Add(key, obj);
-					if (owner.addHandlers.ContainsKey(ttype)) owner.addHandlers[ttype].Invoke(key, obj);
+					var isSuccess = objects.TryAdd(key, obj);
+					if (isSuccess && owner.addHandlers.ContainsKey(ttype)) owner.addHandlers[ttype].Invoke(key, obj);
 				}
 			}
 
@@ -73,8 +73,11 @@
 			{
 				lock (this)
 				{
-					var removed = objects.Remove(key);
-					if (owner.removeHandlers.ContainsKey(ttype)) owner.removeHandlers[ttype].Invoke(key, removed);
+					if (objects.TryGetValue(key, out var value))
+					{
+						objects.Remove(key);
+						if (owner.removeHandlers.ContainsKey(ttype)) owner.removeHandlers[ttype].Invoke(key, value);
+					}
 				}
 			}
 
