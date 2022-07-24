@@ -8,7 +8,7 @@ namespace TestBot.Systems.Games
 	[DataKey(StatesKeys.GamesSystem)]
 	public class GameModel : IStateBasedLifetimeBase<GameState>
 	{
-		public GameModel(Guid id, IMember creator, MessageAliveHolder.Model reportMessage, ICollection<IMember> invited,
+		public GameModel(Guid id, IMember creator, MessageAliveHolderModel reportMessage, ICollection<IMember> invited,
 			ICollection<IMember> inGame, string name, string description, int startAtMembers, bool waitEveryoneInvited)
 		{
 			Guid = id;
@@ -22,7 +22,7 @@ namespace TestBot.Systems.Games
 			WaitEveryoneInvited = waitEveryoneInvited;
 		}
 
-		public GameModel(IMember creator, MessageAliveHolder.Model reportMessage, IReadOnlyCollection<IMember> invited,
+		public GameModel(IMember creator, MessageAliveHolderModel reportMessage, IReadOnlyCollection<IMember> invited,
 			string name, string description, int startAtMembers, bool waitEveryoneInvited)
 			: this(Guid.NewGuid(), creator, reportMessage, invited.ToList(), new List<IMember>(), name, description, startAtMembers, waitEveryoneInvited) { }
 
@@ -35,7 +35,7 @@ namespace TestBot.Systems.Games
 
 		[ConstructorAssignableProperty(1, "creator")] public IMember Creator { get; }
 
-		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolder.Model ReportMessage { get; }
+		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolderModel ReportMessage { get; }
 
 		[ConstructorAssignableProperty(3, "invited")] public ICollection<IMember> Invited { get; }
 

@@ -24,10 +24,7 @@ namespace TestBot.Systems.Streaming
 
 		public void Replan(DateTime newStartDate)
 		{
-			using var holder = GetBase();
-			var b = holder.Object;
-
-			if (b.State == StreamState.Running)
+			if (GetStateMachine().CurrentState == StreamState.Running)
 				throw new InvalidOperationException("Stream already has started");
 
 			using var baseObj = GetBase();
@@ -61,12 +58,9 @@ namespace TestBot.Systems.Streaming
 			baseObj.Object.Place = newPlace;
 		}
 
-		private void AttachEvents(object? parameter, IMessage message)
+		private void AttachEvents(StreamModel parameter, IMessage message)
 		{
-			using var holder = WrapOrGetReadOnlyBase((StreamModel?)parameter);
-			var b = holder.Object;
-
-			switch (b.State)
+			switch (parameter.State)
 			{
 				case StreamState.Announced:
 					break;
@@ -74,7 +68,7 @@ namespace TestBot.Systems.Streaming
 					var di = message.GetInteractionDispatcher();
 					di.Attach<MessageButton>(StartStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker.Equals((IUser)b.Owner))
+						if (ctx.Invoker.Equals((IUser)parameter.Owner))
 						{
 							waitForStartButton.Callback();
 							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["StartOk"])));
@@ -86,7 +80,7 @@ namespace TestBot.Systems.Streaming
 					var di2 = message.GetInteractionDispatcher();
 					di2.Attach<MessageButton>(FinishStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker.Equals((IUser)b.Owner))
+						if (ctx.Invoker.Equals((IUser)parameter.Owner))
 						{
 							waitForFinishButton.Callback();
 							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["FinishOk"])));
@@ -99,23 +93,20 @@ namespace TestBot.Systems.Streaming
 			}
 		}
 
-		private MessageSendModel CreateReportMessage(object? parameter)
+		private MessageSendModel CreateReportMessage(StreamModel parameter)
 		{
-			using var holder = WrapOrGetReadOnlyBase((StreamModel?)parameter);
-			var b = holder.Object;
-
-			return b.State switch
+			return parameter.State switch
 			{
-				StreamState.Announced => uiHelper.CreateAnnouncedReport(b.Name, b.Owner, b.PlanedStartTime),
-				StreamState.WaitingForStreamer => uiHelper.CreateWaitingStreamerReport(b.Name, b.Owner, b.PlanedStartTime),
-				StreamState.Running => uiHelper.CreateRunningReport(b.Name, b.Owner, b.Place),
+				StreamState.Announced => uiHelper.CreateAnnouncedReport(parameter.Name, parameter.Owner, parameter.PlanedStartTime),
+				StreamState.WaitingForStreamer => uiHelper.CreateWaitingStreamerReport(parameter.Name, parameter.Owner, parameter.PlanedStartTime),
+				StreamState.Running => uiHelper.CreateRunningReport(parameter.Name, parameter.Owner, parameter.Place),
 				_ => throw new ImpossibleVariantException()
 			};
 		}
 
 		protected override void OnBuild(StreamModel initialBase)
 		{
-			AddReport(new MessageAliveHolder(initialBase.ReportMessage, parameter => WrapOrGetReadOnlyBase((StreamModel?)parameter).SelectHolder(s => s.ReportMessage), true, CreateReportMessage, AttachEvents));
+			AddReport(new MessageAliveHolder<StreamModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents));
 
 			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseProperty(s => s.PlanedStartTime));
 			AddTransit(StreamState.WaitingForStreamer, StreamState.Announced, () => DateTime.UtcNow < GetBaseProperty(s => s.PlanedStartTime));

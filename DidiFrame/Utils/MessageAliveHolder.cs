@@ -1,213 +1,168 @@
 ﻿using DidiFrame.Data.Model;
-using System.Data.Common;
-using System.Reflection.Metadata;
 
 namespace DidiFrame.Utils
 {
+	public delegate MessageSendModel MessageCreator<in TParameter>(TParameter parameter);
+
+	public delegate void MessagePostProcessor<in TParameter>(TParameter parameter, IMessage message);
+
+
 	/// <summary>
 	/// Container for discord message
 	/// </summary>
-	public class MessageAliveHolder : IDisposable
+	public class MessageAliveHolder<TParameter>
 	{
-		private readonly Func<object?, MessageSendModel> messageCreator;
-		private readonly Action<object?, IMessage> messageWorker;
-		private readonly static ThreadLocker<MessageAliveHolder> threadLocker = new();
-		private readonly Func<object?, ObjectHolder<Model>> modelGetter;
-		private readonly bool active;
-		private bool targetMessageState;
+		private readonly Func<TParameter, MessageAliveHolderModel> selector;
+		private readonly MessageCreator<TParameter> creator;
+		private readonly MessagePostProcessor<TParameter> postProcessor;
+		private readonly AutoResetEvent syncRoot = new(true);
+		private bool isFinalized = false;
 
 
-		/// <summary>
-		/// Creates new instance of DidiFrame.Utils.MessageAliveHolder using base serialization model
-		/// </summary>
-		/// <param name="model">Base model for DidiFrame.Utils.MessageAliveHolder object</param>
-		/// <param name="active">If need display message always unless only by request</param>
-		/// <param name="messageCreator">Creator of message that can create msg's send model by request</param>
-		/// <param name="messageWorker">Post propessor for created message</param>
-		public MessageAliveHolder(Model initialModel, Func<object?, ObjectHolder<Model>> modelGetter, bool active, Func<object?, MessageSendModel> messageCreator, Action<object?, IMessage> messageWorker)
+		public MessageAliveHolder(Func<TParameter, MessageAliveHolderModel> selector, MessageCreator<TParameter> creator, MessagePostProcessor<TParameter> postProcessor)
 		{
-			this.messageCreator = messageCreator;
-			this.messageWorker = messageWorker;
-			this.modelGetter = modelGetter;
-			this.active = active;
-
-			Channel = initialModel.Channel;
-			if (active) Channel.MessageDeleted += OnMessageDeleted;
+			this.selector = selector;
+			this.creator = creator;
+			this.postProcessor = postProcessor;
 		}
 
 
-		/// <summary>
-		/// Provides safe accsess to message
-		/// </summary>
-		public IMessage GetMessage(object? parameter)
-		{
-			if (targetMessageState == false)
-				throw new InvalidOperationException("Message has been deleted manually");
+		private static IMessage GetMessage(MessageAliveHolderModel model) => model.Channel.GetMessage(model.PossibleMessageId);
 
-			using (threadLocker.Lock(this))
+		public async Task StartupAsync(TParameter parameter)
+		{
+			syncRoot.WaitOne();
+			ThrowIfFinalized();
+
+			var model = selector(parameter);
+			var msg = GetMessage(model);
+
+			if (msg.IsExist) postProcessor(parameter, msg);
+			else await SendNewMessage(parameter, model);
+
+			syncRoot.Set();
+		}
+
+		public ITextChannelBase GetChannel(TParameter parameter) => selector(parameter).Channel;
+
+		public async Task<IMessage> GetMessageAsync(TParameter parameter)
+		{
+			syncRoot.WaitOne();
+			ThrowIfFinalized();
+
+			var msg = await GetMessageAsyncInternal(parameter, selector(parameter));
+
+			syncRoot.Set();
+
+			return msg;
+		}
+
+		public async Task FinalizeAsync(TParameter parameter)
+		{
+			syncRoot.WaitOne();
+			ThrowIfFinalized();
+
+			isFinalized = true;
+
+			var model = selector(parameter);
+			var msg = GetMessage(model);
+
+			if (msg.IsExist) await msg.DeleteAsync();
+
+			syncRoot.Set();
+		}
+
+		public async Task UpdateAsync(TParameter parameter)
+		{
+			syncRoot.WaitOne();
+			ThrowIfFinalized();
+
+			var model = selector(parameter);
+			var message = await GetMessageAsyncInternal(parameter, model);
+
+			var sendModel = creator(parameter);
+			await message.ModifyAsync(sendModel, false);
+
+			syncRoot.Set();
+		}
+
+		public async Task OnMessageDeleted(TParameter parameter, ITextChannelBase textChannel, ulong messageId)
+		{
+			syncRoot.WaitOne();
+			ThrowIfFinalized();
+
+			var model = selector(parameter);
+			if (model.Channel.Equals(textChannel) && model.PossibleMessageId == messageId)
+				await GetMessageAsyncInternal(parameter, model);
+
+			syncRoot.Set();
+		}
+
+		private async Task<IMessage> SendNewMessage(TParameter parameter, MessageAliveHolderModel model)
+		{
+			var channel = model.Channel;
+			var sendModel = creator(parameter);
+			var message = await channel.SendMessageAsync(sendModel);
+			postProcessor(parameter, message);
+			model.PossibleMessageId = message.Id;
+			return message;
+		}
+
+		private async Task<IMessage> GetMessageAsyncInternal(TParameter parameter, MessageAliveHolderModel model)
+		{
+			var msg = GetMessage(model);
+
+			if (!msg.IsExist) msg = await SendNewMessage(parameter, model);
+
+			return msg;
+		}
+
+		private void ThrowIfFinalized()
+		{
+			if (isFinalized)
 			{
-				if (Channel.HasMessage(GetPossibleMessageId(parameter)) == false) CheckAsync(parameter).Wait();
-				return Channel.GetMessage(GetPossibleMessageId(parameter));
+				syncRoot.Set();
+				throw new InvalidOperationException("MessageAliveHolder finalized and you cannot do anything with this");
 			}
 		}
+	}
 
-
-		public async Task StartupMessageAsync(object? parameter)
+	/// <summary>
+	/// Serialization model of DidiFrame.Utils.MessageAliveHolder
+	/// </summary>
+	public class MessageAliveHolderModel
+	{
+		/// <summary>
+		/// Creates DidiFrame.Utils.MessageAliveHolder.Model using possible id and channel
+		/// </summary>
+		/// <param name="possibleMessageId">Possible message id</param>
+		/// <param name="channel">Channel where need to create message</param>
+		public MessageAliveHolderModel(ulong possibleMessageId, ITextChannelBase channel)
 		{
-			if (GetIsExist(parameter)) messageWorker(parameter, Channel.GetMessage(GetPossibleMessageId(parameter)));
-			else await RestoreAsync(parameter);
+			PossibleMessageId = possibleMessageId;
+			Channel = channel;
 		}
+
+		/// <summary>
+		/// Creates DidiFrame.Utils.MessageAliveHolder.Model using channel
+		/// </summary>
+		/// <param name="channel">Channel where need to create message</param>
+		public MessageAliveHolderModel(ITextChannelBase channel)
+		{
+			Channel = channel;
+		}
+
 
 		/// <summary>
 		/// Id of message that can exist but can dotn't exist
 		/// </summary>
-		public ulong GetPossibleMessageId(object? parameter)
-		{
-			using var instance = modelGetter(parameter);
-			return instance.Object.PossibleMessageId;
-		}
+		[ConstructorAssignableProperty(0, "possibleMessageId")]
+		public ulong PossibleMessageId { get; set; }
 
 		/// <summary>
-		/// Target channel
+		/// Channel where need to create message
 		/// </summary>
+		[ConstructorAssignableProperty(1, "channel")]
 		public ITextChannelBase Channel { get; }
-
-		/// <summary>
-		/// If need display message always unless only by request
-		/// </summary>
-		public bool ActiveMode => active;
-
-		/// <summary>
-		/// If message still exist
-		/// </summary>
-		public bool GetIsExist(object? parameter) => Channel.HasMessage(GetPossibleMessageId(parameter));
-
-
-		/// <summary>
-		/// Deletes message async
-		/// </summary>
-		/// <returns>Wait task</returns>
-		public Task DeleteAsync(object? parameter)
-		{
-			using (threadLocker.Lock(this))
-			{
-				targetMessageState = false;
-				if (GetIsExist(parameter)) return Channel.GetMessage(GetPossibleMessageId(parameter)).DeleteAsync();
-				else return Task.CompletedTask;
-			}
-		}
-
-		public async Task RestoreAsync(object? parameter)
-		{
-			using (threadLocker.Lock(this))
-			{
-				targetMessageState = true;
-
-				if (GetIsExist(parameter) == false)
-				{
-					var message = await SendMessageAsync(parameter);
-					using var instance = modelGetter(parameter);
-					instance.Object.PossibleMessageId = message.Id;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Modifies message using new send model from messages creator
-		/// </summary>
-		/// <returns>Wait task</returns>
-		public async Task Update(object? parameter)
-		{
-			using (threadLocker.Lock(this))
-			{
-				if (targetMessageState == false) return;
-
-				using var instance = modelGetter(parameter);
-
-				if (Channel.HasMessage(GetPossibleMessageId(parameter)) == false)
-					instance.Object.PossibleMessageId = (await SendMessageAsync(parameter)).Id;
-				else
-				{
-					var message = Channel.GetMessage(instance.Object.PossibleMessageId);
-					await message.ModifyAsync(messageCreator(parameter), true);
-					messageWorker(parameter, message);
-				}
-			}
-		}
-
-		private async Task<IMessage> SendMessageAsync(object? parameter)
-		{
-			var send = messageCreator(parameter);
-			var msg = await Channel.SendMessageAsync(send);
-			messageWorker(parameter, msg);
-			return msg;
-		}
-
-		private void OnMessageDeleted(IClient _, ITextChannelBase textChannel, ulong msgId)
-		{
-			if (GetPossibleMessageId(null) != msgId) return;
-			if (targetMessageState == false) return;
-
-			RestoreAsync(null).Wait();
-		}
-
-		/// <inheritdoc/>
-		public void Dispose()
-		{
-			if (targetMessageState == true)
-				throw new InvalidOperationException("Delete message manually before dispose alive holder");
-			if (active) Channel.MessageDeleted -= OnMessageDeleted;
-			GC.SuppressFinalize(this);
-		}
-
-		private async Task CheckAsync(object? parameter)
-		{
-			if (Channel.HasMessage(GetPossibleMessageId(parameter)) == false)
-			{
-				using var instance = modelGetter(parameter);
-				var message = await SendMessageAsync(parameter);
-				instance.Object.PossibleMessageId = message.Id;
-			}
-		}
-
-
-		/// <summary>
-		/// Serialization model of DidiFrame.Utils.MessageAliveHolder
-		/// </summary>
-		public class Model
-		{
-			/// <summary>
-			/// Creates DidiFrame.Utils.MessageAliveHolder.Model using possible id and channel
-			/// </summary>
-			/// <param name="possibleMessageId">Possible message id</param>
-			/// <param name="channel">Channel where need to create message</param>
-			public Model(ulong possibleMessageId, ITextChannelBase channel)
-			{
-				PossibleMessageId = possibleMessageId;
-				Channel = channel;
-			}
-
-			/// <summary>
-			/// Creates DidiFrame.Utils.MessageAliveHolder.Model using channel
-			/// </summary>
-			/// <param name="channel">Channel where need to create message</param>
-			public Model(ITextChannelBase channel)
-			{
-				Channel = channel;
-			}
-
-
-			/// <summary>
-			/// Id of message that can exist but can dotn't exist
-			/// </summary>
-			[ConstructorAssignableProperty(0, "possibleMessageId")]
-			public ulong PossibleMessageId { get; set; }
-
-			/// <summary>
-			/// Channel where need to create message
-			/// </summary>
-			[ConstructorAssignableProperty(1, "channel")]
-			public ITextChannelBase Channel { get; }
-		}
 	}
 }

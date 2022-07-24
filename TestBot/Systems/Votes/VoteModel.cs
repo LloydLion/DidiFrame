@@ -16,7 +16,7 @@ namespace TestBot.Systems.Votes
 			Message = new(channel);
 		}
 
-		public VoteModel(IMember creator, IDictionary<string, int> options, string title, MessageAliveHolder.Model message, Guid id)
+		public VoteModel(IMember creator, IDictionary<string, int> options, string title, MessageAliveHolderModel message, Guid id)
 		{
 			Creator = creator;
 			Options = options;
@@ -36,7 +36,7 @@ namespace TestBot.Systems.Votes
 		public string Title { get; }
 
 		[ConstructorAssignableProperty(3, "message")]
-		public MessageAliveHolder.Model Message { get; }
+		public MessageAliveHolderModel Message { get; }
 
 		[ConstructorAssignableProperty(4, "id")]
 		public Guid Guid { get; }

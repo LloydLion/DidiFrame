@@ -34,10 +34,9 @@ namespace TestBot.Systems.Voice
 			return GetBaseProperty(s => s.BaseChannel.ConnectedMembers.Count) == 0;
 		}
 
-		private MessageSendModel CreateReport(object? parameter)
+		private MessageSendModel CreateReport(CreatedVoiceChannel parameter)
 		{
-			using var baseObj = WrapOrGetReadOnlyBase((CreatedVoiceChannel?)parameter);
-			return uiHelper.CreateReport(baseObj.Object.Name, baseObj.Object.Creator);
+			return uiHelper.CreateReport(parameter.Name, parameter.Creator);
 		}
 
 		public IMember GetCreator() => GetBaseProperty(s => s.Creator);
@@ -45,8 +44,8 @@ namespace TestBot.Systems.Voice
 		public string GetName() => GetBaseProperty(s => s.Name);
 
 		protected override void OnBuild(CreatedVoiceChannel initialBase)
-		{
-			AddReport(new MessageAliveHolder(initialBase.ReportMessage, parameter => WrapOrGetReadOnlyBase((CreatedVoiceChannel?)parameter).SelectHolder(s => s.ReportMessage), true, CreateReport, (_1, _2) => { }));
+{
+			AddReport(new MessageAliveHolder<CreatedVoiceChannel>(s => s.ReportMessage, CreateReport, (_1, _2) => { }));
 
 			AddTransit(VoiceChannelState.Timeout, VoiceChannelState.Alive, 10000);
 			AddTransit(VoiceChannelState.Alive, null, AliveDisposingTransit);

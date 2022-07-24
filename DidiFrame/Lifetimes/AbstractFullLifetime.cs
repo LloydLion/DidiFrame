@@ -14,12 +14,13 @@ namespace DidiFrame.Lifetimes
 	{
 		private static readonly EventId FailedToUpdateReportID = new(22, "FailedToUpdateReport");
 		private static readonly EventId FailedToDeleteReportID = new(23, "FailedToDeleteReport");
+		private static readonly EventId FailedToRestoreReportID = new(24, "FailedToRestoreReport");
 
 
 		private readonly WaitFor waitForClose = new();
 		private readonly WaitFor waitForTermination = new();
 		private readonly ILogger logger;
-		private MessageAliveHolder? optionalReport = null;
+		private MessageAliveHolder<TBase>? optionalReport = null;
 		private bool hasReport = false;
 		private bool hasBuilt = false;
 
@@ -65,20 +66,22 @@ namespace DidiFrame.Lifetimes
 			{
 				bo.Dispose();
 
-				if (hasReport)
+				if (hasReport && internalFreeze.GetResult().HasStateUpdated == false)
 				{
 					try
 					{
 						using var baseObj = GetReadOnlyBase();
-						await GetReport().Update(baseObj.Object);
+						await GetReport().UpdateAsync(baseObj.Object);
 					}
 					catch (Exception ex)
 					{
-						logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message");
+						logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
 					}
 				}
 			});
 		}
+
+		protected ObjectHolder<TBase> GetBaseForReport() => base.GetBase(out _);
 
 		protected override ObjectHolder<TBase> GetReadOnlyBase()
 		{
@@ -101,28 +104,55 @@ namespace DidiFrame.Lifetimes
 			if (hasReport)
 			{
 				var report = GetReport();
-
-				report.StartupMessageAsync(initalBase).Wait();
+				report.StartupAsync(initalBase).Wait();
+				GetStateMachine().StateChanged += OnStateChanged;
+				report.GetChannel(initalBase).MessageDeleted += async (sender, channel, msgId) =>
+				{
+					try
+					{
+						using var baseObj = GetBaseForReport();
+						await GetReport().OnMessageDeleted(baseObj.Object, channel, msgId);
+					}
+					catch (Exception ex)
+					{
+						logger.Log(LogLevel.Error, FailedToRestoreReportID, ex, "Enable to restore report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
+					}
+				};
 			}
 
 			OnRunInternal(state);
 		}
 
-		protected override void OnDispose()
+		//Will be subscribed only if has report
+		private async void OnStateChanged(IStateMachine<TState> stateMahcine, TState oldState)
 		{
+			try
+			{
+				using var baseObj = GetReadOnlyBase();
+				await GetReport().UpdateAsync(baseObj.Object);
+			}
+			catch (Exception ex)
+			{
+				logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
+			}
+		}
+
+		protected async override void OnDispose()
+		{
+			OnDisposeInternal();
+
 			if (hasReport)
 			{
 				try
 				{
-					GetReport().DeleteAsync(null).Wait();
+					using var holder = GetReadOnlyBase();
+					await GetReport().FinalizeAsync(holder.Object);
 				}
 				catch (Exception ex)
 				{
-					logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message");
+					logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
 				}
 			}
-
-			OnDisposeInternal();
 		}
 
 		/// <summary>
@@ -133,18 +163,12 @@ namespace DidiFrame.Lifetimes
 
 		protected virtual void OnDisposeInternal() { }
 
-		protected ObjectHolder<TBase> WrapOrGetReadOnlyBase(TBase? possibleBase)
-		{
-			if (possibleBase is null) return GetReadOnlyBase();
-			else return new ObjectHolder<TBase>(possibleBase, _ => { });
-		}
-
 		/// <summary>
 		/// Adds automaticly maintaining report message for lifetime. It can be added only one time
 		/// </summary>
 		/// <param name="holder">Holder that was extracted from base object and contains all message info</param>
 		/// <exception cref="InvalidOperationException">If called outside ctor (after Run() calling)</exception>
-		protected void AddReport(MessageAliveHolder holder)
+		protected void AddReport(MessageAliveHolder<TBase> holder)
 		{
 			if (hasBuilt) throw new InvalidOperationException("Object done, please don't invoke any constructing methods");
 
@@ -157,7 +181,7 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		/// <returns>Report's alive holder</returns>
 		/// <exception cref="InvalidOperationException">If no report has added or if called in ctor (before Run() calling)</exception>
-		protected MessageAliveHolder GetReport()
+		protected MessageAliveHolder<TBase> GetReport()
 		{
 			if (hasBuilt == false)
 				throw new InvalidOperationException("Enable get report in ctor");

@@ -26,7 +26,7 @@ namespace TestBot.Systems.Games
 
 			var setting = settings.Get(creator.Server);
 
-			var report = new MessageAliveHolder.Model(setting.ReportChannel);
+			var report = new MessageAliveHolderModel(setting.ReportChannel);
 			var model = new GameModel(creator, report, invited, name, description, startAtMembers, waitEveryoneInvited);
 
 			return lifetimes.RegistryLifetime(model);

@@ -48,7 +48,7 @@ namespace TestBot.Systems.Games
 		{
 			Validate(initialBase);
 
-			AddReport(new MessageAliveHolder(initialBase.ReportMessage, parameter => WrapOrGetReadOnlyBase((GameModel?)parameter).SelectHolder(s => s.ReportMessage), true, CreateReportMessage, AttachEvents));
+			AddReport(new MessageAliveHolder<GameModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents));
 
 			AddTransit(GameState.WaitingPlayers, GameState.WaitingCreator, WaitingPlayersWaitingCreatorTransit);
 			AddTransit(GameState.WaitingCreator, GameState.WaitingPlayers, () => !WaitingPlayersWaitingCreatorTransit());
@@ -99,15 +99,12 @@ namespace TestBot.Systems.Games
 			return cond1 && cond2;
 		}
 
-		private void AttachEvents(object? parameter, IMessage message)
+		private void AttachEvents(GameModel parameter, IMessage message)
 		{
-			using var holder = WrapOrGetReadOnlyBase((GameModel?)parameter);
-			var b = holder.Object;
-
 			//Every state contains components
 			var di = message.GetInteractionDispatcher();
 
-			switch (b.State)
+			switch (parameter.State)
 			{
 				case GameState.WaitingPlayers:
 					di.Attach(JoinGameButtonId, adaptate(joinHandler));
@@ -208,18 +205,15 @@ namespace TestBot.Systems.Games
 
 		public IReadOnlyCollection<IMember> GetInvited() => (IReadOnlyCollection<IMember>)GetBaseProperty(s => s.Invited);
 
-		private MessageSendModel CreateReportMessage(object? parameter)
+		private MessageSendModel CreateReportMessage(GameModel parameter)
 		{
-			using var holder = WrapOrGetReadOnlyBase((GameModel?)parameter);
-			var b = holder.Object;
-
-			return b.State switch
+			return parameter.State switch
 			{
-				GameState.WaitingPlayers => uiHelper.CreateWatingForPlayersReport(b.Name, b.Creator, (IReadOnlyCollection<IMember>)b.Invited,
-					(IReadOnlyCollection<IMember>)b.InGame, b.WaitEveryoneInvited, b.StartAtMembers, b.Description),
-				GameState.WaitingCreator => uiHelper.CreataWaitingForCreatorReport(b.Name, b.Creator, (IReadOnlyCollection<IMember>)b.Invited,
-					(IReadOnlyCollection<IMember>)b.InGame, b.WaitEveryoneInvited, b.StartAtMembers, b.Description),
-				GameState.Running => uiHelper.CreateRunningReport(b.Name, b.Creator, (IReadOnlyCollection<IMember>)b.InGame, b.Description),
+				GameState.WaitingPlayers => uiHelper.CreateWatingForPlayersReport(parameter.Name, parameter.Creator, (IReadOnlyCollection<IMember>)parameter.Invited,
+					(IReadOnlyCollection<IMember>)parameter.InGame, parameter.WaitEveryoneInvited, parameter.StartAtMembers, parameter.Description),
+				GameState.WaitingCreator => uiHelper.CreataWaitingForCreatorReport(parameter.Name, parameter.Creator, (IReadOnlyCollection<IMember>)parameter.Invited,
+					(IReadOnlyCollection<IMember>)parameter.InGame, parameter.WaitEveryoneInvited, parameter.StartAtMembers, parameter.Description),
+				GameState.Running => uiHelper.CreateRunningReport(parameter.Name, parameter.Creator, (IReadOnlyCollection<IMember>)parameter.InGame, parameter.Description),
 				_ => throw new ImpossibleVariantException()
 			};
 		}

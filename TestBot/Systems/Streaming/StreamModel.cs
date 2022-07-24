@@ -8,7 +8,7 @@ namespace TestBot.Systems.Streaming
 	[DataKey(StatesKeys.StreamingSystem)]
 	public class StreamModel : IStateBasedLifetimeBase<StreamState>
 	{
-		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, MessageAliveHolder.Model reportMessage, Guid id)
+		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, MessageAliveHolderModel reportMessage, Guid id)
 		{
 			Name = name;
 			Owner = member;
@@ -19,7 +19,7 @@ namespace TestBot.Systems.Streaming
 		}
 
 		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, ITextChannel channel)
-			: this(name, member, planedStartTime, rawPlace, new MessageAliveHolder.Model(channel), Guid.NewGuid()) { }
+			: this(name, member, planedStartTime, rawPlace, new MessageAliveHolderModel(channel), Guid.NewGuid()) { }
 
 
 		[ConstructorAssignableProperty(0, "name")]
@@ -35,7 +35,7 @@ namespace TestBot.Systems.Streaming
 		public string Place { get; set; }
 
 		[ConstructorAssignableProperty(4, "reportMessage")]
-		public MessageAliveHolder.Model ReportMessage { get; }
+		public MessageAliveHolderModel ReportMessage { get; }
 
 		[ConstructorAssignableProperty(5, "id")]
 		public Guid Guid { get; }

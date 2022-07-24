@@ -5,13 +5,13 @@ namespace TestBot.Systems.Votes
 {
 	internal class VoteLifetime : ILifetime<VoteModel>
 	{
-		private MessageAliveHolder? message;
+		private MessageAliveHolder<VoteModel>? message;
 		private ILifetimeContext<VoteModel>? context;
 
 
 		private ILifetimeContext<VoteModel> Context => context ?? throw new NullReferenceException();
 
-		private MessageAliveHolder Message => message ?? throw new NullReferenceException();
+		private MessageAliveHolder<VoteModel> Message => message ?? throw new NullReferenceException();
 
 
 		public VoteLifetime()
@@ -25,27 +25,19 @@ namespace TestBot.Systems.Votes
 			try
 			{
 				this.context = context;
-				message = new MessageAliveHolder(initialBase.Message, modelGetter, true, CreateMessage, MessageWorker);
+				message = new MessageAliveHolder<VoteModel>(s => s.Message, CreateMessage, MessageWorker);
 
-				message.StartupMessageAsync(initialBase).Wait();
+				message.StartupAsync(initialBase).Wait();
 			}
 			catch (Exception ex)
 			{
 				context.CrashPipeline(ex, true);
 			}
-
-
-			ObjectHolder<MessageAliveHolder.Model> modelGetter(object? parameter)
-			{
-				return parameter is null ? Context.AccessBase().Open().SelectHolder(s => s.Message)
-					: new ObjectHolder<MessageAliveHolder.Model>(((VoteModel)parameter).Message, _ => { });
-			}
 		}
 
-		private MessageSendModel CreateMessage(object? parameter)
+		private MessageSendModel CreateMessage(VoteModel parameter)
 		{
-			using var holder = parameter is null ? Context.AccessBase().Open() : new ObjectHolder<VoteModel>((VoteModel)parameter, _ => { });
-			var options = holder.Object.Options.Select(s => new MessageSelectMenuOption($"{s.Key} [{s.Value}]", s.Key, $"Vote for {s.Key} option [{s.Value}]")).ToArray();
+			var options = parameter.Options.Select(s => new MessageSelectMenuOption($"{s.Key} [{s.Value}]", s.Key, $"Vote for {s.Key} option [{s.Value}]")).ToArray();
 
 			return new("Do your choose")
 			{
@@ -64,7 +56,7 @@ namespace TestBot.Systems.Votes
 			};
 		}
 
-		private void MessageWorker(object? parameter, IMessage message)
+		private void MessageWorker(VoteModel parameter, IMessage message)
 		{
 			var id = message.GetInteractionDispatcher();
 
@@ -72,13 +64,11 @@ namespace TestBot.Systems.Votes
 			{
 				string select;
 
-				using (var holder = Context.AccessBase().Open())
-				{
-					var state = (MessageSelectMenuState)(ctx.ComponentState ?? throw new NullReferenceException());
-					select = state.SelectedValues.Single();
-					holder.Object.Options[select]++;
-					await Message.Update(holder.Object);
-				}
+				using var holder = Context.AccessBase().Open();
+				var state = (MessageSelectMenuState)(ctx.ComponentState ?? throw new NullReferenceException());
+				select = state.SelectedValues.Single();
+				holder.Object.Options[select]++;
+				await Message.UpdateAsync(holder.Object);
 
 				return new(new("Ok! You vote " + select));
 			});
@@ -87,14 +77,10 @@ namespace TestBot.Systems.Votes
 			{
 				try
 				{
-					using (var holder = Context.AccessBase().Open())
-					{
-						if (ctx.Invoker != holder.Object.Creator)
-							return new(new("You aren't invoker"));
-						await Message.DeleteAsync(holder.Object);
-					}
-
-					Message.Dispose();
+					using var holder = Context.AccessBase().Open();
+					if (ctx.Invoker != holder.Object.Creator)
+						return new(new("You aren't invoker"));
+					await Message.FinalizeAsync(holder.Object);
 				}
 				catch (Exception ex)
 				{

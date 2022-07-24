@@ -8,7 +8,7 @@ namespace TestBot.Systems.Voice
 	[DataKey(SettingsKeys.VoiceSystem)]
 	public class CreatedVoiceChannel : IStateBasedLifetimeBase<VoiceChannelState>
 	{
-		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, MessageAliveHolder.Model report, IMember creator, VoiceChannelState state, Guid id)
+		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, MessageAliveHolderModel report, IMember creator, VoiceChannelState state, Guid id)
 		{
 			Name = name;
 			BaseChannel = baseChannel;
@@ -26,7 +26,7 @@ namespace TestBot.Systems.Voice
 
 		[ConstructorAssignableProperty(1, "baseChannel")] public IVoiceChannel BaseChannel { get; set; }
 
-		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolder.Model ReportMessage { get; set; }
+		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolderModel ReportMessage { get; set; }
 
 		[ConstructorAssignableProperty(3, "creator")] public IMember Creator { get; }
 

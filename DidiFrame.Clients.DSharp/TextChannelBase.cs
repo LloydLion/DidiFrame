@@ -55,10 +55,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			var obj = AccessBase();
 
-			if (server.GetMessagesCache().HasMessage(id, obj) == false)
-				throw new ArgumentException("No such message with same id", nameof(id));
-
-			return new Message(id, () => server.GetMessagesCache().GetMessage(id, AccessBase()), this);
+			return new Message(id, () => server.GetMessagesCache().GetNullableMessage(id, AccessBase()), this);
 		}
 
 		/// <inheritdoc/>
@@ -73,7 +70,7 @@ namespace DidiFrame.Clients.DSharp
 				return messages.Select(s =>
 				{
 					var id = s.Id;
-					return new Message(id, () => server.GetMessagesCache().GetMessage(id, AccessBase()), this);
+					return new Message(id, () => server.GetMessagesCache().GetNullableMessage(id, AccessBase()), this);
 				}).ToArray();
 			}
 		}
@@ -95,14 +92,13 @@ namespace DidiFrame.Clients.DSharp
 
 			var builder = MessageConverter.ConvertUp(messageSendModel);
 
-			var msg = await server.SourceClient.DoSafeOperationAsync(async () =>
+			var id = await server.SourceClient.DoSafeOperationAsync(async () =>
 			{
 				var msg = await obj.SendMessageAsync(builder);
 				server.CacheMessage(msg);
-				return server.GetMessagesCache().GetMessage(msg.Id, obj);
+				return msg.Id;
 			}, new(Client.ChannelName, Id, Name));
 
-			var id = msg.Id;
 			return new Message(id, () => server.GetMessagesCache().GetNullableMessage(id, AccessBase()), this);
 		}
 
