@@ -43,6 +43,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Lifetimes\AbstractFullLifetime-LAPTOP-TEI033TU.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="index.md" />
     <None Remove="log.txt" />
     <None Remove="toc.yml" />

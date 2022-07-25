@@ -180,6 +180,7 @@ namespace DidiFrame.Lifetimes
 				if (IsFinalized == false)
 				{
 					IsFinalized = true;
+					OnFinalize();
 					OnDispose();
 					GetContext().FinalizeLifetime();
 				}
@@ -193,6 +194,7 @@ namespace DidiFrame.Lifetimes
 				if (IsFinalized == false)
 				{
 					IsFinalized = true;
+					OnDispose();
 					GetContext().CrashPipeline(exception, isInvalidBase);
 				}
 			}
@@ -219,10 +221,12 @@ namespace DidiFrame.Lifetimes
 
 		}
 
-		/// <summary>
-		/// Event handler. Calls on lifetime's lifecycle end. You mustn't call base.OnDispose(TState)
-		/// </summary>
 		protected virtual void OnDispose()
+		{
+
+		}
+
+		protected virtual void OnFinalize()
 		{
 
 		}

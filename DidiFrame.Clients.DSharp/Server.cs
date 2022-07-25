@@ -639,10 +639,10 @@ namespace DidiFrame.Clients.DSharp
 			private static readonly EventId DeletedEventHandlerErrorID = new(12, "DeletedEventHandlerError");
 
 
-			private readonly ConcurrentDictionary<ulong, List<MessageDeletedEventHandler>> messageDeletedHandlers = new();
-			private readonly ConcurrentDictionary<ulong, List<MessageSentEventHandler>> messageSentHandlers = new();
-			private readonly List<MessageDeletedEventHandler> messageDeletedGHandlers = new();
-			private readonly List<MessageSentEventHandler> messageSentGHandlers = new();
+			private readonly ConcurrentDictionary<ulong, HashSet<MessageDeletedEventHandler>> messageDeletedHandlers = new();
+			private readonly ConcurrentDictionary<ulong, HashSet<MessageSentEventHandler>> messageSentHandlers = new();
+			private readonly HashSet<MessageDeletedEventHandler> messageDeletedGHandlers = new();
+			private readonly HashSet<MessageSentEventHandler> messageSentGHandlers = new();
 			private readonly Server owner;
 			private readonly ILogger logger;
 

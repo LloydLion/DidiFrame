@@ -106,21 +106,23 @@ namespace DidiFrame.Lifetimes
 				var report = GetReport();
 				report.StartupAsync(initalBase).Wait();
 				GetStateMachine().StateChanged += OnStateChanged;
-				report.GetChannel(initalBase).MessageDeleted += async (sender, channel, msgId) =>
-				{
-					try
-					{
-						using var baseObj = GetBaseForReport();
-						await GetReport().OnMessageDeleted(baseObj.Object, channel, msgId);
-					}
-					catch (Exception ex)
-					{
-						logger.Log(LogLevel.Error, FailedToRestoreReportID, ex, "Enable to restore report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
-					}
-				};
+				report.GetChannel(initalBase).MessageDeleted += AbstractFullLifetime_MessageDeleted;
 			}
 
 			OnRunInternal(state);
+		}
+
+		private async void AbstractFullLifetime_MessageDeleted(IClient sender, ITextChannelBase textChannel, ulong messageId)
+		{
+			try
+			{
+				using var baseObj = GetBaseForReport();
+				await GetReport().OnMessageDeleted(baseObj.Object, textChannel, messageId);
+			}
+			catch (Exception ex)
+			{
+				logger.Log(LogLevel.Error, FailedToRestoreReportID, ex, "Enable to restore report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
+			}
 		}
 
 		//Will be subscribed only if has report
@@ -146,7 +148,10 @@ namespace DidiFrame.Lifetimes
 				try
 				{
 					using var holder = GetReadOnlyBase();
-					await GetReport().FinalizeAsync(holder.Object);
+					var report = GetReport();
+
+					report.GetChannel(holder.Object).MessageDeleted -= AbstractFullLifetime_MessageDeleted;
+					await report.FinalizeAsync(holder.Object);
 				}
 				catch (Exception ex)
 				{

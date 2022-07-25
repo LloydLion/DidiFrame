@@ -27,8 +27,8 @@ namespace DidiFrame.Clients.DSharp
 			private static readonly EventId EventHandlerErrorID = new(55, "EventHandlerError");
 
 
-			private readonly List<ServerObjectCreatedEventHandler<TEntity>> createdHandlers = new();
-			private readonly List<ServerObjectDeletedEventHandler> deletedHandlers = new();
+			private readonly HashSet<ServerObjectCreatedEventHandler<TEntity>> createdHandlers = new();
+			private readonly HashSet<ServerObjectDeletedEventHandler> deletedHandlers = new();
 			private readonly ILogger logger;
 			private readonly ulong serverId;
 
