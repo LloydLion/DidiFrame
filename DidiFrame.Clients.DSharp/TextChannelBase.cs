@@ -18,15 +18,15 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public event MessageSentEventHandler? MessageSent
 		{
-			add { server.MessageSent += new MessageSentEventSubscriber(Id, value ?? throw new NullReferenceException()).Handle; }
-			remove { server.MessageSent -= new MessageSentEventSubscriber(Id, value ?? throw new NullReferenceException()).Handle; }
+			add => server.AddMessageSentEventHandler(AccessBase(), value);
+			remove => server.RemoveMessageSentEventHandler(AccessBase(), value);
 		}
 
 		/// <inheritdoc/>
 		public event MessageDeletedEventHandler? MessageDeleted
 		{
-			add { server.MessageDeleted += new MessageDeleteEventSubscriber(Id, value ?? throw new NullReferenceException()).Handle; }
-			remove { server.MessageDeleted -= new MessageDeleteEventSubscriber(Id, value ?? throw new NullReferenceException()).Handle; }
+			add => server.AddMessageDeletedEventHandler(AccessBase(), value);
+			remove => server.RemoveMessageDeletedEventHandler(AccessBase(), value);
 		}
 
 
@@ -100,45 +100,6 @@ namespace DidiFrame.Clients.DSharp
 			}, new(Client.ChannelName, Id, Name));
 
 			return new Message(id, () => server.GetMessagesCache().GetNullableMessage(id, AccessBase()), this);
-		}
-
-
-		private struct MessageSentEventSubscriber
-		{
-			private readonly ulong channelId;
-			private readonly MessageSentEventHandler handler;
-
-
-			public MessageSentEventSubscriber(ulong channelId, MessageSentEventHandler handler)
-			{
-				this.channelId = channelId;
-				this.handler = handler;
-			}
-
-
-			public void Handle(IClient sender, IMessage message, bool isModified)
-			{
-				if (message.TextChannel.Id == channelId) handler(sender, message, isModified);
-			}
-		}
-
-		private struct MessageDeleteEventSubscriber
-		{
-			private readonly ulong channelId;
-			private readonly MessageDeletedEventHandler handler;
-
-
-			public MessageDeleteEventSubscriber(ulong channelId, MessageDeletedEventHandler handler)
-			{
-				this.channelId = channelId;
-				this.handler = handler;
-			}
-
-
-			public void Handle(IClient sender, ITextChannelBase textChannel, ulong messageId)
-			{
-				if (textChannel.Id == channelId) handler(sender, textChannel, messageId);
-			}
 		}
 	}
 }

@@ -16,6 +16,14 @@ namespace DidiFrame.Interfaces
 	/// <param name="message">Message that has deleted</param>
 	public delegate void MessageDeletedEventHandler(IClient sender, ITextChannelBase textChannel, ulong messageId);
 
+	public delegate void ServerObjectCreatedEventHandler<in TEntity>(TEntity entity, bool isModified) where TEntity : IServerEntity;
+
+	public delegate void ServerObjectDeletedEventHandler(IServer server, ulong objectId);
+
+	public delegate void ServerCreatedEventHandler(IServer server);
+
+	public delegate void ServerRemovedEventHandler(IServer server);
+
 
 	/// <summary>
 	/// Global class of discord api, single way to interact with discord
@@ -50,14 +58,8 @@ namespace DidiFrame.Interfaces
 		public void Connect();
 
 
-		/// <summary>
-		/// Event that fired when a message has sent
-		/// </summary>
-		public event MessageSentEventHandler? MessageSent;
+		public event ServerCreatedEventHandler? ServerCreated;
 
-		/// <summary>
-		/// Event that fired when a message has deleted
-		/// </summary>
-		public event MessageDeletedEventHandler? MessageDeleted;
+		public event ServerRemovedEventHandler? ServerRemoved;
 	}
 }

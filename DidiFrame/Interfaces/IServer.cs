@@ -5,9 +5,25 @@
 	/// </summary>
 	public interface IServer : IEquatable<IServer>
 	{
-		public event MessageSentEventHandler MessageSent;
+		public event MessageSentEventHandler? MessageSent;
 
-		public event MessageDeletedEventHandler MessageDeleted;
+		public event MessageDeletedEventHandler? MessageDeleted;
+
+		public event ServerObjectDeletedEventHandler? ChannelDeleted;
+
+		public event ServerObjectDeletedEventHandler? MemberDeleted;
+
+		public event ServerObjectDeletedEventHandler? RoleDeleted;
+
+		public event ServerObjectDeletedEventHandler? CategoryDeleted;
+
+		public event ServerObjectCreatedEventHandler<IChannel>? ChannelCreated;
+
+		public event ServerObjectCreatedEventHandler<IMember>? MemberCreated;
+
+		public event ServerObjectCreatedEventHandler<IRole>? RoleCreated;
+
+		public event ServerObjectCreatedEventHandler<IChannelCategory>? CategoryCreated;
 
 
 		/// <summary>

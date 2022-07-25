@@ -26,14 +26,15 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 			this.client = client;
 			this.logger = logger;
 			this.resultValidator = resultValidator;
-			client.MessageSent += Client_MessageSent;
-		}
 
+			client.ServerCreated += Client_ServerCreated;
+			foreach (var server in client.Servers) server.MessageSent += Client_MessageSent;
+		}
 
 		/// <inheritdoc/>
 		public void Dispose()
 		{
-			client.MessageSent -= Client_MessageSent;
+			client.ServerCreated -= Client_ServerCreated;
 			GC.SuppressFinalize(this);
 		}
 
@@ -91,6 +92,11 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		private void Client_MessageSent(IClient sender, IMessage message, bool isModified)
 		{
 			callback?.Invoke(this, message, new(message.Author, message.TextChannel), new StateStruct(sender, message));
+		}
+
+		private void Client_ServerCreated(IServer server)
+		{
+			server.MessageSent += Client_MessageSent;
 		}
 
 

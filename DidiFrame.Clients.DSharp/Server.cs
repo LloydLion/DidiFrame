@@ -6,9 +6,10 @@ using DidiFrame.Utils.Collections;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.Logging;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
-using System.Threading.Channels;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -29,21 +30,49 @@ namespace DidiFrame.Clients.DSharp
 		private readonly IChannelMessagesCache messages;
 		private readonly TextChannelThreadsCache threads;
 		private readonly InteractionDispatcherFactory dispatcherFactory;
+		private readonly ServerEventsManager events;
+		private readonly MessagesEventsManager messagesEvents;
 
 
 		/// <inheritdoc/>
-		public event MessageDeletedEventHandler MessageDeleted
-		{
-			add => SourceClient.MessageDeleted += new MessageDeletedSubscriber(Id, value).Handle;
-			remove => SourceClient.MessageDeleted -= new MessageDeletedSubscriber(Id, value).Handle;
-		}
+		public event ServerObjectDeletedEventHandler? ChannelDeleted
+		{ add => events.GetRegistry<IChannel>().AddHandler(value); remove => events.GetRegistry<IChannel>().RemoveHandler(value); }
 
 		/// <inheritdoc/>
-		public event MessageSentEventHandler MessageSent
-		{
-			add => SourceClient.MessageSent += new MessageSentSubscriber(Id, value).Handle;
-			remove => SourceClient.MessageSent -= new MessageSentSubscriber(Id, value).Handle;
-		}
+		public event ServerObjectDeletedEventHandler? MemberDeleted
+		{ add => events.GetRegistry<IMember>().AddHandler(value); remove => events.GetRegistry<IMember>().RemoveHandler(value); }
+
+		/// <inheritdoc/>
+		public event ServerObjectDeletedEventHandler? RoleDeleted
+		{ add => events.GetRegistry<IRole>().AddHandler(value); remove => events.GetRegistry<IRole>().RemoveHandler(value); }
+
+		/// <inheritdoc/>
+		public event ServerObjectDeletedEventHandler? CategoryDeleted
+		{ add => events.GetRegistry<IChannelCategory>().AddHandler(value); remove => events.GetRegistry<IChannelCategory>().RemoveHandler(value); }
+
+		/// <inheritdoc/>
+		public event ServerObjectCreatedEventHandler<IChannel>? ChannelCreated
+		{ add => events.GetRegistry<IChannel>().AddHandler(value); remove => events.GetRegistry<IChannel>().RemoveHandler(value); }
+
+		/// <inheritdoc/>
+		public event ServerObjectCreatedEventHandler<IMember>? MemberCreated
+		{ add => events.GetRegistry<IMember>().AddHandler(value); remove => events.GetRegistry<IMember>().RemoveHandler(value); }
+
+		/// <inheritdoc/>
+		public event ServerObjectCreatedEventHandler<IRole>? RoleCreated
+		{ add => events.GetRegistry<IRole>().AddHandler(value); remove => events.GetRegistry<IRole>().RemoveHandler(value); }
+
+		/// <inheritdoc/>
+		public event ServerObjectCreatedEventHandler<IChannelCategory>? CategoryCreated
+		{ add => events.GetRegistry<IChannelCategory>().AddHandler(value); remove => events.GetRegistry<IChannelCategory>().RemoveHandler(value); }
+
+		/// <inheritdoc/>
+		public event MessageDeletedEventHandler? MessageDeleted
+		{ add => messagesEvents.AddHandler(value); remove => messagesEvents.RemoveHandler(value); }
+
+		/// <inheritdoc/>
+		public event MessageSentEventHandler? MessageSent
+		{ add => messagesEvents.AddHandler(value); remove => messagesEvents.RemoveHandler(value); }
 
 
 		/// <inheritdoc/>
@@ -89,6 +118,14 @@ namespace DidiFrame.Clients.DSharp
 				messages.AddMessage(message);
 			}
 		}
+
+		public void AddMessageSentEventHandler(DiscordChannel channel, MessageSentEventHandler? handler) => messagesEvents.AddHandler(channel, handler);
+
+		public void AddMessageDeletedEventHandler(DiscordChannel channel, MessageDeletedEventHandler? handler) => messagesEvents.AddHandler(channel, handler);
+
+		public void RemoveMessageSentEventHandler(DiscordChannel channel, MessageSentEventHandler? handler) => messagesEvents.RemoveHandler(channel, handler);
+
+		public void RemoveMessageDeletedEventHandler(DiscordChannel channel, MessageDeletedEventHandler? handler) => messagesEvents.RemoveHandler(channel, handler);
 
 		public IChannelMessagesCache GetMessagesCache() => messages;
 
@@ -187,6 +224,8 @@ namespace DidiFrame.Clients.DSharp
 			globalCategory = new(this);
 			dispatcherFactory = new(this);
 			messages = messagesCache;
+			events = new ServerEventsManager(client.Logger, guild.Id);
+			messagesEvents = new(this, client.Logger);
 
 
 			threads = new(
@@ -203,6 +242,9 @@ namespace DidiFrame.Clients.DSharp
 			serverCache.SetRemoveActionHandler<DiscordChannel>((id, channel) =>
 			{
 				if (channel.IsCategory) return;
+
+				messagesEvents.OnChannelDeleted(channel);
+
 				var type = channel.Type.GetAbstract();
 				if (type == Entities.ChannelType.TextCompatible || type == Entities.ChannelType.Voice)
 					messages.DeleteChannelCache(channel);
@@ -232,7 +274,7 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.ChannelDeleted += OnChannelDeleted;
 			client.BaseClient.MessageDeleted += OnMessageDeleted;
 			client.BaseClient.ThreadDeleted += OnThreadDeleted;
-			
+
 			client.BaseClient.GuildMemberUpdated += OnMemberUpdated;
 			client.BaseClient.GuildRoleUpdated += OnRoleUpdated;
 			client.BaseClient.ChannelUpdated += OnChannelUpdated;
@@ -247,11 +289,12 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnThreadUpdated(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-			
+
 			lock (threads)
 			{
 				threads.RemoveThread(e.ThreadAfter.Id);
 				threads.AddThread(e.ThreadAfter);
+				events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.ThreadAfter.Id), true);
 			}
 
 			return Task.CompletedTask;
@@ -266,6 +309,9 @@ namespace DidiFrame.Clients.DSharp
 			{
 				frame.DeleteObject(e.ChannelAfter.Id);
 				frame.AddObject(e.ChannelAfter.Id, e.ChannelAfter);
+				if (e.ChannelAfter.IsCategory)
+					events.GetRegistry<IChannelCategory>().InvokeCreated(GetCategory(e.ChannelAfter.Id), true);
+				else events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.ChannelAfter.Id), true);
 			}
 
 			return Task.CompletedTask;
@@ -280,6 +326,7 @@ namespace DidiFrame.Clients.DSharp
 			{
 				frame.DeleteObject(e.RoleAfter.Id);
 				frame.AddObject(e.RoleAfter.Id, e.RoleAfter);
+				events.GetRegistry<IRole>().InvokeCreated(GetRole(e.RoleAfter.Id), true);
 			}
 
 			return Task.CompletedTask;
@@ -294,6 +341,7 @@ namespace DidiFrame.Clients.DSharp
 			{
 				frame.DeleteObject(e.Member.Id);
 				frame.AddObject(e.Member.Id, e.Member);
+				events.GetRegistry<IMember>().InvokeCreated(GetMember(e.Member.Id), true);
 			}
 
 			return Task.CompletedTask;
@@ -307,8 +355,12 @@ namespace DidiFrame.Clients.DSharp
 
 			lock (messages.Lock(e.Channel))
 			{
-				messages.DeleteMessage(e.Message.Id, e.Channel);
+				var id = e.Message.Id;
+				var channel = e.Channel;
+
+				messages.DeleteMessage(id, channel);
 				messages.AddMessage(e.Message);
+				messagesEvents.InvokeSentEvent(new Message(e.Message.Id, () => messages.GetNullableMessage(id, channel), (TextChannelBase)GetChannel(e.Channel.Id)), true);
 			}
 
 			return Task.CompletedTask;
@@ -319,6 +371,7 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			threads.RemoveThread(e.Thread.Id);
+			events.GetRegistry<IMember>().InvokeDeleted(this, e.Thread.Id);
 
 			return Task.CompletedTask;
 		}
@@ -329,6 +382,7 @@ namespace DidiFrame.Clients.DSharp
 			if (e.NewlyCreated == false) return Task.CompletedTask;
 
 			threads.AddThread(e.Thread);
+			events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.Thread.Id), true);
 
 			return Task.CompletedTask;
 		}
@@ -338,6 +392,9 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			serverCache.DeleteObject<DiscordChannel>(e.Channel.Id);
+			if (e.Channel.IsCategory)
+				events.GetRegistry<IChannelCategory>().InvokeDeleted(this, e.Channel.Id);
+			else events.GetRegistry<IChannel>().InvokeDeleted(this, e.Channel.Id);
 
 			return Task.CompletedTask;
 		}
@@ -347,6 +404,7 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			serverCache.DeleteObject<DiscordRole>(e.Role.Id);
+			events.GetRegistry<IRole>().InvokeDeleted(this, e.Role.Id);
 
 			return Task.CompletedTask;
 		}
@@ -356,6 +414,7 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			serverCache.DeleteObject<DiscordMember>(e.Member.Id);
+			events.GetRegistry<IMember>().InvokeDeleted(this, e.Member.Id);
 
 			return Task.CompletedTask;
 		}
@@ -369,8 +428,7 @@ namespace DidiFrame.Clients.DSharp
 				var channel = (TextChannelBase)GetChannel(e.Message.ChannelId);
 				messages.DeleteMessage(e.Message.Id, e.Channel);
 				dispatcherFactory.DisposeInstance(e.Message.Id);
-				client.CultureProvider.SetupCulture(this);
-				SourceClient.OnMessageDeleted(e.Message.Id, channel);
+				messagesEvents.InvokeDeletedEvent((ITextChannelBase)GetChannel(e.Channel.Id), e.Message.Id);
 			}
 			return Task.CompletedTask;
 		}
@@ -380,6 +438,9 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			serverCache.AddObject(e.Channel.Id, e.Channel);
+			if (e.Channel.IsCategory)
+				events.GetRegistry<IChannelCategory>().InvokeCreated(GetCategory(e.Channel.Id), false);
+			else events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.Channel.Id), false);
 
 			return Task.CompletedTask;
 		}
@@ -389,6 +450,7 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			serverCache.AddObject(e.Role.Id, e.Role);
+			events.GetRegistry<IRole>().InvokeCreated(GetRole(e.Role.Id), false);
 
 			return Task.CompletedTask;
 		}
@@ -398,6 +460,7 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			serverCache.AddObject(e.Member.Id, e.Member);
+			events.GetRegistry<IMember>().InvokeCreated(GetMember(e.Member.Id), false);
 
 			return Task.CompletedTask;
 		}
@@ -410,12 +473,13 @@ namespace DidiFrame.Clients.DSharp
 
 			lock (messages.Lock(e.Channel))
 			{
+				var dchannel = e.Channel;
 				var channel = (TextChannelBase)GetChannel(e.Channel.Id);
 				messages.AddMessage(e.Message);
 				var id = e.Message.Id;
 				var messageModel = new Message(id, () => messages.GetMessage(id, channel.BaseChannel), channel);
-				client.CultureProvider.SetupCulture(this);
-				SourceClient.OnMessageCreated(messageModel, false);
+				messagesEvents.InvokeSentEvent(new Message(e.Message.Id, () => messages.GetNullableMessage(id, dchannel), channel), false);
+
 			}
 
 			return Task.CompletedTask;
@@ -569,43 +633,94 @@ namespace DidiFrame.Clients.DSharp
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
-		private struct MessageDeletedSubscriber
+		private class MessagesEventsManager
 		{
-			private readonly ulong serverId;
-			private readonly MessageDeletedEventHandler handler;
+			private static readonly EventId SentEventHandlerErrorID = new(11, "SentEventHandlerError");
+			private static readonly EventId DeletedEventHandlerErrorID = new(12, "DeletedEventHandlerError");
 
 
-			public MessageDeletedSubscriber(ulong serverId, MessageDeletedEventHandler handler) : this()
+			private readonly ConcurrentDictionary<ulong, List<MessageDeletedEventHandler>> messageDeletedHandlers = new();
+			private readonly ConcurrentDictionary<ulong, List<MessageSentEventHandler>> messageSentHandlers = new();
+			private readonly List<MessageDeletedEventHandler> messageDeletedGHandlers = new();
+			private readonly List<MessageSentEventHandler> messageSentGHandlers = new();
+			private readonly Server owner;
+			private readonly ILogger logger;
+
+
+			public MessagesEventsManager(Server owner, ILogger logger)
 			{
-				this.serverId = serverId;
-				this.handler = handler;
+				this.owner = owner;
+				this.logger = logger;
 			}
 
 
-			public void Handle(IClient client, ITextChannelBase textChannel, ulong messageId)
+			public void AddHandler(DiscordChannel channel, MessageDeletedEventHandler? handler)
+			{ lock (this) { messageDeletedHandlers.GetOrAdd(channel.Id, _ => new()).Add(handler ?? throw new NullReferenceException()); } }
+
+			public void AddHandler(DiscordChannel channel, MessageSentEventHandler? handler)
+			{ lock (this) { messageSentHandlers.GetOrAdd(channel.Id, _ => new()).Add(handler ?? throw new NullReferenceException()); } }
+
+			public void AddHandler(MessageDeletedEventHandler? handler)
+			{ lock (this) { messageDeletedGHandlers.Add(handler ?? throw new NullReferenceException()); } }
+
+			public void AddHandler(MessageSentEventHandler? handler)
+			{ lock (this) { messageSentGHandlers.Add(handler ?? throw new NullReferenceException()); } }
+
+			public void RemoveHandler(DiscordChannel channel, MessageDeletedEventHandler? handler)
+			{ lock (this) { messageDeletedHandlers.GetOrAdd(channel.Id, _ => new()).Remove(handler ?? throw new NullReferenceException()); } }
+
+			public void RemoveHandler(DiscordChannel channel, MessageSentEventHandler? handler)
+			{ lock (this) { messageSentHandlers.GetOrAdd(channel.Id, _ => new()).Remove(handler ?? throw new NullReferenceException()); } }
+
+			public void RemoveHandler(MessageDeletedEventHandler? handler)
+			{ lock (this) { messageDeletedGHandlers.Remove(handler ?? throw new NullReferenceException()); } }
+
+			public void RemoveHandler(MessageSentEventHandler? handler)
+			{ lock (this) { messageSentGHandlers.Remove(handler ?? throw new NullReferenceException()); } }
+
+
+			public void InvokeSentEvent(IMessage message, bool isModified)
 			{
-				if (textChannel.Server.Id == serverId)
-					handler.Invoke(client, textChannel, messageId);
+				owner.SourceClient.CultureProvider.SetupCulture(owner);
+
+				foreach (var handler in messageSentGHandlers.Concat(messageSentHandlers.GetOrAdd(message.TextChannel.Id, _ => new())))
+				{
+					try
+					{
+						handler.Invoke(owner.Client, message, isModified);
+					}
+					catch (Exception ex)
+					{
+						logger.Log(LogLevel.Warning, SentEventHandlerErrorID, ex, "Exception in event handler for message creation ({ModifyStatus}) in {ChannelId} in {ServerId}",
+							isModified ? "Modify" : "Create", message.TextChannel.Id, owner.Id);
+					}
+				}
 			}
-		}
 
-		private struct MessageSentSubscriber
-		{
-			private readonly ulong serverId;
-			private readonly MessageSentEventHandler handler;
-
-
-			public MessageSentSubscriber(ulong serverId, MessageSentEventHandler handler) : this()
+			public void InvokeDeletedEvent(ITextChannelBase textChannel, ulong messageId)
 			{
-				this.serverId = serverId;
-				this.handler = handler;
+				owner.SourceClient.CultureProvider.SetupCulture(owner);
+
+				foreach (var handler in messageDeletedGHandlers.Concat(messageDeletedHandlers.GetOrAdd(textChannel.Id, _ => new())))
+				{
+					try
+					{
+						handler.Invoke(owner.Client, textChannel, messageId);
+					}
+					catch (Exception ex)
+					{
+						logger.Log(LogLevel.Warning, DeletedEventHandlerErrorID, ex, "Exception in event handler for message deleting in {ChannelId} in {ServerId}", textChannel.Id, owner.Id);
+					}
+				}
 			}
 
-
-			public void Handle(IClient client, IMessage message, bool isModified)
+			public void OnChannelDeleted(DiscordChannel channel)
 			{
-				if (message.TextChannel.Server.Id == serverId)
-					handler.Invoke(client, message, isModified);
+				lock (this)
+				{
+					messageDeletedHandlers.TryRemove(channel.Id, out _);
+					messageSentHandlers.TryRemove(channel.Id, out _);
+				}
 			}
 		}
 
@@ -654,7 +769,7 @@ namespace DidiFrame.Clients.DSharp
 					return threads[threadId];
 				}
 			}
-			
+
 			public DiscordThreadChannel? GetNullableThread(ulong threadId)
 			{
 				lock (this)

@@ -20,10 +20,11 @@ namespace DidiFrame.Clients.DSharp
 		internal const string UserName = "User";
 		internal const string ServerName = "Server";
 		internal const string MessageName = "Message";
-		private readonly static EventId MessageSentHandlerExceptionID = new(44, "MessageSentHandlerException");
 		private readonly static EventId SafeOperationErrorID = new(23, "SafeOperationError");
 		private readonly static EventId SafeOperationCriticalErrorID = new(22, "SafeOperationCriticalError");
 		private readonly static EventId NoServerConnectionID = new(21, "NoServerConnection");
+		private readonly static EventId ServerCreatedEventErrorID = new(98, "ServerCreatedEventError");
+		private readonly static EventId ServerRemovedEventErrorID = new(97, "ServerRemovedEventError");
 
 
 		private readonly DiscordClient client;
@@ -36,11 +37,8 @@ namespace DidiFrame.Clients.DSharp
 		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
 
 
-		/// <inheritdoc/>
-		public event MessageSentEventHandler? MessageSent;
-
-		/// <inheritdoc/>
-		public event MessageDeletedEventHandler? MessageDeleted;
+		public event ServerCreatedEventHandler? ServerCreated;
+		public event ServerRemovedEventHandler? ServerRemoved;
 
 
 		/// <inheritdoc/>
@@ -60,6 +58,8 @@ namespace DidiFrame.Clients.DSharp
 
 		/// <inheritdoc/>
 		public IServiceProvider Services { get; }
+
+		internal ILogger<Client> Logger => logger;
 
 
 		/// <summary>
@@ -91,30 +91,6 @@ namespace DidiFrame.Clients.DSharp
 				?? throw new ArgumentException("Cache options can't be null if no custom messages cache factory provided", nameof(options)));
 		}
 
-		//Must be invoked from Server objects
-		internal void OnMessageCreated(Message message, bool isModified)
-		{
-			try
-			{
-				MessageSent?.Invoke(this, message, isModified);
-			}
-			catch (Exception ex)
-			{
-				client?.Logger.Log(LogLevel.Warning, MessageSentHandlerExceptionID, ex, "Execution of event handler for message sent event finished with exception");
-			}
-		}
-
-		internal void OnMessageDeleted(ulong msgId, TextChannelBase textChannel)
-		{
-			try
-			{
-				MessageDeleted?.Invoke(this, textChannel, msgId);
-			}
-			catch (Exception ex)
-			{
-				client?.Logger.Log(LogLevel.Warning, MessageSentHandlerExceptionID, ex, "Execution of event handler for message deleted event finished with exception");
-			}
-		}
 
 		/// <inheritdoc/>
 		public async Task AwaitForExit()
@@ -160,12 +136,47 @@ namespace DidiFrame.Clients.DSharp
 						servers.Add(maybe);
 						temp.Remove(maybe);
 					}
-					else servers.Add(new Server(server.Value, this, options.ServerOptions, messagesCacheFactory.Create(server.Value, this)));
+					else
+					{
+						var serverObj = new Server(server.Value, this, options.ServerOptions, messagesCacheFactory.Create(server.Value, this));
+						servers.Add(serverObj);
+						onServerCreated(serverObj);
+					}
 				}
 
-				foreach (var item in temp) item.Dispose();
+				foreach (var item in temp)
+				{
+					item.Dispose();
+					onServerRemoved(item);
+				}
 
 				await Task.Delay(new TimeSpan(5, 0, 0), token);
+			}
+
+
+
+			void onServerCreated(Server server)
+			{
+				try
+				{
+					ServerCreated?.Invoke(server);
+				}
+				catch (Exception ex)
+				{
+					logger.Log(LogLevel.Warning, ServerCreatedEventErrorID, ex, "Exception in event handler for server creation with id {ServerId}", server.Id);
+				}
+			}
+
+			void onServerRemoved(Server server)
+			{
+				try
+				{
+					ServerRemoved?.Invoke(server);
+				}
+				catch (Exception ex)
+				{
+					logger.Log(LogLevel.Warning, ServerRemovedEventErrorID, ex, "Exception in event handler for server removement with id {ServerId}", server.Id);
+				}
 			}
 		}
 
