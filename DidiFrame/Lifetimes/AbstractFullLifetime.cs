@@ -18,7 +18,6 @@ namespace DidiFrame.Lifetimes
 
 
 		private readonly WaitFor waitForClose = new();
-		private readonly WaitFor waitForTermination = new();
 		private readonly ILogger logger;
 		private MessageAliveHolder<TBase>? optionalReport = null;
 		private bool hasReport = false;
@@ -31,13 +30,12 @@ namespace DidiFrame.Lifetimes
 		public AbstractFullLifetime(ILogger logger) : base(logger)
 		{
 			AddTransit(new ResetTransitWorker<TState>(null, waitForClose.Await));
-			AddTransit(new ResetTransitWorker<TState>(null, waitForTermination.Await));
 			this.logger = logger;
 		}
 
 
 		/// <summary>
-		/// Finilize and closes this lifetime
+		/// Finilizes and closes this lifetime
 		/// </summary>
 		public Task CloseAsync()
 		{
@@ -48,7 +46,6 @@ namespace DidiFrame.Lifetimes
 		protected void Terminate(string reason = "Manual termination", Exception? exception = null)
 		{
 			CrashLifetime(new LifetimeTerminatedException(GetType(), Guid, reason, exception), false);
-			waitForTermination.Callback();
 		}
 
 		/// <summary>
@@ -75,7 +72,7 @@ namespace DidiFrame.Lifetimes
 					}
 					catch (Exception ex)
 					{
-						logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
+						logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime with id {LifetimeId}", Guid);
 					}
 				}
 			});
@@ -96,7 +93,7 @@ namespace DidiFrame.Lifetimes
 		{
 			hasBuilt = true;
 
-			if (initalBase.Server.IsClosed)
+			if (Server.IsClosed)
 			{
 				throw new ArgumentException("Target server has been closed");
 			}
@@ -104,12 +101,50 @@ namespace DidiFrame.Lifetimes
 			if (hasReport)
 			{
 				var report = GetReport();
-				report.StartupAsync(initalBase).Wait();
+
 				GetStateMachine().StateChanged += OnStateChanged;
-				report.GetChannel(initalBase).MessageDeleted += AbstractFullLifetime_MessageDeleted;
+
+				var channel = report.GetChannel(initalBase);
+
+				if (channel.IsExist == false)
+				{
+					throw new ArgumentException($"Target channel ({channel.Id}) for report has been closed");
+				}
+
+				channel.MessageDeleted += AbstractFullLifetime_MessageDeleted;
+				channel.Server.ChannelDeleted += Server_ChannelDeleted;
+
+				report.StartupAsync(initalBase).Wait();
 			}
 
+			Server.Client.ServerRemoved += Client_ServerRemoved;
+
 			OnRunInternal(state);
+		}
+
+		//Will only subscribed if has report
+		private void Server_ChannelDeleted(IServer server, ulong objectId)
+		{
+			bool ok;
+
+			using (var baseObj = GetReadOnlyBase())
+			{
+				var report = GetReport();
+				ok = report.GetChannel(baseObj.Object).Id == objectId;
+			}
+
+			if (ok)
+			{
+				Terminate("Report channel closed");
+			}
+		}
+
+		private void Client_ServerRemoved(IServer server)
+		{
+			if (Server.Equals(server))
+			{
+				Terminate("Server closed");
+			}
 		}
 
 		private async void AbstractFullLifetime_MessageDeleted(IClient sender, ITextChannelBase textChannel, ulong messageId)
@@ -121,7 +156,7 @@ namespace DidiFrame.Lifetimes
 			}
 			catch (Exception ex)
 			{
-				logger.Log(LogLevel.Error, FailedToRestoreReportID, ex, "Enable to restore report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
+				logger.Log(LogLevel.Error, FailedToRestoreReportID, ex, "Enable to restore report message for lifetime with id {LifetimeId}", Guid);
 			}
 		}
 
@@ -137,13 +172,15 @@ namespace DidiFrame.Lifetimes
 			}
 			catch (Exception ex)
 			{
-				logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
+				logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime with id {LifetimeId}", Guid);
 			}
 		}
 
 		protected async override void OnDispose()
 		{
-			OnDisposeInternal();
+			Server.Client.ServerRemoved -= Client_ServerRemoved;
+
+			Task? reportFinalizeTask = null;
 
 			if (hasReport)
 			{
@@ -152,14 +189,20 @@ namespace DidiFrame.Lifetimes
 					using var holder = GetReadOnlyBase();
 					var report = GetReport();
 
-					report.GetChannel(holder.Object).MessageDeleted -= AbstractFullLifetime_MessageDeleted;
-					await report.FinalizeAsync(holder.Object);
+					var channel = report.GetChannel(holder.Object);
+					channel.MessageDeleted -= AbstractFullLifetime_MessageDeleted;
+					channel.Server.ChannelDeleted -= Server_ChannelDeleted;
+					reportFinalizeTask = report.FinalizeAsync(holder.Object);
 				}
 				catch (Exception ex)
 				{
-					logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message for lifetime ({Type}) with id {Guid}", GetType().FullName, Guid);
+					logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message for lifetime with id {Guid}", Guid);
 				}
 			}
+
+			OnDisposeInternal();
+
+			if (reportFinalizeTask is not null) await reportFinalizeTask;
 		}
 
 		/// <summary>

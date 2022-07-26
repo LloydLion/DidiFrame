@@ -12,6 +12,8 @@ namespace DidiFrame.Lifetimes
 	public class LifetimeRegistry<TLifetime, TBase> : ILifetimesRegistry<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
 		private static readonly EventId LifetimeCrachedID = new(11, "LifetimeCrashed");
+		private static readonly EventId LifetimeRegistryFailID = new(23, "LifetimeRegistryFail");
+		private static readonly EventId LifetimeRestoreFailID = new(24, "LifetimeRestoreFail");
 
 
 		private readonly IServersStatesRepository<ICollection<TBase>> states;
@@ -48,15 +50,16 @@ namespace DidiFrame.Lifetimes
 				sls.Lifetimes.TryAdd(item.Guid, lifetime);
 
 				var holder = new BaseObjectHolder(state, sls, item.Guid);
-				var context = new DefaultLifetimeContext<TBase>(false, holder, holder.FinalizeObject, LogError);
+				var context = new DefaultLifetimeContext<TBase>(lifetime, isNewlyCreated: false, holder, holder.FinalizeObject,
+					LogError(lifetime.GetType(), item.Guid, item.Server));
 
 				try
 				{
 					lifetime.Run(item, context);
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
-					//If lifetime will have called context.Finalize pipeline all will ok
+					logger.Log(LogLevel.Error, LifetimeRestoreFailID, ex, "Failed to restore lifetime ({LifetimeType}) {LifetimeId} on {ServerId}", lifetime.GetType(), item.Guid, item.Server.Id);
 					failed.Add(item);
 					sls.Lifetimes.TryRemove(item.Guid, out _);
 				}
@@ -77,16 +80,17 @@ namespace DidiFrame.Lifetimes
 			sls.Lifetimes.TryAdd(baseObject.Guid, lifetime);
 
 			var holder = new BaseObjectHolder(state, sls, baseObject.Guid);
-			var context = new DefaultLifetimeContext<TBase>(true, holder, holder.FinalizeObject, LogError);
+			var context = new DefaultLifetimeContext<TBase>(lifetime, isNewlyCreated: true, holder, holder.FinalizeObject,
+				LogError(lifetime.GetType(), baseObject.Guid, baseObject.Server));
 
 			try
 			{
 				lifetime.Run(baseObject, context);
 				return lifetime;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				//If lifetime will have called context.Finalize pipeline all will ok
+				logger.Log(LogLevel.Error, LifetimeRegistryFailID, ex, "Failed to restore lifetime ({LifetimeType}) {LifetimeId} on {ServerId}", lifetime.GetType(), baseObject.Guid, baseObject.Server.Id);
 				collection.Object.Remove(baseObject);
 				sls.Lifetimes.TryRemove(baseObject.Guid, out _);
 				throw;
@@ -103,9 +107,11 @@ namespace DidiFrame.Lifetimes
 			return lifetimes.GetOrAdd(server, _ => new()).Lifetimes.Values.ToArray();
 		}
 
-		private void LogError(Exception exception, bool isInvalidModel)
+		private Action<Exception, bool> LogError(Type typeOfLifetime, Guid id, IServer server)
 		{
-			logger.Log(LogLevel.Error, LifetimeCrachedID, exception, "Lifetime has crashed! Model was {InvalidStatus}", isInvalidModel ? "Invalid" : "Valid");
+			return (exception, isInvalidModel) =>
+				logger.Log(LogLevel.Error, LifetimeCrachedID, exception, "({LifetimeType}) Lifetime {LifetimeId} has crashed on {ServerId}! Model was {InvalidStatus}",
+					typeOfLifetime, id, server.Id, isInvalidModel ? "Invalid" : "Valid");
 		}
 
 

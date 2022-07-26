@@ -20,6 +20,7 @@ namespace DidiFrame.Lifetimes
 		private IServer? server;
 		private readonly Dictionary<TState, List<Action>> startupHandlers = new();
 		private readonly List<Action<TState>> stateHandlers = new();
+		private readonly WaitFor waitForCrash = new();
 
 
 		protected bool IsNewlyCreated => GetContext().IsNewlyCreated;
@@ -38,6 +39,7 @@ namespace DidiFrame.Lifetimes
 		public AbstractStateBasedLifetime(ILogger logger)
 		{
 			smBuilder = new StateMachineBuilder<TState>(logger);
+			smBuilder.AddStateTransitWorker(new ResetTransitWorker<TState>(null, waitForCrash.Await));
 		}
 
 
@@ -131,6 +133,8 @@ namespace DidiFrame.Lifetimes
 
 		private void Machine_StateChanged(IStateMachine<TState> stateMahcine, TState oldState)
 		{
+			if (IsFinalized) return;
+
 			var cs = stateMahcine.CurrentState;
 			if (cs.HasValue == false)
 			{
@@ -173,7 +177,7 @@ namespace DidiFrame.Lifetimes
 
 		protected abstract void OnBuild(TBase initialBase);
 
-		protected void FinalizeLifetime()
+		private void FinalizeLifetime()
 		{
 			lock (this)
 			{
@@ -196,6 +200,7 @@ namespace DidiFrame.Lifetimes
 					IsFinalized = true;
 					OnDispose();
 					GetContext().CrashPipeline(exception, isInvalidBase);
+					waitForCrash.Callback();
 				}
 			}
 		}

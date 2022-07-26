@@ -57,6 +57,8 @@ namespace DidiFrame.Interfaces
 		/// </summary>
 		public void Connect();
 
+		public IServer GetServer(ulong id);
+
 
 		public event ServerCreatedEventHandler? ServerCreated;
 

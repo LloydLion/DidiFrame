@@ -28,7 +28,7 @@ namespace DidiFrame.Clients.DSharp
 
 
 		private readonly DiscordClient client;
-		private readonly List<Server> servers = new();
+		private readonly Dictionary<ulong, Server> servers = new();
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 		private readonly ILogger<Client> logger;
@@ -42,7 +42,7 @@ namespace DidiFrame.Clients.DSharp
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IServer> Servers => servers;
+		public IReadOnlyCollection<IServer> Servers => servers.Values;
 
 		/// <inheritdoc/>
 		public IUser SelfAccount => selfAccount.Value;
@@ -92,6 +92,8 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
+		public IServer GetServer(ulong id) => servers[id];
+
 		/// <inheritdoc/>
 		public async Task AwaitForExit()
 		{
@@ -118,65 +120,96 @@ namespace DidiFrame.Clients.DSharp
 		{
 			client.ConnectAsync().Wait();
 			Thread.Sleep(5000);
+			client.GuildCreated += Client_GuildCreated;
+			client.GuildDeleted += Client_GuildDeleted;
 			serverListUpdateTask = CreateServerListUpdateTask(cts.Token);
+		}
+
+		private Task Client_GuildDeleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDeleteEventArgs e)
+		{
+			lock (servers)
+			{
+				if (servers.ContainsKey(e.Guild.Id))
+				{
+					var server = servers[e.Guild.Id];
+					servers.Remove(e.Guild.Id);
+					OnServerRemoved(server);
+				}
+			}
+
+			return Task.CompletedTask;
+		}
+
+		private Task Client_GuildCreated(DiscordClient sender, DSharpPlus.EventArgs.GuildCreateEventArgs e)
+		{
+			lock (servers)
+			{
+				if (servers.ContainsKey(e.Guild.Id) == false)
+				{
+					servers.Add(e.Guild.Id, new Server(e.Guild, this, options.ServerOptions, messagesCacheFactory.Create(e.Guild, this)));
+					OnServerCreated(servers[e.Guild.Id]);
+				}
+			}
+
+			return Task.CompletedTask;
 		}
 
 		private async Task CreateServerListUpdateTask(CancellationToken token)
 		{
 			while (token.IsCancellationRequested == false)
 			{
-				var temp = servers.ToList();
-				servers.Clear();
-
-				foreach (var server in client.Guilds)
+				lock (servers)
 				{
-					var maybe = temp.SingleOrDefault(s => s.Id == server.Key);
-					if (maybe is not null)
-					{
-						servers.Add(maybe);
-						temp.Remove(maybe);
-					}
-					else
-					{
-						var serverObj = new Server(server.Value, this, options.ServerOptions, messagesCacheFactory.Create(server.Value, this));
-						servers.Add(serverObj);
-						onServerCreated(serverObj);
-					}
-				}
+					var temp = servers.ToDictionary(s => s.Key, s => s.Value);
+					servers.Clear();
 
-				foreach (var item in temp)
-				{
-					item.Dispose();
-					onServerRemoved(item);
+					foreach (var server in client.Guilds)
+					{
+						if (temp.TryGetValue(server.Value.Id, out var maybe))
+						{
+							servers.Add(maybe.Id, maybe);
+							temp.Remove(maybe.Id);
+						}
+						else
+						{
+							var serverObj = new Server(server.Value, this, options.ServerOptions, messagesCacheFactory.Create(server.Value, this));
+							servers.Add(serverObj.Id, serverObj);
+							OnServerCreated(serverObj);
+						}
+					}
+
+					foreach (var item in temp)
+					{
+						item.Value.Dispose();
+						OnServerRemoved(item.Value);
+					}
 				}
 
 				await Task.Delay(new TimeSpan(5, 0, 0), token);
 			}
+		}
 
-
-
-			void onServerCreated(Server server)
+		private void OnServerCreated(Server server)
+		{
+			try
 			{
-				try
-				{
-					ServerCreated?.Invoke(server);
-				}
-				catch (Exception ex)
-				{
-					logger.Log(LogLevel.Warning, ServerCreatedEventErrorID, ex, "Exception in event handler for server creation with id {ServerId}", server.Id);
-				}
+				ServerCreated?.Invoke(server);
 			}
-
-			void onServerRemoved(Server server)
+			catch (Exception ex)
 			{
-				try
-				{
-					ServerRemoved?.Invoke(server);
-				}
-				catch (Exception ex)
-				{
-					logger.Log(LogLevel.Warning, ServerRemovedEventErrorID, ex, "Exception in event handler for server removement with id {ServerId}", server.Id);
-				}
+				logger.Log(LogLevel.Warning, ServerCreatedEventErrorID, ex, "Exception in event handler for server creation with id {ServerId}", server.Id);
+			}
+		}
+
+		private void OnServerRemoved(Server server)
+		{
+			try
+			{
+				ServerRemoved?.Invoke(server);
+			}
+			catch (Exception ex)
+			{
+				logger.Log(LogLevel.Warning, ServerRemovedEventErrorID, ex, "Exception in event handler for server removement with id {ServerId}", server.Id);
 			}
 		}
 
