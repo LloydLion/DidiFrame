@@ -99,8 +99,10 @@ namespace TestBot.Systems.Games
 			return cond1 && cond2;
 		}
 
-		private void AttachEvents(GameModel parameter, IMessage message)
+		private void AttachEvents(GameModel parameter, IMessage message, bool isModified)
 		{
+			if (isModified) message.ResetInteractionDispatcher();
+
 			//Every state contains components
 			var di = message.GetInteractionDispatcher();
 
@@ -179,7 +181,7 @@ namespace TestBot.Systems.Games
 				using var holder = GetReadOnlyBase();
 				var b = holder.Object;
 
-				if (ctx.Invoker == b.Creator)
+				if (ctx.Invoker.Equals((IUser)b.Creator))
 				{
 					waitForStartButton.Callback();
 					return new ComponentInteractionResult(new MessageSendModel(localizer["StartOk"]));

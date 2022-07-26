@@ -363,7 +363,7 @@ namespace DidiFrame.Clients.DSharp
 
 			public int MessagesPreloadCount { get; set; } = -1;
 
-			public CachePolicy CachePolicy { get; set; }
+			public CachePolicy CachePolicy { get; set; } = CachePolicy.CacheChannelByRequestWithoutREST;
 
 			public int CacheSize { get; set; } = 25;
 		}

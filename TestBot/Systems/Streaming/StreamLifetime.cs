@@ -58,8 +58,10 @@ namespace TestBot.Systems.Streaming
 			baseObj.Object.Place = newPlace;
 		}
 
-		private void AttachEvents(StreamModel parameter, IMessage message)
+		private void AttachEvents(StreamModel parameter, IMessage message, bool isModified)
 		{
+			if (isModified) message.ResetInteractionDispatcher();
+
 			switch (parameter.State)
 			{
 				case StreamState.Announced:

@@ -4,7 +4,7 @@ namespace DidiFrame.Utils
 {
 	public delegate MessageSendModel MessageCreator<in TParameter>(TParameter parameter);
 
-	public delegate void MessagePostProcessor<in TParameter>(TParameter parameter, IMessage message);
+	public delegate void MessagePostProcessor<in TParameter>(TParameter parameter, IMessage message, bool isModified);
 
 
 	/// <summary>
@@ -37,7 +37,7 @@ namespace DidiFrame.Utils
 			var model = selector(parameter);
 			var msg = GetMessage(model);
 
-			if (msg.IsExist) postProcessor(parameter, msg);
+			if (msg.IsExist) postProcessor(parameter, msg, isModified: false);
 			else await SendNewMessage(parameter, model);
 
 			syncRoot.Set();
@@ -81,7 +81,8 @@ namespace DidiFrame.Utils
 			var message = await GetMessageAsyncInternal(parameter, model);
 
 			var sendModel = creator(parameter);
-			await message.ModifyAsync(sendModel, false);
+			await message.ModifyAsync(sendModel, resetDispatcher: false);
+			postProcessor(parameter, message, isModified: true);
 
 			syncRoot.Set();
 		}
@@ -103,7 +104,7 @@ namespace DidiFrame.Utils
 			var channel = model.Channel;
 			var sendModel = creator(parameter);
 			var message = await channel.SendMessageAsync(sendModel);
-			postProcessor(parameter, message);
+			postProcessor(parameter, message, isModified: false);
 			model.PossibleMessageId = message.Id;
 			return message;
 		}

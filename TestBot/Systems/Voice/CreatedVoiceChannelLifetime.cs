@@ -45,7 +45,7 @@ namespace TestBot.Systems.Voice
 
 		protected override void OnBuild(CreatedVoiceChannel initialBase)
 {
-			AddReport(new MessageAliveHolder<CreatedVoiceChannel>(s => s.ReportMessage, CreateReport, (_1, _2) => { }));
+			AddReport(new MessageAliveHolder<CreatedVoiceChannel>(s => s.ReportMessage, CreateReport, (_1, _2, _3) => { }));
 
 			AddTransit(VoiceChannelState.Timeout, VoiceChannelState.Alive, 10000);
 			AddTransit(VoiceChannelState.Alive, null, AliveDisposingTransit);

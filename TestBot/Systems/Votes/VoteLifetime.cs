@@ -56,8 +56,10 @@ namespace TestBot.Systems.Votes
 			};
 		}
 
-		private void MessageWorker(VoteModel parameter, IMessage message)
+		private void MessageWorker(VoteModel parameter, IMessage message, bool isModified)
 		{
+			if (isModified) return;
+
 			var id = message.GetInteractionDispatcher();
 
 			id.Attach<MessageSelectMenu>("menu", async (ctx) =>
@@ -78,7 +80,7 @@ namespace TestBot.Systems.Votes
 				try
 				{
 					using var holder = Context.AccessBase().Open();
-					if (ctx.Invoker != holder.Object.Creator)
+					if (ctx.Invoker.Equals((IUser)holder.Object.Creator) == false)
 						return new(new("You aren't invoker"));
 					await Message.FinalizeAsync(holder.Object);
 				}

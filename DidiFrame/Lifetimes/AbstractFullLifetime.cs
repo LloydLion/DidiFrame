@@ -128,6 +128,8 @@ namespace DidiFrame.Lifetimes
 		//Will be subscribed only if has report
 		private async void OnStateChanged(IStateMachine<TState> stateMahcine, TState oldState)
 		{
+			if (stateMahcine.CurrentState is null) return;
+
 			try
 			{
 				using var baseObj = GetReadOnlyBase();
