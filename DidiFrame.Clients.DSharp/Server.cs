@@ -200,7 +200,7 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.GuildRoleUpdated -= OnRoleUpdated;
 			client.BaseClient.ChannelUpdated -= OnChannelUpdated;
 			client.BaseClient.MessageUpdated -= OnMessageUpdated;
-			client.BaseClient.ThreadUpdated -= OnThreadUpdated;
+			client.BaseClient.ThreadUpdated -= options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? OnThreadUpdatedForCacheAllMode : OnThreadUpdatedForCacheActiveMode;
 
 			cts.Cancel();
 			globalCacheUpdateTask.Wait();
@@ -237,7 +237,7 @@ namespace DidiFrame.Clients.DSharp
 			(thread) =>
 			{
 				messages.DeleteChannelCache(thread);
-			}, options.ThreadCache);
+			});
 
 			serverCache.SetRemoveActionHandler<DiscordChannel>((id, channel) =>
 			{
@@ -279,14 +279,52 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.GuildRoleUpdated += OnRoleUpdated;
 			client.BaseClient.ChannelUpdated += OnChannelUpdated;
 			client.BaseClient.MessageUpdated += OnMessageUpdated;
-			client.BaseClient.ThreadUpdated += OnThreadUpdated;
+			client.BaseClient.ThreadUpdated += options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? OnThreadUpdatedForCacheAllMode : OnThreadUpdatedForCacheActiveMode;
 
 
 			globalCacheUpdateTask = CreateServerCacheUpdateTask(cts.Token);
 		}
 
 
-		private Task OnThreadUpdated(DiscordClient sender, ThreadUpdateEventArgs e)
+		private Task OnThreadUpdatedForCacheActiveMode(DiscordClient sender, ThreadUpdateEventArgs e)
+		{
+			if (e.Guild != guild) return Task.CompletedTask;
+
+			if (e.ThreadAfter.ThreadMetadata.IsArchived != e.ThreadBefore.ThreadMetadata.IsArchived)
+			{
+				//Archived case (Non resumed case, I don't know because discord works as)
+
+				lock (threads)
+				{
+					threads.RemoveThread(e.ThreadAfter.Id);
+				}
+			}
+			else
+			{
+				//Other change case or resumed case
+
+				lock (threads)
+				{
+					//If thread was archived, threads collection doesn't contains this
+					if (!threads.HasThread(e.ThreadAfter.Id))
+					{
+						//Resumed case
+						threads.AddThread(e.ThreadAfter);
+					}
+					else
+					{
+						//Other change case
+						threads.RemoveThread(e.ThreadAfter.Id);
+						threads.AddThread(e.ThreadAfter);
+						events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.ThreadAfter.Id), true);
+					}					
+				}
+			}
+
+			return Task.CompletedTask;
+		}
+
+		private Task OnThreadUpdatedForCacheAllMode(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
@@ -379,7 +417,6 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnThreadCreated(DiscordClient sender, ThreadCreateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-			if (e.NewlyCreated == false) return Task.CompletedTask;
 
 			threads.AddThread(e.Thread);
 			events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.Thread.Id), true);
@@ -479,7 +516,6 @@ namespace DidiFrame.Clients.DSharp
 				var id = e.Message.Id;
 				var messageModel = new Message(id, () => messages.GetMessage(id, channel.BaseChannel), channel);
 				messagesEvents.InvokeSentEvent(new Message(e.Message.Id, () => messages.GetNullableMessage(id, dchannel), channel), false);
-
 			}
 
 			return Task.CompletedTask;
@@ -729,21 +765,17 @@ namespace DidiFrame.Clients.DSharp
 			private readonly Dictionary<ulong, DiscordThreadChannel> threads = new();
 			private readonly Action<DiscordThreadChannel> addAction;
 			private readonly Action<DiscordThreadChannel> removeAction;
-			private readonly Options.ThreadCacheBehavior cacheBehavior;
 
 
-			public TextChannelThreadsCache(Action<DiscordThreadChannel> addAction, Action<DiscordThreadChannel> removeAction, Options.ThreadCacheBehavior cacheBehavior)
+			public TextChannelThreadsCache(Action<DiscordThreadChannel> addAction, Action<DiscordThreadChannel> removeAction)
 			{
 				this.addAction = addAction;
 				this.removeAction = removeAction;
-				this.cacheBehavior = cacheBehavior;
 			}
 
 
 			public void AddThread(DiscordThreadChannel thread)
 			{
-				if (cacheBehavior == Options.ThreadCacheBehavior.CacheActive && thread.ThreadMetadata.IsArchived) return;
-
 				lock (this)
 				{
 					threads.Add(thread.Id, thread);
@@ -765,7 +797,6 @@ namespace DidiFrame.Clients.DSharp
 			{
 				lock (this)
 				{
-					if (threads[threadId].ThreadMetadata.IsArchived && cacheBehavior == Options.ThreadCacheBehavior.CacheActive) threads.Remove(threadId);
 					return threads[threadId];
 				}
 			}
@@ -807,7 +838,7 @@ namespace DidiFrame.Clients.DSharp
 					var toRet = new List<DiscordThreadChannel>();
 
 					foreach (var item in threads.Values)
-						if (item.Parent == channel && (!item.ThreadMetadata.IsArchived || cacheBehavior != Options.ThreadCacheBehavior.CacheActive))
+						if (item.Parent == channel)
 							toRet.Add(item);
 
 					return toRet;
