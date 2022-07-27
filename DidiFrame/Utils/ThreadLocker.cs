@@ -8,7 +8,7 @@ namespace DidiFrame.Utils
 	/// Thread synchronization tool
 	/// </summary>
 	/// <typeparam name="TLock">Type of synch root objects</typeparam>
-	public class ThreadLocker<TLock> where TLock : class
+	public class ThreadLocker<TLock>
 	{
 		private readonly ConcurrentDictionary<TLock, AutoResetEvent> locked;
 

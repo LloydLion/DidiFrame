@@ -1,21 +1,27 @@
 ﻿using DidiFrame.Utils;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace DidiFrame.Data.Json
 {
 	internal class JsonCache
 	{
+		private static readonly EventId FileSaveErrorID = new(21, "FileSaveError");
+
+
 		private readonly Dictionary<string, Dictionary<string, object>> states = new();
 		private readonly Dictionary<string, Dictionary<string, JContainer>> initialData = new();
 		private readonly string basePath;
-		private static readonly ThreadLocker<JsonCache> globalLocker = new();
-		private readonly ThreadLocker<string> saveLocker = new();
+		private readonly ThreadLocker<string> fileLocker = new();
+		private readonly FileWriteDispatcher dispatcher;
 
 
-		public JsonCache(string basePath)
+		public JsonCache(string basePath, ILogger logger)
 		{
 			this.basePath = basePath;
+			dispatcher = new(logger);
 		}
 
 
@@ -56,7 +62,7 @@ namespace DidiFrame.Data.Json
 
 		public Task PutAsync<TModel>(string path, string key, TModel value, JsonSerializer serializer) where TModel : class
 		{
-			using (globalLocker.Lock(this))
+			using (fileLocker.Lock(path))
 			{
 				return PutDirectAsync(path, key, value, serializer);
 			}
@@ -64,7 +70,7 @@ namespace DidiFrame.Data.Json
 
 		public TModel Get<TModel>(string path, string key, JsonSerializer serializer, out Task? putTask) where TModel : class
 		{
-			using (globalLocker.Lock(this))
+			using (fileLocker.Lock(path))
 			{
 				if (states.ContainsKey(path) && states[path].ContainsKey(key))
 				{
@@ -83,29 +89,94 @@ namespace DidiFrame.Data.Json
 
 		public bool Has(string path, string key)
 		{
-			return (states.ContainsKey(path) && states[path].ContainsKey(key)) ||
-			(initialData.ContainsKey(path) && initialData[path].ContainsKey(key));
+			using (fileLocker.Lock(path))
+			{
+				return (states.ContainsKey(path) && states[path].ContainsKey(key)) ||
+					(initialData.ContainsKey(path) && initialData[path].ContainsKey(key));
+			}
 		}
 
-		public async Task SaveAsync(string path, JsonSerializer serializer)
+		public Task SaveAsync(string path, JsonSerializer serializer)
 		{
-			using (saveLocker.Lock(path))
-			{
-				//Serialization - fast process, deserialization - slow
-				
-				var baseDic = initialData.ContainsKey(path) ? initialData[path].ToDictionary(s => s.Key, s => s.Value) : new();
-				
-				foreach (var l in states[path])
-				{
-					var jobj = (JContainer)JToken.FromObject(l.Value, serializer);
-					if (baseDic.ContainsKey(l.Key)) baseDic.Remove(l.Key);
-					baseDic.Add(l.Key, jobj);
-				}
+			var baseDic = initialData.ContainsKey(path) ? initialData[path].ToDictionary(s => s.Key, s => s.Value) : new();
 
-				var str = serializer.Serialize(baseDic);
-				var file = Path.Combine(basePath, path);
-				await File.WriteAllTextAsync(file, str);
+			foreach (var l in states[path])
+			{
+				var jobj = (JContainer)JToken.FromObject(l.Value, serializer);
+				if (baseDic.ContainsKey(l.Key)) baseDic.Remove(l.Key);
+				baseDic.Add(l.Key, jobj);
 			}
+
+			var str = serializer.Serialize(baseDic);
+			var file = Path.Combine(basePath, path);
+			return dispatcher.QueueTask(new(file, Encoding.Default.GetBytes(str)));
+		}
+
+
+		private class FileWriteDispatcher : IDisposable
+		{
+			private readonly Queue<ScheduleItem> tasks = new();
+			private readonly Thread thread;
+			private readonly AutoResetEvent tasksWaiter = new(false);
+			private readonly ILogger logger;
+			private bool isClosed = false;
+
+
+			public FileWriteDispatcher(ILogger logger)
+			{
+				thread = new Thread(Executor);
+				this.logger = logger;
+			}
+
+
+			public void Dispose()
+			{
+				isClosed = true;
+				tasksWaiter.Set();
+				thread.Join();
+			}
+
+			public Task QueueTask(FileTask task)
+			{
+				lock (tasks)
+				{
+					var source = new TaskCompletionSource();
+					tasks.Enqueue(new(task, source));
+					tasksWaiter.Set();
+					return source.Task;
+				}
+			}
+
+			private void Executor()
+			{
+				while (true)
+				{
+					tasksWaiter.WaitOne();
+					if (isClosed) return;
+
+					ScheduleItem task;
+					lock (tasks)
+					{
+						task = tasks.Dequeue();
+					}
+
+					try
+					{
+						File.WriteAllBytes(task.Task.Path, task.Task.Bytes);
+					}
+					catch (Exception ex)
+					{
+						logger.Log(LogLevel.Warning, FileSaveErrorID, ex, "Enable save changes into file at {FilePath}", task.Task.Path);
+					}
+
+					task.TaskCompletionSource.SetResult();
+				}
+			}
+
+
+			public record FileTask(string Path, byte[] Bytes);
+
+			private record ScheduleItem(FileTask Task, TaskCompletionSource TaskCompletionSource);
 		}
 	}
 }

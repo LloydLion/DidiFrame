@@ -9,9 +9,12 @@ using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Reflection;
 using System.Text;
+using static MongoDB.Driver.WriteConcern;
 
-namespace DidiFrame.Data.MongoDB
+namespace DidiFrame.Data.Mongo
 {
 	/// <summary>
 	/// Context for mongo database data management
@@ -19,11 +22,8 @@ namespace DidiFrame.Data.MongoDB
 	public class MongoDBContext : IDataContext
 	{
 		private readonly IMongoDatabase db;
-		private readonly Dictionary<IServer, Dictionary<string, object>> cache = new();
-		private readonly ThreadLocker<IServer> dbLocker = new();
-		private readonly ThreadLocker<IServer> opLocker = new();
 		private readonly ILogger logger;
-		private readonly IClient client;
+		private readonly MongoCache cache;
 
 
 		/// <summary>
@@ -43,103 +43,74 @@ namespace DidiFrame.Data.MongoDB
 			var dbClient = new MongoClient(option.ConnectionString);
 			db = dbClient.GetDatabase(option.DatabaseName);
 			this.logger = logger;
-			client = services.GetRequiredService<IClient>();
+
+			cache = new(db, logger);
 		}
 
 
 		/// <inheritdoc/>
-		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
+		public async void Put<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
-			using (opLocker.Lock(server))
-			{
-				if (!cache.ContainsKey(server))
-					cache.Add(server, new());
-				var serverCache = cache[server];
-				if (serverCache.ContainsKey(key))
-					serverCache[key] = model;
-				else serverCache.Add(key, model);
-			}
+			var serializer = JsonSerializerFactory.CreateWithConverters(server, logger);
 
-			PushChangesAsync(server, key, typeof(TModel));
+			await cache.PutAsync(server.Id, key, model, serializer);
 		}
 
 		private TModel Load<TModel>(IServer server, string key) where TModel : class
 		{
-			return (TModel)cache[server][key];
+			var id = server.Id;
+			bool isRepatchJson = false;
+
+			var serializer = JsonSerializerFactory.CreateWithConverters(server, logger, (_1, _2, _3) => isRepatchJson = true);
+
+			var result = cache.Get<TModel>(id, key, serializer, out var task);
+
+			if (task is not null) task.ContinueWith(s =>
+			{
+				if (isRepatchJson)
+				{
+					cache.PutAsync(id, key, result, serializer);
+				}
+			});
+
+			return result;
 		}
 
 		/// <inheritdoc/>
 		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class
 		{
 			if (factory is null) return Load<TModel>(server, key);
-
-			if (cache.ContainsKey(server) == false) cache.Add(server, new());
-			var serverCache = cache[server];
-			if (serverCache.ContainsKey(key) == false) serverCache.Add(key, factory.CreateDefault());
-			return (TModel)serverCache[key];
-		}
-
-		private async void PushChangesAsync(IServer server, string key, Type ttype)
-		{
-			var cnames = await db.ListCollectionNames().ToListAsync();
-
-			using (dbLocker.Lock(server))
+			else
 			{
-				if (!cnames.Contains(server.Id.ToString()))
-					await db.CreateCollectionAsync(server.Id.ToString());
-				var collection = db.GetCollection<BsonDocument>(server.Id.ToString());
+				var id = server.Id;
+				bool isRepatchJson = false;
 
-				var obj = cache[server][key];
-				var ser = JsonSerializerFactory.CreateWithConverters(server, logger);
-				var jcont = JToken.FromObject(obj, ser);
-				var model = new SaveModel(key, ttype, (JContainer)jcont);
-				var json = new StringBuilder();
-				ser.Serialize(new JsonTextWriter(new StringWriter(json)), model);
-				var raw = json.ToString();
+				var serializer = JsonSerializerFactory.CreateWithConverters(server, logger, (obj, str, ex) => { isRepatchJson = true; });
 
-				await collection.DeleteManyAsync(new BsonDocument("Key", new BsonString(key)));
-				await collection.InsertOneAsync(BsonDocument.Parse(raw));
+				TModel model;
+
+				if (cache.Has(id, key) == false)
+				{
+					model = factory.CreateDefault();
+					cache.PutAsync(id, key, model, serializer);
+				}
+				else
+				{
+					model = cache.Get<TModel>(id, key, serializer, out var task);
+					if (task is not null) task.ContinueWith(s =>
+					{
+						if (isRepatchJson)
+						{
+							cache.PutAsync(id, key, model, serializer);
+						}
+					});
+				}
+
+				return model;
 			}
 		}
 
 		/// <inheritdoc/>
-		public async Task PreloadDataAsync()
-		{
-			var cursor = db.ListCollectionNames();
-			foreach (var colName in await cursor.ToListAsync())
-			{
-				if (!client.Servers.Any(s => s.Id.ToString() == colName)) continue;
-
-				var collection = db.GetCollection<BsonDocument>(colName);
-				var server = client.Servers.Single(s => s.Id.ToString() == colName);
-
-				cache.Add(server, new());
-				var serverCache = cache[server];
-
-				foreach (var document in await collection.Find(FilterDefinition<BsonDocument>.Empty).ToListAsync())
-				{
-					var isRepatchJson = false;
-
-					var clone = document.ToBsonDocument();
-					clone.Remove("_id");
-					var json = clone.ToJson(new JsonWriterSettings() { OutputMode = JsonOutputMode.RelaxedExtendedJson });
-					var ser = JsonSerializerFactory.CreateWithConverters(server, logger, (_1, _2, _3) => { isRepatchJson = true; });
-					var model = Newtonsoft.Json.JsonConvert.DeserializeObject<SaveModel>(json);
-					if (model is null) continue;
-
-					var data = model.Document.ToObject(model.Type, ser);
-					if (data is null) continue;
-
-					serverCache.Add(model.Key, data);
-
-					if (isRepatchJson) PushChangesAsync(server, model.Key, model.Type);
-				}
-			}
-
-			cursor.Dispose();
-		}
-
-
-		private record SaveModel(string Key, Type Type, JContainer Document);
+		public Task PreloadDataAsync() => cache.LoadAllAsync();
 	}
 }

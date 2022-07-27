@@ -25,7 +25,7 @@ using DidiFrame.UserCommands.Loader.Reflection;
 using DidiFrame.Clients.DSharp;
 using DidiFrame;
 using DidiFrame.Application;
-using DidiFrame.Data.MongoDB;
+using DidiFrame.Data.Mongo;
 using DidiFrame.UserCommands.Pipeline.Building;
 using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
