@@ -4,17 +4,23 @@ using DidiFrame.Interfaces;
 using DSharpPlus.EventArgs;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace DidiFrame.Clients.DSharp
 {
 	internal class InteractionDispatcherFactory
 	{
+		private static readonly EventId InteractionHandlerErrorID = new(10, "InteractionHandlerError");
+
+
 		private readonly Dictionary<ulong, List<EventHolder>> subs = new();
+		private readonly ILogger<Client> logger;
 
 
 		public InteractionDispatcherFactory(Server server)
 		{
 			server.SourceClient.BaseClient.ComponentInteractionCreated += InteractionCreated;
+			logger = server.SourceClient.Logger;
 		}
 
 
@@ -48,26 +54,39 @@ namespace DidiFrame.Clients.DSharp
 
 		private Task InteractionCreated(DiscordClient client, ComponentInteractionCreateEventArgs args)
 		{
+			EventHolder[] holders;
+
 			lock (this)
 			{
 				if (!subs.ContainsKey(args.Message.Id))
 					return Task.CompletedTask;
+				holders = subs[args.Message.Id].ToArray();
+			}
 
-				foreach (var item in subs[args.Message.Id])
+			Task.Run(() =>
+			{
+				try
 				{
-					var result = item.Handle(args);
-					if (result is null) continue;
-					else
+					foreach (var item in holders)
 					{
-						args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-							new DiscordInteractionResponseBuilder(MessageConverter.ConvertUp(result.Result.Respond)).AsEphemeral()).Wait();
+						var result = item.Handle(args);
+						if (result is null) continue;
+						else
+						{
+							args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+								new DiscordInteractionResponseBuilder(MessageConverter.ConvertUp(result.Result.Respond)).AsEphemeral()).Wait();
 
-						break;
+							break;
+						}
 					}
 				}
+				catch (Exception ex)
+				{
+					logger.Log(LogLevel.Error, InteractionHandlerErrorID, ex, "Exception in component interaction handler");
+				}
+			});
 
-				return Task.CompletedTask;
-			}
+			return Task.CompletedTask;
 		}
 
 
