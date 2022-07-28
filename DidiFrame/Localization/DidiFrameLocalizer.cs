@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.Localization
+﻿using System.Globalization;
+
+namespace DidiFrame.Localization
 {
 	internal class DidiFrameLocalizer : IStringLocalizer
 	{
@@ -42,12 +44,7 @@
 
 					if (dic.TryGetValue(name, out var value))
 					{
-						for (var i = 0; i < arguments.Length; i++)
-						{
-							value = value.Replace($"{{{i}}}", arguments[i].ToString());
-						}
-
-						return new LocalizedString(name, value);
+						return new LocalizedString(name, string.Format(CultureInfo.CurrentCulture, value, arguments));
 					}
 					else return new LocalizedString(name, name, true, name);
 				}
@@ -58,7 +55,23 @@
 
 		public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
 		{
-			throw new NotImplementedException();
+			var overdic = delegatedLocalizer?.GetAllStrings(includeParentCultures);
+
+			var dic = source.GetLocaleDictionary();
+			var predic = dic.ToDictionary(s => s.Key, s => new LocalizedString(s.Key, s.Value));
+
+			if (overdic is null) return predic.Values;
+			else
+			{
+				foreach (var item in overdic)
+				{
+					if (predic.ContainsKey(item.Name))
+						predic[item.Name] = item;
+					else predic.Add(item.Name, item);
+				}
+
+				return predic.Values;
+			}
 		}
 	}
 }
