@@ -133,6 +133,7 @@ namespace DidiFrame.Clients.DSharp
 				{
 					var server = servers[e.Guild.Id];
 					servers.Remove(e.Guild.Id);
+					server.Dispose();
 					OnServerRemoved(server);
 				}
 			}

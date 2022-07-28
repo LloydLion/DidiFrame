@@ -202,7 +202,14 @@ namespace DidiFrame.Lifetimes
 
 			OnDisposeInternal();
 
-			if (reportFinalizeTask is not null) await reportFinalizeTask;
+			try
+			{
+				if (reportFinalizeTask is not null) await reportFinalizeTask;
+			}
+			catch (Exception ex)
+			{
+				logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message for lifetime with id {Guid}", Guid);
+			}
 		}
 
 		/// <summary>

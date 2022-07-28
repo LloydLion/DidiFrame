@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace DidiFrame.Data.Mongo
 {
@@ -54,10 +55,10 @@ namespace DidiFrame.Data.Mongo
 					{
 						var clone = document.ToBsonDocument();
 						clone.Remove("_id");
-						var id = clone.GetElement("key").Value.AsString;
-						clone.Remove("key");
+						var id = clone.GetElement("Key").Value.AsString;
+						clone.Remove("Key");
 						var json = clone.ToJson(new JsonWriterSettings() { OutputMode = JsonOutputMode.RelaxedExtendedJson });
-						var parse = (JContainer)(JObject.Parse(json).GetValue("value") ?? throw new NullReferenceException());
+						var parse = (JContainer)(JObject.Parse(json).GetValue("Container") ?? throw new NullReferenceException());
 
 						dic.Add(id, parse);
 					}
@@ -118,11 +119,11 @@ namespace DidiFrame.Data.Mongo
 		{
 			var jobj = (JContainer)JToken.FromObject(states[serverId][key], serializer);
 
-			return dispatcher.QueueTask(new(serverId, key, jobj.ToString()));
+			return dispatcher.QueueTask(new(serverId, key, jobj));
 		}
 
 
-		private class DatabaseWriteDispatcher : IDisposable
+		private class DatabaseWriteDispatcher
 		{
 			private readonly Queue<ScheduleItem> tasks = new();
 			private readonly Thread thread;
@@ -135,19 +136,20 @@ namespace DidiFrame.Data.Mongo
 			public DatabaseWriteDispatcher(IMongoDatabase database, ILogger logger)
 			{
 				thread = new Thread(Executor);
+				thread.Start();
 				this.database = database;
 				this.logger = logger;
 			}
 
 
-			public void Dispose()
+			~DatabaseWriteDispatcher()
 			{
 				isClosed = true;
 				tasksWaiter.Set();
 				thread.Join();
 			}
 
-			public Task QueueTask(FileTask task)
+			public Task QueueTask(WriteTask task)
 			{
 				lock (tasks)
 				{
@@ -175,14 +177,10 @@ namespace DidiFrame.Data.Mongo
 					{
 						var collection = database.GetCollection<BsonDocument>(task.Task.Collection.ToString());
 
-						var bson = new BsonDocument
-						{
-							{ "value", BsonDocument.Parse(task.Task.Json) },
-							{ "key", new BsonString(task.Task.Key) }
-						};
+						var item = new MongoItem(task.Task.Key, task.Task.Json);
 
-						collection.DeleteOne(new BsonDocument("key", new BsonString(task.Task.Key)));
-						collection.InsertOne(bson, new InsertOneOptions() { Comment = "Created at " + DateTime.Now.ToString() });
+						collection.DeleteOne(new BsonDocument("Key", new BsonString(task.Task.Key)));
+						collection.InsertOne(BsonDocument.Parse(JsonConvert.SerializeObject(item)), new InsertOneOptions() { Comment = "Created at " + DateTime.Now.ToString() });
 
 					}
 					catch (Exception ex)
@@ -195,9 +193,11 @@ namespace DidiFrame.Data.Mongo
 			}
 
 
-			public record FileTask(ulong Collection, string Key, string Json);
+			public record WriteTask(ulong Collection, string Key, JContainer Json);
 
-			private record ScheduleItem(FileTask Task, TaskCompletionSource TaskCompletionSource);
+			private record ScheduleItem(WriteTask Task, TaskCompletionSource TaskCompletionSource);
+
+			private record MongoItem(string Key, JContainer Container);
 		}
 	}
 }

@@ -113,7 +113,7 @@ namespace DidiFrame.Data.Json
 		}
 
 
-		private class FileWriteDispatcher : IDisposable
+		private class FileWriteDispatcher
 		{
 			private readonly Queue<ScheduleItem> tasks = new();
 			private readonly Thread thread;
@@ -125,11 +125,12 @@ namespace DidiFrame.Data.Json
 			public FileWriteDispatcher(ILogger logger)
 			{
 				thread = new Thread(Executor);
+				thread.Start();
 				this.logger = logger;
 			}
 
 
-			public void Dispose()
+			~FileWriteDispatcher()
 			{
 				isClosed = true;
 				tasksWaiter.Set();

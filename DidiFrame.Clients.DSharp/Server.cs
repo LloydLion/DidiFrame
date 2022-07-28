@@ -203,7 +203,12 @@ namespace DidiFrame.Clients.DSharp
 			client.BaseClient.ThreadUpdated -= options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? OnThreadUpdatedForCacheAllMode : OnThreadUpdatedForCacheActiveMode;
 
 			cts.Cancel();
-			globalCacheUpdateTask.Wait();
+
+			try
+			{
+				globalCacheUpdateTask.Wait();
+			}
+			catch (Exception) { }
 
 			IsClosed = true;
 

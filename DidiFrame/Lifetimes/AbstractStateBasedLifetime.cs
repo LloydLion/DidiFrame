@@ -12,6 +12,9 @@ namespace DidiFrame.Lifetimes
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
+		private static readonly EventId FailedToDisposeStateMachineID = new(21, "FailedToDisposeStateMachine");
+
+
 		private ILifetimeContext<TBase>? context;
 		private readonly StateMachineBuilder<TState> smBuilder;
 		private IStateMachine<TState>? machine;
@@ -21,6 +24,7 @@ namespace DidiFrame.Lifetimes
 		private readonly Dictionary<TState, List<Action>> startupHandlers = new();
 		private readonly List<Action<TState>> stateHandlers = new();
 		private readonly WaitFor waitForCrash = new();
+		private readonly ILogger logger;
 
 
 		protected bool IsNewlyCreated => GetContext().IsNewlyCreated;
@@ -40,6 +44,7 @@ namespace DidiFrame.Lifetimes
 		{
 			smBuilder = new StateMachineBuilder<TState>(logger);
 			smBuilder.AddStateTransitWorker(new ResetTransitWorker<TState>(null, waitForCrash.Await));
+			this.logger = logger;
 		}
 
 
@@ -133,6 +138,19 @@ namespace DidiFrame.Lifetimes
 
 		private void Machine_StateChanged(IStateMachine<TState> stateMahcine, TState oldState)
 		{
+			if (stateMahcine.CurrentState is null)
+			{
+				var id = Guid;
+				Task.Run(() =>
+				{
+					try { stateMahcine.Dispose(); }
+					catch (Exception ex)
+					{
+						logger.Log(LogLevel.Error, FailedToDisposeStateMachineID, ex, "Failed to dispose statemachine in lifetime with id {Id}", id);
+					}
+				});
+			}
+
 			if (IsFinalized) return;
 
 			var cs = stateMahcine.CurrentState;
