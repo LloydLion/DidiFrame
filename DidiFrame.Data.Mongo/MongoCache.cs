@@ -165,30 +165,33 @@ namespace DidiFrame.Data.Mongo
 				while (true)
 				{
 					tasksWaiter.WaitOne();
-					if (isClosed) return;
-
-					ScheduleItem task;
-					lock (tasks)
+					while (tasks.Count > 0)
 					{
-						task = tasks.Dequeue();
+						if (isClosed) return;
+
+						ScheduleItem task;
+						lock (tasks)
+						{
+							task = tasks.Dequeue();
+						}
+
+						try
+						{
+							var collection = database.GetCollection<BsonDocument>(task.Task.Collection.ToString());
+
+							var item = new MongoItem(task.Task.Key, task.Task.Json);
+
+							collection.DeleteOne(new BsonDocument("Key", new BsonString(task.Task.Key)));
+							collection.InsertOne(BsonDocument.Parse(JsonConvert.SerializeObject(item)), new InsertOneOptions() { Comment = "Created at " + DateTime.Now.ToString() });
+
+						}
+						catch (Exception ex)
+						{
+							logger.Log(LogLevel.Error, FailedToSaveDocumentID, ex, "Enable to write state/settings to MongoDb for server {ServerId} and key {DataKey}", task.Task.Collection, task.Task.Key);
+						}
+
+						task.TaskCompletionSource.SetResult();
 					}
-
-					try
-					{
-						var collection = database.GetCollection<BsonDocument>(task.Task.Collection.ToString());
-
-						var item = new MongoItem(task.Task.Key, task.Task.Json);
-
-						collection.DeleteOne(new BsonDocument("Key", new BsonString(task.Task.Key)));
-						collection.InsertOne(BsonDocument.Parse(JsonConvert.SerializeObject(item)), new InsertOneOptions() { Comment = "Created at " + DateTime.Now.ToString() });
-
-					}
-					catch (Exception ex)
-					{
-						logger.Log(LogLevel.Error, FailedToSaveDocumentID, ex, "Enable to write state/settings to MongoDb for server {ServerId} and key {DataKey}", task.Task.Collection, task.Task.Key);
-					}
-
-					task.TaskCompletionSource.SetResult();
 				}
 			}
 

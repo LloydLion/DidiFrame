@@ -153,24 +153,27 @@ namespace DidiFrame.Data.Json
 				while (true)
 				{
 					tasksWaiter.WaitOne();
-					if (isClosed) return;
-
-					ScheduleItem task;
-					lock (tasks)
+					while (tasks.Count > 0)
 					{
-						task = tasks.Dequeue();
-					}
+						if (isClosed) return;
 
-					try
-					{
-						File.WriteAllBytes(task.Task.Path, task.Task.Bytes);
-					}
-					catch (Exception ex)
-					{
-						logger.Log(LogLevel.Warning, FileSaveErrorID, ex, "Enable save changes into file at {FilePath}", task.Task.Path);
-					}
+						ScheduleItem task;
+						lock (tasks)
+						{
+							task = tasks.Dequeue();
+						}
 
-					task.TaskCompletionSource.SetResult();
+						try
+						{
+							File.WriteAllBytes(task.Task.Path, task.Task.Bytes);
+						}
+						catch (Exception ex)
+						{
+							logger.Log(LogLevel.Warning, FileSaveErrorID, ex, "Enable save changes into file at {FilePath}", task.Task.Path);
+						}
+
+						task.TaskCompletionSource.SetResult();
+					}
 				}
 			}
 
