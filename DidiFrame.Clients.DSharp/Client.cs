@@ -25,6 +25,8 @@ namespace DidiFrame.Clients.DSharp
 		private readonly static EventId NoServerConnectionID = new(21, "NoServerConnection");
 		private readonly static EventId ServerCreatedEventErrorID = new(98, "ServerCreatedEventError");
 		private readonly static EventId ServerRemovedEventErrorID = new(97, "ServerRemovedEventError");
+		private readonly static EventId NewServerCreatedID = new(11, "NewServerCreated");
+		private readonly static EventId ServerRemovedID = new(12, "ServerRemoved");
 
 
 		private readonly DiscordClient client;
@@ -192,6 +194,8 @@ namespace DidiFrame.Clients.DSharp
 
 		private void OnServerCreated(Server server)
 		{
+			logger.Log(LogLevel.Debug, NewServerCreatedID, "New server created with id {ServerId} and name \"{ServerName}\"", server.Id, server.Name);
+
 			try
 			{
 				ServerCreated?.Invoke(server);
@@ -204,6 +208,8 @@ namespace DidiFrame.Clients.DSharp
 
 		private void OnServerRemoved(Server server)
 		{
+			logger.Log(LogLevel.Debug, ServerRemovedID, "Server removed with id {ServerId} and name \"{ServerName}\"", server.Id, server.Name);
+
 			try
 			{
 				ServerRemoved?.Invoke(server);

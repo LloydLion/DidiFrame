@@ -25,6 +25,8 @@ namespace DidiFrame.Clients.DSharp
 		public class Registry<TEntity> : Registry where TEntity : IServerEntity
 		{
 			private static readonly EventId EventHandlerErrorID = new(55, "EventHandlerError");
+			private static readonly EventId ServerObjectCreatedID = new(23, "ServerObjectCreated");
+			private static readonly EventId ServerObjectDeletedID = new(24, "ServerObjectCreated");
 
 
 			private readonly HashSet<ServerObjectCreatedEventHandler<TEntity>> createdHandlers = new();
@@ -88,6 +90,9 @@ namespace DidiFrame.Clients.DSharp
 			{
 				lock (this)
 				{
+					logger.Log(LogLevel.Trace, ServerObjectCreatedID, "{EnityName} was created ({ModifyStatus}) in {ServerId}",
+						typeof(TEntity).Name, isModified ? "Modified" : "Created", serverId);
+
 					foreach (var handler in createdHandlers)
 					{
 						try
@@ -97,7 +102,7 @@ namespace DidiFrame.Clients.DSharp
 						catch (Exception ex)
 						{
 							logger.Log(LogLevel.Warning, EventHandlerErrorID, ex, "Exception in event handler for {EnityName} creation ({ModifyStatus}) in {ServerId}",
-								isModified ? "Modify" : "Create", typeof(TEntity).Name, serverId);
+								typeof(TEntity).Name, isModified ? "Modify" : "Create", serverId);
 						}
 					}
 				}
@@ -107,6 +112,8 @@ namespace DidiFrame.Clients.DSharp
 			{
 				lock (this)
 				{
+					logger.Log(LogLevel.Trace, ServerObjectDeletedID, "{EnityName} with id {Id} was deleted from {ServerId}", typeof(TEntity).Name, id, serverId);
+
 					foreach (var handler in deletedHandlers)
 					{
 						try

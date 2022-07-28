@@ -20,6 +20,10 @@
 		/// </summary>
 		public MessageSendModel? RespondMessage { get; init; }
 
+		public string? DebugMessage { get; init; }
+
+		public Exception? Exception { get; init; }
+
 		/// <summary>
 		/// Status code of command
 		/// </summary>

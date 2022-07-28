@@ -9,8 +9,7 @@ namespace DidiFrame.UserCommands.Executing
 	/// </summary>
 	public class DefaultUserCommandsExecutor : AbstractUserCommandPipelineMiddleware<ValidatedUserCommandContext, UserCommandResult>
 	{
-		private static readonly EventId CommandStartID = new (32, "CommandStart");
-		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
+		private static readonly EventId CommandStartID = new(32, "CommandStart");
 		private static readonly EventId InternalErrorID = new(36, "InternalError");
 
 
@@ -58,11 +57,10 @@ namespace DidiFrame.UserCommands.Executing
 					{
 						result = new UserCommandResult(UserCommandCode.UnspecifiedError)
 						{
-							RespondMessage = createExcetionMessage(ex)
+							RespondMessage = createExcetionMessage(ex),
+							Exception = ex
 						};
 					}
-
-					logger.Log(LogLevel.Debug, CommandCompliteID, "Command executed with code {ResultCode}", result.Code);
 
 					return result;
 				}
@@ -80,16 +78,16 @@ namespace DidiFrame.UserCommands.Executing
 							break;
 						case Options.UnspecifiedErrorMessageBehavior.EnableWithExceptionsTypeAndMessage:
 							text = "Command excecution finished with error\n" +
-									$"Error: {ex}\n" +
-									"Code: " + nameof(UserCommandCode.UnspecifiedError);
+								$"Error: {ex}\n" +
+								"Code: " + nameof(UserCommandCode.UnspecifiedError);
 							break;
 						case Options.UnspecifiedErrorMessageBehavior.EnableWithFullExceptionInfo:
 							text = "Command excecution finished with error\n" +
-									$"Error: {ex}\n" +
-									$"Stack: {ex.StackTrace}" +
-									$"InnerException: {ex.InnerException?.ToString() ?? "No inner exception"}\n" +
-									$"InnerExceptionStack: {ex.InnerException?.StackTrace ?? "No inner exception"}\n" +
-									"Code: " + nameof(UserCommandCode.UnspecifiedError);
+								$"Error: {ex}\n" +
+								$"Stack: {ex.StackTrace}" +
+								$"InnerException: {ex.InnerException?.ToString() ?? "No inner exception"}\n" +
+								$"InnerExceptionStack: {ex.InnerException?.StackTrace ?? "No inner exception"}\n" +
+								"Code: " + nameof(UserCommandCode.UnspecifiedError);
 							break;
 						default: throw new Exception(); //Never be
 					}
