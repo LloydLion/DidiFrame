@@ -50,10 +50,4 @@
     <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Translations\ApplicationCommandDispatcher.resx">
-      <Generator></Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-
 </Project>

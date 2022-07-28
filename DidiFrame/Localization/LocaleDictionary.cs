@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DidiFrame.Localization
 {
-	internal class LocaleDictionary : IReadOnlyDictionary<string, string>
+	public class LocaleDictionary : IReadOnlyDictionary<string, string>
 	{
 		private readonly IReadOnlyDictionary<string, string> baseDic;
 

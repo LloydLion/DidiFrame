@@ -2,7 +2,7 @@
 
 namespace DidiFrame.Localization
 {
-	internal class SmartDidiFrameLocalizationProvider<TLocalization> : IDidiFrameLocalizationProvider
+	public class SmartDidiFrameLocalizationProvider<TLocalization> : IDidiFrameLocalizationProvider
 	{
 		private readonly Dictionary<string, Dictionary<string, string>> preConfigurated = new();
 

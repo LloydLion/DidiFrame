@@ -2,7 +2,7 @@
 
 namespace DidiFrame.Localization
 {
-	internal interface IDidiFrameLocalizationProvider
+	public interface IDidiFrameLocalizationProvider
 	{
 		public Type TargetType { get; }
 
