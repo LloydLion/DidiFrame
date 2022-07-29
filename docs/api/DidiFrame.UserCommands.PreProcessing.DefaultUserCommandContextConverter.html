@@ -129,13 +129,13 @@
   
   
   <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_IServiceProvider_System_Collections_IEnumerable_DidiFrame_UserCommands_PreProcessing_IUserCommandContextSubConverter__IStringLocalizer_DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor(IServiceProvider,System.Collections.IEnumerable{DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter},IStringLocalizer{DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter})">DefaultUserCommandContextConverter(IServiceProvider, IEnumerable&lt;IUserCommandContextSubConverter&gt;, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt;)</h4>
+  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_FluentValidation_IValidator_UserCommandPreContext__IServiceProvider_System_Collections_IEnumerable_DidiFrame_UserCommands_PreProcessing_IUserCommandContextSubConverter__IStringLocalizer_DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor(FluentValidation.IValidator{UserCommandPreContext},IServiceProvider,System.Collections.IEnumerable{DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter},IStringLocalizer{DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter})">DefaultUserCommandContextConverter(IValidator&lt;UserCommandPreContext&gt;, IServiceProvider, IEnumerable&lt;IUserCommandContextSubConverter&gt;, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DefaultUserCommandContextConverter(IServiceProvider services, IEnumerable&lt;IUserCommandContextSubConverter&gt; subConverters, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt; localizer)</code></pre>
+    <pre><code class="lang-csharp hljs">public DefaultUserCommandContextConverter(IValidator&lt;UserCommandPreContext&gt; preCtxValidator, IServiceProvider services, IEnumerable&lt;IUserCommandContextSubConverter&gt; subConverters, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt; localizer)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -147,6 +147,12 @@
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandPreContext</span>&gt;</td>
+        <td><span class="parametername">preCtxValidator</span></td>
+        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandPreContext</p>
+</td>
+      </tr>
       <tr>
         <td><span class="xref">IServiceProvider</span></td>
         <td><span class="parametername">services</span></td>

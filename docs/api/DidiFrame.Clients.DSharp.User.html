@@ -116,13 +116,13 @@
   
   
   <a id="DidiFrame_Clients_DSharp_User__ctor_" data-uid="DidiFrame.Clients.DSharp.User.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_User__ctor_DSharpPlus_Entities_DiscordUser_DidiFrame_Clients_DSharp_Client_" data-uid="DidiFrame.Clients.DSharp.User.#ctor(DSharpPlus.Entities.DiscordUser,DidiFrame.Clients.DSharp.Client)">User(DiscordUser, Client)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_User__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordUser__DidiFrame_Clients_DSharp_Client_" data-uid="DidiFrame.Clients.DSharp.User.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordUser},DidiFrame.Clients.DSharp.Client)">User(UInt64, ObjectSourceDelegate&lt;DiscordUser&gt;, Client)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.User</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public User(DiscordUser user, Client client)</code></pre>
+    <pre><code class="lang-csharp hljs">public User(ulong id, ObjectSourceDelegate&lt;DiscordUser&gt; user, Client client)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -135,9 +135,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">DSharpPlus.Entities.DiscordUser</span></td>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of user</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordUser</span>&gt;</td>
         <td><span class="parametername">user</span></td>
-        <td><p>Base DiscordUser from DSharp</p>
+        <td><p>Base DiscordUser from DSharp source</p>
 </td>
       </tr>
       <tr>
@@ -421,6 +427,31 @@
   </table>
   <h5 class="overrides">Overrides</h5>
   <div><span class="xref">System.Object.GetHashCode()</span></div>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_User_GetIsUserExistAsync_" data-uid="DidiFrame.Clients.DSharp.User.GetIsUserExistAsync*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_User_GetIsUserExistAsync" data-uid="DidiFrame.Clients.DSharp.User.GetIsUserExistAsync">GetIsUserExistAsync()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;bool&gt; GetIsUserExistAsync()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;<span class="xref">System.Boolean</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   
   
   <a id="DidiFrame_Clients_DSharp_User_SendDirectMessageAsync_" data-uid="DidiFrame.Clients.DSharp.User.SendDirectMessageAsync*"></a>

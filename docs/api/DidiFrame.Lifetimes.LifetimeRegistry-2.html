@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class LifetimeRegistry&lt;TLifetime, TBase&gt;
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class LifetimeRegistry&lt;TLifetime, TBase&gt;
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2">
+  
+  
+  <h1 id="DidiFrame_Lifetimes_LifetimeRegistry_2" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2" class="text-break">Class LifetimeRegistry&lt;TLifetime, TBase&gt;
+  </h1>
+  <div class="markdown level0 summary"><p>Simple implementation of DidiFrame.Lifetimes.ILifetimesRegistry`2</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">LifetimeRegistry&lt;TLifetime, TBase&gt;</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="DidiFrame.Lifetimes.ILifetimesRegistry-2.html">ILifetimesRegistry</a>&lt;TLifetime, TBase&gt;</div>
+    <div><a class="xref" href="DidiFrame.Lifetimes.ILifetimesLoader.html">ILifetimesLoader</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Lifetimes.html">DidiFrame.Lifetimes</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h5 id="DidiFrame_Lifetimes_LifetimeRegistry_2_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class LifetimeRegistry&lt;TLifetime, TBase&gt; : ILifetimesRegistry&lt;TLifetime, TBase&gt;, ILifetimesLoader where TLifetime : ILifetime&lt;TBase&gt; where TBase : class, ILifetimeBase</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TLifetime</span></td>
+        <td><p>Type of target lifetime</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TBase</span></td>
+        <td><p>Type of base object of that lifetime</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_Lifetimes_LifetimeRegistry_2__ctor_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.#ctor*"></a>
+  <h4 id="DidiFrame_Lifetimes_LifetimeRegistry_2__ctor_IServersStatesRepository_ICollection__1___DidiFrame_Lifetimes_ILifetimeFactory__0__1__ILogger_DidiFrame_Lifetimes_LifetimeRegistry__0__1___" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.#ctor(IServersStatesRepository{ICollection{`1}},DidiFrame.Lifetimes.ILifetimeFactory{`0,`1},ILogger{DidiFrame.Lifetimes.LifetimeRegistry{`0,`1}})">LifetimeRegistry(IServersStatesRepository&lt;ICollection&lt;TBase&gt;&gt;, ILifetimeFactory&lt;TLifetime, TBase&gt;, ILogger&lt;LifetimeRegistry&lt;TLifetime, TBase&gt;&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Lifetimes.LifetimeRegistry`2</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public LifetimeRegistry(IServersStatesRepository&lt;ICollection&lt;TBase&gt;&gt; states, ILifetimeFactory&lt;TLifetime, TBase&gt; lifetimeFactory, ILogger&lt;LifetimeRegistry&lt;TLifetime, TBase&gt;&gt; logger)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServersStatesRepository</span>&lt;<span class="xref">ICollection</span>&lt;TBase&gt;&gt;</td>
+        <td><span class="parametername">states</span></td>
+        <td><p>Repository with states</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Lifetimes.ILifetimeFactory-2.html">ILifetimeFactory</a>&lt;TLifetime, TBase&gt;</td>
+        <td><span class="parametername">lifetimeFactory</span></td>
+        <td><p>Factory for target lifetime</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">ILogger</span>&lt;<a class="xref" href="DidiFrame.Lifetimes.LifetimeRegistry-2.html">LifetimeRegistry</a>&lt;TLifetime, TBase&gt;&gt;</td>
+        <td><span class="parametername">logger</span></td>
+        <td><p>Logger for registry</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Lifetimes_LifetimeRegistry_2_GetAllLifetimes_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.GetAllLifetimes*"></a>
+  <h4 id="DidiFrame_Lifetimes_LifetimeRegistry_2_GetAllLifetimes_IServer_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.GetAllLifetimes(IServer)">GetAllLifetimes(IServer)</h4>
+  <div class="markdown level1 summary"><p>Provides all lifetime in server</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;TLifetime&gt; GetAllLifetimes(IServer server)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServer</span></td>
+        <td><span class="parametername">server</span></td>
+        <td><p>Target server</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;TLifetime&gt;</td>
+        <td><p>Collection of lifetimes</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_LifetimeRegistry_2_GetLifetime_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.GetLifetime*"></a>
+  <h4 id="DidiFrame_Lifetimes_LifetimeRegistry_2_GetLifetime_IServer_Guid_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.GetLifetime(IServer,Guid)">GetLifetime(IServer, Guid)</h4>
+  <div class="markdown level1 summary"><p>Provides lifetime by its id and server</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TLifetime GetLifetime(IServer server, Guid baseGuid)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServer</span></td>
+        <td><span class="parametername">server</span></td>
+        <td><p>Server where need get lifetime</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Guid</span></td>
+        <td><span class="parametername">baseGuid</span></td>
+        <td><p>Lifetime's id</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TLifetime</span></td>
+        <td><p>Target lifetime</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_LifetimeRegistry_2_RegistryLifetime_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.RegistryLifetime*"></a>
+  <h4 id="DidiFrame_Lifetimes_LifetimeRegistry_2_RegistryLifetime__1_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.RegistryLifetime(`1)">RegistryLifetime(TBase)</h4>
+  <div class="markdown level1 summary"><p>Registries new lifetime</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TLifetime RegistryLifetime(TBase baseObject)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TBase</span></td>
+        <td><span class="parametername">baseObject</span></td>
+        <td><p>Lifetime's base object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TLifetime</span></td>
+        <td><p>New lifetime</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_LifetimeRegistry_2_RestoreLifetimes_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.RestoreLifetimes*"></a>
+  <h4 id="DidiFrame_Lifetimes_LifetimeRegistry_2_RestoreLifetimes_IServer_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.RestoreLifetimes(IServer)">RestoreLifetimes(IServer)</h4>
+  <div class="markdown level1 summary"><p>Restores all lifetime in server</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RestoreLifetimes(IServer server)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServer</span></td>
+        <td><span class="parametername">server</span></td>
+        <td><p>Target server</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Lifetimes.ILifetimesRegistry-2.html">ILifetimesRegistry&lt;TLifetime, TBase&gt;</a>
+  </div>
+  <div>
+      <a class="xref" href="DidiFrame.Lifetimes.ILifetimesLoader.html">ILifetimesLoader</a>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

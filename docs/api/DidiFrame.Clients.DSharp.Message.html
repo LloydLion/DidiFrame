@@ -85,7 +85,6 @@
     <h5>Implements</h5>
     <div><a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a></div>
     <div><span class="xref">IEquatable</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a>&gt;</div>
-    <div><span class="xref">IDisposable</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -122,13 +121,13 @@
   
   
   <a id="DidiFrame_Clients_DSharp_Message__ctor_" data-uid="DidiFrame.Clients.DSharp.Message.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Message__ctor_DSharpPlus_Entities_DiscordMessage_DidiFrame_Clients_DSharp_TextChannel_DidiFrame_Entities_Message_MessageSendModel_" data-uid="DidiFrame.Clients.DSharp.Message.#ctor(DSharpPlus.Entities.DiscordMessage,DidiFrame.Clients.DSharp.TextChannel,DidiFrame.Entities.Message.MessageSendModel)">Message(DiscordMessage, TextChannel, MessageSendModel)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_Message__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordMessage__DidiFrame_Clients_DSharp_TextChannelBase_" data-uid="DidiFrame.Clients.DSharp.Message.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordMessage},DidiFrame.Clients.DSharp.TextChannelBase)">Message(UInt64, ObjectSourceDelegate&lt;DiscordMessage&gt;, TextChannelBase)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.Message</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Message(DiscordMessage message, TextChannel owner, MessageSendModel sendModel)</code></pre>
+    <pre><code class="lang-csharp hljs">public Message(ulong id, ObjectSourceDelegate&lt;DiscordMessage&gt; message, TextChannelBase owner)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -141,21 +140,21 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">DSharpPlus.Entities.DiscordMessage</span></td>
-        <td><span class="parametername">message</span></td>
-        <td><p>Base DiscordMessage from DSharp</p>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of messafe</p>
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="DidiFrame.Clients.DSharp.TextChannel.html">TextChannel</a></td>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordMessage</span>&gt;</td>
+        <td><span class="parametername">message</span></td>
+        <td><p>Base DiscordMessage from DSharp source</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html">TextChannelBase</a></td>
         <td><span class="parametername">owner</span></td>
         <td><p>Owner text channel's wrap object</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Entities.Message.MessageSendModel.html">MessageSendModel</a></td>
-        <td><span class="parametername">sendModel</span></td>
-        <td><p>Send model that was used to send it</p>
 </td>
       </tr>
     </tbody>
@@ -196,7 +195,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TextChannel BaseChannel { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public TextChannelBase BaseChannel { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -208,7 +207,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="DidiFrame.Clients.DSharp.TextChannel.html">TextChannel</a></td>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html">TextChannelBase</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -326,7 +325,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ITextChannel TextChannel { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ITextChannelBase TextChannel { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -338,7 +337,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="DidiFrame.Interfaces.ITextChannel.html">ITextChannel</a></td>
+        <td><a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html">ITextChannelBase</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -370,16 +369,6 @@
       </tr>
     </tbody>
   </table>
-  
-  
-  <a id="DidiFrame_Clients_DSharp_Message_Dispose_" data-uid="DidiFrame.Clients.DSharp.Message.Dispose*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Message_Dispose" data-uid="DidiFrame.Clients.DSharp.Message.Dispose">Dispose()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
-  </div>
   
   
   <a id="DidiFrame_Clients_DSharp_Message_Equals_" data-uid="DidiFrame.Clients.DSharp.Message.Equals*"></a>
@@ -422,17 +411,6 @@
       </tr>
     </tbody>
   </table>
-  
-  
-  <a id="DidiFrame_Clients_DSharp_Message_Finalize_" data-uid="DidiFrame.Clients.DSharp.Message.Finalize*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Message_Finalize" data-uid="DidiFrame.Clients.DSharp.Message.Finalize">Finalize()</h4>
-  <div class="markdown level1 summary"><p>Finalizes message object usgin Dispose method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected void Finalize()</code></pre>
-  </div>
   
   
   <a id="DidiFrame_Clients_DSharp_Message_GetInteractionDispatcher_" data-uid="DidiFrame.Clients.DSharp.Message.GetInteractionDispatcher*"></a>
@@ -524,9 +502,6 @@
   </div>
   <div>
       <span class="xref">IEquatable&lt;&gt;</span>
-  </div>
-  <div>
-      <span class="xref">IDisposable</span>
   </div>
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>

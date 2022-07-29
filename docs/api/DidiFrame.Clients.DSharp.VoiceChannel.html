@@ -80,11 +80,13 @@
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><a class="xref" href="DidiFrame.Clients.DSharp.Channel.html">Channel</a></div>
-    <div class="level2"><span class="xref">VoiceChannel</span></div>
+    <div class="level2"><a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html">TextChannelBase</a></div>
+    <div class="level3"><span class="xref">VoiceChannel</span></div>
   </div>
   <div classs="implements">
     <h5>Implements</h5>
     <div><a class="xref" href="DidiFrame.Interfaces.IVoiceChannel.html">IVoiceChannel</a></div>
+    <div><a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html">ITextChannelBase</a></div>
     <div><a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a></div>
     <div><a class="xref" href="DidiFrame.Interfaces.IServerEntity.html">IServerEntity</a></div>
     <div><span class="xref">IEquatable</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IServerEntity.html">IServerEntity</a>&gt;</div>
@@ -92,6 +94,24 @@
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_MessageSent">TextChannelBase.MessageSent</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_MessageDeleted">TextChannelBase.MessageDeleted</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_GetMessage_System_UInt64_">TextChannelBase.GetMessage(UInt64)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_GetMessages_System_Int32_">TextChannelBase.GetMessages(Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_HasMessage_System_UInt64_">TextChannelBase.HasMessage(UInt64)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_SendMessageAsync_DidiFrame_Entities_Message_MessageSendModel_">TextChannelBase.SendMessageAsync(MessageSendModel)</a>
+    </div>
     <div>
       <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Name">Channel.Name</a>
     </div>
@@ -120,10 +140,13 @@
       <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Equals_DidiFrame_Interfaces_IChannel_">Channel.Equals(IChannel)</a>
     </div>
     <div>
-      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Construct_DSharpPlus_Entities_DiscordChannel_DidiFrame_Clients_DSharp_Server_">Channel.Construct(DiscordChannel, Server)</a>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Construct_System_UInt64_System_Nullable_DidiFrame_Entities_ChannelType__DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_">Channel.Construct(UInt64, Nullable&lt;ChannelType&gt;, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</a>
     </div>
     <div>
       <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_DeleteAsync">Channel.DeleteAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_AccessBase_System_String_">Channel.AccessBase(String)</a>
     </div>
     <div>
       <span class="xref">System.Object.Equals(System.Object)</span>
@@ -151,20 +174,20 @@
   <h6><strong>Assembly</strong>: DidiFrame.Clients.DSharp.dll</h6>
   <h5 id="DidiFrame_Clients_DSharp_VoiceChannel_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class VoiceChannel : Channel, IVoiceChannel, IChannel, IServerEntity</code></pre>
+    <pre><code class="lang-csharp hljs">public class VoiceChannel : TextChannelBase, IVoiceChannel, ITextChannelBase, IChannel, IServerEntity</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
   
   
   <a id="DidiFrame_Clients_DSharp_VoiceChannel__ctor_" data-uid="DidiFrame.Clients.DSharp.VoiceChannel.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_VoiceChannel__ctor_DSharpPlus_Entities_DiscordChannel_DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.VoiceChannel.#ctor(DSharpPlus.Entities.DiscordChannel,DidiFrame.Clients.DSharp.Server)">VoiceChannel(DiscordChannel, Server)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_VoiceChannel__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.VoiceChannel.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordChannel},DidiFrame.Clients.DSharp.Server)">VoiceChannel(UInt64, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.VoiceChannel</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public VoiceChannel(DiscordChannel channel, Server server)</code></pre>
+    <pre><code class="lang-csharp hljs">public VoiceChannel(ulong id, ObjectSourceDelegate&lt;DiscordChannel&gt; channel, Server server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -177,9 +200,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of channel</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordChannel</span>&gt;</td>
         <td><span class="parametername">channel</span></td>
-        <td><p>Base DiscordChannel from DSharp</p>
+        <td><p>Base DiscordChannel from DSharp source</p>
 </td>
       </tr>
       <tr>
@@ -220,6 +249,9 @@
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.Interfaces.IVoiceChannel.html">IVoiceChannel</a>
+  </div>
+  <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html">ITextChannelBase</a>
   </div>
   <div>
       <a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a>

@@ -80,11 +80,13 @@
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><a class="xref" href="DidiFrame.Clients.DSharp.Channel.html">Channel</a></div>
-    <div class="level2"><span class="xref">TextChannel</span></div>
+    <div class="level2"><a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html">TextChannelBase</a></div>
+    <div class="level3"><span class="xref">TextChannel</span></div>
   </div>
   <div classs="implements">
     <h5>Implements</h5>
     <div><a class="xref" href="DidiFrame.Interfaces.ITextChannel.html">ITextChannel</a></div>
+    <div><a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html">ITextChannelBase</a></div>
     <div><a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a></div>
     <div><a class="xref" href="DidiFrame.Interfaces.IServerEntity.html">IServerEntity</a></div>
     <div><span class="xref">IEquatable</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IServerEntity.html">IServerEntity</a>&gt;</div>
@@ -92,6 +94,24 @@
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_MessageSent">TextChannelBase.MessageSent</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_MessageDeleted">TextChannelBase.MessageDeleted</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_GetMessage_System_UInt64_">TextChannelBase.GetMessage(UInt64)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_GetMessages_System_Int32_">TextChannelBase.GetMessages(Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_HasMessage_System_UInt64_">TextChannelBase.HasMessage(UInt64)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html#DidiFrame_Clients_DSharp_TextChannelBase_SendMessageAsync_DidiFrame_Entities_Message_MessageSendModel_">TextChannelBase.SendMessageAsync(MessageSendModel)</a>
+    </div>
     <div>
       <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Name">Channel.Name</a>
     </div>
@@ -120,10 +140,13 @@
       <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Equals_DidiFrame_Interfaces_IChannel_">Channel.Equals(IChannel)</a>
     </div>
     <div>
-      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Construct_DSharpPlus_Entities_DiscordChannel_DidiFrame_Clients_DSharp_Server_">Channel.Construct(DiscordChannel, Server)</a>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Construct_System_UInt64_System_Nullable_DidiFrame_Entities_ChannelType__DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_">Channel.Construct(UInt64, Nullable&lt;ChannelType&gt;, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</a>
     </div>
     <div>
       <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_DeleteAsync">Channel.DeleteAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_AccessBase_System_String_">Channel.AccessBase(String)</a>
     </div>
     <div>
       <span class="xref">System.Object.Equals(System.Object)</span>
@@ -151,20 +174,20 @@
   <h6><strong>Assembly</strong>: DidiFrame.Clients.DSharp.dll</h6>
   <h5 id="DidiFrame_Clients_DSharp_TextChannel_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class TextChannel : Channel, ITextChannel, IChannel, IServerEntity</code></pre>
+    <pre><code class="lang-csharp hljs">public class TextChannel : TextChannelBase, ITextChannel, ITextChannelBase, IChannel, IServerEntity</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
   
   
   <a id="DidiFrame_Clients_DSharp_TextChannel__ctor_" data-uid="DidiFrame.Clients.DSharp.TextChannel.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel__ctor_DSharpPlus_Entities_DiscordChannel_DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.TextChannel.#ctor(DSharpPlus.Entities.DiscordChannel,DidiFrame.Clients.DSharp.Server)">TextChannel(DiscordChannel, Server)</h4>
-  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.TextChannel</p>
+  <h4 id="DidiFrame_Clients_DSharp_TextChannel__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.TextChannel.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordChannel},DidiFrame.Clients.DSharp.Server)">TextChannel(UInt64, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</h4>
+  <div class="markdown level1 summary"><p>Creates new instrance</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TextChannel(DiscordChannel channel, Server server)</code></pre>
+    <pre><code class="lang-csharp hljs">public TextChannel(ulong id, ObjectSourceDelegate&lt;DiscordChannel&gt; channel, Server server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -177,95 +200,18 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordChannel</span>&gt;</td>
         <td><span class="parametername">channel</span></td>
-        <td><p>Base DiscordChannel from DSharp</p>
-</td>
+        <td></td>
       </tr>
       <tr>
         <td><a class="xref" href="DidiFrame.Clients.DSharp.Server.html">Server</a></td>
         <td><span class="parametername">server</span></td>
-        <td><p>Owner server object wrap</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="fields">Fields
-  </h3>
-  
-  
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_MessagesIdLimit" data-uid="DidiFrame.Clients.DSharp.TextChannel.MessagesIdLimit">MessagesIdLimit</h4>
-  <div class="markdown level1 summary"><p>Limit of message that channel will provide.
-All messages out the limit is not exist</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public const int MessagesIdLimit = 70</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_MessagesLimit" data-uid="DidiFrame.Clients.DSharp.TextChannel.MessagesLimit">MessagesLimit</h4>
-  <div class="markdown level1 summary"><p>Limit of messages that channel will cache</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public const int MessagesLimit = 5</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="properties">Properties
-  </h3>
-  
-  
-  <a id="DidiFrame_Clients_DSharp_TextChannel_Messages_" data-uid="DidiFrame.Clients.DSharp.TextChannel.Messages*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_Messages" data-uid="DidiFrame.Clients.DSharp.TextChannel.Messages">Messages</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;Message&gt; Messages { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="DidiFrame.Clients.DSharp.Message.html">Message</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -274,76 +220,14 @@ All messages out the limit is not exist</p>
   </h3>
   
   
-  <a id="DidiFrame_Clients_DSharp_TextChannel_GetMessage_" data-uid="DidiFrame.Clients.DSharp.TextChannel.GetMessage*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_GetMessage_System_UInt64_" data-uid="DidiFrame.Clients.DSharp.TextChannel.GetMessage(System.UInt64)">GetMessage(UInt64)</h4>
-  <div class="markdown level1 summary"><p>Gets message by id</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IMessage GetMessage(ulong id)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.UInt64</span></td>
-        <td><span class="parametername">id</span></td>
-        <td><p>Id of message</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a></td>
-        <td><p>Message that has given id</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="DidiFrame_Clients_DSharp_TextChannel_GetMessages_" data-uid="DidiFrame.Clients.DSharp.TextChannel.GetMessages*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_GetMessages_System_Int32_" data-uid="DidiFrame.Clients.DSharp.TextChannel.GetMessages(System.Int32)">GetMessages(Int32)</h4>
+  <a id="DidiFrame_Clients_DSharp_TextChannel_GetThreads_" data-uid="DidiFrame.Clients.DSharp.TextChannel.GetThreads*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_TextChannel_GetThreads" data-uid="DidiFrame.Clients.DSharp.TextChannel.GetThreads">GetThreads()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;IMessage&gt; GetMessages(int count = -1)</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;ITextThread&gt; GetThreads()</code></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td><span class="parametername">count</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
   <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
@@ -354,146 +238,7 @@ All messages out the limit is not exist</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="DidiFrame_Clients_DSharp_TextChannel_HasMessage_" data-uid="DidiFrame.Clients.DSharp.TextChannel.HasMessage*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_HasMessage_System_UInt64_" data-uid="DidiFrame.Clients.DSharp.TextChannel.HasMessage(System.UInt64)">HasMessage(UInt64)</h4>
-  <div class="markdown level1 summary"><p>Checks if channel contains message with same id</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool HasMessage(ulong id)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.UInt64</span></td>
-        <td><span class="parametername">id</span></td>
-        <td><p>Id for checking</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p>If channel contains</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="DidiFrame_Clients_DSharp_TextChannel_SendMessageAsync_" data-uid="DidiFrame.Clients.DSharp.TextChannel.SendMessageAsync*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_SendMessageAsync_DidiFrame_Entities_Message_MessageSendModel_" data-uid="DidiFrame.Clients.DSharp.TextChannel.SendMessageAsync(DidiFrame.Entities.Message.MessageSendModel)">SendMessageAsync(MessageSendModel)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public async Task&lt;IMessage&gt; SendMessageAsync(MessageSendModel messageSendModel)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Entities.Message.MessageSendModel.html">MessageSendModel</a></td>
-        <td><span class="parametername">messageSendModel</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Task</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h3 id="events">Events
-  </h3>
-  
-  
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_MessageDeleted" data-uid="DidiFrame.Clients.DSharp.TextChannel.MessageDeleted">MessageDeleted</h4>
-  <div class="markdown level1 summary"><p>Event that fired when a message has deleted</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public event MessageDeletedEventHandler MessageDeleted</code></pre>
-  </div>
-  <h5 class="eventType">Event Type</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Interfaces.MessageDeletedEventHandler.html">MessageDeletedEventHandler</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <h4 id="DidiFrame_Clients_DSharp_TextChannel_MessageSent" data-uid="DidiFrame.Clients.DSharp.TextChannel.MessageSent">MessageSent</h4>
-  <div class="markdown level1 summary"><p>Event that fired when a message has sent</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public event MessageSentEventHandler MessageSent</code></pre>
-  </div>
-  <h5 class="eventType">Event Type</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Interfaces.MessageSentEventHandler.html">MessageSentEventHandler</a></td>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="DidiFrame.Interfaces.ITextThread.html">ITextThread</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -501,6 +246,9 @@ All messages out the limit is not exist</p>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.Interfaces.ITextChannel.html">ITextChannel</a>
+  </div>
+  <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html">ITextChannelBase</a>
   </div>
   <div>
       <a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a>

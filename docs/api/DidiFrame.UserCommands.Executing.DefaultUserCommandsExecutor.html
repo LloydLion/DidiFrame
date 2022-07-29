@@ -128,13 +128,13 @@
   
   
   <a id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__ctor_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__ctor_IOptions_DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Options__ILogger_DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__DidiFrame_Culture_IServerCultureProvider_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.#ctor(IOptions{DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options},ILogger{DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor},DidiFrame.Culture.IServerCultureProvider)">DefaultUserCommandsExecutor(IOptions&lt;DefaultUserCommandsExecutor.Options&gt;, ILogger&lt;DefaultUserCommandsExecutor&gt;, IServerCultureProvider)</h4>
+  <h4 id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__ctor_FluentValidation_IValidator_UserCommandContext__IOptions_DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Options__ILogger_DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__DidiFrame_Culture_IServerCultureProvider_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.#ctor(FluentValidation.IValidator{UserCommandContext},IOptions{DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options},ILogger{DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor},DidiFrame.Culture.IServerCultureProvider)">DefaultUserCommandsExecutor(IValidator&lt;UserCommandContext&gt;, IOptions&lt;DefaultUserCommandsExecutor.Options&gt;, ILogger&lt;DefaultUserCommandsExecutor&gt;, IServerCultureProvider)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DefaultUserCommandsExecutor(IOptions&lt;DefaultUserCommandsExecutor.Options&gt; options, ILogger&lt;DefaultUserCommandsExecutor&gt; logger, IServerCultureProvider cultureProvider)</code></pre>
+    <pre><code class="lang-csharp hljs">public DefaultUserCommandsExecutor(IValidator&lt;UserCommandContext&gt; ctxValidator, IOptions&lt;DefaultUserCommandsExecutor.Options&gt; options, ILogger&lt;DefaultUserCommandsExecutor&gt; logger, IServerCultureProvider cultureProvider)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -146,6 +146,12 @@
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandContext</span>&gt;</td>
+        <td><span class="parametername">ctxValidator</span></td>
+        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandContext</p>
+</td>
+      </tr>
       <tr>
         <td><span class="xref">IOptions</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options.html">DefaultUserCommandsExecutor.Options</a>&gt;</td>
         <td><span class="parametername">options</span></td>

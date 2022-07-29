@@ -114,6 +114,9 @@
       <a class="xref" href="DidiFrame.Clients.DSharp.User.html#DidiFrame_Clients_DSharp_User_SendDirectMessageAsync_DidiFrame_Entities_Message_MessageSendModel_">User.SendDirectMessageAsync(MessageSendModel)</a>
     </div>
     <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.User.html#DidiFrame_Clients_DSharp_User_GetIsUserExistAsync">User.GetIsUserExistAsync()</a>
+    </div>
+    <div>
       <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
     </div>
     <div>
@@ -140,13 +143,13 @@
   
   
   <a id="DidiFrame_Clients_DSharp_Member__ctor_" data-uid="DidiFrame.Clients.DSharp.Member.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Member__ctor_DSharpPlus_Entities_DiscordMember_DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.Member.#ctor(DSharpPlus.Entities.DiscordMember,DidiFrame.Clients.DSharp.Server)">Member(DiscordMember, Server)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_Member__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordMember__DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.Member.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordMember},DidiFrame.Clients.DSharp.Server)">Member(UInt64, ObjectSourceDelegate&lt;DiscordMember&gt;, Server)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.Member</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Member(DiscordMember member, Server server)</code></pre>
+    <pre><code class="lang-csharp hljs">public Member(ulong id, ObjectSourceDelegate&lt;DiscordMember&gt; member, Server server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -159,9 +162,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">DSharpPlus.Entities.DiscordMember</span></td>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of user and member</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordMember</span>&gt;</td>
         <td><span class="parametername">member</span></td>
-        <td><p>Base DiscordMember from DSharp</p>
+        <td><p>Base DiscordMember from DSharp source</p>
 </td>
       </tr>
       <tr>
@@ -222,6 +231,32 @@
     <tbody>
       <tr>
         <td><a class="xref" href="DidiFrame.Clients.DSharp.Server.html">Server</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_Member_IsExist_" data-uid="DidiFrame.Clients.DSharp.Member.IsExist*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_Member_IsExist" data-uid="DidiFrame.Clients.DSharp.Member.IsExist">IsExist</h4>
+  <div class="markdown level1 summary"><p>If enity still exist</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsExist { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
         <td></td>
       </tr>
     </tbody>

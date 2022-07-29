@@ -116,13 +116,13 @@
   
   
   <a id="DidiFrame_Clients_DSharp_Server__ctor_" data-uid="DidiFrame.Clients.DSharp.Server.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Server__ctor_DSharpPlus_Entities_DiscordGuild_DidiFrame_Clients_DSharp_Client_" data-uid="DidiFrame.Clients.DSharp.Server.#ctor(DSharpPlus.Entities.DiscordGuild,DidiFrame.Clients.DSharp.Client)">Server(DiscordGuild, Client)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_Server__ctor_DSharpPlus_Entities_DiscordGuild_DidiFrame_Clients_DSharp_Client_DidiFrame_Clients_DSharp_Server_Options_DidiFrame_Clients_DSharp_IChannelMessagesCache_" data-uid="DidiFrame.Clients.DSharp.Server.#ctor(DSharpPlus.Entities.DiscordGuild,DidiFrame.Clients.DSharp.Client,DidiFrame.Clients.DSharp.Server.Options,DidiFrame.Clients.DSharp.IChannelMessagesCache)">Server(DiscordGuild, Client, Server.Options, IChannelMessagesCache)</h4>
   <div class="markdown level1 summary"><p>Creates new isntance of DidiFrame.Clients.DSharp.Server</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Server(DiscordGuild guild, Client client)</code></pre>
+    <pre><code class="lang-csharp hljs">public Server(DiscordGuild guild, Client client, Server.Options options, IChannelMessagesCache messagesCache)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -144,6 +144,18 @@
         <td><a class="xref" href="DidiFrame.Clients.DSharp.Client.html">Client</a></td>
         <td><span class="parametername">client</span></td>
         <td><p>Owner client object</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.Server.Options.html">Server.Options</a></td>
+        <td><span class="parametername">options</span></td>
+        <td><p>Options for server</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.IChannelMessagesCache.html">IChannelMessagesCache</a></td>
+        <td><span class="parametername">messagesCache</span></td>
+        <td><p>channel message cache instance</p>
 </td>
       </tr>
     </tbody>
@@ -230,6 +242,32 @@
   </table>
   
   
+  <a id="DidiFrame_Clients_DSharp_Server_IsClosed_" data-uid="DidiFrame.Clients.DSharp.Server.IsClosed*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_Server_IsClosed" data-uid="DidiFrame.Clients.DSharp.Server.IsClosed">IsClosed</h4>
+  <div class="markdown level1 summary"><p>If server closed</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsClosed { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="DidiFrame_Clients_DSharp_Server_Name_" data-uid="DidiFrame.Clients.DSharp.Server.Name*"></a>
   <h4 id="DidiFrame_Clients_DSharp_Server_Name" data-uid="DidiFrame.Clients.DSharp.Server.Name">Name</h4>
   <div class="markdown level1 summary"><p>Name of the server</p>
@@ -282,6 +320,64 @@
   </table>
   <h3 id="methods">Methods
   </h3>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_Server_CacheChannel_" data-uid="DidiFrame.Clients.DSharp.Server.CacheChannel*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_Server_CacheChannel_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.Server.CacheChannel(DSharpPlus.Entities.DiscordChannel)">CacheChannel(DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Safely adds new channel to cache, or modify it if channel already in cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CacheChannel(DiscordChannel channel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">channel</span></td>
+        <td><p>Target channel</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_Server_CacheMessage_" data-uid="DidiFrame.Clients.DSharp.Server.CacheMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_Server_CacheMessage_DSharpPlus_Entities_DiscordMessage_" data-uid="DidiFrame.Clients.DSharp.Server.CacheMessage(DSharpPlus.Entities.DiscordMessage)">CacheMessage(DiscordMessage)</h4>
+  <div class="markdown level1 summary"><p>Safely adds new message to cache, or modify it if message already in cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CacheMessage(DiscordMessage message)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordMessage</span></td>
+        <td><span class="parametername">message</span></td>
+        <td><p>Target message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   
   
   <a id="DidiFrame_Clients_DSharp_Server_Dispose_" data-uid="DidiFrame.Clients.DSharp.Server.Dispose*"></a>
@@ -685,34 +781,19 @@
       </tr>
     </tbody>
   </table>
+  <h3 id="events">Events
+  </h3>
   
   
-  <a id="DidiFrame_Clients_DSharp_Server_HasChannel_" data-uid="DidiFrame.Clients.DSharp.Server.HasChannel*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Server_HasChannel_DidiFrame_Interfaces_IChannel_" data-uid="DidiFrame.Clients.DSharp.Server.HasChannel(DidiFrame.Interfaces.IChannel)">HasChannel(IChannel)</h4>
-  <div class="markdown level1 summary"></div>
+  <h4 id="DidiFrame_Clients_DSharp_Server_CategoryCreated" data-uid="DidiFrame.Clients.DSharp.Server.CategoryCreated">CategoryCreated</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a new category created</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool HasChannel(IChannel channel)</code></pre>
+    <pre><code class="lang-csharp hljs">public event ServerObjectCreatedEventHandler&lt;IChannelCategory&gt; CategoryCreated</code></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a></td>
-        <td><span class="parametername">channel</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
+  <h5 class="eventType">Event Type</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -722,39 +803,47 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Boolean</span></td>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html">ServerObjectCreatedEventHandler</a>&lt;<a class="xref" href="DidiFrame.Interfaces.IChannelCategory.html">IChannelCategory</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
   </table>
   
   
-  <a id="DidiFrame_Clients_DSharp_Server_HasChannel_" data-uid="DidiFrame.Clients.DSharp.Server.HasChannel*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Server_HasChannel_System_UInt64_" data-uid="DidiFrame.Clients.DSharp.Server.HasChannel(System.UInt64)">HasChannel(UInt64)</h4>
-  <div class="markdown level1 summary"></div>
+  <h4 id="DidiFrame_Clients_DSharp_Server_CategoryDeleted" data-uid="DidiFrame.Clients.DSharp.Server.CategoryDeleted">CategoryDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a category deleted</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool HasChannel(ulong id)</code></pre>
+    <pre><code class="lang-csharp hljs">public event ServerObjectDeletedEventHandler CategoryDeleted</code></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
+  <h5 class="eventType">Event Type</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
-        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.UInt64</span></td>
-        <td><span class="parametername">id</span></td>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html">ServerObjectDeletedEventHandler</a></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h5 class="returns">Returns</h5>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_Server_ChannelCreated" data-uid="DidiFrame.Clients.DSharp.Server.ChannelCreated">ChannelCreated</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a new channel</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectCreatedEventHandler&lt;IChannel&gt; ChannelCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -764,7 +853,182 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Boolean</span></td>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html">ServerObjectCreatedEventHandler</a>&lt;<a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_Server_ChannelDeleted" data-uid="DidiFrame.Clients.DSharp.Server.ChannelDeleted">ChannelDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a channel deleted</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectDeletedEventHandler ChannelDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html">ServerObjectDeletedEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_Server_MemberCreated" data-uid="DidiFrame.Clients.DSharp.Server.MemberCreated">MemberCreated</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a new member created (joined)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectCreatedEventHandler&lt;IMember&gt; MemberCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html">ServerObjectCreatedEventHandler</a>&lt;<a class="xref" href="DidiFrame.Interfaces.IMember.html">IMember</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_Server_MemberDeleted" data-uid="DidiFrame.Clients.DSharp.Server.MemberDeleted">MemberDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a member deleted (left)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectDeletedEventHandler MemberDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html">ServerObjectDeletedEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_Server_MessageDeleted" data-uid="DidiFrame.Clients.DSharp.Server.MessageDeleted">MessageDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a message deleted</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event MessageDeletedEventHandler MessageDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.MessageDeletedEventHandler.html">MessageDeletedEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_Server_MessageSent" data-uid="DidiFrame.Clients.DSharp.Server.MessageSent">MessageSent</h4>
+  <div class="markdown level1 summary"><p>Event that fires when new message sent</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event MessageSentEventHandler MessageSent</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.MessageSentEventHandler.html">MessageSentEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_Server_RoleCreated" data-uid="DidiFrame.Clients.DSharp.Server.RoleCreated">RoleCreated</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a new role created</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectCreatedEventHandler&lt;IRole&gt; RoleCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html">ServerObjectCreatedEventHandler</a>&lt;<a class="xref" href="DidiFrame.Interfaces.IRole.html">IRole</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_Server_RoleDeleted" data-uid="DidiFrame.Clients.DSharp.Server.RoleDeleted">RoleDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a role deleted</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectDeletedEventHandler RoleDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html">ServerObjectDeletedEventHandler</a></td>
         <td></td>
       </tr>
     </tbody>

@@ -128,13 +128,13 @@
   
   
   <a id="DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser__ctor_" data-uid="DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser__ctor_IOptions_DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_Options__IUserCommandsRepository_" data-uid="DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.#ctor(IOptions{DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.Options},IUserCommandsRepository)">TextCommandParser(IOptions&lt;TextCommandParser.Options&gt;, IUserCommandsRepository)</h4>
+  <h4 id="DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser__ctor_IOptions_DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_Options__IUserCommandsRepository_DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_BehaviorModel_" data-uid="DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.#ctor(IOptions{DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.Options},IUserCommandsRepository,DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel)">TextCommandParser(IOptions&lt;TextCommandParser.Options&gt;, IUserCommandsRepository, TextCommandParser.BehaviorModel)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TextCommandParser(IOptions&lt;TextCommandParser.Options&gt; options, IUserCommandsRepository repository)</code></pre>
+    <pre><code class="lang-csharp hljs">public TextCommandParser(IOptions&lt;TextCommandParser.Options&gt; options, IUserCommandsRepository repository, TextCommandParser.BehaviorModel behaviorModel = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -156,6 +156,12 @@
         <td><span class="xref">IUserCommandsRepository</span></td>
         <td><span class="parametername">repository</span></td>
         <td><p>Command repository to detect commands</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.html">TextCommandParser.BehaviorModel</a></td>
+        <td><span class="parametername">behaviorModel</span></td>
+        <td><p>Optional behavior model that can override object behavior</p>
 </td>
       </tr>
     </tbody>

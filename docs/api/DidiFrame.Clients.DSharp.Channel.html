@@ -80,8 +80,7 @@
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">Channel</span></div>
-      <div class="level2"><a class="xref" href="DidiFrame.Clients.DSharp.TextChannel.html">TextChannel</a></div>
-      <div class="level2"><a class="xref" href="DidiFrame.Clients.DSharp.VoiceChannel.html">VoiceChannel</a></div>
+      <div class="level2"><a class="xref" href="DidiFrame.Clients.DSharp.TextChannelBase.html">TextChannelBase</a></div>
   </div>
   <div classs="implements">
     <h5>Implements</h5>
@@ -125,13 +124,13 @@
   
   
   <a id="DidiFrame_Clients_DSharp_Channel__ctor_" data-uid="DidiFrame.Clients.DSharp.Channel.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Channel__ctor_DSharpPlus_Entities_DiscordChannel_DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.Channel.#ctor(DSharpPlus.Entities.DiscordChannel,DidiFrame.Clients.DSharp.Server)">Channel(DiscordChannel, Server)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_Channel__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.Channel.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordChannel},DidiFrame.Clients.DSharp.Server)">Channel(UInt64, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.Channel</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Channel(DiscordChannel channel, Server server)</code></pre>
+    <pre><code class="lang-csharp hljs">public Channel(ulong id, ObjectSourceDelegate&lt;DiscordChannel&gt; channel, Server server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -144,15 +143,68 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of channel</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordChannel</span>&gt;</td>
         <td><span class="parametername">channel</span></td>
-        <td><p>Base DiscordChannel from DSharp</p>
+        <td><p>Base DiscordChannel from DSharp source</p>
 </td>
       </tr>
       <tr>
         <td><a class="xref" href="DidiFrame.Clients.DSharp.Server.html">Server</a></td>
         <td><span class="parametername">server</span></td>
         <td><p>Owner server wrap object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_Channel__ctor_" data-uid="DidiFrame.Clients.DSharp.Channel.#ctor*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_Channel__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DidiFrame_Clients_DSharp_ChannelCategory__" data-uid="DidiFrame.Clients.DSharp.Channel.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordChannel},DidiFrame.Clients.DSharp.Server,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DidiFrame.Clients.DSharp.ChannelCategory})">Channel(UInt64, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server, ObjectSourceDelegate&lt;ChannelCategory&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.Channel with overrided category</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Channel(ulong id, ObjectSourceDelegate&lt;DiscordChannel&gt; channel, Server server, ObjectSourceDelegate&lt;ChannelCategory&gt; targetCategory)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of channel</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordChannel</span>&gt;</td>
+        <td><span class="parametername">channel</span></td>
+        <td><p>Base DiscordChannel from DSharp source</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.Server.html">Server</a></td>
+        <td><span class="parametername">server</span></td>
+        <td><p>Owner server wrap object</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<a class="xref" href="DidiFrame.Clients.DSharp.ChannelCategory.html">ChannelCategory</a>&gt;</td>
+        <td><span class="parametername">targetCategory</span></td>
+        <td><p>Custom category source</p>
 </td>
       </tr>
     </tbody>
@@ -266,7 +318,7 @@
   
   <a id="DidiFrame_Clients_DSharp_Channel_IsExist_" data-uid="DidiFrame.Clients.DSharp.Channel.IsExist*"></a>
   <h4 id="DidiFrame_Clients_DSharp_Channel_IsExist" data-uid="DidiFrame.Clients.DSharp.Channel.IsExist">IsExist</h4>
-  <div class="markdown level1 summary"><p>If channel still exists on discord server</p>
+  <div class="markdown level1 summary"><p>If enity still exist</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -344,13 +396,14 @@
   </h3>
   
   
-  <a id="DidiFrame_Clients_DSharp_Channel_Construct_" data-uid="DidiFrame.Clients.DSharp.Channel.Construct*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Channel_Construct_DSharpPlus_Entities_DiscordChannel_DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.Channel.Construct(DSharpPlus.Entities.DiscordChannel,DidiFrame.Clients.DSharp.Server)">Construct(DiscordChannel, Server)</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="DidiFrame_Clients_DSharp_Channel_AccessBase_" data-uid="DidiFrame.Clients.DSharp.Channel.AccessBase*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_Channel_AccessBase_System_String_" data-uid="DidiFrame.Clients.DSharp.Channel.AccessBase(System.String)">AccessBase(String)</h4>
+  <div class="markdown level1 summary"><p>Gains access to base channel from dsharp or throws exception of it doesn't exist more</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static Channel Construct(DiscordChannel channel, Server server)</code></pre>
+    <pre><code class="lang-csharp hljs">protected DiscordChannel AccessBase(string nameOfCaller = &quot;&quot;)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -363,7 +416,77 @@
     </thead>
     <tbody>
       <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">nameOfCaller</span></td>
+        <td><p>Name of caller for fill exception data</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
         <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><p>Base channel</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Exceptions.ObjectDoesNotExistException.html">ObjectDoesNotExistException</a></td>
+        <td><p>If requested object no more exist</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_Channel_Construct_" data-uid="DidiFrame.Clients.DSharp.Channel.Construct*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_Channel_Construct_System_UInt64_System_Nullable_DidiFrame_Entities_ChannelType__DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.Channel.Construct(System.UInt64,System.Nullable{DidiFrame.Entities.ChannelType},DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordChannel},DidiFrame.Clients.DSharp.Server)">Construct(UInt64, Nullable&lt;ChannelType&gt;, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Channel Construct(ulong id, ChannelType? type, ObjectSourceDelegate&lt;DiscordChannel&gt; channel, Server server)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="DidiFrame.Entities.ChannelType.html">ChannelType</a>&gt;</td>
+        <td><span class="parametername">type</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordChannel</span>&gt;</td>
         <td><span class="parametername">channel</span></td>
         <td></td>
       </tr>
