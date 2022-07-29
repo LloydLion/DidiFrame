@@ -1,0 +1,536 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class TextChannelBase
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class TextChannelBase
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Clients.DSharp.TextChannelBase">
+  
+  
+  <h1 id="DidiFrame_Clients_DSharp_TextChannelBase" data-uid="DidiFrame.Clients.DSharp.TextChannelBase" class="text-break">Class TextChannelBase
+  </h1>
+  <div class="markdown level0 summary"><p>DSharp implementation of DidiFrame.Interfaces.ITextChannelBase</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><a class="xref" href="DidiFrame.Clients.DSharp.Channel.html">Channel</a></div>
+    <div class="level2"><span class="xref">TextChannelBase</span></div>
+      <div class="level3"><a class="xref" href="DidiFrame.Clients.DSharp.TextChannel.html">TextChannel</a></div>
+      <div class="level3"><a class="xref" href="DidiFrame.Clients.DSharp.TextThread.html">TextThread</a></div>
+      <div class="level3"><a class="xref" href="DidiFrame.Clients.DSharp.VoiceChannel.html">VoiceChannel</a></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html">ITextChannelBase</a></div>
+    <div><a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a></div>
+    <div><a class="xref" href="DidiFrame.Interfaces.IServerEntity.html">IServerEntity</a></div>
+    <div><span class="xref">IEquatable</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IServerEntity.html">IServerEntity</a>&gt;</div>
+    <div><span class="xref">IEquatable</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a>&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Name">Channel.Name</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Id">Channel.Id</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Category">Channel.Category</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Server">Channel.Server</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_BaseChannel">Channel.BaseChannel</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_BaseServer">Channel.BaseServer</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_IsExist">Channel.IsExist</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Equals_DidiFrame_Interfaces_IServerEntity_">Channel.Equals(IServerEntity)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Equals_DidiFrame_Interfaces_IChannel_">Channel.Equals(IChannel)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_Construct_System_UInt64_System_Nullable_DidiFrame_Entities_ChannelType__DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_">Channel.Construct(UInt64, Nullable&lt;ChannelType&gt;, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_DeleteAsync">Channel.DeleteAsync()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.Channel.html#DidiFrame_Clients_DSharp_Channel_AccessBase_System_String_">Channel.AccessBase(String)</a>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Clients.DSharp.html">DidiFrame.Clients.DSharp</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Clients.DSharp.dll</h6>
+  <h5 id="DidiFrame_Clients_DSharp_TextChannelBase_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class TextChannelBase : Channel, ITextChannelBase, IChannel, IServerEntity</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_TextChannelBase__ctor_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.#ctor*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_TextChannelBase__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordChannel},DidiFrame.Clients.DSharp.Server)">TextChannelBase(UInt64, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.TextChannelBase</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextChannelBase(ulong id, ObjectSourceDelegate&lt;DiscordChannel&gt; channel, Server server)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of channel</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordChannel</span>&gt;</td>
+        <td><span class="parametername">channel</span></td>
+        <td><p>Base DiscordChannel from DSharp source</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.Server.html">Server</a></td>
+        <td><span class="parametername">server</span></td>
+        <td><p>Owner server object wrap</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_TextChannelBase__ctor_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.#ctor*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_TextChannelBase__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DidiFrame_Clients_DSharp_ChannelCategory__" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordChannel},DidiFrame.Clients.DSharp.Server,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DidiFrame.Clients.DSharp.ChannelCategory})">TextChannelBase(UInt64, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server, ObjectSourceDelegate&lt;ChannelCategory&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.TextChannelBase</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TextChannelBase(ulong id, ObjectSourceDelegate&lt;DiscordChannel&gt; channel, Server server, ObjectSourceDelegate&lt;ChannelCategory&gt; targetCategory)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of channel</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordChannel</span>&gt;</td>
+        <td><span class="parametername">channel</span></td>
+        <td><p>Base DiscordChannel from DSharp source</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.Server.html">Server</a></td>
+        <td><span class="parametername">server</span></td>
+        <td><p>Owner server object wrap</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<a class="xref" href="DidiFrame.Clients.DSharp.ChannelCategory.html">ChannelCategory</a>&gt;</td>
+        <td><span class="parametername">targetCategory</span></td>
+        <td><p>Custom category source</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_TextChannelBase_GetMessage_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.GetMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_TextChannelBase_GetMessage_System_UInt64_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.GetMessage(System.UInt64)">GetMessage(UInt64)</h4>
+  <div class="markdown level1 summary"><p>Gets message by id</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IMessage GetMessage(ulong id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a></td>
+        <td><p>Message that has given id</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_TextChannelBase_GetMessages_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.GetMessages*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_TextChannelBase_GetMessages_System_Int32_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.GetMessages(System.Int32)">GetMessages(Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;IMessage&gt; GetMessages(int count = 25)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">count</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_TextChannelBase_HasMessage_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.HasMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_TextChannelBase_HasMessage_System_UInt64_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.HasMessage(System.UInt64)">HasMessage(UInt64)</h4>
+  <div class="markdown level1 summary"><p>Checks if channel contains message with same id</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasMessage(ulong id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id for checking</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>If channel contains</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_TextChannelBase_SendMessageAsync_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.SendMessageAsync*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_TextChannelBase_SendMessageAsync_DidiFrame_Entities_Message_MessageSendModel_" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.SendMessageAsync(DidiFrame.Entities.Message.MessageSendModel)">SendMessageAsync(MessageSendModel)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public async Task&lt;IMessage&gt; SendMessageAsync(MessageSendModel messageSendModel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Entities.Message.MessageSendModel.html">MessageSendModel</a></td>
+        <td><span class="parametername">messageSendModel</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+  </h3>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_TextChannelBase_MessageDeleted" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.MessageDeleted">MessageDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fired when a message has deleted</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event MessageDeletedEventHandler MessageDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.MessageDeletedEventHandler.html">MessageDeletedEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_TextChannelBase_MessageSent" data-uid="DidiFrame.Clients.DSharp.TextChannelBase.MessageSent">MessageSent</h4>
+  <div class="markdown level1 summary"><p>Event that fired when a message has sent</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event MessageSentEventHandler MessageSent</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.MessageSentEventHandler.html">MessageSentEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html">ITextChannelBase</a>
+  </div>
+  <div>
+      <a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a>
+  </div>
+  <div>
+      <a class="xref" href="DidiFrame.Interfaces.IServerEntity.html">IServerEntity</a>
+  </div>
+  <div>
+      <span class="xref">IEquatable&lt;&gt;</span>
+  </div>
+  <div>
+      <span class="xref">IEquatable&lt;&gt;</span>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

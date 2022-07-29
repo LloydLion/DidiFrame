@@ -1,0 +1,572 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class AbstractFullLifetime&lt;TState, TBase&gt;
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class AbstractFullLifetime&lt;TState, TBase&gt;
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2">
+  
+  
+  <h1 id="DidiFrame_Lifetimes_AbstractFullLifetime_2" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2" class="text-break">Class AbstractFullLifetime&lt;TState, TBase&gt;
+  </h1>
+  <div class="markdown level0 summary"><p>Useful extension for DidiFrame.Lifetimes.AbstractStateBasedLifetime`2</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html">AbstractStateBasedLifetime</a>&lt;TState, TBase&gt;</div>
+    <div class="level2"><span class="xref">AbstractFullLifetime&lt;TState, TBase&gt;</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="DidiFrame.Lifetimes.ILifetime-1.html">ILifetime</a>&lt;TBase&gt;</div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_IsNewlyCreated">AbstractStateBasedLifetime&lt;TState, TBase&gt;.IsNewlyCreated</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_IsFinalized">AbstractStateBasedLifetime&lt;TState, TBase&gt;.IsFinalized</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_Guid">AbstractStateBasedLifetime&lt;TState, TBase&gt;.Guid</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_Server">AbstractStateBasedLifetime&lt;TState, TBase&gt;.Server</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_GetBase_DidiFrame_Utils_StateMachine_FreezeModel__0___">AbstractStateBasedLifetime&lt;TState, TBase&gt;.GetBase(FreezeModel&lt;TState&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_GetBase">AbstractStateBasedLifetime&lt;TState, TBase&gt;.GetBase()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_GetBaseProperty__1_Func__1___0__">AbstractStateBasedLifetime&lt;TState, TBase&gt;.GetBaseProperty&lt;TTarget&gt;(Func&lt;TBase, TTarget&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_GetReadOnlyBase">AbstractStateBasedLifetime&lt;TState, TBase&gt;.GetReadOnlyBase()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_GetBaseController_System_Boolean_">AbstractStateBasedLifetime&lt;TState, TBase&gt;.GetBaseController(Boolean)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_Run__1_DidiFrame_Lifetimes_ILifetimeContext__1__">AbstractStateBasedLifetime&lt;TState, TBase&gt;.Run(TBase, ILifetimeContext&lt;TBase&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_ThrowIfFinalized">AbstractStateBasedLifetime&lt;TState, TBase&gt;.ThrowIfFinalized()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_OnBuild__1_">AbstractStateBasedLifetime&lt;TState, TBase&gt;.OnBuild(TBase)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_CrashLifetime_Exception_System_Boolean_">AbstractStateBasedLifetime&lt;TState, TBase&gt;.CrashLifetime(Exception, Boolean)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_GetStateMachine">AbstractStateBasedLifetime&lt;TState, TBase&gt;.GetStateMachine()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_OnRun__0__1_">AbstractStateBasedLifetime&lt;TState, TBase&gt;.OnRun(TState, TBase)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_OnDispose">AbstractStateBasedLifetime&lt;TState, TBase&gt;.OnDispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_OnFinalize">AbstractStateBasedLifetime&lt;TState, TBase&gt;.OnFinalize()</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_AddTransit_DidiFrame_Utils_StateMachine_IStateTransitWorker__0__">AbstractStateBasedLifetime&lt;TState, TBase&gt;.AddTransit(IStateTransitWorker&lt;TState&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_AddTransit__0_System_Nullable__0__System_Int32_">AbstractStateBasedLifetime&lt;TState, TBase&gt;.AddTransit(TState, Nullable&lt;TState&gt;, Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_AddTransit__0_System_Nullable__0__Func_CancellationToken_Task_System_Boolean___">AbstractStateBasedLifetime&lt;TState, TBase&gt;.AddTransit(TState, Nullable&lt;TState&gt;, Func&lt;CancellationToken, Task&lt;Boolean&gt;&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_AddTransit__0_System_Nullable__0__Func_System_Boolean__">AbstractStateBasedLifetime&lt;TState, TBase&gt;.AddTransit(TState, Nullable&lt;TState&gt;, Func&lt;Boolean&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_AddTransit__0_System_Nullable__0__Func_CancellationToken_Task__">AbstractStateBasedLifetime&lt;TState, TBase&gt;.AddTransit(TState, Nullable&lt;TState&gt;, Func&lt;CancellationToken, Task&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_AddStartup__0_Action_">AbstractStateBasedLifetime&lt;TState, TBase&gt;.AddStartup(TState, Action)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html#DidiFrame_Lifetimes_AbstractStateBasedLifetime_2_AddHandler__0_Action__0__">AbstractStateBasedLifetime&lt;TState, TBase&gt;.AddHandler(TState, Action&lt;TState&gt;)</a>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Lifetimes.html">DidiFrame.Lifetimes</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h5 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class AbstractFullLifetime&lt;TState, TBase&gt; : AbstractStateBasedLifetime&lt;TState, TBase&gt;, ILifetime&lt;TBase&gt; where TState : struct where TBase : class, IStateBasedLifetimeBase&lt;TState&gt;</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TState</span></td>
+        <td><p>Internal statemachine state type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TBase</span></td>
+        <td><p>Type of base object of that lifetime</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2__ctor_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.#ctor*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2__ctor_ILogger_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.#ctor(ILogger)">AbstractFullLifetime(ILogger)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Lifetimes.AbstractFullLifetime`2</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AbstractFullLifetime(ILogger logger)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">ILogger</span></td>
+        <td><span class="parametername">logger</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_AddReport_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.AddReport*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_AddReport_DidiFrame_Utils_MessageAliveHolder__1__" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.AddReport(DidiFrame.Utils.MessageAliveHolder{`1})">AddReport(MessageAliveHolder&lt;TBase&gt;)</h4>
+  <div class="markdown level1 summary"><p>Adds automaticly maintaining report message for lifetime. It can be added only one time</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void AddReport(MessageAliveHolder&lt;TBase&gt; holder)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Utils.MessageAliveHolder-1.html">MessageAliveHolder</a>&lt;TBase&gt;</td>
+        <td><span class="parametername">holder</span></td>
+        <td><p>Holder that was extracted from base object and contains all message info</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_CloseAsync_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.CloseAsync*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_CloseAsync" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.CloseAsync">CloseAsync()</h4>
+  <div class="markdown level1 summary"><p>Finilizes and closes this lifetime</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task CloseAsync()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_GetBase_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.GetBase*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_GetBase_DidiFrame_Utils_StateMachine_FreezeModel__0___" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.GetBase(DidiFrame.Utils.StateMachine.FreezeModel{`0}@)">GetBase(out FreezeModel&lt;TState&gt;)</h4>
+  <div class="markdown level1 summary"><p>Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed.
+This method is overrided by DidiFrame.Lifetimes.AbstractFullLifetime`2</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override ObjectHolder&lt;TBase&gt; GetBase(out FreezeModel&lt;TState&gt; smFreeze)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Utils.StateMachine.FreezeModel-1.html">FreezeModel</a>&lt;TState&gt;</td>
+        <td><span class="parametername">smFreeze</span></td>
+        <td><p>Statemachine freeze information, it will be automaticly disposed</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Utils.ObjectHolder-1.html">ObjectHolder</a>&lt;TBase&gt;</td>
+        <td><p>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">DidiFrame.Lifetimes.AbstractStateBasedLifetime&lt;TState, TBase&gt;.GetBase(DidiFrame.Utils.StateMachine.FreezeModel&lt;TState&gt;)</span></div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_GetReadOnlyBase_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.GetReadOnlyBase*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_GetReadOnlyBase" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.GetReadOnlyBase">GetReadOnlyBase()</h4>
+  <div class="markdown level1 summary"><p>PProvides change-safe and thread-safe readonly access to base object through context, if changes will be detected lifetime will crash</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override ObjectHolder&lt;TBase&gt; GetReadOnlyBase()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Utils.ObjectHolder-1.html">ObjectHolder</a>&lt;TBase&gt;</td>
+        <td><p>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after readings</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">DidiFrame.Lifetimes.AbstractStateBasedLifetime&lt;TState, TBase&gt;.GetReadOnlyBase()</span></div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_GetReport_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.GetReport*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_GetReport" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.GetReport">GetReport()</h4>
+  <div class="markdown level1 summary"><p>Provides added report's alive holder</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected MessageAliveHolder&lt;TBase&gt; GetReport()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Utils.MessageAliveHolder-1.html">MessageAliveHolder</a>&lt;TBase&gt;</td>
+        <td><p>Report's alive holder</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_OnDispose_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.OnDispose*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_OnDispose" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.OnDispose">OnDispose()</h4>
+  <div class="markdown level1 summary"><p>Overrided by DidiFrame.Lifetimes.AbstractFullLifetime`2. Use OnDisposeInternal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override async void OnDispose()</code></pre>
+  </div>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">DidiFrame.Lifetimes.AbstractStateBasedLifetime&lt;TState, TBase&gt;.OnDispose()</span></div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_OnDisposeInternal_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.OnDisposeInternal*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_OnDisposeInternal" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.OnDisposeInternal">OnDisposeInternal()</h4>
+  <div class="markdown level1 summary"><p>Event handler. Calls on dispose (crash or finalize)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnDisposeInternal()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_OnRun_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.OnRun*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_OnRun__0__1_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.OnRun(`0,`1)">OnRun(TState, TBase)</h4>
+  <div class="markdown level1 summary"><p>Don't override, it used by DidiFrame.Lifetimes.AbstractFullLifetime`2. If overriding is important use OnRunInternal(TState)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void OnRun(TState state, TBase initialBase)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TState</span></td>
+        <td><span class="parametername">state</span></td>
+        <td><p>Initial statemachine state</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">TBase</span></td>
+        <td><span class="parametername">initialBase</span></td>
+        <td><p>Initial value of base, cannot be saved in lifetime</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">DidiFrame.Lifetimes.AbstractStateBasedLifetime&lt;TState, TBase&gt;.OnRun(TState, TBase)</span></div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_OnRunInternal_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.OnRunInternal*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_OnRunInternal__0_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.OnRunInternal(`0)">OnRunInternal(TState)</h4>
+  <div class="markdown level1 summary"><p>Event handler. Calls on start. You mustn't call base.OnRun(TState)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual void OnRunInternal(TState state)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TState</span></td>
+        <td><span class="parametername">state</span></td>
+        <td><p>Initial statemachine state</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractFullLifetime_2_Terminate_" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.Terminate*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractFullLifetime_2_Terminate_System_String_System_Nullable_Exception__" data-uid="DidiFrame.Lifetimes.AbstractFullLifetime`2.Terminate(System.String,System.Nullable{Exception})">Terminate(String, Nullable&lt;Exception&gt;)</h4>
+  <div class="markdown level1 summary"><p>Terminates lifetime with redefined reason and exception</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void Terminate(string reason = &quot;Manual termination&quot;, Exception? exception = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">reason</span></td>
+        <td><p>Reason beacouse lifetime terminating</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">Exception</span>&gt;</td>
+        <td><span class="parametername">exception</span></td>
+        <td><p>Optional exception</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Lifetimes.ILifetime-1.html">ILifetime&lt;TBase&gt;</a>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

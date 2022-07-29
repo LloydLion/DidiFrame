@@ -120,13 +120,13 @@
   
   
   <a id="DidiFrame_UserCommands_Models_UserCommandSendData__ctor_" data-uid="DidiFrame.UserCommands.Models.UserCommandSendData.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Models_UserCommandSendData__ctor_IMember_ITextChannel_" data-uid="DidiFrame.UserCommands.Models.UserCommandSendData.#ctor(IMember,ITextChannel)">UserCommandSendData(IMember, ITextChannel)</h4>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandSendData__ctor_IMember_ITextChannelBase_" data-uid="DidiFrame.UserCommands.Models.UserCommandSendData.#ctor(IMember,ITextChannelBase)">UserCommandSendData(IMember, ITextChannelBase)</h4>
   <div class="markdown level1 summary"><p>Model with command send data that contains a member that has called a command and a channel where it has written</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserCommandSendData(IMember Invoker, ITextChannel Channel)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserCommandSendData(IMember Invoker, ITextChannelBase Channel)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -145,7 +145,7 @@
 </td>
       </tr>
       <tr>
-        <td><span class="xref">ITextChannel</span></td>
+        <td><span class="xref">ITextChannelBase</span></td>
         <td><span class="parametername">Channel</span></td>
         <td><p>A channel where it has written</p>
 </td>
@@ -162,7 +162,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ITextChannel Channel { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ITextChannelBase Channel { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -174,7 +174,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">ITextChannel</span></td>
+        <td><span class="xref">ITextChannelBase</span></td>
         <td></td>
       </tr>
     </tbody>

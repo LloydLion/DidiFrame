@@ -79,6 +79,24 @@
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html#DidiFrame_Interfaces_ITextChannelBase_SendMessageAsync_MessageSendModel_">ITextChannelBase.SendMessageAsync(MessageSendModel)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html#DidiFrame_Interfaces_ITextChannelBase_GetMessages_System_Int32_">ITextChannelBase.GetMessages(Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html#DidiFrame_Interfaces_ITextChannelBase_GetMessage_System_UInt64_">ITextChannelBase.GetMessage(UInt64)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html#DidiFrame_Interfaces_ITextChannelBase_HasMessage_System_UInt64_">ITextChannelBase.HasMessage(UInt64)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html#DidiFrame_Interfaces_ITextChannelBase_MessageSent">ITextChannelBase.MessageSent</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html#DidiFrame_Interfaces_ITextChannelBase_MessageDeleted">ITextChannelBase.MessageDeleted</a>
+    </div>
+    <div>
       <a class="xref" href="DidiFrame.Interfaces.IChannel.html#DidiFrame_Interfaces_IChannel_Name">IChannel.Name</a>
     </div>
     <div>
@@ -88,20 +106,20 @@
       <a class="xref" href="DidiFrame.Interfaces.IChannel.html#DidiFrame_Interfaces_IChannel_Category">IChannel.Category</a>
     </div>
     <div>
-      <a class="xref" href="DidiFrame.Interfaces.IChannel.html#DidiFrame_Interfaces_IChannel_IsExist">IChannel.IsExist</a>
-    </div>
-    <div>
       <a class="xref" href="DidiFrame.Interfaces.IChannel.html#DidiFrame_Interfaces_IChannel_DeleteAsync">IChannel.DeleteAsync()</a>
     </div>
     <div>
       <a class="xref" href="DidiFrame.Interfaces.IServerEntity.html#DidiFrame_Interfaces_IServerEntity_Server">IServerEntity.Server</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.Interfaces.IServerEntity.html#DidiFrame_Interfaces_IServerEntity_IsExist">IServerEntity.IsExist</a>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Interfaces.html">DidiFrame.Interfaces</a></h6>
   <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
   <h5 id="DidiFrame_Interfaces_IVoiceChannel_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IVoiceChannel : IChannel, IServerEntity</code></pre>
+    <pre><code class="lang-csharp hljs">public interface IVoiceChannel : ITextChannelBase, IChannel, IServerEntity</code></pre>
   </div>
   <h3 id="properties">Properties
   </h3>

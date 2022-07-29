@@ -152,13 +152,13 @@
   
   
   <a id="DidiFrame_Clients_DSharp_ChannelCategory__ctor_" data-uid="DidiFrame.Clients.DSharp.ChannelCategory.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_ChannelCategory__ctor_DSharpPlus_Entities_DiscordChannel_DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.ChannelCategory.#ctor(DSharpPlus.Entities.DiscordChannel,DidiFrame.Clients.DSharp.Server)">ChannelCategory(DiscordChannel, Server)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelCategory__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordChannel__DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.ChannelCategory.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordChannel},DidiFrame.Clients.DSharp.Server)">ChannelCategory(UInt64, ObjectSourceDelegate&lt;DiscordChannel&gt;, Server)</h4>
   <div class="markdown level1 summary"><p>Create new instance of DidiFrame.Clients.DSharp.ChannelCategory that based on real category</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ChannelCategory(DiscordChannel category, Server server)</code></pre>
+    <pre><code class="lang-csharp hljs">public ChannelCategory(ulong id, ObjectSourceDelegate&lt;DiscordChannel&gt; category, Server server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -171,7 +171,13 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>If of category</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordChannel</span>&gt;</td>
         <td><span class="parametername">category</span></td>
         <td><p>Base DiscordChannel that will be used as category</p>
 </td>
@@ -233,6 +239,32 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.UInt64</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelCategory_IsExist_" data-uid="DidiFrame.Clients.DSharp.ChannelCategory.IsExist*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelCategory_IsExist" data-uid="DidiFrame.Clients.DSharp.ChannelCategory.IsExist">IsExist</h4>
+  <div class="markdown level1 summary"><p>If enity still exist</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsExist { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
         <td></td>
       </tr>
     </tbody>

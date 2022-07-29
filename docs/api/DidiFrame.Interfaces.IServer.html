@@ -138,6 +138,32 @@
   </table>
   
   
+  <a id="DidiFrame_Interfaces_IServer_IsClosed_" data-uid="DidiFrame.Interfaces.IServer.IsClosed*"></a>
+  <h4 id="DidiFrame_Interfaces_IServer_IsClosed" data-uid="DidiFrame.Interfaces.IServer.IsClosed">IsClosed</h4>
+  <div class="markdown level1 summary"><p>If server closed</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool IsClosed { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="DidiFrame_Interfaces_IServer_Name_" data-uid="DidiFrame.Interfaces.IServer.Name*"></a>
   <h4 id="DidiFrame_Interfaces_IServer_Name" data-uid="DidiFrame.Interfaces.IServer.Name">Name</h4>
   <div class="markdown level1 summary"><p>Name of the server</p>
@@ -449,6 +475,258 @@
         <td><span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="DidiFrame.Interfaces.IRole.html">IRole</a>&gt;</td>
         <td><p>Collection of roles</p>
 </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+  </h3>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_CategoryCreated" data-uid="DidiFrame.Interfaces.IServer.CategoryCreated">CategoryCreated</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a new category created</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event ServerObjectCreatedEventHandler&lt;IChannelCategory&gt; CategoryCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html">ServerObjectCreatedEventHandler</a>&lt;<a class="xref" href="DidiFrame.Interfaces.IChannelCategory.html">IChannelCategory</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_CategoryDeleted" data-uid="DidiFrame.Interfaces.IServer.CategoryDeleted">CategoryDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a category deleted</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event ServerObjectDeletedEventHandler CategoryDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html">ServerObjectDeletedEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_ChannelCreated" data-uid="DidiFrame.Interfaces.IServer.ChannelCreated">ChannelCreated</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a new channel</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event ServerObjectCreatedEventHandler&lt;IChannel&gt; ChannelCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html">ServerObjectCreatedEventHandler</a>&lt;<a class="xref" href="DidiFrame.Interfaces.IChannel.html">IChannel</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_ChannelDeleted" data-uid="DidiFrame.Interfaces.IServer.ChannelDeleted">ChannelDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a channel deleted</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event ServerObjectDeletedEventHandler ChannelDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html">ServerObjectDeletedEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_MemberCreated" data-uid="DidiFrame.Interfaces.IServer.MemberCreated">MemberCreated</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a new member created (joined)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event ServerObjectCreatedEventHandler&lt;IMember&gt; MemberCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html">ServerObjectCreatedEventHandler</a>&lt;<a class="xref" href="DidiFrame.Interfaces.IMember.html">IMember</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_MemberDeleted" data-uid="DidiFrame.Interfaces.IServer.MemberDeleted">MemberDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a member deleted (left)</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event ServerObjectDeletedEventHandler MemberDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html">ServerObjectDeletedEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_MessageDeleted" data-uid="DidiFrame.Interfaces.IServer.MessageDeleted">MessageDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a message deleted</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event MessageDeletedEventHandler MessageDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.MessageDeletedEventHandler.html">MessageDeletedEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_MessageSent" data-uid="DidiFrame.Interfaces.IServer.MessageSent">MessageSent</h4>
+  <div class="markdown level1 summary"><p>Event that fires when new message sent</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event MessageSentEventHandler MessageSent</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.MessageSentEventHandler.html">MessageSentEventHandler</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_RoleCreated" data-uid="DidiFrame.Interfaces.IServer.RoleCreated">RoleCreated</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a new role created</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event ServerObjectCreatedEventHandler&lt;IRole&gt; RoleCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html">ServerObjectCreatedEventHandler</a>&lt;<a class="xref" href="DidiFrame.Interfaces.IRole.html">IRole</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Interfaces_IServer_RoleDeleted" data-uid="DidiFrame.Interfaces.IServer.RoleDeleted">RoleDeleted</h4>
+  <div class="markdown level1 summary"><p>Event that fires when a role deleted</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">event ServerObjectDeletedEventHandler RoleDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html">ServerObjectDeletedEventHandler</a></td>
+        <td></td>
       </tr>
     </tbody>
   </table>

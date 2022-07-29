@@ -120,13 +120,13 @@
   
   
   <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineExecutor__ctor_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineExecutor__ctor_IEnumerable_DidiFrame_UserCommands_Pipeline_IUserCommandLocalServiceDescriptor__IServiceProvider_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor.#ctor(IEnumerable{DidiFrame.UserCommands.Pipeline.IUserCommandLocalServiceDescriptor},IServiceProvider)">UserCommandPipelineExecutor(IEnumerable&lt;IUserCommandLocalServiceDescriptor&gt;, IServiceProvider)</h4>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineExecutor__ctor_IEnumerable_DidiFrame_UserCommands_Pipeline_IUserCommandLocalServiceDescriptor__IServiceProvider_ILogger_DidiFrame_UserCommands_Pipeline_UserCommandPipelineExecutor__FluentValidation_IValidator_UserCommandSendData__FluentValidation_IValidator_UserCommandResult__" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor.#ctor(IEnumerable{DidiFrame.UserCommands.Pipeline.IUserCommandLocalServiceDescriptor},IServiceProvider,ILogger{DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor},FluentValidation.IValidator{UserCommandSendData},FluentValidation.IValidator{UserCommandResult})">UserCommandPipelineExecutor(IEnumerable&lt;IUserCommandLocalServiceDescriptor&gt;, IServiceProvider, ILogger&lt;UserCommandPipelineExecutor&gt;, IValidator&lt;UserCommandSendData&gt;, IValidator&lt;UserCommandResult&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor with local services</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserCommandPipelineExecutor(IEnumerable&lt;IUserCommandLocalServiceDescriptor&gt; descriptors, IServiceProvider sp)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserCommandPipelineExecutor(IEnumerable&lt;IUserCommandLocalServiceDescriptor&gt; descriptors, IServiceProvider serviceProvider, ILogger&lt;UserCommandPipelineExecutor&gt; logger, IValidator&lt;UserCommandSendData&gt; sendDataValidator, IValidator&lt;UserCommandResult&gt; resultValidator)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -146,8 +146,26 @@
       </tr>
       <tr>
         <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">sp</span></td>
+        <td><span class="parametername">serviceProvider</span></td>
         <td><p>Global service provider</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">ILogger</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor.html">UserCommandPipelineExecutor</a>&gt;</td>
+        <td><span class="parametername">logger</span></td>
+        <td><p>Logger for executor</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandSendData</span>&gt;</td>
+        <td><span class="parametername">sendDataValidator</span></td>
+        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandSendData</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandResult</span>&gt;</td>
+        <td><span class="parametername">resultValidator</span></td>
+        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandResult</p>
 </td>
       </tr>
     </tbody>

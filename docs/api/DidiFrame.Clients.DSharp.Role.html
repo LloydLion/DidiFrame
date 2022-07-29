@@ -117,13 +117,13 @@
   
   
   <a id="DidiFrame_Clients_DSharp_Role__ctor_" data-uid="DidiFrame.Clients.DSharp.Role.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Role__ctor_DSharpPlus_Entities_DiscordRole_DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.Role.#ctor(DSharpPlus.Entities.DiscordRole,DidiFrame.Clients.DSharp.Server)">Role(DiscordRole, Server)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_Role__ctor_System_UInt64_DidiFrame_Clients_DSharp_ObjectSourceDelegate_DSharpPlus_Entities_DiscordRole__DidiFrame_Clients_DSharp_Server_" data-uid="DidiFrame.Clients.DSharp.Role.#ctor(System.UInt64,DidiFrame.Clients.DSharp.ObjectSourceDelegate{DSharpPlus.Entities.DiscordRole},DidiFrame.Clients.DSharp.Server)">Role(UInt64, ObjectSourceDelegate&lt;DiscordRole&gt;, Server)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.Role</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Role(DiscordRole role, Server server)</code></pre>
+    <pre><code class="lang-csharp hljs">public Role(ulong id, ObjectSourceDelegate&lt;DiscordRole&gt; role, Server server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -136,9 +136,15 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">DSharpPlus.Entities.DiscordRole</span></td>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of role</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html">ObjectSourceDelegate</a>&lt;<span class="xref">DSharpPlus.Entities.DiscordRole</span>&gt;</td>
         <td><span class="parametername">role</span></td>
-        <td><p>Base DiscordRole from DSharp</p>
+        <td><p>Base DiscordRole from DSharp source</p>
 </td>
       </tr>
       <tr>
@@ -199,6 +205,32 @@
     <tbody>
       <tr>
         <td><span class="xref">System.UInt64</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_Role_IsExist_" data-uid="DidiFrame.Clients.DSharp.Role.IsExist*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_Role_IsExist" data-uid="DidiFrame.Clients.DSharp.Role.IsExist">IsExist</h4>
+  <div class="markdown level1 summary"><p>If enity still exist</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsExist { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -437,110 +469,6 @@
   </table>
   <h5 class="overrides">Overrides</h5>
   <div><span class="xref">System.Object.GetHashCode()</span></div>
-  <h3 id="operators">Operators
-  </h3>
-  
-  
-  <a id="DidiFrame_Clients_DSharp_Role_op_Equality_" data-uid="DidiFrame.Clients.DSharp.Role.op_Equality*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Role_op_Equality_DidiFrame_Clients_DSharp_Role_DidiFrame_Clients_DSharp_Role_" data-uid="DidiFrame.Clients.DSharp.Role.op_Equality(DidiFrame.Clients.DSharp.Role,DidiFrame.Clients.DSharp.Role)">Equality(Role, Role)</h4>
-  <div class="markdown level1 summary"><p>Checks equality between two DidiFrame.Clients.DSharp.Role objects</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool operator ==(Role left, Role right)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Clients.DSharp.Role.html">Role</a></td>
-        <td><span class="parametername">left</span></td>
-        <td><p>First object</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Clients.DSharp.Role.html">Role</a></td>
-        <td><span class="parametername">right</span></td>
-        <td><p>Second objects</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p>If objects are equal</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="DidiFrame_Clients_DSharp_Role_op_Inequality_" data-uid="DidiFrame.Clients.DSharp.Role.op_Inequality*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Role_op_Inequality_DidiFrame_Clients_DSharp_Role_DidiFrame_Clients_DSharp_Role_" data-uid="DidiFrame.Clients.DSharp.Role.op_Inequality(DidiFrame.Clients.DSharp.Role,DidiFrame.Clients.DSharp.Role)">Inequality(Role, Role)</h4>
-  <div class="markdown level1 summary"><p>Checks equality between two DidiFrame.Clients.DSharp.Role objects</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool operator !=(Role left, Role right)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Clients.DSharp.Role.html">Role</a></td>
-        <td><span class="parametername">left</span></td>
-        <td><p>First object</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="DidiFrame.Clients.DSharp.Role.html">Role</a></td>
-        <td><span class="parametername">right</span></td>
-        <td><p>Second objects</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><p>If objects are not equal</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.Interfaces.IRole.html">IRole</a>

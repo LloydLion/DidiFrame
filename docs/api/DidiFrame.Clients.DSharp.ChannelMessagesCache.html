@@ -1,0 +1,588 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class ChannelMessagesCache
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class ChannelMessagesCache
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache">
+  
+  
+  <h1 id="DidiFrame_Clients_DSharp_ChannelMessagesCache" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache" class="text-break">Class ChannelMessagesCache
+  </h1>
+  <div class="markdown level0 summary"><p>Represents default implementation of messages cache for dsharp server</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">ChannelMessagesCache</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="DidiFrame.Clients.DSharp.IChannelMessagesCache.html">IChannelMessagesCache</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Clients.DSharp.html">DidiFrame.Clients.DSharp</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Clients.DSharp.dll</h6>
+  <h5 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class ChannelMessagesCache : IChannelMessagesCache</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache__ctor_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.#ctor*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache__ctor_DidiFrame_Clients_DSharp_Client_DidiFrame_Clients_DSharp_ChannelMessagesCache_Options_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.#ctor(DidiFrame.Clients.DSharp.Client,DidiFrame.Clients.DSharp.ChannelMessagesCache.Options)">ChannelMessagesCache(Client, ChannelMessagesCache.Options)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Clients.DSharp.ChannelMessagesCache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ChannelMessagesCache(Client client, ChannelMessagesCache.Options options)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.Client.html">Client</a></td>
+        <td><span class="parametername">client</span></td>
+        <td><p>DSharp client instance</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.ChannelMessagesCache.Options.html">ChannelMessagesCache.Options</a></td>
+        <td><span class="parametername">options</span></td>
+        <td><p>Option to create cache object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_AddMessage_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.AddMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_AddMessage_DSharpPlus_Entities_DiscordMessage_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.AddMessage(DSharpPlus.Entities.DiscordMessage)">AddMessage(DiscordMessage)</h4>
+  <div class="markdown level1 summary"><p>Adds message to cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddMessage(DiscordMessage msg)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordMessage</span></td>
+        <td><span class="parametername">msg</span></td>
+        <td><p>Message to add</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_DeleteChannelCache_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.DeleteChannelCache*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_DeleteChannelCache_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.DeleteChannelCache(DSharpPlus.Entities.DiscordChannel)">DeleteChannelCache(DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Deletes channel and all messages from cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DeleteChannelCache(DiscordChannel textChannel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel to delete</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_DeleteMessage_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.DeleteMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_DeleteMessage_System_UInt64_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.DeleteMessage(System.UInt64,DSharpPlus.Entities.DiscordChannel)">DeleteMessage(UInt64, DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Deletes message from cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DeleteMessage(ulong msgId, DiscordChannel textChannel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">msgId</span></td>
+        <td><p>Id of message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel where message was deleted</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_GetMessage_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.GetMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_GetMessage_System_UInt64_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.GetMessage(System.UInt64,DSharpPlus.Entities.DiscordChannel)">GetMessage(UInt64, DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Gets message from cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DiscordMessage GetMessage(ulong id, DiscordChannel textChannel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel where need to get message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordMessage</span></td>
+        <td><p>Ready message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_GetMessages_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.GetMessages*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_GetMessages_DSharpPlus_Entities_DiscordChannel_System_Int32_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.GetMessages(DSharpPlus.Entities.DiscordChannel,System.Int32)">GetMessages(DiscordChannel, Int32)</h4>
+  <div class="markdown level1 summary"><p>Gets messages list for channel</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;DiscordMessage&gt; GetMessages(DiscordChannel textChannel, int quantity)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel where need to get messages</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">quantity</span></td>
+        <td><p>Quantity of messages</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyList</span>&lt;<span class="xref">DSharpPlus.Entities.DiscordMessage</span>&gt;</td>
+        <td><p>List of message sorted in chronological order</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_GetNullableMessage_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.GetNullableMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_GetNullableMessage_System_UInt64_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.GetNullableMessage(System.UInt64,DSharpPlus.Entities.DiscordChannel)">GetNullableMessage(UInt64, DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Gets message from cache or null of it doesn't exist</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DiscordMessage GetNullableMessage(ulong id, DiscordChannel textChannel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel where need to get message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordMessage</span></td>
+        <td><p>Ready message or null</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_HasMessage_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.HasMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_HasMessage_System_UInt64_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.HasMessage(System.UInt64,DSharpPlus.Entities.DiscordChannel)">HasMessage(UInt64, DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Checks message existence in channel</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasMessage(ulong id, DiscordChannel textChannel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id to check</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel where need to check existence</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>If message exist in channel</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_InitChannelAsync_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.InitChannelAsync*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_InitChannelAsync_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.InitChannelAsync(DSharpPlus.Entities.DiscordChannel)">InitChannelAsync(DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Initializes channel to be stored in cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task InitChannelAsync(DiscordChannel textChannel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel to init</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td><p>Operation wait task</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ChannelMessagesCache_Lock_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.Lock*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ChannelMessagesCache_Lock_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.ChannelMessagesCache.Lock(DSharpPlus.Entities.DiscordChannel)">Lock(DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Provides lock object for channel</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public object Lock(DiscordChannel textChannel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel to get lock object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><p>Lock object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Clients.DSharp.IChannelMessagesCache.html">IChannelMessagesCache</a>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

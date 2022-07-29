@@ -80,7 +80,7 @@
   <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
   <h5 id="DidiFrame_Interfaces_MessageDeletedEventHandler_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public delegate void MessageDeletedEventHandler(IClient sender, IMessage message);</code></pre>
+    <pre><code class="lang-csharp hljs">public delegate void MessageDeletedEventHandler(IClient sender, ITextChannelBase textChannel, ulong messageId);</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -99,9 +99,15 @@
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="DidiFrame.Interfaces.IMessage.html">IMessage</a></td>
-        <td><span class="parametername">message</span></td>
-        <td><p>Message that has deleted</p>
+        <td><a class="xref" href="DidiFrame.Interfaces.ITextChannelBase.html">ITextChannelBase</a></td>
+        <td><span class="parametername">textChannel</span></td>
+        <td><p>Channel where message was deleted</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">messageId</span></td>
+        <td><p>Id of deleted message</p>
 </td>
       </tr>
     </tbody>

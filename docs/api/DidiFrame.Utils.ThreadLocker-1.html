@@ -109,8 +109,7 @@
   <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
   <h5 id="DidiFrame_Utils_ThreadLocker_1_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ThreadLocker&lt;TLock&gt;
-    where TLock : class</code></pre>
+    <pre><code class="lang-csharp hljs">public class ThreadLocker&lt;TLock&gt;</code></pre>
   </div>
   <h5 class="typeParameters">Type Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -174,14 +173,14 @@
   </h3>
   
   
-  <a id="DidiFrame_Utils_ThreadLocker_1_AwaitUnlock_" data-uid="DidiFrame.Utils.ThreadLocker`1.AwaitUnlock*"></a>
-  <h4 id="DidiFrame_Utils_ThreadLocker_1_AwaitUnlock__0_" data-uid="DidiFrame.Utils.ThreadLocker`1.AwaitUnlock(`0)">AwaitUnlock(TLock)</h4>
-  <div class="markdown level1 summary"><p>Wait for object unlock</p>
+  <a id="DidiFrame_Utils_ThreadLocker_1_GetLockObject_" data-uid="DidiFrame.Utils.ThreadLocker`1.GetLockObject*"></a>
+  <h4 id="DidiFrame_Utils_ThreadLocker_1_GetLockObject__0_" data-uid="DidiFrame.Utils.ThreadLocker`1.GetLockObject(`0)">GetLockObject(TLock)</h4>
+  <div class="markdown level1 summary"><p>Gets auto reset event from lock object that synchronized with locker</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public async Task AwaitUnlock(TLock obj)</code></pre>
+    <pre><code class="lang-csharp hljs">public AutoResetEvent GetLockObject(TLock obj)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -196,7 +195,7 @@
       <tr>
         <td><span class="xref">TLock</span></td>
         <td><span class="parametername">obj</span></td>
-        <td><p>Object that need wait</p>
+        <td><p>Target object</p>
 </td>
       </tr>
     </tbody>
@@ -211,8 +210,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">Task</span></td>
-        <td><p>Wait task</p>
+        <td><span class="xref">AutoResetEvent</span></td>
+        <td><p>Synchronized auto reset event</p>
 </td>
       </tr>
     </tbody>
