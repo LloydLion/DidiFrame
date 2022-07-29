@@ -10,9 +10,8 @@
 		where TBase : class, ILifetimeBase
 	{
 		/// <summary>
-		/// Creates lifetime from its state
+		/// Creates lifetime object
 		/// </summary>
-		/// <param name="baseObject"></param>
 		/// <returns></returns>
 		public TLifetime Create();
 	}

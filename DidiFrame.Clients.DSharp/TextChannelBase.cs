@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
-	/// DSharp implementation of DidiFrame.Interfaces.ITextChannel
+	/// DSharp implementation of DidiFrame.Interfaces.ITextChannelBase
 	/// </summary>
 	public class TextChannelBase : Channel, ITextChannelBase
 	{
@@ -31,18 +31,24 @@ namespace DidiFrame.Clients.DSharp
 
 
 		/// <summary>
-		/// Creates new instance of DidiFrame.Clients.DSharp.TextChannel
+		/// Creates new instance of DidiFrame.Clients.DSharp.TextChannelBase
 		/// </summary>
-		/// <param name="channel">Base DiscordChannel from DSharp</param>
+		/// <param name="id">Id of channel</param>
+		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server object wrap</param>
-		/// <exception cref="ArgumentException">If channel is not text (or text compatible)</exception>
-		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
 		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : base(id, channel, server)
 		{
 			this.server = server;
 			validator = server.SourceClient.Services.GetRequiredService<IValidator<MessageSendModel>>();
 		}
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Clients.DSharp.TextChannelBase
+		/// </summary>
+		/// <param name="id">Id of channel</param>
+		/// <param name="channel">Base DiscordChannel from DSharp source</param>
+		/// <param name="server">Owner server object wrap</param>
+		/// <param name="targetCategory">Custom category source</param>
 		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server, ObjectSourceDelegate<ChannelCategory> targetCategory) : base(id, channel, server, targetCategory)
 		{
 			this.server = server;

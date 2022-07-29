@@ -18,7 +18,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Role
 		/// </summary>
-		/// <param name="role">Base DiscordRole from DSharp</param>
+		/// <param name="id">Id of role</param>
+		/// <param name="role">Base DiscordRole from DSharp source</param>
 		/// <param name="server">Base server object wrap</param>
 		public Role(ulong id, ObjectSourceDelegate<DiscordRole> role, Server server)
 		{

@@ -34,6 +34,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Create new instance of DidiFrame.Clients.DSharp.ChannelCategory that based on real category
 		/// </summary>
+		/// <param name="id">If of category</param>
 		/// <param name="category">Base DiscordChannel that will be used as category</param>
 		/// <param name="server">Owner server wrap object</param>
 		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>

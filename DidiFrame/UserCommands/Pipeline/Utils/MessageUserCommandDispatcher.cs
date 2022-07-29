@@ -21,6 +21,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		/// </summary>
 		/// <param name="client">Discord clint to access to discord</param>
 		/// <param name="logger">Logger for dispatcher</param>
+		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
 		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger, IValidator<UserCommandResult> resultValidator)
 		{
 			this.client = client;

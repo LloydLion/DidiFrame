@@ -25,6 +25,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// <param name="stringLocalizerFactory">Localizer factory to provide localizers for commands</param>
 		/// <param name="converter">Converter to resolve complex arguments</param>
 		/// <param name="subloaders">Subloaders that extends loader functional</param>
+		/// <param name="behaviorModel">Optional behavoir model that can override object behavoir</param>
 		public ReflectionUserCommandsLoader(IEnumerable<ICommandsModule> modules,
 			ILogger<ReflectionUserCommandsLoader> logger,
 			IStringLocalizerFactory stringLocalizerFactory,
@@ -46,27 +47,42 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		}
 
 
+		/// <summary>
+		/// Behavoir model for DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader
+		/// </summary>
 		public class BehaviorModel
 		{
-			protected static readonly EventId LoadingSkipID = new(12, "LoadingSkip");
-			protected static readonly EventId LoadingDoneID = new(13, "LoadingDone");
+			private static readonly EventId LoadingSkipID = new(12, "LoadingSkip");
+			private readonly EventId LoadingDoneID = new(13, "LoadingDone");
 
-			private ILogger? logger;
+			private ILogger<ReflectionUserCommandsLoader>? logger;
 			private IStringLocalizerFactory? stringLocalizerFactory;
 			private IUserCommandContextConverter? converter;
 			private IReadOnlyCollection<IReflectionCommandAdditionalInfoLoader>? subloaders;
 
 
-			public ILogger Logger => logger ?? throw new InvalidOperationException("Enable to get this property in ctor");
+			/// <summary>
+			/// Logger for loader
+			/// </summary>
+			protected ILogger<ReflectionUserCommandsLoader> Logger => logger ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-			private IStringLocalizerFactory StringLocalizerFactory => stringLocalizerFactory ?? throw new InvalidOperationException("Enable to get this property in ctor");
+			/// <summary>
+			/// Localizer factory to provide localizers for commands
+			/// </summary>
+			protected IStringLocalizerFactory StringLocalizerFactory => stringLocalizerFactory ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-			private IUserCommandContextConverter Converter => converter ?? throw new InvalidOperationException("Enable to get this property in ctor");
+			/// <summary>
+			/// Converter to resolve complex arguments
+			/// </summary>
+			protected IUserCommandContextConverter Converter => converter ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-			private IReadOnlyCollection<IReflectionCommandAdditionalInfoLoader> Subloaders => subloaders ?? throw new InvalidOperationException("Enable to get this property in ctor");
+			/// <summary>
+			/// Subloaders that extends loader functional
+			/// </summary>
+			protected IReadOnlyCollection<IReflectionCommandAdditionalInfoLoader> Subloaders => subloaders ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
 
-			public void Init(ILogger logger,
+			internal void Init(ILogger<ReflectionUserCommandsLoader> logger,
 				IStringLocalizerFactory stringLocalizerFactory,
 				IUserCommandContextConverter converter,
 				IReadOnlyCollection<IReflectionCommandAdditionalInfoLoader> subloaders)
@@ -77,11 +93,24 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				this.subloaders = subloaders;
 			}
 
-			protected virtual UserCommandHandler CreateHandler(MethodInfo method, object obj, bool asSync, string? returnLocalizedString)
+			/// <summary>
+			/// Creates handler for command
+			/// </summary>
+			/// <param name="method">Method info from module</param>
+			/// <param name="module">Module that contains method</param>
+			/// <param name="asSync">If method is sync method else it async and returns task</param>
+			/// <param name="returnLocalizedString">Locale key in module localizer if method has auto return of message or null if method forms reponce itself</param>
+			/// <returns>Command handler delegate</returns>
+			protected virtual UserCommandHandler CreateHandler(MethodInfo method, ICommandsModule module, bool asSync, string? returnLocalizedString)
 			{
-				return new Handler(method, obj, asSync, returnLocalizedString).HandleAsync;
+				return new Handler(method, module, asSync, returnLocalizedString).HandleAsync;
 			}
 
+			/// <summary>
+			/// Fully loads commands module
+			/// </summary>
+			/// <param name="module">Module to load</param>
+			/// <param name="target">Target repository</param>
 			public virtual void LoadModule(ICommandsModule module, IUserCommandsRepository target)
 			{
 				var type = module.GetType();
@@ -117,6 +146,13 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				}
 			}
 
+			/// <summary>
+			/// Loads argument from method parameter
+			/// </summary>
+			/// <param name="method">Target method</param>
+			/// <param name="parameter">Target parameter</param>
+			/// <param name="module">Target module</param>
+			/// <returns>Ready user command argument</returns>
 			protected virtual UserCommandArgument LoadArgument(MethodInfo method, ParameterInfo parameter, ICommandsModule module)
 			{
 				var ptype = parameter.ParameterType;
@@ -158,9 +194,15 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				return new UserCommandArgument(ptype.IsArray, types, ptype, parameter.Name ?? "no_name", new SimpleModelAdditionalInfoProvider(argAdditionalInfo));
 			}
 
-			protected virtual UserCommandInfo LoadCommand(MethodInfo method, ICommandsModule instance)
+			/// <summary>
+			/// Loads command from method
+			/// </summary>
+			/// <param name="method">Target method</param>
+			/// <param name="module">Target module</param>
+			/// <returns>Ready user command info</returns>
+			protected virtual UserCommandInfo LoadCommand(MethodInfo method, ICommandsModule module)
 			{
-				var type = instance.GetType();
+				var type = module.GetType();
 				var handlerLocalizer = StringLocalizerFactory.Create(type);
 
 				var commandAttr = method.GetCustomAttribute<CommandAttribute>() ?? throw new ImpossibleVariantException();
@@ -170,7 +212,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				var @params = method.GetParameters();
 				var args = new UserCommandArgument[@params.Length - 1];
 				for (int i = 1; i < @params.Length; i++)
-					args[i - 1] = LoadArgument(method, @params[i], instance);
+					args[i - 1] = LoadArgument(method, @params[i], module);
 
 				var additionalInfo = new Dictionary<Type, object> { { typeof(IStringLocalizer), handlerLocalizer } };
 
@@ -186,12 +228,17 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 					foreach (var item in info) additionalInfo.Add(item.Key, item.Value);
 				}
 
-				var handler = CreateHandler(method, instance, isSync, commandAttr.ReturnLocaleKey is not null ? handlerLocalizer[commandAttr.ReturnLocaleKey] : (string?)null);
+				var handler = CreateHandler(method, module, isSync, commandAttr.ReturnLocaleKey is not null ? handlerLocalizer[commandAttr.ReturnLocaleKey] : (string?)null);
 				var readyInfo = new UserCommandInfo(commandName, handler, args, new SimpleModelAdditionalInfoProvider(additionalInfo));
 
 				return readyInfo;
 			}
 
+			/// <summary>
+			/// Validates method before convertation to check it can be command or not
+			/// </summary>
+			/// <param name="info">Target method</param>
+			/// <returns>Validation result</returns>
 			protected virtual MethodValiudationResult ValidateMethod(MethodInfo info)
 			{
 				var attr = info.GetCustomAttribute<CommandAttribute>();
@@ -266,6 +313,9 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 				}
 			}
 
+			/// <summary>
+			/// Result of method as command validation
+			/// </summary>
 			public enum MethodValiudationResult
 			{
 				/// <summary>

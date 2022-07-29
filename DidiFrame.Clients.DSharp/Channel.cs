@@ -52,7 +52,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Channel
 		/// </summary>
-		/// <param name="channel">Base DiscordChannel from DSharp</param>
+		/// <param name="id">Id of channel</param>
+		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
 		public Channel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : this(id, channel, server, () =>
 		{
@@ -64,7 +65,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Channel with overrided category
 		/// </summary>
-		/// <param name="channel">Base DiscordChannel from DSharp</param>
+		/// <param name="id">Id of channel</param>
+		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
 		/// <param name="targetCategory">Custom category source</param>
 		public Channel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server, ObjectSourceDelegate<ChannelCategory> targetCategory)
@@ -104,6 +106,12 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
+		/// <summary>
+		/// Gains access to base channel from dsharp or throws exception of it doesn't exist more
+		/// </summary>
+		/// <param name="nameOfCaller">Name of caller for fill exception data</param>
+		/// <returns>Base channel</returns>
+		/// <exception cref="ObjectDoesNotExistException">If requested object no more exist</exception>
 		protected DiscordChannel AccessBase([CallerMemberName] string nameOfCaller = "")
 		{
 			var obj = channel();

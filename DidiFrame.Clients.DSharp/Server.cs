@@ -98,6 +98,10 @@ namespace DidiFrame.Clients.DSharp
 		public bool IsClosed { get; private set; }
 
 
+		/// <summary>
+		/// Safely adds new channel to cache, or modify it if channel already in cache
+		/// </summary>
+		/// <param name="channel">Target channel</param>
 		public void CacheChannel(DiscordChannel channel)
 		{
 			var frame = serverCache.GetFrame<DiscordChannel>();
@@ -109,6 +113,10 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
+		/// <summary>
+		/// Safely adds new message to cache, or modify it if message already in cache
+		/// </summary>
+		/// <param name="message">Target message</param>
 		public void CacheMessage(DiscordMessage message)
 		{
 			lock (messages.Lock(message.Channel))
@@ -119,17 +127,17 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
-		public void AddMessageSentEventHandler(DiscordChannel channel, MessageSentEventHandler? handler) => messagesEvents.AddHandler(channel, handler);
+		internal void AddMessageSentEventHandler(DiscordChannel channel, MessageSentEventHandler? handler) => messagesEvents.AddHandler(channel, handler);
 
-		public void AddMessageDeletedEventHandler(DiscordChannel channel, MessageDeletedEventHandler? handler) => messagesEvents.AddHandler(channel, handler);
+		internal void AddMessageDeletedEventHandler(DiscordChannel channel, MessageDeletedEventHandler? handler) => messagesEvents.AddHandler(channel, handler);
 
-		public void RemoveMessageSentEventHandler(DiscordChannel channel, MessageSentEventHandler? handler) => messagesEvents.RemoveHandler(channel, handler);
+		internal void RemoveMessageSentEventHandler(DiscordChannel channel, MessageSentEventHandler? handler) => messagesEvents.RemoveHandler(channel, handler);
 
-		public void RemoveMessageDeletedEventHandler(DiscordChannel channel, MessageDeletedEventHandler? handler) => messagesEvents.RemoveHandler(channel, handler);
+		internal void RemoveMessageDeletedEventHandler(DiscordChannel channel, MessageDeletedEventHandler? handler) => messagesEvents.RemoveHandler(channel, handler);
 
-		public IChannelMessagesCache GetMessagesCache() => messages;
+		internal IChannelMessagesCache GetMessagesCache() => messages;
 
-		public IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel)
+		internal IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel)
 		{
 			var baseChannel = channel.BaseChannel;
 			var channelThreads = threads.GetThreadsFor(baseChannel);
@@ -140,9 +148,9 @@ namespace DidiFrame.Clients.DSharp
 			}).ToArray();
 		}
 
-		public IInteractionDispatcher GetInteractionDispatcherFor(Message message) => dispatcherFactory.CreateInstance(message);
+		internal IInteractionDispatcher GetInteractionDispatcherFor(Message message) => dispatcherFactory.CreateInstance(message);
 
-		public void ResetInteractionDispatcherFor(ulong messageId) => dispatcherFactory.ResetInstance(messageId);
+		internal void ResetInteractionDispatcherFor(ulong messageId) => dispatcherFactory.ResetInstance(messageId);
 
 		/// <inheritdoc/>
 		public IMember GetMember(ulong id) => new Member(id, () => serverCache.GetFrame<DiscordMember>().GetNullableObject(id), this);
@@ -221,6 +229,8 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		/// <param name="guild">Base DiscordGuild from DSharp</param>
 		/// <param name="client">Owner client object</param>
+		/// <param name="options">Options for server</param>
+		/// <param name="messagesCache">channel message cache instance</param>
 		public Server(DiscordGuild guild, Client client, Options options, IChannelMessagesCache messagesCache)
 		{
 			this.guild = guild;
@@ -545,7 +555,7 @@ namespace DidiFrame.Clients.DSharp
 						var from = guild.GetAllMembersAsync().Result.ToDictionary(s => s.Id);
 						var difference = new CollectionDifference<DiscordMember, DiscordMember, ulong>(from.Values, membersFrame.GetObjects(), s => s.Id, s => s.Id);
 						foreach (var item in difference.CalculateDifference())
-							if (item.Type == CollectionDifference<DiscordMember, DiscordMember, ulong>.OperationType.Add)
+							if (item.Type == CollectionDifference.OperationType.Add)
 							{
 								var member = from[item.Key];
 								membersFrame.AddObject(item.Key, member);
@@ -564,7 +574,7 @@ namespace DidiFrame.Clients.DSharp
 						var from = guild.Roles;
 						var difference = new CollectionDifference<DiscordRole, DiscordRole, ulong>(from.Values.ToArray(), rolesFrame.GetObjects(), s => s.Id, s => s.Id);
 						foreach (var item in difference.CalculateDifference())
-							if (item.Type == CollectionDifference<DiscordRole, DiscordRole, ulong>.OperationType.Add)
+							if (item.Type == CollectionDifference.OperationType.Add)
 							{
 								var role = from[item.Key];
 								rolesFrame.AddObject(item.Key, role);
@@ -585,7 +595,7 @@ namespace DidiFrame.Clients.DSharp
 						var from = newData.ToDictionary(s => s.Id);
 						var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channelsFrame.GetObjects(), s => s.Id, s => s.Id);
 						foreach (var item in difference.CalculateDifference())
-							if (item.Type == CollectionDifference<DiscordChannel, DiscordChannel, ulong>.OperationType.Add)
+							if (item.Type == CollectionDifference.OperationType.Add)
 							{
 								var channel = from[item.Key];
 								channelsFrame.AddObject(item.Key, channel);
@@ -609,7 +619,7 @@ namespace DidiFrame.Clients.DSharp
 							var fromT = (options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? activeThreads.Concat(archivedThreads) : activeThreads).ToDictionary(s => s.Id);
 							var differenceT = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(fromT.Values.ToArray(), threads.GetThreads(), s => s.Id, s => s.Id);
 							foreach (var item in differenceT.CalculateDifference())
-								if (item.Type == CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>.OperationType.Add)
+								if (item.Type == CollectionDifference.OperationType.Add)
 								{
 									var thread = fromT[item.Key];
 									threads.AddThread(thread);
@@ -910,14 +920,29 @@ namespace DidiFrame.Clients.DSharp
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
+		/// <summary>
+		/// Options for DidiFrame.Clients.DSharp.Server
+		/// </summary>
 		public class Options
 		{
+			/// <summary>
+			/// Channel threads caching behavior
+			/// </summary>
 			public ThreadCacheBehavior ThreadCache { get; set; } = ThreadCacheBehavior.CacheActive;
 
 
+			/// <summary>
+			/// Channel threads caching behavior
+			/// </summary>
 			public enum ThreadCacheBehavior
 			{
+				/// <summary>
+				/// Cache every thread in server
+				/// </summary>
 				CacheAll,
+				/// <summary>
+				/// Cache only active thread in server, all archived threads won't exist
+				/// </summary>
 				CacheActive
 			}
 		}

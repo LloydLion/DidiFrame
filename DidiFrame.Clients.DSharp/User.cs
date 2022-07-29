@@ -40,7 +40,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.User
 		/// </summary>
-		/// <param name="user">Base DiscordUser from DSharp</param>
+		/// <param name="id">Id of user</param>
+		/// <param name="user">Base DiscordUser from DSharp source</param>
 		/// <param name="client">Owner client</param>
 		public User(ulong id, ObjectSourceDelegate<DiscordUser> user, Client client)
 		{

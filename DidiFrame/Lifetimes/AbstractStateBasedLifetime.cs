@@ -27,19 +27,31 @@ namespace DidiFrame.Lifetimes
 		private readonly ILogger logger;
 
 
+		/// <summary>
+		/// If lifetime is newly created else restored from saved base
+		/// </summary>
 		protected bool IsNewlyCreated => GetContext().IsNewlyCreated;
 
+		/// <summary>
+		/// If lifetime is finalized
+		/// </summary>
 		protected bool IsFinalized { get; private set; }
 
+		/// <summary>
+		/// Lifetime id
+		/// </summary>
 		public Guid Guid => guid ?? throw new InvalidOperationException("Enable to get GUID before starting");
 
+		/// <summary>
+		/// Server that contains this lifetime
+		/// </summary>
 		public IServer Server => server ?? throw new InvalidOperationException("Enable to get GUID before starting");
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Lifetimes.AbstractStateBasedLifetime`2
 		/// </summary>
-		/// <param name="baseObj">Base object of that lifetime</param>
+		/// <param name="logger">Logger for lifetime</param>
 		public AbstractStateBasedLifetime(ILogger logger)
 		{
 			smBuilder = new StateMachineBuilder<TState>(logger);
@@ -79,11 +91,17 @@ namespace DidiFrame.Lifetimes
 		}
 
 		/// <summary>
-		/// Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed
+		/// Provides change-safe and thread-safe access to base object through context, automaticly freeze state machine util return disposed
 		/// </summary>
-		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
+		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after writings</returns>
 		protected ObjectHolder<TBase> GetBase() => GetBase(out _);
 
+		/// <summary>
+		/// Provides fast method to get base's property
+		/// </summary>
+		/// <typeparam name="TTarget">Target value type</typeparam>
+		/// <param name="selector">Readonly selector from base to TTarget</param>
+		/// <returns>selector execution result</returns>
 		protected TTarget GetBaseProperty<TTarget>(Func<TBase, TTarget> selector)
 		{
 			var baseObj = GetReadOnlyBase();
@@ -92,6 +110,10 @@ namespace DidiFrame.Lifetimes
 			return value;
 		}
 
+		/// <summary>
+		/// PProvides change-safe and thread-safe readonly access to base object through context, if changes will be detected lifetime will crash
+		/// </summary>
+		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after readings</returns>
 		protected virtual ObjectHolder<TBase> GetReadOnlyBase()
 		{
 			var objectHolder = GetContext().AccessBase().Open();
@@ -110,6 +132,11 @@ namespace DidiFrame.Lifetimes
 			});
 		}
 
+		/// <summary>
+		/// Get object controller for base obj
+		/// </summary>
+		/// <param name="asReadOnly">If need get readonly controller</param>
+		/// <returns>Object controller</returns>
 		protected IObjectController<TBase> GetBaseController(bool asReadOnly = true)
 		{
 			return new BaseWrapController(this, asReadOnly);
@@ -184,6 +211,10 @@ namespace DidiFrame.Lifetimes
 			}
 		}
 
+		/// <summary>
+		/// Throws exception if lifetime is finalized
+		/// </summary>
+		/// <exception cref="InvalidOperationException"></exception>
 		protected void ThrowIfFinalized()
 		{
 			lock (this)
@@ -193,6 +224,10 @@ namespace DidiFrame.Lifetimes
 			}
 		}
 
+		/// <summary>
+		/// Builds lifetime's statemachine and prepares it to work
+		/// </summary>
+		/// <param name="initialBase"></param>
 		protected abstract void OnBuild(TBase initialBase);
 
 		private void FinalizeLifetime()
@@ -209,6 +244,11 @@ namespace DidiFrame.Lifetimes
 			}
 		}
 
+		/// <summary>
+		/// Craches lifetime with error
+		/// </summary>
+		/// <param name="exception">Exception that crashed lifetime</param>
+		/// <param name="isInvalidBase">If base object was invalid</param>
 		protected void CrashLifetime(Exception exception, bool isInvalidBase)
 		{
 			lock (this)
@@ -239,16 +279,23 @@ namespace DidiFrame.Lifetimes
 		/// Event handler. Calls on start. You mustn't call base.OnRun(TState)
 		/// </summary>
 		/// <param name="state">Initial statemachine state</param>
+		/// <param name="initialBase">Initial value of base, cannot be saved in lifetime</param>
 		protected virtual void OnRun(TState state, TBase initialBase)
 		{
 
 		}
 
+		/// <summary>
+		/// Event handler. Calls on dispose (crash or finalize)
+		/// </summary>
 		protected virtual void OnDispose()
 		{
 
 		}
 
+		/// <summary>
+		/// Event handler. Calls on finalize
+		/// </summary>
 		protected virtual void OnFinalize()
 		{
 

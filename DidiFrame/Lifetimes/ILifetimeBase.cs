@@ -10,6 +10,9 @@
 		/// </summary>
 		public IServer Server { get; }
 
+		/// <summary>
+		/// Lifetime id
+		/// </summary>
 		public Guid Guid { get; }
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DidiFrame.UserCommands.Pipeline.Utils
@@ -27,9 +26,10 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser
 		/// </summary>
-		/// <param name="options">Option for parser (DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.Options)</param>
+		/// <param name="options">Option for parser (DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.Options)</param> 
 		/// <param name="repository">Command repository to detect commands</param>
-		public TextCommandParser(BehaviorModel? behaviorModel, IOptions<Options> options, IUserCommandsRepository repository)
+		/// <param name="behaviorModel">Optional behavior model that can override object behavior</param>
+		public TextCommandParser(IOptions<Options> options, IUserCommandsRepository repository, BehaviorModel? behaviorModel = null)
 		{
 			this.repository = repository;
 			behaviorModel = this.behaviorModel = behaviorModel ?? new BehaviorModel();
@@ -125,8 +125,16 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 			public string Prefixes { get; set; } = "";
 		}
 
+		/// <summary>
+		/// Segment of input string with determined type
+		/// </summary>
 		public struct ArgumentSelect
 		{
+			/// <summary>
+			/// Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect
+			/// </summary>
+			/// <param name="selectedString">Input string framgment</param>
+			/// <param name="type">Type of argument</param>
 			public ArgumentSelect(string selectedString, UserCommandArgument.Type type)
 			{
 				SelectedString = selectedString;
@@ -134,24 +142,42 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 			}
 
 
+			/// <summary>
+			/// Input string framgment
+			/// </summary>
 			public string SelectedString { get; }
 
+			/// <summary>
+			/// Type of argument
+			/// </summary>
 			public UserCommandArgument.Type Type { get; }
 		}
 
+		/// <summary>
+		/// Behavoir model for idiFrame.UserCommands.Pipeline.Utils.TextCommandParser
+		/// </summary>
 		public class BehaviorModel
 		{
 			private Options? options;
 
 
+			/// <summary>
+			/// Options for idiFrame.UserCommands.Pipeline.Utils.TextCommandParser
+			/// </summary>
 			public Options Options => options ?? throw new NullReferenceException();
 
 
-			public void Init(Options options)
+			internal void Init(Options options)
 			{
 				this.options = options;
 			}
 
+			/// <summary>
+			/// Parses name of command
+			/// </summary>
+			/// <param name="rawInput">Raw input string</param>
+			/// <param name="commands">Collecition of commands in server</param>
+			/// <returns>User command info</returns>
 			public virtual UserCommandInfo? ParseCommandName(string rawInput, IUserCommandsCollection commands)
 			{
 				var regex = $"^[{new string(Options.Prefixes.SelectMany(s => "\\" + s).ToArray())}]({string.Join('|', commands.Select(s => $"({s.Name})"))}){"{1}"}\\b";
@@ -160,6 +186,13 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 				else return commands.GetCommad(result.Single().Groups[1].Value);
 			}
 
+			/// <summary>
+			/// Converts raw argument string to raw user command argument value
+			/// </summary>
+			/// <param name="rawStr">Raw argument string</param>
+			/// <param name="ttype">Target type of convertation</param>
+			/// <param name="server">Server where need to convert string</param>
+			/// <returns>Convertation result</returns>
 			protected virtual object ConvertArgumentValue(string rawStr, UserCommandArgument.Type ttype, IServer server)
 			{
 				switch (ttype)
@@ -184,6 +217,12 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 				}
 			}
 
+			/// <summary>
+			/// Selects argument from input string and slices given string to continue parsing
+			/// </summary>
+			/// <param name="rawString">String value input and sliced string output</param>
+			/// <returns>Argument select object</returns>
+			/// <exception cref="InvalidOperationException">If input string is invalid</exception>
 			public virtual ArgumentSelect SelectArgument(ref ReadOnlySpan<char> rawString)
 			{
 				foreach (var key in regexes.Keys)
@@ -202,6 +241,13 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 				throw new InvalidOperationException("Enable to select some command's argument");
 			}
 
+			/// <summary>
+			/// Processes single user command argument and slices selects collection with required raw arguments
+			/// </summary>
+			/// <param name="selects">All availiable raw arguments and output for sliced raw arguments</param>
+			/// <param name="argument"></param>
+			/// <param name="server"></param>
+			/// <returns></returns>
 			public virtual IReadOnlyList<object>? ProcessArgument(ref ReadOnlySpan<ArgumentSelect> selects, UserCommandArgument argument, IServer server)
 			{
 				var result = new List<object>();

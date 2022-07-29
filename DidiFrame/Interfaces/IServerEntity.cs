@@ -10,6 +10,9 @@
 		/// </summary>
 		public IServer Server { get; }
 
+		/// <summary>
+		/// If enity still exist
+		/// </summary>
 		public bool IsExist { get; }
 	}
 }

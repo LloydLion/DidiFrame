@@ -22,6 +22,7 @@ namespace DidiFrame.UserCommands.Executing
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor
 		/// </summary>
+		/// <param name="ctxValidator">Validator for DidiFrame.UserCommands.Models.UserCommandContext</param>
 		/// <param name="options">Option for executor (DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options)</param>
 		/// <param name="logger">Logger to log command operations</param>
 		/// <param name="cultureProvider">Culture provider to provide culture into commands' handlers</param>

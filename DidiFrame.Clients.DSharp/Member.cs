@@ -39,7 +39,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Member
 		/// </summary>
-		/// <param name="member">Base DiscordMember from DSharp</param>
+		/// <param name="id">Id of user and member</param>
+		/// <param name="member">Base DiscordMember from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
 		public Member(ulong id, ObjectSourceDelegate<DiscordMember> member, Server server) : base(id, member, server.SourceClient)
 		{

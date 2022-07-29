@@ -2,14 +2,28 @@
 
 namespace DidiFrame.Utils
 {
+	/// <summary>
+	/// Delegate that creates messages using some parameter
+	/// </summary>
+	/// <typeparam name="TParameter">Type of parameter</typeparam>
+	/// <param name="parameter">Parameter itself</param>
+	/// <returns>Send model for message</returns>
 	public delegate MessageSendModel MessageCreator<in TParameter>(TParameter parameter);
 
+	/// <summary>
+	/// Delegate that processes some messages using some parameter
+	/// </summary>
+	/// <typeparam name="TParameter">Type of parameter</typeparam>
+	/// <param name="parameter">Parameter itself</param>
+	/// <param name="message">Message to process</param>
+	/// <param name="isModified">If message has been modified</param>
 	public delegate void MessagePostProcessor<in TParameter>(TParameter parameter, IMessage message, bool isModified);
 
 
 	/// <summary>
 	/// Container for discord message
 	/// </summary>
+	/// <typeparam name="TParameter">Type of parameter</typeparam>
 	public class MessageAliveHolder<TParameter>
 	{
 		private readonly Func<TParameter, MessageAliveHolderModel> selector;
@@ -19,6 +33,12 @@ namespace DidiFrame.Utils
 		private bool isFinalized = false;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Utils.MessageAliveHolder`1
+		/// </summary>
+		/// <param name="selector">Base model selector from parameter</param>
+		/// <param name="creator">Messages creater to create new or modify old messages</param>
+		/// <param name="postProcessor">Post processor for messages</param>
 		public MessageAliveHolder(Func<TParameter, MessageAliveHolderModel> selector, MessageCreator<TParameter> creator, MessagePostProcessor<TParameter> postProcessor)
 		{
 			this.selector = selector;
@@ -29,6 +49,12 @@ namespace DidiFrame.Utils
 
 		private static IMessage GetMessage(MessageAliveHolderModel model) => model.Channel.GetMessage(model.PossibleMessageId);
 
+		/// <summary>
+		/// Init method, checks message existance, if need restores it
+		/// </summary>
+		/// <param name="parameter">Parameter</param>
+		/// <returns>Operation wait task</returns>
+		/// <exception cref="InvalidOperationException">If holder is finalized</exception>
 		public async Task StartupAsync(TParameter parameter)
 		{
 			syncRoot.WaitOne();
@@ -43,8 +69,19 @@ namespace DidiFrame.Utils
 			syncRoot.Set();
 		}
 
+		/// <summary>
+		/// Gets channel where message was sent
+		/// </summary>
+		/// <param name="parameter">Parameter</param>
+		/// <returns>Text channel that contains message (or not exist)</returns>
 		public ITextChannelBase GetChannel(TParameter parameter) => selector(parameter).Channel;
 
+		/// <summary>
+		/// Gets message, can restore it if need
+		/// </summary>
+		/// <param name="parameter">Parameter</param>
+		/// <returns>Wait task with message</returns>
+		/// <exception cref="InvalidOperationException">If holder is finalized</exception>
 		public async Task<IMessage> GetMessageAsync(TParameter parameter)
 		{
 			syncRoot.WaitOne();
@@ -57,6 +94,12 @@ namespace DidiFrame.Utils
 			return msg;
 		}
 
+		/// <summary>
+		/// Finalizes holder, deletes message
+		/// </summary>
+		/// <param name="parameter">Parameter</param>
+		/// <returns>Operation wait task</returns>
+		/// <exception cref="InvalidOperationException">If holder is finalized</exception>
 		public async Task FinalizeAsync(TParameter parameter)
 		{
 			syncRoot.WaitOne();
@@ -72,6 +115,12 @@ namespace DidiFrame.Utils
 			syncRoot.Set();
 		}
 
+		/// <summary>
+		/// Updates message async using new model form message creator (calls post processor)
+		/// </summary>
+		/// <param name="parameter">Parameter</param>
+		/// <returns>Wait task</returns>
+		/// <exception cref="InvalidOperationException">If holder is finalized</exception>
 		public async Task UpdateAsync(TParameter parameter)
 		{
 			syncRoot.WaitOne();
@@ -87,6 +136,14 @@ namespace DidiFrame.Utils
 			syncRoot.Set();
 		}
 
+		/// <summary>
+		/// Special method that should call in message deleted event handler, it automaticlly restores message if it will be deleted
+		/// </summary>
+		/// <param name="parameter">Parameter</param>
+		/// <param name="textChannel">Text channel where some message deleted</param>
+		/// <param name="messageId">Id of deleted message</param>
+		/// <returns>Operation wait task</returns>
+		/// <exception cref="InvalidOperationException">If holder is finalized</exception>
 		public async Task OnMessageDeleted(TParameter parameter, ITextChannelBase textChannel, ulong messageId)
 		{
 			syncRoot.WaitOne();

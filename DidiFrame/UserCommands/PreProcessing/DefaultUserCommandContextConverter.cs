@@ -21,10 +21,13 @@ namespace DidiFrame.UserCommands.PreProcessing
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter
 		/// </summary>
+		/// <param name="preCtxValidator">Validator for DidiFrame.UserCommands.Models.UserCommandPreContext</param>
 		/// <param name="services">Services that will be provided to sub converters</param>
 		/// <param name="subConverters">Sub converters that converts raw arguments to ready-to-use</param>
 		/// <param name="localizer">Localizer that will be used for print error messages</param>
-		public DefaultUserCommandContextConverter(IValidator<UserCommandPreContext> preCtxValidator, IServiceProvider services, IEnumerable<IUserCommandContextSubConverter> subConverters, IStringLocalizer<DefaultUserCommandContextConverter> localizer)
+		public DefaultUserCommandContextConverter(IValidator<UserCommandPreContext> preCtxValidator, IServiceProvider services,
+			IEnumerable<IUserCommandContextSubConverter> subConverters,
+			IStringLocalizer<DefaultUserCommandContextConverter> localizer)
 		{
 			this.subConverters = subConverters.ToArray();
 			this.preCtxValidator = preCtxValidator;

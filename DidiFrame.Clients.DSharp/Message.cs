@@ -53,7 +53,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Message
 		/// </summary>
-		/// <param name="message">Base DiscordMessage from DSharp</param>
+		/// <param name="id">Id of messafe</param>
+		/// <param name="message">Base DiscordMessage from DSharp source</param>
 		/// <param name="owner">Owner text channel's wrap object</param>
 		public Message(ulong id, ObjectSourceDelegate<DiscordMessage> message, TextChannelBase owner)
 		{

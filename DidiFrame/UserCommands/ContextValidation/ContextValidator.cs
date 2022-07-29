@@ -23,6 +23,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.ContextValidator
 		/// </summary>
+		/// <param name="ctxValidator">Validator for DidiFrame.UserCommands.Models.UserCommandContext</param>
 		/// <param name="localizer">Localizer to print error messages</param>
 		/// <param name="services">Serivce to be used in filters and validators</param>
 		public ContextValidator(IValidator<UserCommandContext> ctxValidator, IStringLocalizer<ContextValidator> localizer, IServiceProvider services)

@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 
 namespace DidiFrame.Lifetimes
 {
-	//TODO: Add logging
 	/// <summary>
 	/// Simple implementation of DidiFrame.Lifetimes.ILifetimesRegistry`2
 	/// </summary>
@@ -25,8 +24,9 @@ namespace DidiFrame.Lifetimes
 		/// <summary>
 		/// Creates new instance of DidiFrame.Lifetimes.LifetimeRegistry`2
 		/// </summary>
-		/// <param name="repository">Repository for push lifetimes</param>
-		/// <param name="baseRepository">Repository to provide states</param>
+		/// <param name="states">Repository with states</param>
+		/// <param name="lifetimeFactory">Factory for target lifetime</param>
+		/// <param name="logger">Logger for registry</param>
 		public LifetimeRegistry(IServersStatesRepository<ICollection<TBase>> states, ILifetimeFactory<TLifetime, TBase> lifetimeFactory, ILogger<LifetimeRegistry<TLifetime, TBase>> logger)
 		{
 			this.states = states;
@@ -68,6 +68,7 @@ namespace DidiFrame.Lifetimes
 			foreach (var item in failed) collection.Object.Remove(item);
 		}
 
+		/// <inheritdoc/>
 		public TLifetime RegistryLifetime(TBase baseObject)
 		{
 			var state = states.GetState(baseObject.Server);
@@ -97,11 +98,13 @@ namespace DidiFrame.Lifetimes
 			}
 		}
 
+		/// <inheritdoc/>
 		public TLifetime GetLifetime(IServer server, Guid baseGuid)
 		{
 			return lifetimes.GetOrAdd(server, _ => new()).Lifetimes[baseGuid];	
 		}
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<TLifetime> GetAllLifetimes(IServer server)
 		{
 			return lifetimes.GetOrAdd(server, _ => new()).Lifetimes.Values.ToArray();

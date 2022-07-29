@@ -38,7 +38,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="commands">Repository to register application commands</param>
 		/// <param name="localizer">Localizer to send error messages and write cmds' descriptions</param>
 		/// <param name="converter">Converter to provide subconverters for autocomplite</param>
+		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult type</param>
 		/// <param name="services">Services for values providers</param>
+		/// <param name="behaviorModel">Behavoir model that can override behavior of component</param>
 		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands, 
 			IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter,
 			IValidator<UserCommandResult> resultValidator, IServiceProvider services, BehaviorModel? behaviorModel = null)
@@ -66,7 +68,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (e.Interaction.Type == InteractionType.ApplicationCommand)
 			{
-				var server = (Server)client.Servers.Single(s => s.Id == e.Interaction.GuildId);
+				var server = (Server)client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
 				var result = await behaviorModel.ProcessInteraction(convertedCommands, e.Interaction, server);
 				if (result is null) return;
 				else callback?.Invoke(this, result, new(result.Invoker, result.Channel), new StateObject(e.Interaction));
@@ -123,8 +125,17 @@ namespace DidiFrame.Clients.DSharp
 			public bool Responded { get; set; }
 		}
 
+		/// <summary>
+		/// Represents a pair of user command object and converted discord application command with addititional raw arguments info
+		/// </summary>
 		public readonly struct ApplicationCommandPair
 		{
+			/// <summary>
+			/// Creates new instance of DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair
+			/// </summary>
+			/// <param name="didiFrameCommand">User command object</param>
+			/// <param name="dSharpCommand">Converted discord application command</param>
+			/// <param name="applicationArgumnets">Dictionary raw argument name to raw argument info</param>
 			public ApplicationCommandPair(UserCommandInfo didiFrameCommand, DiscordApplicationCommand dSharpCommand, IReadOnlyDictionary<string, ApplicationArgumnetInfo> applicationArgumnets)
 			{
 				DidiFrameCommand = didiFrameCommand;
@@ -133,15 +144,33 @@ namespace DidiFrame.Clients.DSharp
 			}
 
 
+			/// <summary>
+			/// User command object
+			/// </summary>
 			public UserCommandInfo DidiFrameCommand { get; }
 
+			/// <summary>
+			/// Converted discord application command
+			/// </summary>
 			public DiscordApplicationCommand DSharpCommand { get; }
 
+			/// <summary>
+			/// Dictionary raw argument name to raw argument info
+			/// </summary>
 			public IReadOnlyDictionary<string, ApplicationArgumnetInfo> ApplicationArguments { get; }
 
 
+			/// <summary>
+			/// Represents a raw argument info for discord application commands
+			/// </summary>
 			public readonly struct ApplicationArgumnetInfo
 			{
+				/// <summary>
+				/// Creates new instance of DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo
+				/// </summary>
+				/// <param name="putIndex">Index of part of complex argument value or array put index</param>
+				/// <param name="type">Type of this raw argument</param>
+				/// <param name="argument">Base argument info, one argument info can be used for multiple ApplicationArgumnetInfo if it is array or complex arg</param>
 				public ApplicationArgumnetInfo(int putIndex, UserCommandArgument.Type type, UserCommandArgument argument)
 				{
 					PutIndex = putIndex;
@@ -150,10 +179,19 @@ namespace DidiFrame.Clients.DSharp
 				}
 
 
+				/// <summary>
+				/// Index of part of complex argument value or array put index
+				/// </summary>
 				public int PutIndex { get; }
 
+				/// <summary>
+				/// Type of this raw argument
+				/// </summary>
 				public UserCommandArgument.Type Type { get; }
 
+				/// <summary>
+				/// Base argument info, one argument info can be used for multiple ApplicationArgumnetInfo if it is array or complex arg
+				/// </summary>
 				public UserCommandArgument Argument { get; }
 			}
 		}
@@ -166,27 +204,45 @@ namespace DidiFrame.Clients.DSharp
 			
 		}
 
+		/// <summary>
+		/// Behavior model for DidiFrame.Clients.DSharp.ApplicationCommandDispatcher class that can override its behavior
+		/// </summary>
 		public class BehaviorModel
 		{
 			private Client? dsharp;
 			private IUserCommandsRepository? commands;
-			private IStringLocalizer? localizer;
+			private IStringLocalizer<ApplicationCommandDispatcher>? localizer;
 			private IUserCommandContextConverter? converter;
 			private IServiceProvider? services;
 
 
-			protected IUserCommandContextConverter Converter => converter ?? throw new NullReferenceException();
+			/// <summary>
+			/// Converter to provide subconverters for autocomplite
+			/// </summary>
+			protected IUserCommandContextConverter Converter => converter ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-			protected IStringLocalizer Localizer => localizer ?? throw new NullReferenceException();
+			/// <summary>
+			/// Localizer to send error messages and write cmds' descriptions
+			/// </summary>
+			protected IStringLocalizer<ApplicationCommandDispatcher> Localizer => localizer ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-			protected IUserCommandsRepository Commands => commands ?? throw new NullReferenceException();
+			/// <summary>
+			/// Repository to register application commands
+			/// </summary>
+			protected IUserCommandsRepository Commands => commands ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-			protected Client Client => dsharp ?? throw new NullReferenceException();
+			/// <summary>
+			/// DSharp client (only DidiFrame.Clients.DSharp.Client)
+			/// </summary>
+			protected Client Client => dsharp ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-			protected IServiceProvider Services => services ?? throw new NullReferenceException();
+			/// <summary>
+			/// Services for values providers
+			/// </summary>
+			protected IServiceProvider Services => services ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
 
-			public void Init(Client dsharp, IUserCommandsRepository commands, IStringLocalizer localizer, IUserCommandContextConverter converter, IServiceProvider services)
+			internal void Init(Client dsharp, IUserCommandsRepository commands, IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter, IServiceProvider services)
 			{
 				this.dsharp = dsharp;
 				this.commands = commands;
@@ -196,6 +252,13 @@ namespace DidiFrame.Clients.DSharp
 			}
 
 
+			/// <summary>
+			/// Processes discord interaction call
+			/// </summary>
+			/// <param name="convertedCommands">Avaliable commands</param>
+			/// <param name="interaction">Interaction dsharp wrap</param>
+			/// <param name="server">Server where interaction has benn called</param>
+			/// <returns>Task with pre user command context that contains info about raw arguments</returns>
 			public virtual async Task<UserCommandPreContext?> ProcessInteraction(IReadOnlyDictionary<string, ApplicationCommandPair> convertedCommands, DiscordInteraction interaction, Server server)
 			{
 				var channel = server.GetChannel(interaction.ChannelId).AsText();              //Get channel where interaction was created
@@ -230,7 +293,7 @@ namespace DidiFrame.Clients.DSharp
 				}
 				catch (ArgumentConvertationException ex)
 				{
-					await interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral().WithContent(localizer[ex.ErrorLocaleKey]));
+					await interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral().WithContent(Localizer[ex.ErrorLocaleKey]));
 					return null;
 				}
 
@@ -238,6 +301,13 @@ namespace DidiFrame.Clients.DSharp
 				return new UserCommandPreContext(member, channel, cmd.DidiFrameCommand, list);
 			}
 
+			/// <summary>
+			/// Processes discord autocomplite call
+			/// </summary>
+			/// <param name="convertedCommands">Avaliable commands</param>
+			/// <param name="interaction">Interaction dsharp wrap</param>
+			/// <param name="server">Server where interaction has benn called</param>
+			/// <returns>Operation wait task</returns>
 			public virtual async Task ProcessAutoComplite(IReadOnlyDictionary<string, ApplicationCommandPair> convertedCommands, DiscordInteraction interaction, Server server)
 			{
 				var channel = server.GetChannel(interaction.ChannelId).AsText();                      //Get channel where interaction was created
@@ -286,6 +356,16 @@ namespace DidiFrame.Clients.DSharp
 				}
 			}
 
+			/// <summary>
+			/// Converts value from discord user command to workable object
+			/// </summary>
+			/// <param name="server">Server where need to convert object</param>
+			/// <param name="raw">Raw value from discord</param>
+			/// <param name="type">Target type of convertation</param>
+			/// <returns>Workable object</returns>
+			/// <exception cref="NotSupportedException">If target convertation type is not supported</exception>
+			/// <exception cref="ArgumentConvertationException">If input has invalid foramt for some types</exception>
+			/// <exception cref="InvalidCastException">If input has invalid type</exception>
 			protected virtual object ConvertValueUp(Server server, object raw, UserCommandArgument.Type type)
 			{
 				return type switch
@@ -320,6 +400,14 @@ namespace DidiFrame.Clients.DSharp
 				}
 			}
 
+			/// <summary>
+			/// Converts workable object to value for discord user command
+			/// </summary>
+			/// <param name="didiFramePrimitive">Workablr object</param>
+			/// <param name="type">Original type of object</param>
+			/// <returns>Value for discord user command</returns>
+			/// <exception cref="NotSupportedException">If original type is not supported</exception>
+			/// <exception cref="InvalidCastException">If input has invalid type</exception>
 			protected virtual object ConvertValueDown(object didiFramePrimitive, UserCommandArgument.Type type)
 			{
 				return type switch
@@ -336,6 +424,12 @@ namespace DidiFrame.Clients.DSharp
 				};
 			}
 
+			/// <summary>
+			/// Converts didiFrame user command argument type to discord application command argument type
+			/// </summary>
+			/// <param name="type">Type to convert</param>
+			/// <returns>Discord application command argument type</returns>
+			/// <exception cref="NotSupportedException">If original type is not supported</exception>
 			protected virtual ApplicationCommandOptionType ConvertTypeDown(UserCommandArgument.Type type)
 			{
 				return type switch
@@ -352,6 +446,11 @@ namespace DidiFrame.Clients.DSharp
 				};
 			}
 
+			/// <summary>
+			/// Converts user command object to discord application object and puts it to DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair object
+			/// </summary>
+			/// <param name="info">Original user command info</param>
+			/// <returns>DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair pair woth commands and arguments</returns>
 			public virtual ApplicationCommandPair ConvertCommand(UserCommandInfo info)
 			{
 				var name = ConvertCommandName(info);
@@ -365,8 +464,18 @@ namespace DidiFrame.Clients.DSharp
 				return new(info, cmd, argsInfo);
 			}
 
+			/// <summary>
+			/// Gets name for discord application command from user command info
+			/// </summary>
+			/// <param name="command">User command info</param>
+			/// <returns>Name for discord application command</returns>
 			protected virtual string ConvertCommandName(UserCommandInfo command) => command.Name.Replace(" ", "_");
 
+			/// <summary>
+			/// Gets name for discord application command argument from user command argument
+			/// </summary>
+			/// <param name="argument">User command argument</param>
+			/// <returns>Name for discord application command argument</returns>
 			protected virtual string ConvertCommandArgumentName(UserCommandArgument argument)
 			{
 				var splits = splitCamelCaseString(argument.Name);
@@ -394,6 +503,13 @@ namespace DidiFrame.Clients.DSharp
 				}
 			}
 
+			/// <summary>
+			/// Converts user command argument to enumerable of discord application command arguments and pushes
+			///	DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo to given dictionary 
+			/// </summary>
+			/// <param name="argument">User command argument</param>
+			/// <param name="argsInfo">Dictionary to push DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo instances</param>
+			/// <returns>Enumerable of discord application command arguments for given user command argument</returns>
 			protected virtual IEnumerable<DiscordApplicationCommandOption> ConvertCommandArgument(UserCommandArgument argument, IDictionary<string, ApplicationCommandPair.ApplicationArgumnetInfo> argsInfo)
 			{
 				if (argument.IsArray) return ConvertArrayCommandArgument(argument, argsInfo);
@@ -401,6 +517,12 @@ namespace DidiFrame.Clients.DSharp
 				else return ConvertComplexCommandArgument(argument, argsInfo);
 			}
 
+			/// <summary>
+			/// Provides description and its localizations for discord application command
+			/// </summary>
+			/// <param name="command">Target user command info</param>
+			/// <param name="mainDescription">Out parameter with main description</param>
+			/// <returns>Dictionary discord culture key to description localization</returns>
 			protected virtual IReadOnlyDictionary<string, string> GetCommandDescription(UserCommandInfo command, out string mainDescription)
 			{
 				mainDescription = Localizer["CommandDescription", command.Name];
@@ -408,6 +530,12 @@ namespace DidiFrame.Clients.DSharp
 				return Localizer.GetStringForAllLocales(r.Keys, "CommandDescription", command.Name).ToDictionary(s => r[s.Key], s => s.Value);
 			}
 
+			/// <summary>
+			/// Provides description and its localizations for discord application command argument
+			/// </summary>
+			/// <param name="argument">Target user command argument</param>
+			/// <param name="mainDescription">Out parameter with main description</param>
+			/// <returns>Dictionary discord culture key to description localization</returns>
 			protected virtual IReadOnlyDictionary<string, string> GetCommandArgumentDescription(ApplicationCommandPair.ApplicationArgumnetInfo argument, out string mainDescription)
 			{
 				if (argument.Argument.IsArray)
@@ -438,6 +566,13 @@ namespace DidiFrame.Clients.DSharp
 				}
 			}
 
+			/// <summary>
+			/// Converts array user command argument to enumerable of discord application command arguments and pushes
+			///	DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo to given dictionary
+			/// </summary>
+			/// <param name="argument">User command argument of array type</param>
+			/// <param name="argsInfo">Dictionary to push DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo instances</param>
+			/// <returns>Enumerable of discord application command arguments for given user command argument</returns>
 			protected virtual IEnumerable<DiscordApplicationCommandOption> ConvertArrayCommandArgument(UserCommandArgument argument, IDictionary<string, ApplicationCommandPair.ApplicationArgumnetInfo> argsInfo)
 			{
 				var type = ConvertTypeDown(argument.OriginTypes.Single());
@@ -454,6 +589,13 @@ namespace DidiFrame.Clients.DSharp
 				return array;
 			}
 
+			/// <summary>
+			/// Converts complex (multiple input values) user command argument to enumerable of discord application command arguments and pushes
+			///	DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo to given dictionary
+			/// </summary>
+			/// <param name="argument">User command argument of complex (multiple input values) type</param>
+			/// <param name="argsInfo">Dictionary to push DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo instances</param>
+			/// <returns>Enumerable of discord application command arguments for given user command argument</returns>
 			protected virtual IEnumerable<DiscordApplicationCommandOption> ConvertComplexCommandArgument(UserCommandArgument argument, IDictionary<string, ApplicationCommandPair.ApplicationArgumnetInfo> argsInfo)
 			{
 				return argument.OriginTypes.Select((a, i) =>
@@ -465,6 +607,13 @@ namespace DidiFrame.Clients.DSharp
 				});
 			}
 
+			/// <summary>
+			/// Converts simple (single input value) user command argument to enumerable of discord application command arguments and pushes
+			///	DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo to given dictionary
+			/// </summary>
+			/// <param name="argument">User command argument of simple (single input value) type</param>
+			/// <param name="argsInfo">Dictionary to push DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo instances</param>
+			/// <returns>Discord application command argument for given user command argument</returns>
 			protected virtual DiscordApplicationCommandOption ConvertSimpleCommandArgument(UserCommandArgument argument, IDictionary<string, ApplicationCommandPair.ApplicationArgumnetInfo> argsInfo)
 			{
 				var type = ConvertTypeDown(argument.OriginTypes.Single());
@@ -476,6 +625,11 @@ namespace DidiFrame.Clients.DSharp
 				return new DiscordApplicationCommandOption(name, mainDesc, type, required: true, autocomplete: autoComp, description_localizations: descLocs);
 			}
 
+			/// <summary>
+			/// Converts part of complex (multiple input values) user command argument to enumerable of discord application command arguments
+			/// </summary>
+			/// <param name="argument">DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo object</param>
+			/// <returns>Discord application command argument for given part of user command argument</returns>
 			protected virtual DiscordApplicationCommandOption ConvertPartOfComplexCommandArgument(ApplicationCommandPair.ApplicationArgumnetInfo argument)
 			{
 				var type = ConvertTypeDown(argument.Type);
@@ -486,14 +640,24 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
+		/// <summary>
+		/// Represents error while argument value convertation
+		/// </summary>
 		public class ArgumentConvertationException : Exception
 		{
+			/// <summary>
+			/// Creates new instance of DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ArgumentConvertationException
+			/// </summary>
+			/// <param name="errorLocaleKey">Locale key in DidiFrame.Clients.DSharp.ApplicationCommandDispatcher</param>
 			public ArgumentConvertationException(string errorLocaleKey) : base(null)
 			{
 				ErrorLocaleKey = errorLocaleKey;
 			}
 
 
+			/// <summary>
+			/// Locale key in DidiFrame.Clients.DSharp.ApplicationCommandDispatcher
+			/// </summary>
 			public string ErrorLocaleKey { get; }
 		}
 	}

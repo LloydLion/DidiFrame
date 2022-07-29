@@ -8,7 +8,7 @@ namespace DidiFrame.Utils
 	/// Thread synchronization tool
 	/// </summary>
 	/// <typeparam name="TLock">Type of synch root objects</typeparam>
-	public class ThreadLocker<TLock>
+	public class ThreadLocker<TLock> where TLock : notnull
 	{
 		private readonly ConcurrentDictionary<TLock, AutoResetEvent> locked;
 
@@ -40,6 +40,11 @@ namespace DidiFrame.Utils
 			return new Hanlder(this, obj);
 		}
 
+		/// <summary>
+		/// Gets auto reset event from lock object that synchronized with locker
+		/// </summary>
+		/// <param name="obj">Target object</param>
+		/// <returns>Synchronized auto reset event</returns>
 		public AutoResetEvent GetLockObject(TLock obj) => locked.GetOrAdd(obj, _ => new(true));
 
 		private void Unlock(TLock obj)

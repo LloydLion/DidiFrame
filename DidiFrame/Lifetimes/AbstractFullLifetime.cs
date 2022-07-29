@@ -43,6 +43,11 @@ namespace DidiFrame.Lifetimes
 			return GetStateMachine().AwaitForState(null);
 		}
 
+		/// <summary>
+		/// Terminates lifetime with redefined reason and exception
+		/// </summary>
+		/// <param name="reason">Reason beacouse lifetime terminating</param>
+		/// <param name="exception">Optional exception</param>
 		protected void Terminate(string reason = "Manual termination", Exception? exception = null)
 		{
 			CrashLifetime(new LifetimeTerminatedException(GetType(), Guid, reason, exception), false);
@@ -78,8 +83,9 @@ namespace DidiFrame.Lifetimes
 			});
 		}
 
-		protected ObjectHolder<TBase> GetBaseForReport() => base.GetBase(out _);
+		private ObjectHolder<TBase> GetBaseForReport() => base.GetBase(out _);
 
+		/// <inheritdoc/>
 		protected override ObjectHolder<TBase> GetReadOnlyBase()
 		{
 			return base.GetReadOnlyBase();
@@ -89,7 +95,8 @@ namespace DidiFrame.Lifetimes
 		/// Don't override, it used by DidiFrame.Lifetimes.AbstractFullLifetime`2. If overriding is important use OnRunInternal(TState)
 		/// </summary>
 		/// <param name="state">Initial statemachine state</param>
-		protected override void OnRun(TState state, TBase initalBase)
+		/// <param name="initialBase">Initial value of base, cannot be saved in lifetime</param>
+		protected override void OnRun(TState state, TBase initialBase)
 		{
 			hasBuilt = true;
 
@@ -104,7 +111,7 @@ namespace DidiFrame.Lifetimes
 
 				GetStateMachine().StateChanged += OnStateChanged;
 
-				var channel = report.GetChannel(initalBase);
+				var channel = report.GetChannel(initialBase);
 
 				if (channel.IsExist == false)
 				{
@@ -114,7 +121,7 @@ namespace DidiFrame.Lifetimes
 				channel.MessageDeleted += AbstractFullLifetime_MessageDeleted;
 				channel.Server.ChannelDeleted += Server_ChannelDeleted;
 
-				report.StartupAsync(initalBase).Wait();
+				report.StartupAsync(initialBase).Wait();
 			}
 
 			Server.Client.ServerRemoved += Client_ServerRemoved;
@@ -176,6 +183,9 @@ namespace DidiFrame.Lifetimes
 			}
 		}
 
+		/// <summary>
+		/// Overrided by DidiFrame.Lifetimes.AbstractFullLifetime`2. Use OnDisposeInternal.
+		/// </summary>
 		protected async override void OnDispose()
 		{
 			Server.Client.ServerRemoved -= Client_ServerRemoved;
@@ -218,6 +228,9 @@ namespace DidiFrame.Lifetimes
 		/// <param name="state">Initial statemachine state</param>
 		protected virtual void OnRunInternal(TState state) { }
 
+		/// <summary>
+		/// Event handler. Calls on dispose (crash or finalize)
+		/// </summary>
 		protected virtual void OnDisposeInternal() { }
 
 		/// <summary>

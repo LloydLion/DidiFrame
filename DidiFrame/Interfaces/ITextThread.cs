@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DidiFrame.Interfaces
+﻿namespace DidiFrame.Interfaces
 {
+	/// <summary>
+	/// Represents discord text thread channel
+	/// </summary>
 	public interface ITextThread : ITextChannelBase
 	{
+		/// <summary>
+		/// Parent channel
+		/// </summary>
 		public ITextChannel Parent { get; }
 	}
 }

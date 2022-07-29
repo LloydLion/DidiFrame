@@ -39,7 +39,10 @@ namespace DidiFrame.Clients.DSharp
 		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
 
 
+		/// <inheritdoc/>
 		public event ServerCreatedEventHandler? ServerCreated;
+
+		/// <inheritdoc/>
 		public event ServerRemovedEventHandler? ServerRemoved;
 
 
@@ -71,6 +74,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="options">Configuration of DSharp client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>
+		/// <param name="messagesCacheFactory">Optional custom factory for server's channel messages caches</param>
 		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null, IChannelMessagesCacheFactory? messagesCacheFactory = null)
 		{
 			this.options = options.Value;
@@ -94,6 +98,7 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
+		/// <inheritdoc/>
 		public IServer GetServer(ulong id) => servers[id];
 
 		/// <inheritdoc/>
@@ -413,8 +418,14 @@ namespace DidiFrame.Clients.DSharp
 			/// </summary>
 			public string Token { get; set; } = "";
 
+			/// <summary>
+			/// Options for each server
+			/// </summary>
 			public Server.Options ServerOptions { get; set; } = new();
 
+			/// <summary>
+			/// Options for default channel messages caches, if you use custom fill with null
+			/// </summary>
 			public ChannelMessagesCache.Options? CacheOptions { get; set; } = new();
 		}
 

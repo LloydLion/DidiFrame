@@ -27,6 +27,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		/// <param name="localizer">Localizer for commands</param>
 		/// <param name="repository">Commands repositroy to get commands</param>
 		/// <param name="converter">Converter to get values provider from DidiFrame.UserCommands.Models.UserCommandInfo subconverter</param>
+		/// <param name="behaviorModel">Optional behavior model for DidiFrame.UserCommands.Loader.EmbededCommands.Help.HelpCommandLoader</param>
 		public HelpCommandLoader(IStringLocalizer<HelpCommandLoader> localizer, IUserCommandsRepository repository, IUserCommandContextConverter converter, BehaviorModel? behaviorModel = null)
 		{
 			this.repository = repository;
@@ -109,20 +110,31 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			}
 		}
 
+		/// <summary>
+		/// Behavoir moodel for DidiFrame.UserCommands.Loader.EmbededCommands.Help.HelpCommandLoader class
+		/// </summary>
 		public class BehaviorModel
 		{
 			private IStringLocalizer<HelpCommandLoader>? localizer;
 
 
+			/// <summary>
+			/// Localizer for commands
+			/// </summary>
 			protected IStringLocalizer<HelpCommandLoader> Localizer => localizer ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
 
-			public void Init(IStringLocalizer<HelpCommandLoader> localizer)
+			internal void Init(IStringLocalizer<HelpCommandLoader> localizer)
 			{
 				this.localizer = localizer;
 			}
 
 
+			/// <summary>
+			/// Creates help tablet
+			/// </summary>
+			/// <param name="commands">Base commands</param>
+			/// <returns>Message embed object</returns>
 			public virtual MessageEmbed CreateHelpTablet(IReadOnlyCollection<UserCommandInfo> commands)
 			{
 				var embedBuilder = new MessageEmbedBuilder(Localizer["HelpTitle"], Localizer["HelpDescription"], new("#44dca5"));
@@ -139,6 +151,12 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 				return embedBuilder.Build();
 			}
 
+			/// <summary>
+			/// Executes CMD command
+			/// </summary>
+			/// <param name="command">Single argument for command - target command info</param>
+			/// <param name="executeCode">Out parameter with execution code</param>
+			/// <returns>Message send model</returns>
 			public virtual MessageSendModel ExecuteCMDCommand(UserCommandInfo command, out UserCommandCode executeCode)
 			{
 				var desc = command.AdditionalInfo.GetExtension<CommandDescription>();
@@ -156,7 +174,12 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 				return new() { MessageEmbeds = new[] { tablet } };
 			}
 
-
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="command"></param>
+			/// <returns></returns>
+			/// <exception cref="ImpossibleVariantException"></exception>
 			protected virtual MessageEmbed CreateCommandTablet(UserCommandInfo command)
 			{
 				var desc = command.AdditionalInfo.GetRequiredExtension<CommandDescription>();
@@ -200,6 +223,13 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 				return embedBuilder.Build();
 			}
 
+			/// <summary>
+			/// Provides user command info for HELP command
+			/// </summary>
+			/// <param name="helpHandler">Handler for HELP command</param>
+			/// <param name="repository">User commands repository</param>
+			/// <param name="converter">Context converter</param>
+			/// <returns>User command info instance</returns>
 			public virtual UserCommandInfo LoadHelpCommand(UserCommandHandler helpHandler, IUserCommandsRepository repository, IUserCommandContextConverter converter)
 			{
 				var dic = new Dictionary<Type, object>
@@ -216,6 +246,13 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 					(new CommandDescription("ShowsCmdsList", "ShowsCmdsList", LaunchGroup.Everyone, null, null, "Help"), typeof(CommandDescription))));
 			}
 
+			/// <summary>
+			/// Provides user command info for CMD command
+			/// </summary>
+			/// <param name="cmdHandler">Handler for CMD command</param>
+			/// <param name="repository">User commands repository</param>
+			/// <param name="converter">Context converter</param>
+			/// <returns>User command info instance</returns>
 			public virtual UserCommandInfo LoadCmdCommand(UserCommandHandler cmdHandler, IUserCommandsRepository repository, IUserCommandContextConverter converter)
 			{
 				var dic = new Dictionary<Type, object>

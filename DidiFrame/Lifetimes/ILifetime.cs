@@ -9,6 +9,7 @@
 		/// <summary>
 		/// Starts lifetime processing
 		/// </summary>
+		/// <param name="initialBase">Initial base for lifetime, cannot be saved in lifetime</param>
 		/// <param name="context">Context where lifetime runs</param>
 		public void Run(TBase initialBase, ILifetimeContext<TBase> context);
 	}

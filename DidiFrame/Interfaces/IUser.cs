@@ -38,6 +38,10 @@
 		/// <returns>Wait task</returns>
 		Task SendDirectMessageAsync(MessageSendModel model);
 
+		/// <summary>
+		/// Checks if user exist
+		/// </summary>
+		/// <returns>Opration wait task</returns>
 		Task<bool> GetIsUserExistAsync();
 	}
 }

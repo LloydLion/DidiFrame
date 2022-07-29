@@ -2,6 +2,9 @@
 
 namespace DidiFrame.Localization
 {
+	/// <summary>
+	/// DidiFrame localization part. Don't use this class anywhere
+	/// </summary>
 	public class DidiFrameLocalizerFactory : IStringLocalizerFactory
 	{
 		private readonly static string[] moduleAssemblies = new[]
@@ -17,6 +20,9 @@ namespace DidiFrame.Localization
 		private readonly string overrideAssemblyName;
 
 
+		/// <summary>
+		/// DidiFrame localization part. Don't use this member anywhere
+		/// </summary>
 		public DidiFrameLocalizerFactory(string overrideAssemblyName)
 		{
 			var asmToAnalyze = Assembly.GetExecutingAssembly();
@@ -48,12 +54,18 @@ namespace DidiFrame.Localization
 			this.overrideAssemblyName = overrideAssemblyName;
 		}
 
+		/// <summary>
+		/// DidiFrame localization part. Don't use this member anywhere
+		/// </summary>
 		public DidiFrameLocalizerFactory(IStringLocalizerFactory delegatedLocalizer, string asmName) : this(asmName)
 		{
 			this.delegatedLocalizer = delegatedLocalizer;
 		}
 
 
+		/// <summary>
+		/// DidiFrame localization part. Don't use this member anywhere
+		/// </summary>
 		public IStringLocalizer Create(Type resourceSource)
 		{
 			var instance = instances.SingleOrDefault(s => s.TargetType == resourceSource);
@@ -62,6 +74,9 @@ namespace DidiFrame.Localization
 			return new DidiFrameLocalizer(source, localizer);
 		}
 
+		/// <summary>
+		/// DidiFrame localization part. Don't use this member anywhere
+		/// </summary>
 		public IStringLocalizer Create(string baseName, string location)
 		{
 			if (delegatedLocalizer is null)
