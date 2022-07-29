@@ -31,9 +31,10 @@
 		{
 			legalLevelIncreeseTask = CreatePriodicRpUpdateTask(cts.Token);
 			voiceNotifier.ChannelCreated += VoiceCreated;
-			client.MessageSent += MessageSent;
-		}
 
+			client.ServerCreated += ServerCreated; //Adds message sent event handler for each new server
+			foreach (var server in client.Servers) server.MessageSent += MessageSent;
+		}
 
 		private void VoiceCreated(object? _, Voice.VoiceChannelCreatedEventArgs args)
 		{
@@ -46,8 +47,10 @@
 			ReputationChanged?.Invoke(rp.Object);
 		}
 
-		private void MessageSent(IClient _, IMessage message)
+		private void MessageSent(IClient _, IMessage message, bool isModified)
 		{
+			if (isModified) return;
+
 			using var rp = repository.GetReputation(message.Author);
 
 			var setting = settings.Get(message.TextChannel.Server);
@@ -55,6 +58,11 @@
 			rp.Object.Increase(ReputationType.ServerActivity, setting.Sources.MessageSending);
 			rp.Object.Increase(ReputationType.Experience, setting.Sources.MessageSending);
 			ReputationChanged?.Invoke(rp.Object);
+		}
+
+		public void ServerCreated(IServer server)
+		{
+			server.MessageSent += MessageSent;
 		}
 
 		private async Task CreatePriodicRpUpdateTask(CancellationToken token)
@@ -103,7 +111,7 @@
 
 			//Unsubscribe
 			voiceNotifier.ChannelCreated -= VoiceCreated;
-			client.MessageSent -= MessageSent;
+			client.ServerCreated -= ServerCreated;
 
 			GC.SuppressFinalize(this);
 		}

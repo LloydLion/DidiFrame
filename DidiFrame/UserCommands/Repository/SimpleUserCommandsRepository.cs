@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Repository
+﻿using FluentValidation;
+
+namespace DidiFrame.UserCommands.Repository
 {
 	/// <summary>
 	/// Simple implementation of DidiFrame.UserCommands.Repository.IUserCommandsRepository
@@ -7,13 +9,17 @@
 	{
 		private readonly List<UserCommandInfo> globalInfos = new();
 		private readonly Dictionary<IServer, List<UserCommandInfo>> localInfos = new();
+		private readonly IValidator<UserCommandInfo> cmdValidator;
 		private bool built = false;
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository
 		/// </summary>
-		public SimpleUserCommandsRepository() { }
+		public SimpleUserCommandsRepository(IValidator<UserCommandInfo> cmdValidator)
+		{
+			this.cmdValidator = cmdValidator;
+		}
 
 
 		/// <inheritdoc/>
@@ -28,6 +34,7 @@
 			if (built) throw new InvalidOperationException("Object has built");
 			if (globalInfos.Any(s => s.Name == commandInfo.Name))
 				throw new InvalidOperationException("Command with given name already present in repository");
+			cmdValidator.ValidateAndThrow(commandInfo);
 			globalInfos.Add(commandInfo);
 		}
 
@@ -37,6 +44,7 @@
 			if (built) throw new InvalidOperationException("Object has built");
 			if (globalInfos.Any(s => s.Name == commandInfo.Name))
 				throw new InvalidOperationException("Command with given name already present in repository");
+			cmdValidator.ValidateAndThrow(commandInfo);
 
 			if (localInfos.ContainsKey(server) == false) localInfos.Add(server, new());
 			localInfos[server].Add(commandInfo);

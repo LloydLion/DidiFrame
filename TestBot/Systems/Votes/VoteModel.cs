@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Data.AutoKeys;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 using DidiFrame.Data.Model;
 using DidiFrame.Utils;
 
@@ -8,26 +8,21 @@ namespace TestBot.Systems.Votes
 	[DataKey("vote")]
 	internal class VoteModel : ILifetimeBase
 	{
-		private static int nextId;
-
-
-		public VoteModel(IMember creator, IReadOnlyList<string> options, string title, ITextChannel channel)
+		public VoteModel(IMember creator, IReadOnlyList<string> options, string title, ITextChannelBase channel)
 		{
 			Options = options.ToDictionary(s => s, s => 0);
 			Creator = creator;
 			Title = title;
 			Message = new(channel);
-			Id = nextId++;
 		}
 
-		public VoteModel(IMember creator, IDictionary<string, int> options, string title, MessageAliveHolder.Model message, int id)
+		public VoteModel(IMember creator, IDictionary<string, int> options, string title, MessageAliveHolderModel message, Guid id)
 		{
 			Creator = creator;
 			Options = options;
 			Title = title;
 			Message = message;
-			Id = id;
-			nextId = id + 1;
+			Guid = id;
 		}
 
 
@@ -41,16 +36,16 @@ namespace TestBot.Systems.Votes
 		public string Title { get; }
 
 		[ConstructorAssignableProperty(3, "message")]
-		public MessageAliveHolder.Model Message { get; }
+		public MessageAliveHolderModel Message { get; }
 
 		[ConstructorAssignableProperty(4, "id")]
-		public int Id { get; }
+		public Guid Guid { get; }
 
 		public IServer Server => Message.Channel.Server;
 
 
-		public override bool Equals(object? obj) => obj is VoteModel model && model.Id == Id;
+		public override bool Equals(object? obj) => obj is VoteModel model && model.Guid == Guid;
 
-		public override int GetHashCode() => Id;
+		public override int GetHashCode() => Guid.GetHashCode();
 	}
 }

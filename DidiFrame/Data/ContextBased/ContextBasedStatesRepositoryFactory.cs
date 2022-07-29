@@ -1,4 +1,7 @@
-﻿namespace DidiFrame.Data.ContextBased
+﻿using DidiFrame.Utils;
+using System.Collections.Concurrent;
+
+namespace DidiFrame.Data.ContextBased
 {
 	/// <summary>
 	/// Represents a context-based states repository factory in context-based approach
@@ -9,6 +12,7 @@
 	{
 		private readonly TContext ctx;
 		private readonly IModelFactoryProvider provider;
+		private readonly ConcurrentDictionary<Type, ThreadLocker<IServer>> lockers = new();
 
 
 		/// <summary>
@@ -28,7 +32,8 @@
 		/// <inheritdoc/>
 		public IServersStatesRepository<TModel> Create<TModel>(string key) where TModel : class
 		{
-			return new ContextBasedStatesRepository<TModel>(ctx, provider, key);
+			var perServerLocker = lockers.GetOrAdd(typeof(TModel), _ => new());
+			return new ContextBasedStatesRepository<TModel>(perServerLocker, ctx, provider, key);
 		}
 
 		/// <inheritdoc/>

@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Pipeline.Utils
+﻿using FluentValidation;
+
+namespace DidiFrame.UserCommands.Pipeline.Utils
 {
 	/// <summary>
 	/// Dispatcher that based on simple discord messages
@@ -10,6 +12,7 @@
 
 		private readonly IClient client;
 		private readonly ILogger<MessageUserCommandDispatcher> logger;
+		private readonly IValidator<UserCommandResult> resultValidator;
 		private DispatcherSyncCallback<IMessage>? callback = null;
 
 
@@ -18,18 +21,21 @@
 		/// </summary>
 		/// <param name="client">Discord clint to access to discord</param>
 		/// <param name="logger">Logger for dispatcher</param>
-		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger)
+		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
+		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger, IValidator<UserCommandResult> resultValidator)
 		{
 			this.client = client;
 			this.logger = logger;
-			client.MessageSent += Client_MessageSent;
-		}
+			this.resultValidator = resultValidator;
 
+			client.ServerCreated += Client_ServerCreated;
+			foreach (var server in client.Servers) server.MessageSent += Client_MessageSent;
+		}
 
 		/// <inheritdoc/>
 		public void Dispose()
 		{
-			client.MessageSent -= Client_MessageSent;
+			client.ServerCreated -= Client_ServerCreated;
 			GC.SuppressFinalize(this);
 		}
 
@@ -59,6 +65,8 @@
 		/// <inheritdoc/>
 		public void Respond(object stateObject, UserCommandResult result)
 		{
+			resultValidator.ValidateAndThrow(result);
+
 			var ss = (StateStruct)stateObject;
 
 			IMessage? message = null;
@@ -82,9 +90,14 @@
 			this.callback = callback;
 		}
 
-		private void Client_MessageSent(IClient sender, IMessage message)
+		private void Client_MessageSent(IClient sender, IMessage message, bool isModified)
 		{
 			callback?.Invoke(this, message, new(message.Author, message.TextChannel), new StateStruct(sender, message));
+		}
+
+		private void Client_ServerCreated(IServer server)
+		{
+			server.MessageSent += Client_MessageSent;
 		}
 
 

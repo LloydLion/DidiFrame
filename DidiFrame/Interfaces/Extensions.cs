@@ -22,7 +22,7 @@
 		/// <param name="channel">Uncasted ITextChannel</param>
 		/// <returns>Casted ITextChannel</returns>
 		/// <exception cref="InvalidCastException">If channel can't be casted to ITextChannel</exception>
-		public static ITextChannel AsText(this IChannel channel) => (ITextChannel)channel;
+		public static ITextChannelBase AsText(this IChannel channel) => (ITextChannelBase)channel;
 
 		/// <summary>
 		/// Tries cast IChannel object to IVoiceChannel. Can throw exception if fail

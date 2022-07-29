@@ -17,9 +17,9 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression> MIT</PackageLicenseExpression>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.2.0</Version>
-    <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
+    <Version>1.3.0-beta.1</Version>
+    <AssemblyVersion>1.3.0.0</AssemblyVersion>
+    <FileVersion>1.3.0.0</FileVersion>
     <PackageIcon>DidFrameIcon.png</PackageIcon>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <SignAssembly>False</SignAssembly>
@@ -43,6 +43,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Lifetimes\AbstractFullLifetime-LAPTOP-TEI033TU.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="index.md" />
     <None Remove="log.txt" />
     <None Remove="toc.yml" />
@@ -61,6 +65,8 @@
 
   <ItemGroup>
     <PackageReference Include="dein.Colorify" Version="2.8.0" />
+    <PackageReference Include="FluentValidation" Version="11.1.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />

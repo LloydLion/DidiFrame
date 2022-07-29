@@ -11,9 +11,6 @@ namespace DidiFrame.Data.Json
 	/// </summary>
 	public class JsonContext : IDataContext
 	{
-		private static readonly EventId FileSaveErrorID = new(21, "FileSaveError");
-
-		private readonly ThreadLocker<IServer> locker = new();
 		private readonly JsonCache cache;
 		private readonly ILogger logger;
 
@@ -28,7 +25,8 @@ namespace DidiFrame.Data.Json
 		/// <exception cref="ArgumentNullException">If required option is null</exception>
 		public JsonContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider _)
 		{
-			cache = new JsonCache((contextType == ContextType.Settings ? options.Settings?.BaseDirectory : options.States?.BaseDirectory) ?? throw new ArgumentNullException(nameof(options)));
+			var option = (contextType == ContextType.Settings ? options.Settings?.BaseDirectory : options.States?.BaseDirectory) ?? throw new ArgumentNullException(nameof(options));
+			cache = new JsonCache(option, logger);
 			this.logger = logger;
 		}
 
@@ -37,8 +35,7 @@ namespace DidiFrame.Data.Json
 		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class
 		{
 			if (factory is null) return Load<TModel>(server, key);
-
-			using (locker.Lock(server))
+			else
 			{
 				var path = GetFileForServer(server);
 				bool isRepatchCollection = false;
@@ -58,8 +55,7 @@ namespace DidiFrame.Data.Json
 					{
 						if (isRepatchCollection)
 						{
-							//Loaded collection will not contain errors
-							PrivatePut(server, key, model);
+							cache.PutAsync(GetFileForServer(server), key, model, serializer);
 						}
 					});
 				}
@@ -70,45 +66,26 @@ namespace DidiFrame.Data.Json
 		
 		private TModel Load<TModel>(IServer server, string key) where TModel : class
 		{
-			using (locker.Lock(server))
-			{
-				var path = GetFileForServer(server);
-				bool isRepatchCollection = false;
-				var serializer = JsonSerializerFactory.CreateWithConverters(server, logger, (obj, str, ex) => { isRepatchCollection = true; });
+			var path = GetFileForServer(server);
+			bool isRepatchCollection = false;
+			var serializer = JsonSerializerFactory.CreateWithConverters(server, logger, (obj, str, ex) => { isRepatchCollection = true; });
 
-				var model = cache.Get<TModel>(path, key, serializer, out var task);
-				if (task is not null) task.ContinueWith(s =>
+			var model = cache.Get<TModel>(path, key, serializer, out var task);
+			if (task is not null) task.ContinueWith(s =>
+			{
+				if (isRepatchCollection)
 				{
-					if (isRepatchCollection)
-					{
-						//Loaded collection will not contain errors
-						PrivatePut(server, key, model);
-					}
-				});
+					cache.PutAsync(GetFileForServer(server), key, model, serializer);
+				}
+			});
 
-				return model;
-			}
-		}
-
-		private async void PrivatePut<TModel>(IServer server, string key, TModel model) where TModel : class
-		{
-			try
-			{
-				await cache.PutAsync(GetFileForServer(server), key, model, JsonSerializerFactory.CreateWithConverters(server, logger));
-			}
-			catch (Exception ex)
-			{
-				logger.Log(LogLevel.Warning, FileSaveErrorID, ex, "Enable save changes into files");
-			}
+			return model;
 		}
 
 		/// <inheritdoc/>
 		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
-			using (locker.Lock(server))
-			{
-				PrivatePut(server, key, model);
-			}
+			cache.PutAsync(GetFileForServer(server), key, model, JsonSerializerFactory.CreateWithConverters(server, logger));
 		}
 
 		/// <inheritdoc/>

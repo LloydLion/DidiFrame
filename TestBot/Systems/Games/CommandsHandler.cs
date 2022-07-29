@@ -101,7 +101,7 @@ namespace TestBot.Systems.Games
 		[Command("game cancel")]
 		public UserCommandResult CancelGame(UserCommandContext _, GameLifetime game)
 		{
-			game.Close();
+			game.CloseAsync();
 
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameHasCanceled"]) };
 		}
@@ -109,12 +109,10 @@ namespace TestBot.Systems.Games
 		[Command("game send-invites")]
 		public async Task<UserCommandResult> SendGameInvites(UserCommandContext _, GameLifetime game)
 		{
-			var baseObj = game.GetBaseClone();
-
 			var tasks = new List<Task>();
-			foreach (var member in baseObj.Invited)
+			foreach (var member in game.GetInvited())
 			{
-				tasks.Add(member.SendDirectMessageAsync(uiHelper.CreateInvitationTablet(baseObj.Creator, baseObj.Name)));
+				tasks.Add(member.SendDirectMessageAsync(uiHelper.CreateInvitationTablet(game.GetCreator(), game.GetName())));
 			}
 
 			await Task.WhenAll(tasks);

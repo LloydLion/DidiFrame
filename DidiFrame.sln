@@ -18,11 +18,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBot", "TestBot\TestBot.csproj", "{661B2CDA-0907-4CF8-BEF7-E623895005FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidiFrame.Data.Json", "DidiFrame.Data.Json\DidiFrame.Data.Json.csproj", "{4886FFAF-D4A7-4B3A-A9E4-0F0652C319E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidiFrame.Data.Json", "DidiFrame.Data.Json\DidiFrame.Data.Json.csproj", "{4886FFAF-D4A7-4B3A-A9E4-0F0652C319E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidiFrame.Data.Mongo", "DidiFrame.Data.Mongo\DidiFrame.Data.Mongo.csproj", "{F9A150D4-67D4-4F89-B0FB-A89CC1ADB7B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidiFrame.Data.Mongo", "DidiFrame.Data.Mongo\DidiFrame.Data.Mongo.csproj", "{F9A150D4-67D4-4F89-B0FB-A89CC1ADB7B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidiFrame.Clients.DSharp", "DidiFrame.Clients.DSharp\DidiFrame.Clients.DSharp.csproj", "{DABFC726-D45B-47EA-BFC9-A71F3DD38F65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidiFrame.Clients.DSharp", "DidiFrame.Clients.DSharp\DidiFrame.Clients.DSharp.csproj", "{DABFC726-D45B-47EA-BFC9-A71F3DD38F65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidiFrame.Testing", "DidiFrame.Testing\DidiFrame.Testing.csproj", "{C8C68E3B-8133-46F9-86BE-591E9C7A1BD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{DABFC726-D45B-47EA-BFC9-A71F3DD38F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DABFC726-D45B-47EA-BFC9-A71F3DD38F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DABFC726-D45B-47EA-BFC9-A71F3DD38F65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8C68E3B-8133-46F9-86BE-591E9C7A1BD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8C68E3B-8133-46F9-86BE-591E9C7A1BD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8C68E3B-8133-46F9-86BE-591E9C7A1BD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8C68E3B-8133-46F9-86BE-591E9C7A1BD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

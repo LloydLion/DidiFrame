@@ -1,6 +1,6 @@
 ﻿using TestBot.Systems.Games.CommandEvironment;
 using DidiFrame.AutoInjecting;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 using DidiFrame.UserCommands.Loader.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using DidiFrame.UserCommands.PreProcessing;

@@ -9,7 +9,7 @@ namespace DidiFrame.UserCommands.Models
 	/// <param name="Arguments">Raw arguments that has been recived to command execute</param>
 	public record UserCommandPreContext(
 		IMember Invoker,
-		ITextChannel Channel,
+		ITextChannelBase Channel,
 		UserCommandInfo Command,
 		IReadOnlyDictionary<UserCommandArgument, IReadOnlyList<object>> Arguments) { }
 }

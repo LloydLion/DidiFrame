@@ -11,7 +11,7 @@
 		private static readonly EventId StateChangingID = new(42, "StateChanging");
 		private static readonly EventId MachineStartupID = new(14, "MachineStartup");
 		private static readonly EventId StateChangedHandlerErrorID = new(65, "StateChangedHandlerError");
-		private static readonly EventId InternalErrorID = new(65, "InternalError");
+		private static readonly EventId InternalErrorID = new(66, "InternalError");
 
 
 		private readonly List<IStateTransitWorker<TState>> workers;
@@ -28,7 +28,7 @@
 
 			observeTask = new Task(() =>
 			{
-				while (CurrentState != null)
+				while (CurrentState is not null)
 				{
 					try { UpdateStateInternal(); }
 					catch (Exception ex)
@@ -45,7 +45,6 @@
 
 		/// <inheritdoc/>
 		public ILogger Logger { get; }
-
 
 
 		/// <inheritdoc/>
@@ -119,7 +118,8 @@
 		public void Dispose()
 		{
 			GC.SuppressFinalize(this);
-			if (observeTask.IsCompleted == false) throw new InvalidOperationException("Can't dispose working state machine");
+			observeTask.Wait();
+			observeTask.Dispose();
 		}
 
 		private void UpdateActiveWorkers()

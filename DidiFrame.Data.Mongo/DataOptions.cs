@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Data.MongoDB
+﻿namespace DidiFrame.Data.Mongo
 {
 	/// <summary>
 	/// Configuration for mongo database data management

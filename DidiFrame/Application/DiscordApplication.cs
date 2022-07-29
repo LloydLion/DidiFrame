@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Culture;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 using DidiFrame.GlobalEvents;
 using DidiFrame.UserCommands.Loader;
 using DidiFrame.UserCommands.Pipeline;
@@ -91,12 +91,12 @@ namespace DidiFrame.Application
 			else logger.Log(LogLevel.Debug, StartEventSkippedID, "Startup event skipped because hasn't been added");
 
 
-			var registries = services.GetServices<ILifetimesRegistry>();
+			var registries = services.GetServices<ILifetimesLoader>();
 			foreach (var server in client.Servers)
 				foreach (var registry in registries)
 				{
 					culture.SetupCulture(server);
-					registry.LoadAndRunAll(server);
+					registry.RestoreLifetimes(server);
 				}
 			logger.Log(LogLevel.Debug, LifetimeRegistrationDoneID, "Every lifetime loaded and started");
 

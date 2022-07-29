@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Application
@@ -16,6 +17,7 @@ namespace DidiFrame.Application
 		private DiscordApplicationBuilder()
 		{
 			now = DateTime.Now;
+			services.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(ServiceLifetime.Transient, includeInternalTypes: true);
 		}
 
 

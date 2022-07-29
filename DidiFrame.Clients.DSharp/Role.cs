@@ -1,11 +1,8 @@
 ﻿using DidiFrame.Entities;
+using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -14,30 +11,32 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class Role : IRole
 	{
-		private readonly DiscordRole role;
+		private readonly ObjectSourceDelegate<DiscordRole> role;
 		private readonly Server server;
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Role
 		/// </summary>
-		/// <param name="role">Base DiscordRole from DSharp</param>
+		/// <param name="id">Id of role</param>
+		/// <param name="role">Base DiscordRole from DSharp source</param>
 		/// <param name="server">Base server object wrap</param>
-		public Role(DiscordRole role, Server server)
+		public Role(ulong id, ObjectSourceDelegate<DiscordRole> role, Server server)
 		{
+			Id = id;
 			this.role = role;
 			this.server = server;
 		}
 
 
 		/// <inheritdoc/>
-		public Permissions Permissions => role.Permissions.GetAbstract();
+		public Permissions Permissions => AccessBase().Permissions.GetAbstract();
 
 		/// <inheritdoc/>
-		public string Name => role.Name;
+		public string Name => AccessBase().Name;
 
 		/// <inheritdoc/>
-		public ulong Id => role.Id;
+		public ulong Id { get; }
 
 		/// <inheritdoc/>
 		public IServer Server => server;
@@ -45,14 +44,17 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Base discord role from DSharp
 		/// </summary>
-		public DiscordRole BaseRole => role;
+		public DiscordRole BaseRole => AccessBase();
+
+		/// <inheritdoc/>
+		public bool IsExist => role() is not null;
 
 
 		/// <inheritdoc/>
 		public bool Equals(IServerEntity? other) => Equals(other as Role);
 
 		/// <inheritdoc/>
-		public bool Equals(IRole? other) => other is Role role && role.Id == Id && role.Server == Server;
+		public bool Equals(IRole? other) => other is Role role && role.IsExist && IsExist && role.Id == Id && role.Server == Server;
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Role);
@@ -60,26 +62,12 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public override int GetHashCode() => Id.GetHashCode();
 
-		/// <summary>
-		/// Checks equality between two DidiFrame.Clients.DSharp.Role objects
-		/// </summary>
-		/// <param name="left">First object</param>
-		/// <param name="right">Second objects</param>
-		/// <returns>If objects are equal</returns>
-		public static bool operator ==(Role? left, Role? right)
+		private DiscordRole AccessBase([CallerMemberName] string nameOfCaller = "")
 		{
-			return EqualityComparer<Role>.Default.Equals(left, right);
-		}
-
-		/// <summary>
-		/// Checks equality between two DidiFrame.Clients.DSharp.Role objects
-		/// </summary>
-		/// <param name="left">First object</param>
-		/// <param name="right">Second objects</param>
-		/// <returns>If objects are not equal</returns>
-		public static bool operator !=(Role? left, Role? right)
-		{
-			return !(left == right);
+			var obj = role();
+			if (obj is null)
+				throw new ObjectDoesNotExistException(nameOfCaller);
+			else return obj;
 		}
 	}
 }

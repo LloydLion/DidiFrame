@@ -18,7 +18,7 @@ namespace TestBot.Systems.Reputation
 			if (member.IsBot)
 				throw new InvalidOperationException("Enable to get reputation for bot. Member is bot");
 			
-			var state = repository.GetState(member.Server);
+			var state = repository.GetState(member.Server).Open();
 
 			var rp = state.Object.SingleOrDefault(s => s.Member.Equals((IUser)member));
 

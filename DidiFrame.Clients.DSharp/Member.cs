@@ -1,7 +1,9 @@
 ﻿using DidiFrame.Entities;
 using DidiFrame.Entities.Message;
+using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
+using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -10,44 +12,45 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class Member : User, IMember
 	{
-		private readonly DiscordMember member;
+		private readonly ObjectSourceDelegate<DiscordMember> member;
+		private readonly Server baseServer;
 
 
 		/// <inheritdoc/>
-		public IServer Server => BaseServer;
+		public IServer Server => baseServer;
 
 		/// <summary>
 		/// DSharp server where member present. Casted to DidiFrame.Clients.DSharp.Server Server property
 		/// </summary>
-		public Server BaseServer { get; }
+		public Server BaseServer => baseServer;
 
 		/// <inheritdoc/>
-		public override string UserName => member.DisplayName;
+		public override string UserName => AccessBase().Username;
 
 		/// <summary>
 		/// Base DiscordMember from DSharp
 		/// </summary>
-		public DiscordMember BaseMember => member;
+		public DiscordMember BaseMember => AccessBase();
+
+		/// <inheritdoc/>
+		public bool IsExist => member() is not null;
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Member
 		/// </summary>
-		/// <param name="member">Base DiscordMember from DSharp</param>
+		/// <param name="id">Id of user and member</param>
+		/// <param name="member">Base DiscordMember from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
-		/// <exception cref="ArgumentException">If base member's server and transmited server wrap are different</exception>
-		public Member(DiscordMember member, Server server) : base(member, server.SourceClient)
+		public Member(ulong id, ObjectSourceDelegate<DiscordMember> member, Server server) : base(id, member, server.SourceClient)
 		{
-			if (member.Guild.Id != server.Id)
-				throw new ArgumentException("Base channel's server and transmited server wrap are different", nameof(server));
-
+			baseServer = server;
 			this.member = member;
-			BaseServer = server;
 		}
 
 
 		/// <inheritdoc/>
-		public bool Equals(IServerEntity? other) => other is Member member && base.Equals(member) && member.Server == Server;
+		public bool Equals(IServerEntity? other) => other is Member member && member.IsExist && IsExist && base.Equals(member) && member.Server == Server;
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Member);
@@ -56,26 +59,45 @@ namespace DidiFrame.Clients.DSharp
 		public override int GetHashCode() => HashCode.Combine(Id, Server);
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IRole> GetRoles() => member.Roles.Select(s => new Role(s, BaseServer)).ToArray();
+		public IReadOnlyCollection<IRole> GetRoles()
+		{
+			return AccessBase().Roles.Select(s => baseServer.GetRole(s.Id)).ToArray();
+		}
 
 		/// <inheritdoc/>
-		public Task GrantRoleAsync(IRole role) => BaseServer.SourceClient.DoSafeOperationAsync(() => member.GrantRoleAsync(((Role)role).BaseRole));
+		public Task GrantRoleAsync(IRole role)
+		{
+			return BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().GrantRoleAsync(((Role)role).BaseRole));
+		}
 
 		/// <inheritdoc/>
-		public Task RevokeRoleAsync(IRole role) => BaseServer.SourceClient.DoSafeOperationAsync(() => member.RevokeRoleAsync(((Role)role).BaseRole));
+		public Task RevokeRoleAsync(IRole role)
+		{
+			return BaseServer.SourceClient.DoSafeOperationAsync(() =>  AccessBase().RevokeRoleAsync(((Role)role).BaseRole));
+		}
 
 		/// <inheritdoc/>
 		public bool HasPermissionIn(Permissions permissions, IChannel channel) =>
-			member.PermissionsIn(((Channel)channel).BaseChannel).GetAbstract().HasFlag(permissions);
-
+			AccessBase().PermissionsIn(((Channel)channel).BaseChannel).GetAbstract().HasFlag(permissions);
 
 		internal Task SendDirectMessageAsyncInternal(MessageSendModel model)
 		{
-			return BaseServer.SourceClient.DoSafeOperationAsync(async () =>
+			lock (this)
 			{
-				var channel = await member.CreateDmChannelAsync();
-				await channel.SendMessageAsync(MessageConverter.ConvertUp(model));
-			}, new(DSharp.Client.UserName, Id, base.UserName));
+				return BaseServer.SourceClient.DoSafeOperationAsync(async () =>
+				{
+					var channel = await AccessBase().CreateDmChannelAsync();
+					await channel.SendMessageAsync(MessageConverter.ConvertUp(model));
+				}, new(DSharp.Client.UserName, Id, base.UserName));
+			}
+		}
+
+		private DiscordMember AccessBase([CallerMemberName] string nameOfCaller = "")
+		{
+			var obj = member();
+			if (obj is null)
+				throw new ObjectDoesNotExistException(nameOfCaller);
+			else return obj;
 		}
 	}
 }

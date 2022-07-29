@@ -1,6 +1,7 @@
 ﻿using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.Utils;
 using DidiFrame.Utils.ExtendableModels;
+using FluentValidation;
 
 namespace DidiFrame.UserCommands.ContextValidation
 {
@@ -14,7 +15,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 		/// </summary>
 		public const string ProviderErrorCode = "NoObjectProvided";
 
-
+		private readonly IValidator<UserCommandContext> ctxValidator;
 		private readonly IStringLocalizer<ContextValidator> localizer;
 		private readonly IServiceProvider services;
 
@@ -22,10 +23,12 @@ namespace DidiFrame.UserCommands.ContextValidation
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.ContextValidator
 		/// </summary>
+		/// <param name="ctxValidator">Validator for DidiFrame.UserCommands.Models.UserCommandContext</param>
 		/// <param name="localizer">Localizer to print error messages</param>
 		/// <param name="services">Serivce to be used in filters and validators</param>
-		public ContextValidator(IStringLocalizer<ContextValidator> localizer, IServiceProvider services)
+		public ContextValidator(IValidator<UserCommandContext> ctxValidator, IStringLocalizer<ContextValidator> localizer, IServiceProvider services)
 		{
+			this.ctxValidator = ctxValidator;
 			this.localizer = localizer;
 			this.services = services;
 		}
@@ -34,6 +37,8 @@ namespace DidiFrame.UserCommands.ContextValidation
 		/// <inheritdoc/>
 		public override ValidatedUserCommandContext? Process(UserCommandContext input, UserCommandPipelineContext pipelineContext)
 		{
+			ctxValidator.ValidateAndThrow(input);
+
 			var cmd = input.Command;
 			ValidationFailResult? failResult;
 

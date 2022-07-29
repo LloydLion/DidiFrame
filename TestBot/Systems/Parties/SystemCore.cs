@@ -22,7 +22,7 @@ namespace TestBot.Systems.Parties
 
 			//ORDER is important!!
 			if (HasParty(creator.Server, name)) throw new ArgumentException($"Party with name {name} already exits on this server", nameof(name));
-			using var state = states.GetState(creator.Server);
+			using var state = states.GetState(creator.Server).Open();
 
 			var party = new PartyModel(name, creator, members);
 			state.Object.Add(party);
@@ -30,7 +30,7 @@ namespace TestBot.Systems.Parties
 
 		public ObjectHolder<IReadOnlyCollection<PartyModel>> GetPartiesWith(IMember member)
 		{
-			var state = states.GetState(member.Server);
+			var state = states.GetState(member.Server).Open();
 			var collection = state.Object.Where(s => s.Members.Contains(member) || s.Creator == member).ToArray();
 			return new ObjectHolder<IReadOnlyCollection<PartyModel>>(collection, (_) =>
 			{
@@ -54,7 +54,7 @@ namespace TestBot.Systems.Parties
 
 			try
 			{
-				state = states.GetState(server);
+				state = states.GetState(server).Open();
 				var party = state.Object.Single(s => s.Name == name);
 				ok = true;
 				return new ObjectHolder<PartyModel>(party, (_) => { var ex = ValidateParty((IReadOnlyCollection<PartyModel>)state.Object, party,
@@ -68,7 +68,7 @@ namespace TestBot.Systems.Parties
 
 		public bool HasParty(IServer server, string name)
 		{
-			using var state = states.GetState(server);
+			using var state = states.GetState(server).Open();
 			return state.Object.Any(s => s.Name == name);
 		}
 

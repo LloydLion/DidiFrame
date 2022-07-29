@@ -1,5 +1,5 @@
 ﻿using DidiFrame.AutoInjecting;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 using DidiFrame.UserCommands.Loader.Reflection;
 using DidiFrame.UserCommands.PreProcessing;
 using Microsoft.Extensions.DependencyInjection;

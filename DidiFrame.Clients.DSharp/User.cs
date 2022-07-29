@@ -1,6 +1,9 @@
 ﻿using DidiFrame.Entities.Message;
+using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
+using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -9,38 +12,40 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class User : IUser
 	{
-		private readonly DiscordUser user;
+		private readonly ObjectSourceDelegate<DiscordUser> user;
 		private readonly Client client;
 
 
 		/// <inheritdoc/>
-		public virtual string UserName => user.Username;
+		public virtual string UserName => AccessBase().Username;
 
 		/// <inheritdoc/>
-		public string Mention => user.Mention;
+		public string Mention => AccessBase().Mention;
 
 		/// <inheritdoc/>
-		public ulong Id => user.Id;
+		public ulong Id { get; }
 
 		/// <inheritdoc/>
 		public IClient Client => client;
 
 		/// <inheritdoc/>
-		public bool IsBot => user.IsBot;
+		public bool IsBot => AccessBase().IsBot;
 
 		/// <summary>
 		/// Base DiscordUser from DSharp
 		/// </summary>
-		public DiscordUser BaseUser => user;
+		public DiscordUser BaseUser => AccessBase();
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.User
 		/// </summary>
-		/// <param name="user">Base DiscordUser from DSharp</param>
+		/// <param name="id">Id of user</param>
+		/// <param name="user">Base DiscordUser from DSharp source</param>
 		/// <param name="client">Owner client</param>
-		public User(DiscordUser user, Client client)
+		public User(ulong id, ObjectSourceDelegate<DiscordUser> user, Client client)
 		{
+			Id = id;
 			this.user = user;
 			this.client = client;
 		}
@@ -60,5 +65,30 @@ namespace DidiFrame.Clients.DSharp
 
 		/// <inheritdoc/>
 		public override int GetHashCode() => Id.GetHashCode();
+
+		/// <inheritdoc/>
+		public Task<bool> GetIsUserExistAsync()
+		{
+			return client.DoSafeOperationAsync(async () =>
+			{
+				try
+				{
+					await client.BaseClient.GetUserAsync(Id);
+					return true;
+				}
+				catch (NotFoundException)
+				{
+					return false;
+				}
+			});
+		}
+
+		private DiscordUser AccessBase([CallerMemberName] string nameOfCaller = "")
+		{
+			var obj = user();
+			if (obj is null)
+				throw new ObjectDoesNotExistException(nameOfCaller);
+			else return obj;
+		}
 	}
 }

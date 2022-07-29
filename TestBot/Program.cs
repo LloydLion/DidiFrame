@@ -20,12 +20,12 @@ using DidiFrame.AutoInjecting;
 using DidiFrame.Data.Json;
 using DidiFrame.Culture;
 using DidiFrame.GlobalEvents;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 using DidiFrame.UserCommands.Loader.Reflection;
 using DidiFrame.Clients.DSharp;
 using DidiFrame;
 using DidiFrame.Application;
-using DidiFrame.Data.MongoDB;
+using DidiFrame.Data.Mongo;
 using DidiFrame.UserCommands.Pipeline.Building;
 using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
@@ -35,6 +35,7 @@ using DidiFrame.UserCommands.PreProcessing;
 using DidiFrame.UserCommands.Executing;
 using DidiFrame.UserCommands.Pipeline.Services;
 using DidiFrame.UserCommands.ContextValidation;
+using DidiFrame.Localization;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -56,10 +57,10 @@ appBuilder.AddServices((services, config) =>
 		.AddHelpCommands()
 		.AddValidatorsFromAssemblyContaining<DiscordApplicationBuilder>(includeInternalTypes: true)
 		.AddSettingsBasedCultureProvider()
-		.AddConfiguratedLocalization()
-		.AddLifetimes()
+		.AddDidiFrameLocalization(optionsAction: s => s.ResourcesPath = "Translations")
 		.AddGlobalEvents()
 		.AddStateBasedStatisticTools()
+		.Configure<LoggerFilterOptions>(opt => opt.AddFilter("Microsoft.Extensions.Localization.ResourceManagerStringLocalizer", LogLevel.None))
 		.InjectAutoDependencies(new ReflectionAutoInjector());
 
 	services.Configure<DefaultUserCommandsExecutor.Options>(config.GetSection("Commands:Executing"));

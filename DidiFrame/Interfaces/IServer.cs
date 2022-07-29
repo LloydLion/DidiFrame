@@ -6,6 +6,57 @@
 	public interface IServer : IEquatable<IServer>
 	{
 		/// <summary>
+		/// Event that fires when new message sent
+		/// </summary>
+		public event MessageSentEventHandler? MessageSent;
+
+		/// <summary>
+		/// Event that fires when a message deleted
+		/// </summary>
+		public event MessageDeletedEventHandler? MessageDeleted;
+
+		/// <summary>
+		/// Event that fires when a channel deleted
+		/// </summary>
+		public event ServerObjectDeletedEventHandler? ChannelDeleted;
+
+		/// <summary>
+		/// Event that fires when a member deleted (left)
+		/// </summary>
+		public event ServerObjectDeletedEventHandler? MemberDeleted;
+
+		/// <summary>
+		/// Event that fires when a role deleted
+		/// </summary>
+		public event ServerObjectDeletedEventHandler? RoleDeleted;
+
+		/// <summary>
+		/// Event that fires when a category deleted
+		/// </summary>
+		public event ServerObjectDeletedEventHandler? CategoryDeleted;
+
+		/// <summary>
+		/// Event that fires when a new channel
+		/// </summary>
+		public event ServerObjectCreatedEventHandler<IChannel>? ChannelCreated;
+
+		/// <summary>
+		/// Event that fires when a new member created (joined)
+		/// </summary>
+		public event ServerObjectCreatedEventHandler<IMember>? MemberCreated;
+
+		/// <summary>
+		/// Event that fires when a new role created
+		/// </summary>
+		public event ServerObjectCreatedEventHandler<IRole>? RoleCreated;
+
+		/// <summary>
+		/// Event that fires when a new category created
+		/// </summary>
+		public event ServerObjectCreatedEventHandler<IChannelCategory>? CategoryCreated;
+
+
+		/// <summary>
 		/// Provides all server's members
 		/// </summary>
 		/// <returns>Collection of members</returns>
@@ -72,5 +123,10 @@
 		/// Id of the server
 		/// </summary>
 		public ulong Id { get; }
+
+		/// <summary>
+		/// If server closed
+		/// </summary>
+		public bool IsClosed { get; }
 	}
 }

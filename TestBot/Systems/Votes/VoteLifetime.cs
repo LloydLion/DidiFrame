@@ -1,56 +1,43 @@
-﻿using DidiFrame.Data.Lifetime;
-using DidiFrame.Entities.Message.Components;
+﻿using DidiFrame.Lifetimes;
 using DidiFrame.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestBot.Systems.Votes
 {
 	internal class VoteLifetime : ILifetime<VoteModel>
 	{
-		private readonly VoteModel model;
-		private readonly IServiceProvider services;
-		private readonly MessageAliveHolder message;
-		private ILifetimeStateUpdater<VoteModel>? updater;
+		private MessageAliveHolder<VoteModel>? message;
+		private ILifetimeContext<VoteModel>? context;
 
 
-		private ILifetimeStateUpdater<VoteModel> Updater => updater ?? throw new NullReferenceException();
+		private ILifetimeContext<VoteModel> Context => context ?? throw new NullReferenceException();
+
+		private MessageAliveHolder<VoteModel> Message => message ?? throw new NullReferenceException();
 
 
-		public VoteLifetime(VoteModel model, IServiceProvider services)
+		public VoteLifetime()
 		{
-			this.model = model;
-			this.services = services;
-			message = new MessageAliveHolder(model.Message, true, CreateMessage, MessageWorker);
+
 		}
 
 
-		public VoteModel GetBaseClone()
+		public void Run(VoteModel initialBase, ILifetimeContext<VoteModel> context)
 		{
-			return new VoteModel(model.Creator, model.Options, model.Title, model.Message, model.Id);
+			try
+			{
+				this.context = context;
+				message = new MessageAliveHolder<VoteModel>(s => s.Message, CreateMessage, MessageWorker);
+
+				message.StartupAsync(initialBase).Wait();
+			}
+			catch (Exception ex)
+			{
+				context.CrashPipeline(ex, true);
+			}
 		}
 
-		public void Run(ILifetimeStateUpdater<VoteModel> updater)
+		private MessageSendModel CreateMessage(VoteModel parameter)
 		{
-			this.updater = updater;
-
-			message.AutoMessageCreated += AutoMessageCreated;
-
-			if (message.IsExist) message.ProcessMessage();
-			else message.CheckAsync().Wait();
-		}
-
-		private void AutoMessageCreated(IMessage obj)
-		{
-			Updater.Update(this);
-		}
-
-		private MessageSendModel CreateMessage()
-		{
-			var options = model.Options.Select(s => new MessageSelectMenuOption($"{s.Key} [{s.Value}]", s.Key, $"Vote for {s.Key} option [{s.Value}]")).ToArray();
+			var options = parameter.Options.Select(s => new MessageSelectMenuOption($"{s.Key} [{s.Value}]", s.Key, $"Vote for {s.Key} option [{s.Value}]")).ToArray();
 
 			return new("Do your choose")
 			{
@@ -69,30 +56,41 @@ namespace TestBot.Systems.Votes
 			};
 		}
 
-		private void MessageWorker(IMessage message)
+		private void MessageWorker(VoteModel parameter, IMessage message, bool isModified)
 		{
+			if (isModified) return;
+
 			var id = message.GetInteractionDispatcher();
 
 			id.Attach<MessageSelectMenu>("menu", async (ctx) =>
 			{
+				string select;
+
+				using var holder = Context.AccessBase().Open();
 				var state = (MessageSelectMenuState)(ctx.ComponentState ?? throw new NullReferenceException());
-				var select = state.SelectedValues.Single();
-				model.Options[select]++;
-				await this.message.Update();
-				Updater.Update(this);
+				select = state.SelectedValues.Single();
+				holder.Object.Options[select]++;
+				await Message.UpdateAsync(holder.Object);
+
 				return new(new("Ok! You vote " + select));
 			});
 
-			id.Attach<MessageButton>("closeBnt", (ctx) =>
+			id.Attach<MessageButton>("closeBnt", async (ctx) =>
 			{
-				if (ctx.Invoker != model.Creator)
-					return Task.FromResult<ComponentInteractionResult>(new(new("You aren't invoker")));
-				else
+				try
 				{
-					this.message.Dispose();
-					Updater.Finish(this);
-					return Task.FromResult<ComponentInteractionResult>(new(new("Vote finished")));
+					using var holder = Context.AccessBase().Open();
+					if (ctx.Invoker.Equals((IUser)holder.Object.Creator) == false)
+						return new(new("You aren't invoker"));
+					await Message.FinalizeAsync(holder.Object);
 				}
+				catch (Exception ex)
+				{
+					Context.CrashPipeline(ex, false);
+				}
+
+				Context.FinalizeLifetime();
+				return new(new("Vote finished"));
 			});
 		}
 	}

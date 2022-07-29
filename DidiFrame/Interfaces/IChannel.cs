@@ -20,11 +20,6 @@
 		/// </summary>
 		public IChannelCategory Category { get; }
 
-		/// <summary>
-		/// If channel still exists on discord server
-		/// </summary>
-		public bool IsExist { get; }
-
 
 		/// <summary>
 		/// Deletes channel async

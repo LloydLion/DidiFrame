@@ -21,7 +21,7 @@ namespace TestBot.Systems.Games.CommandEvironment
 		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
 		{
 			var gl = (GameLifetime)convertationResult;
-			return new object[] { gl.GetBaseClone().Name };
+			return new object[] { gl.GetName() };
 		}
 
 		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()

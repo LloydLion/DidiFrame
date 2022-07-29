@@ -1,15 +1,15 @@
 ﻿using DidiFrame.Data.AutoKeys;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 
 namespace TestBot.Systems.Streaming
 {
 	internal class SystemCore : ISystemCore, ISystemNotifier
 	{
 		private readonly IServersSettingsRepository<StreamingSettings> settings;
-		private readonly IServersLifetimesRepository<StreamLifetime, StreamModel> lifetimes;
+		private readonly ILifetimesRegistry<StreamLifetime, StreamModel> lifetimes;
 
 
-		public SystemCore(IServersSettingsRepository<StreamingSettings> settings, IServersLifetimesRepository<StreamLifetime, StreamModel> lifetimes)
+		public SystemCore(IServersSettingsRepository<StreamingSettings> settings, ILifetimesRegistry<StreamLifetime, StreamModel> lifetimes)
 		{
 			this.settings = settings;
 			this.lifetimes = lifetimes;
@@ -25,15 +25,15 @@ namespace TestBot.Systems.Streaming
 
 			var model = new StreamModel(name, streamer, plannedStartDate, place, setting.ReportChannel);
 
-			var lt = lifetimes.AddLifetime(model);
+			var lt = lifetimes.RegistryLifetime(model);
 
 			StreamAnnounced?.Invoke(new StreamAnnouncedEventArgs(lt, streamer));
 
 			return lt;
 		}
 
-		public StreamLifetime GetStream(IServer server, string name) => lifetimes.GetAllLifetimes(server).Single(s => s.GetBaseClone().Name == name);
+		public StreamLifetime GetStream(IServer server, string name) => lifetimes.GetAllLifetimes(server).Single(s => s.GetName() == name);
 
-		public bool HasStream(IServer server, string name) => lifetimes.GetAllLifetimes(server).Any(s => s.GetBaseClone().Name == name);
+		public bool HasStream(IServer server, string name) => lifetimes.GetAllLifetimes(server).Any(s => s.GetName() == name);
 	}
 }

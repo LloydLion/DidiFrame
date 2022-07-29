@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>LloydLion.$(AssemblyName)</PackageId>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.2.0</Version>
+    <Authors>LloydLion</Authors>
+    <Description>LloydLion.DidiFrame module that contains testing enviroment for unit and intergation tests</Description>
+    <Copyright>©LloydLion 2022</Copyright>
+    <PackageProjectUrl>https://lloydlion.github.io/DidiFrame/</PackageProjectUrl>
+    <PackageIcon>DidFrameIcon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/LloydLion/DidiFrame</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>discord bot framework discord-framework testing</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\DidFrameIcon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
+  </ItemGroup>
+
+</Project>

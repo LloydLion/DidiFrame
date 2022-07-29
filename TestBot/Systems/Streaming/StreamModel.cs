@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Data.AutoKeys;
-using DidiFrame.Data.Lifetime;
+using DidiFrame.Lifetimes;
 using DidiFrame.Data.Model;
 using DidiFrame.Utils;
 
@@ -8,22 +8,18 @@ namespace TestBot.Systems.Streaming
 	[DataKey(StatesKeys.StreamingSystem)]
 	public class StreamModel : IStateBasedLifetimeBase<StreamState>
 	{
-		private static int nextId = 0;
-
-
-		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, MessageAliveHolder.Model reportMessage, int id)
+		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, MessageAliveHolderModel reportMessage, Guid id)
 		{
 			Name = name;
 			Owner = member;
 			PlanedStartTime = planedStartTime;
 			Place = rawPlace;
 			ReportMessage = reportMessage;
-			Id = id;
-			nextId = Math.Max(id, nextId);
+			Guid = id;
 		}
 
 		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, ITextChannel channel)
-			: this(name, member, planedStartTime, rawPlace, new MessageAliveHolder.Model(channel), ++nextId) { }
+			: this(name, member, planedStartTime, rawPlace, new MessageAliveHolderModel(channel), Guid.NewGuid()) { }
 
 
 		[ConstructorAssignableProperty(0, "name")]
@@ -39,22 +35,18 @@ namespace TestBot.Systems.Streaming
 		public string Place { get; set; }
 
 		[ConstructorAssignableProperty(4, "reportMessage")]
-		public MessageAliveHolder.Model ReportMessage { get; }
+		public MessageAliveHolderModel ReportMessage { get; }
 
 		[ConstructorAssignableProperty(5, "id")]
-		public int Id { get; }
+		public Guid Guid { get; }
 
 		public StreamState State { get; set; }
 
 		public IServer Server => Owner.Server;
 
 
-		public object Clone() => new StreamModel(Name, Owner, PlanedStartTime, Place, ReportMessage, Id) { State = State };
+		public override bool Equals(object? obj) => obj is StreamModel stream && stream.Guid == Guid;
 
-		public bool Equals(IStateBasedLifetimeBase<StreamState>? other) => other is StreamModel stream && stream.Id == Id;
-
-		public override bool Equals(object? obj) => obj is StreamModel stream && stream.Id == Id;
-
-		public override int GetHashCode() => Id.GetHashCode();
+		public override int GetHashCode() => Guid.GetHashCode();
 	}
 }

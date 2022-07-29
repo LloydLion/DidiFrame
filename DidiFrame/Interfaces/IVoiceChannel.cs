@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Represents a discord voice channel
 	/// </summary>
-	public interface IVoiceChannel : IChannel
+	public interface IVoiceChannel : ITextChannelBase
 	{
 		/// <summary>
 		/// Provides connected to channel members

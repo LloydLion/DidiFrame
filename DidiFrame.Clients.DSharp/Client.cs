@@ -20,28 +20,34 @@ namespace DidiFrame.Clients.DSharp
 		internal const string UserName = "User";
 		internal const string ServerName = "Server";
 		internal const string MessageName = "Message";
-		private readonly static EventId MessageSentHandlerExceptionID = new(44, "MessageSentHandlerException");
 		private readonly static EventId SafeOperationErrorID = new(23, "SafeOperationError");
 		private readonly static EventId SafeOperationCriticalErrorID = new(22, "SafeOperationCriticalError");
 		private readonly static EventId NoServerConnectionID = new(21, "NoServerConnection");
+		private readonly static EventId ServerCreatedEventErrorID = new(98, "ServerCreatedEventError");
+		private readonly static EventId ServerRemovedEventErrorID = new(97, "ServerRemovedEventError");
+		private readonly static EventId NewServerCreatedID = new(11, "NewServerCreated");
+		private readonly static EventId ServerRemovedID = new(12, "ServerRemoved");
 
 
 		private readonly DiscordClient client;
-		private readonly List<Server> servers = new();
+		private readonly Dictionary<ulong, Server> servers = new();
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 		private readonly ILogger<Client> logger;
 		private readonly Lazy<IUser> selfAccount;
-
-		/// <inheritdoc/>
-		public event MessageSentEventHandler? MessageSent;
-
-		/// <inheritdoc/>
-		public event MessageDeletedEventHandler? MessageDeleted;
+		private readonly Options options;
+		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IServer> Servers => servers;
+		public event ServerCreatedEventHandler? ServerCreated;
+
+		/// <inheritdoc/>
+		public event ServerRemovedEventHandler? ServerRemoved;
+
+
+		/// <inheritdoc/>
+		public IReadOnlyCollection<IServer> Servers => servers.Values;
 
 		/// <inheritdoc/>
 		public IUser SelfAccount => selfAccount.Value;
@@ -58,6 +64,8 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public IServiceProvider Services { get; }
 
+		internal ILogger<Client> Logger => logger;
+
 
 		/// <summary>
 		/// Creates instance of DidiFrame.DSharpAdapter.Client
@@ -66,14 +74,15 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="options">Configuration of DSharp client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>
-		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null)
+		/// <param name="messagesCacheFactory">Optional custom factory for server's channel messages caches</param>
+		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null, IChannelMessagesCacheFactory? messagesCacheFactory = null)
 		{
-			var opt = options.Value;
+			this.options = options.Value;
 			logger = factory.CreateLogger<Client>();
 
 			client = new DiscordClient(new DiscordConfiguration
 			{
-				Token = opt.Token,
+				Token = options.Value.Token,
 				AutoReconnect = true,
 				HttpTimeout = new TimeSpan(0, 1, 0),
 				TokenType = TokenType.Bot,
@@ -82,34 +91,15 @@ namespace DidiFrame.Clients.DSharp
 			});
 
 			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
-			selfAccount = new(() => new User(client.CurrentUser, this));
+			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
 			Services = servicesForExtensions;
+			this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
+				?? throw new ArgumentException("Cache options can't be null if no custom messages cache factory provided", nameof(options)));
 		}
 
-		//Must be invoked from TextChannel objects
-		internal void OnMessageCreated(Message message)
-		{
-			try
-			{
-				MessageSent?.Invoke(this, message);
-			}
-			catch (Exception ex)
-			{
-				client?.Logger.Log(LogLevel.Warning, MessageSentHandlerExceptionID, ex, "Execution of event handler for message sent event finished with exception");
-			}
-		}
 
-		internal void OnMessageDeleted(Message message)
-		{
-			try
-			{
-				MessageDeleted?.Invoke(this, message);
-			}
-			catch (Exception ex)
-			{
-				client?.Logger.Log(LogLevel.Warning, MessageSentHandlerExceptionID, ex, "Execution of event handler for message deleted event finished with exception");
-			}
-		}
+		/// <inheritdoc/>
+		public IServer GetServer(ulong id) => servers[id];
 
 		/// <inheritdoc/>
 		public async Task AwaitForExit()
@@ -137,30 +127,101 @@ namespace DidiFrame.Clients.DSharp
 		{
 			client.ConnectAsync().Wait();
 			Thread.Sleep(5000);
+			client.GuildCreated += Client_GuildCreated;
+			client.GuildDeleted += Client_GuildDeleted;
 			serverListUpdateTask = CreateServerListUpdateTask(cts.Token);
+		}
+
+		private Task Client_GuildDeleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDeleteEventArgs e)
+		{
+			lock (servers)
+			{
+				if (servers.ContainsKey(e.Guild.Id))
+				{
+					var server = servers[e.Guild.Id];
+					servers.Remove(e.Guild.Id);
+					server.Dispose();
+					OnServerRemoved(server);
+				}
+			}
+
+			return Task.CompletedTask;
+		}
+
+		private Task Client_GuildCreated(DiscordClient sender, DSharpPlus.EventArgs.GuildCreateEventArgs e)
+		{
+			lock (servers)
+			{
+				if (servers.ContainsKey(e.Guild.Id) == false)
+				{
+					servers.Add(e.Guild.Id, new Server(e.Guild, this, options.ServerOptions, messagesCacheFactory.Create(e.Guild, this)));
+					OnServerCreated(servers[e.Guild.Id]);
+				}
+			}
+
+			return Task.CompletedTask;
 		}
 
 		private async Task CreateServerListUpdateTask(CancellationToken token)
 		{
 			while (token.IsCancellationRequested == false)
 			{
-				var temp = servers.ToList();
-				servers.Clear();
-
-				foreach (var server in client.Guilds)
+				lock (servers)
 				{
-					var maybe = temp.SingleOrDefault(s => s.Id == server.Key);
-					if (maybe is not null)
+					var temp = servers.ToDictionary(s => s.Key, s => s.Value);
+					servers.Clear();
+
+					foreach (var server in client.Guilds)
 					{
-						servers.Add(maybe);
-						temp.Remove(maybe);
+						if (temp.TryGetValue(server.Value.Id, out var maybe))
+						{
+							servers.Add(maybe.Id, maybe);
+							temp.Remove(maybe.Id);
+						}
+						else
+						{
+							var serverObj = new Server(server.Value, this, options.ServerOptions, messagesCacheFactory.Create(server.Value, this));
+							servers.Add(serverObj.Id, serverObj);
+							OnServerCreated(serverObj);
+						}
 					}
-					else servers.Add(new Server(server.Value, this));
+
+					foreach (var item in temp)
+					{
+						item.Value.Dispose();
+						OnServerRemoved(item.Value);
+					}
 				}
 
-				foreach (var item in temp) item.Dispose();
-
 				await Task.Delay(new TimeSpan(5, 0, 0), token);
+			}
+		}
+
+		private void OnServerCreated(Server server)
+		{
+			logger.Log(LogLevel.Debug, NewServerCreatedID, "New server created with id {ServerId} and name \"{ServerName}\"", server.Id, server.Name);
+
+			try
+			{
+				ServerCreated?.Invoke(server);
+			}
+			catch (Exception ex)
+			{
+				logger.Log(LogLevel.Warning, ServerCreatedEventErrorID, ex, "Exception in event handler for server creation with id {ServerId}", server.Id);
+			}
+		}
+
+		private void OnServerRemoved(Server server)
+		{
+			logger.Log(LogLevel.Debug, ServerRemovedID, "Server removed with id {ServerId} and name \"{ServerName}\"", server.Id, server.Name);
+
+			try
+			{
+				ServerRemoved?.Invoke(server);
+			}
+			catch (Exception ex)
+			{
+				logger.Log(LogLevel.Warning, ServerRemovedEventErrorID, ex, "Exception in event handler for server removement with id {ServerId}", server.Id);
 			}
 		}
 
@@ -356,6 +417,16 @@ namespace DidiFrame.Clients.DSharp
 			/// Discord's bot token, see discord documentation
 			/// </summary>
 			public string Token { get; set; } = "";
+
+			/// <summary>
+			/// Options for each server
+			/// </summary>
+			public Server.Options ServerOptions { get; set; } = new();
+
+			/// <summary>
+			/// Options for default channel messages caches, if you use custom fill with null
+			/// </summary>
+			public ChannelMessagesCache.Options? CacheOptions { get; set; } = new();
 		}
 
 

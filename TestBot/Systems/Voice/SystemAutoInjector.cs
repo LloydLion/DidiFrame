@@ -1,4 +1,4 @@
-﻿using DidiFrame.Data.Lifetime;
+﻿using DidiFrame.Lifetimes;
 using DidiFrame.AutoInjecting;
 using Microsoft.Extensions.DependencyInjection;
 using DidiFrame.UserCommands.Loader.Reflection;

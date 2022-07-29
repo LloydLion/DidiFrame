@@ -25,7 +25,7 @@ namespace DidiFrame.Interfaces
 		/// <summary>
 		/// Text channel that contains this message
 		/// </summary>
-		public ITextChannel TextChannel { get; }
+		public ITextChannelBase TextChannel { get; }
 
 		/// <summary>
 		/// Author of the message

@@ -1,8 +1,5 @@
-﻿using DidiFrame.Data.Lifetime;
-using DidiFrame.Entities.Message;
-using DidiFrame.Entities.Message.Components;
+﻿using DidiFrame.Lifetimes;
 using DidiFrame.Utils;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Streaming
 {
@@ -18,24 +15,16 @@ namespace TestBot.Systems.Streaming
 		private readonly UIHelper uiHelper;
 
 
-		public StreamLifetime(StreamModel baseObj, IServiceProvider services) : base(services, baseObj)
+		public StreamLifetime(ILogger<StreamLifetime> logger, IStringLocalizer<StreamLifetime> localizer, UIHelper uiHelper) : base(logger)
 		{
-			localizer = services.GetRequiredService<IStringLocalizer<StreamLifetime>>();
-			uiHelper = services.GetRequiredService<UIHelper>();
-
-			AddReport(new MessageAliveHolder(baseObj.ReportMessage, true, CreateReportMessage, AttachEvents));
-
-
-			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseDirect().PlanedStartTime);
-			AddTransit(StreamState.WaitingForStreamer, StreamState.Announced, () => DateTime.UtcNow < GetBaseDirect().PlanedStartTime);
-			AddTransit(StreamState.WaitingForStreamer, StreamState.Running, (token) => waitForStartButton.Await(token));
-			AddTransit(StreamState.Running, null, (token) => waitForFinishButton.Await(token));
+			this.localizer = localizer;
+			this.uiHelper = uiHelper;
 		}
 
 
 		public void Replan(DateTime newStartDate)
 		{
-			if (GetBaseDirect().State == StreamState.Running)
+			if (GetStateMachine().CurrentState == StreamState.Running)
 				throw new InvalidOperationException("Stream already has started");
 
 			using var baseObj = GetBase();
@@ -54,6 +43,10 @@ namespace TestBot.Systems.Streaming
 			baseObj.Object.Name = newName;
 		}
 
+		public string GetName() => GetBaseProperty(s => s.Name);
+
+		public IMember GetOwner() => GetBaseProperty(s => s.Owner);
+
 		public void Move(string newPlace)
 		{
 			if (string.IsNullOrWhiteSpace(newPlace))
@@ -65,9 +58,11 @@ namespace TestBot.Systems.Streaming
 			baseObj.Object.Place = newPlace;
 		}
 
-		private void AttachEvents(IMessage message)
+		private void AttachEvents(StreamModel parameter, IMessage message, bool isModified)
 		{
-			switch (GetBaseDirect().State)
+			if (isModified) message.ResetInteractionDispatcher();
+
+			switch (parameter.State)
 			{
 				case StreamState.Announced:
 					break;
@@ -75,7 +70,7 @@ namespace TestBot.Systems.Streaming
 					var di = message.GetInteractionDispatcher();
 					di.Attach<MessageButton>(StartStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker == GetBaseDirect().Owner)
+						if (ctx.Invoker.Equals((IUser)parameter.Owner))
 						{
 							waitForStartButton.Callback();
 							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["StartOk"])));
@@ -87,7 +82,7 @@ namespace TestBot.Systems.Streaming
 					var di2 = message.GetInteractionDispatcher();
 					di2.Attach<MessageButton>(FinishStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker == GetBaseDirect().Owner)
+						if (ctx.Invoker.Equals((IUser)parameter.Owner))
 						{
 							waitForFinishButton.Callback();
 							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["FinishOk"])));
@@ -100,16 +95,25 @@ namespace TestBot.Systems.Streaming
 			}
 		}
 
-		private MessageSendModel CreateReportMessage()
+		private MessageSendModel CreateReportMessage(StreamModel parameter)
 		{
-			var b = GetBaseDirect();
-			return b.State switch
+			return parameter.State switch
 			{
-				StreamState.Announced => uiHelper.CreateAnnouncedReport(b.Name, b.Owner, b.PlanedStartTime),
-				StreamState.WaitingForStreamer => uiHelper.CreateWaitingStreamerReport(b.Name, b.Owner, b.PlanedStartTime),
-				StreamState.Running => uiHelper.CreateRunningReport(b.Name, b.Owner, b.Place),
+				StreamState.Announced => uiHelper.CreateAnnouncedReport(parameter.Name, parameter.Owner, parameter.PlanedStartTime),
+				StreamState.WaitingForStreamer => uiHelper.CreateWaitingStreamerReport(parameter.Name, parameter.Owner, parameter.PlanedStartTime),
+				StreamState.Running => uiHelper.CreateRunningReport(parameter.Name, parameter.Owner, parameter.Place),
 				_ => throw new ImpossibleVariantException()
 			};
+		}
+
+		protected override void OnBuild(StreamModel initialBase)
+		{
+			AddReport(new MessageAliveHolder<StreamModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents));
+
+			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseProperty(s => s.PlanedStartTime));
+			AddTransit(StreamState.WaitingForStreamer, StreamState.Announced, () => DateTime.UtcNow < GetBaseProperty(s => s.PlanedStartTime));
+			AddTransit(StreamState.WaitingForStreamer, StreamState.Running, (token) => waitForStartButton.Await(token));
+			AddTransit(StreamState.Running, null, (token) => waitForFinishButton.Await(token));
 		}
 	}
 }

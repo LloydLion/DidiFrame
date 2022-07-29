@@ -1,8 +1,5 @@
-﻿using DidiFrame.Data.Lifetime;
-using DidiFrame.Entities.Message;
-using DidiFrame.Entities.Message.Components;
+﻿using DidiFrame.Lifetimes;
 using DidiFrame.Utils;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Discussion
 {
@@ -14,16 +11,14 @@ namespace TestBot.Systems.Discussion
 
 		private readonly WaitFor waitForConfirm = new();
 		private readonly WaitFor waitForClose = new();
-		private readonly DiscussionChannel baseObj;
 		private readonly IStringLocalizer<DiscussionChannelLifetime> localizer;
 		private Task? runTask;
 		private readonly CancellationTokenSource cts = new();
 
 
-		public DiscussionChannelLifetime(DiscussionChannel baseObj, IServiceProvider services)
+		public DiscussionChannelLifetime(IStringLocalizer<DiscussionChannelLifetime> localizer)
 		{
-			this.baseObj = baseObj;
-			localizer = services.GetRequiredService<IStringLocalizer<DiscussionChannelLifetime>>();
+			this.localizer = localizer;
 		}
 
 		~DiscussionChannelLifetime()
@@ -33,19 +28,9 @@ namespace TestBot.Systems.Discussion
 		}
 
 
-		public ObjectHolder<DiscussionChannel> GetBase()
+		public void Run(DiscussionChannel initialBase, ILifetimeContext<DiscussionChannel> context)
 		{
-			return new ObjectHolder<DiscussionChannel>(baseObj, (_) => { });
-		}
-
-		public DiscussionChannel GetBaseClone()
-		{
-			return baseObj;
-		}
-
-		public void Run(ILifetimeStateUpdater<DiscussionChannel> updater)
-		{
-			var id = baseObj.AskMessage.GetInteractionDispatcher();
+			var id = initialBase.AskMessage.GetInteractionDispatcher();
 
 			var closeSuccess = new ComponentInteractionResult(new MessageSendModel(localizer["CloseSuccess"]));
 			var confirmSuccess = new ComponentInteractionResult(new MessageSendModel(localizer["ConfirmSuccess"]));
@@ -59,22 +44,30 @@ namespace TestBot.Systems.Discussion
 
 			runTask = Task.Run(() =>
 			{
-				var index = Task.WaitAny(new Task[] { waitForClose.Await(), waitForConfirm.Await() }, token);
-				if (cts.IsCancellationRequested) return;
-
-				//Close
-				if (index == 0)
+				try
 				{
-					baseObj.Channel.DeleteAsync().Wait();
+					var index = Task.WaitAny(new Task[] { waitForClose.Await(), waitForConfirm.Await() }, token);
+					if (cts.IsCancellationRequested) return;
+
+					using var baseObject = context.AccessBase().Open();
+
+					//Close
+					if (index == 0)
+					{
+						baseObject.Object.Channel.DeleteAsync().Wait();
+					}
+					//Confirm
+					else
+					{
+						baseObject.Object.AskMessage.DeleteAsync().Wait();
+					}
+
+					context.FinalizeLifetime();
 				}
-				//Confirm
-				else
+				catch (Exception ex)
 				{
-					baseObj.AskMessage.DeleteAsync().Wait();
+					context.CrashPipeline(ex, false);
 				}
-
-				updater.Finish(this);
-
 			}, token);
 		}
 	}

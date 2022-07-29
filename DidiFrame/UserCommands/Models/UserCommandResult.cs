@@ -21,6 +21,16 @@
 		public MessageSendModel? RespondMessage { get; init; }
 
 		/// <summary>
+		/// Debug message that will be sent to console
+		/// </summary>
+		public string? DebugMessage { get; init; }
+
+		/// <summary>
+		/// Exception if something went wrong
+		/// </summary>
+		public Exception? Exception { get; init; }
+
+		/// <summary>
 		/// Status code of command
 		/// </summary>
 		public UserCommandCode Code { get; }

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DidiFrame.Data.MongoDB
+namespace DidiFrame.Data.Mongo
 {
 	/// <summary>
 	/// Extensions for DidiFrame.Data.MongoDB namespace for service collection

@@ -1,5 +1,6 @@
 ﻿using DidiFrame.Culture;
 using DidiFrame.UserCommands.Pipeline;
+using FluentValidation;
 
 namespace DidiFrame.UserCommands.Executing
 {
@@ -8,12 +9,12 @@ namespace DidiFrame.UserCommands.Executing
 	/// </summary>
 	public class DefaultUserCommandsExecutor : AbstractUserCommandPipelineMiddleware<ValidatedUserCommandContext, UserCommandResult>
 	{
-		private static readonly EventId CommandStartID = new (32, "CommandStart");
-		private static readonly EventId CommandCompliteID = new (33, "CommandComplite");
+		private static readonly EventId CommandStartID = new(32, "CommandStart");
 		private static readonly EventId InternalErrorID = new(36, "InternalError");
 
 
 		private readonly Options options;
+		private readonly IValidator<UserCommandContext> ctxValidator;
 		private readonly ILogger<DefaultUserCommandsExecutor> logger;
 		private readonly IServerCultureProvider cultureProvider;
 
@@ -21,12 +22,14 @@ namespace DidiFrame.UserCommands.Executing
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor
 		/// </summary>
+		/// <param name="ctxValidator">Validator for DidiFrame.UserCommands.Models.UserCommandContext</param>
 		/// <param name="options">Option for executor (DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options)</param>
 		/// <param name="logger">Logger to log command operations</param>
 		/// <param name="cultureProvider">Culture provider to provide culture into commands' handlers</param>
-		public DefaultUserCommandsExecutor(IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IServerCultureProvider cultureProvider)
+		public DefaultUserCommandsExecutor(IValidator<UserCommandContext> ctxValidator, IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IServerCultureProvider cultureProvider)
 		{
 			this.options = options.Value;
+			this.ctxValidator = ctxValidator;
 			this.logger = logger;
 			this.cultureProvider = cultureProvider;
 		}
@@ -35,6 +38,8 @@ namespace DidiFrame.UserCommands.Executing
 		/// <inheritdoc/>
 		public override UserCommandResult? Process(ValidatedUserCommandContext ctx, UserCommandPipelineContext pipelineContext)
 		{
+			ctxValidator.ValidateAndThrow(ctx);
+
 			try
 			{
 				UserCommandResult result;
@@ -53,11 +58,10 @@ namespace DidiFrame.UserCommands.Executing
 					{
 						result = new UserCommandResult(UserCommandCode.UnspecifiedError)
 						{
-							RespondMessage = createExcetionMessage(ex)
+							RespondMessage = createExcetionMessage(ex),
+							Exception = ex
 						};
 					}
-
-					logger.Log(LogLevel.Debug, CommandCompliteID, "Command executed with code {ResultCode}", result.Code);
 
 					return result;
 				}
@@ -75,16 +79,16 @@ namespace DidiFrame.UserCommands.Executing
 							break;
 						case Options.UnspecifiedErrorMessageBehavior.EnableWithExceptionsTypeAndMessage:
 							text = "Command excecution finished with error\n" +
-									$"Error: {ex}\n" +
-									"Code: " + nameof(UserCommandCode.UnspecifiedError);
+								$"Error: {ex}\n" +
+								"Code: " + nameof(UserCommandCode.UnspecifiedError);
 							break;
 						case Options.UnspecifiedErrorMessageBehavior.EnableWithFullExceptionInfo:
 							text = "Command excecution finished with error\n" +
-									$"Error: {ex}\n" +
-									$"Stack: {ex.StackTrace}" +
-									$"InnerException: {ex.InnerException?.ToString() ?? "No inner exception"}\n" +
-									$"InnerExceptionStack: {ex.InnerException?.StackTrace ?? "No inner exception"}\n" +
-									"Code: " + nameof(UserCommandCode.UnspecifiedError);
+								$"Error: {ex}\n" +
+								$"Stack: {ex.StackTrace}" +
+								$"InnerException: {ex.InnerException?.ToString() ?? "No inner exception"}\n" +
+								$"InnerExceptionStack: {ex.InnerException?.StackTrace ?? "No inner exception"}\n" +
+								"Code: " + nameof(UserCommandCode.UnspecifiedError);
 							break;
 						default: throw new Exception(); //Never be
 					}

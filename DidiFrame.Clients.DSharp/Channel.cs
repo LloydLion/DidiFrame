@@ -1,6 +1,8 @@
 ﻿using DidiFrame.Entities;
+using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
+using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -9,24 +11,34 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class Channel : IChannel
 	{
-		private readonly DiscordChannel channel;
+		private readonly ObjectSourceDelegate<DiscordChannel> channel;
 		private readonly Server server;
+		private readonly ObjectSourceDelegate<ChannelCategory> targetCategory;
 
 
 		/// <inheritdoc/>
-		public string Name => channel.Name;
+		public string Name => AccessBase().Name;
 
 		/// <inheritdoc/>
-		public ulong Id => channel.Id;
+		public ulong Id { get; }
 
 		/// <inheritdoc/>
-		public IChannelCategory Category => server.GetCategory(channel.ParentId);
+		public IChannelCategory Category
+		{
+			get
+			{
+				var obj = targetCategory();
+				if (obj is null)
+					throw new ObjectDoesNotExistException(nameof(Category));
+				else return obj;
+			}
+		}
 
 		/// <inheritdoc/>
 		public IServer Server => server;
 
 		/// <inheritdoc/>
-		public DiscordChannel BaseChannel => channel;
+		public DiscordChannel BaseChannel => AccessBase();
 
 		/// <summary>
 		/// Base server for channel, casted to DidiFrame.Clients.DSharp.Server Server property
@@ -34,22 +46,35 @@ namespace DidiFrame.Clients.DSharp
 		public Server BaseServer => server;
 
 		/// <inheritdoc/>
-		public bool IsExist => server.HasChannel(this);
+		public bool IsExist => channel() is not null;
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Channel
 		/// </summary>
-		/// <param name="channel">Base DiscordChannel from DSharp</param>
+		/// <param name="id">Id of channel</param>
+		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
-		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
-		public Channel(DiscordChannel channel, Server server)
+		public Channel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : this(id, channel, server, () =>
 		{
-			if (channel.GuildId != server.Id)
-				throw new ArgumentException("Base channel's server and transmited server wrap are different", nameof(server));
+			var obj = channel();
+			if (obj is null) return null;
+			else return (ChannelCategory)server.GetCategory(obj.ParentId);
+		}) { }
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Clients.DSharp.Channel with overrided category
+		/// </summary>
+		/// <param name="id">Id of channel</param>
+		/// <param name="channel">Base DiscordChannel from DSharp source</param>
+		/// <param name="server">Owner server wrap object</param>
+		/// <param name="targetCategory">Custom category source</param>
+		public Channel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server, ObjectSourceDelegate<ChannelCategory> targetCategory)
+		{
+			Id = id;
 			this.channel = channel;
 			this.server = server;
+			this.targetCategory = targetCategory;
 		}
 
 
@@ -57,21 +82,42 @@ namespace DidiFrame.Clients.DSharp
 		public bool Equals(IServerEntity? other) => Equals(other as Channel);
 
 		/// <inheritdoc/>
-		public bool Equals(IChannel? other) => other is Channel channel && channel.Id == Id;
+		public bool Equals(IChannel? other) => other is Channel channel && channel.IsExist && IsExist && channel.Id == Id;
 
 
 		/// <inheritdoc/>
-		public static Channel Construct(DiscordChannel channel, Server server)
+		public static Channel Construct(ulong id, ChannelType? type, ObjectSourceDelegate<DiscordChannel> channel, Server server)
 		{
-			return channel.Type.GetAbstract() switch
+			return type switch
 			{
-				ChannelType.TextCompatible => new TextChannel(channel, server),
-				ChannelType.Voice => new VoiceChannel(channel, server),
-				_ => new Channel(channel, server)
+				ChannelType.TextCompatible => new TextChannel(id, channel, server),
+				ChannelType.Voice => new VoiceChannel(id, channel, server),
+				_ => new Channel(id, channel, server)
 			};
 		}
 
 		/// <inheritdoc/>
-		public Task DeleteAsync() => server.SourceClient.DoSafeOperationAsync(() => channel.DeleteAsync(), new(Client.ChannelName, Id, Name));
+		public Task DeleteAsync()
+		{
+			lock (this)
+			{
+				var obj = AccessBase();
+				return server.SourceClient.DoSafeOperationAsync(() => obj.DeleteAsync(), new(Client.ChannelName, Id, Name));
+			}
+		}
+
+		/// <summary>
+		/// Gains access to base channel from dsharp or throws exception of it doesn't exist more
+		/// </summary>
+		/// <param name="nameOfCaller">Name of caller for fill exception data</param>
+		/// <returns>Base channel</returns>
+		/// <exception cref="ObjectDoesNotExistException">If requested object no more exist</exception>
+		protected DiscordChannel AccessBase([CallerMemberName] string nameOfCaller = "")
+		{
+			var obj = channel();
+			if (obj is null)
+				throw new ObjectDoesNotExistException(nameOfCaller);
+			else return obj;
+		}
 	}
 }
