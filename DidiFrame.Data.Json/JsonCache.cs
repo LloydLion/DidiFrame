@@ -27,6 +27,12 @@ namespace DidiFrame.Data.Json
 
 		public async Task LoadAllAsync()
 		{
+			if (Directory.Exists(basePath) == false)
+			{
+				Directory.CreateDirectory(basePath);
+				return;
+			}
+
 			var files = Directory.GetFiles(basePath);
 			var tasks = new List<Task<(string, Dictionary<string, JContainer>)>>();
 
