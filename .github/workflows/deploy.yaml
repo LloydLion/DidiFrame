@@ -29,6 +29,9 @@ jobs:
     - name: 'Get Version'
       id: version
       uses: battila7/get-version-action@v2
+      
+    - name: 'Build solution'
+      run: dotnet build --configuration Release
 
     - name: 'Pack project 1'
       run: dotnet pack ${{ env.PROJECT_PATH_1 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
@@ -42,5 +45,8 @@ jobs:
     - name: 'Pack project 4'
       run: dotnet pack ${{ env.PROJECT_PATH_4 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
 
-    - name: 'Push package'
+    - name: 'Push packages'
       run: dotnet nuget push "output\*.nupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
+      
+    - name: 'Push packages sources'
+      run: dotnet nuget push "output\*.snupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
