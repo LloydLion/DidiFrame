@@ -25,7 +25,7 @@ namespace DidiFrame.Utils.Json.Converters
 		{
 			var jobj = JToken.ReadFrom(reader);
 
-			var (settable, ctor) = GetProperties(objectType);
+			var (settable, ctor) = GetProperties(objectType, out var ctorInfo);
 
 
 			if (existingValue is null)
@@ -40,7 +40,7 @@ namespace DidiFrame.Utils.Json.Converters
 					ctorArgs[i] = maybe.ToObject(octor[i].PropertyType, serializer);
 				}
 
-				existingValue = Activator.CreateInstance(objectType, ctorArgs);
+				existingValue = ctorInfo.Invoke(ctorArgs);
 			}
 
 			foreach (var item in settable)
@@ -62,7 +62,7 @@ namespace DidiFrame.Utils.Json.Converters
 			else
 			{
 				var type = value.GetType();
-				var (settable, ctor) = GetProperties(type);
+				var (settable, ctor) = GetProperties(type, out _);
 
 				var jobj = new JObject();
 
@@ -72,14 +72,15 @@ namespace DidiFrame.Utils.Json.Converters
 					jobj.Add(item.Name, val is null ? null : JToken.FromObject(val, serializer));
 				}
 
-				serializer.Serialize(writer, jobj);
+				jobj.WriteTo(writer);
 			}
 		}
 
-		private static (PropertyInfo[] settable, PropertyInfo[] ctor) GetProperties(Type type)
+		private static (PropertyInfo[] settable, PropertyInfo[] ctor) GetProperties(Type type, out ConstructorInfo ctorInfo)
 		{
 			var settable = type.GetProperties().Where(s => s.CanRead && s.CanWrite && s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() == null).ToArray();
 			var ctor = type.GetProperties().Where(s => s.CanRead && s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() != null).ToArray();
+			ctorInfo = type.GetConstructor(ctor.Select(s => s.PropertyType).ToArray()) ?? throw new ArgumentNullException("No ctor was found");
 
 			return (settable, ctor);
 		}

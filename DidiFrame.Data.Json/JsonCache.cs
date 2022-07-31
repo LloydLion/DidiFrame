@@ -113,7 +113,7 @@ namespace DidiFrame.Data.Json
 				baseDic.Add(l.Key, jobj);
 			}
 
-			var str = serializer.Serialize(baseDic);
+			var str = JsonConvert.SerializeObject(baseDic, Formatting.Indented);
 			var file = Path.Combine(basePath, path);
 			return dispatcher.QueueTask(new(file, Encoding.Default.GetBytes(str)));
 		}

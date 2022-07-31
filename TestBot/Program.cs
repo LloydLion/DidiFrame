@@ -20,21 +20,12 @@ using DidiFrame.AutoInjecting;
 using DidiFrame.Data.Json;
 using DidiFrame.Culture;
 using DidiFrame.GlobalEvents;
-using DidiFrame.Lifetimes;
 using DidiFrame.UserCommands.Loader.Reflection;
 using DidiFrame.Clients.DSharp;
-using DidiFrame;
 using DidiFrame.Application;
-using DidiFrame.Data.Mongo;
-using DidiFrame.UserCommands.Pipeline.Building;
 using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
 using DidiFrame.Statistic;
-using DidiFrame.UserCommands.Pipeline;
-using DidiFrame.UserCommands.PreProcessing;
-using DidiFrame.UserCommands.Executing;
-using DidiFrame.UserCommands.Pipeline.Services;
-using DidiFrame.UserCommands.ContextValidation;
 using DidiFrame.Localization;
 
 var appBuilder = DiscordApplicationBuilder.Create();
@@ -51,7 +42,7 @@ appBuilder.AddServices((services, config) =>
 		.AddAutoDataRepositories()
 		.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
 		.AddDSharpClient(config.GetSection("Discord"))
-		//.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
+		.AddApplicationCommandsUserCommandsPipeline(config.GetSection("Commands:ApplicationCommands"), config.GetSection("Commands:Executing"))
 		.AddSimpleUserCommandsRepository()
 		.AddReflectionUserCommandsLoader()
 		.AddHelpCommands()
@@ -63,21 +54,9 @@ appBuilder.AddServices((services, config) =>
 		.Configure<LoggerFilterOptions>(opt => opt.AddFilter("Microsoft.Extensions.Localization.ResourceManagerStringLocalizer", LogLevel.None))
 		.InjectAutoDependencies(new ReflectionAutoInjector());
 
-	services.Configure<DefaultUserCommandsExecutor.Options>(config.GetSection("Commands:Executing"));
-
-	services.AddTransient<IUserCommandContextConverter, DefaultUserCommandContextConverter>();
-
-	services.AddUserCommandLocalService<Disposer>();
-
-	services.AddUserCommandPipeline(builder =>
-	{
-		builder
-			.SetSource<UserCommandPreContext, ApplicationCommandDispatcher>(true)
-			.AddMiddleware(prov => prov.GetRequiredService<IUserCommandContextConverter>())
-			.AddMiddleware<UserCommandContext, ValidatedUserCommandContext, ContextValidator>(true)
-			.AddMiddleware<ValidatedUserCommandContext, UserCommandResult, DefaultUserCommandsExecutor>(true)
-			.Build();
-	});
+	//Add overrides
+	services
+		.AddTransient<ApplicationCommandDispatcher.BehaviorModel, TestBot.Overrides.ApplicationCommandsDispathcerBehaviorModel>();
 });
 
 
