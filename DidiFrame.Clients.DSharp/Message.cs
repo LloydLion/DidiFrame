@@ -39,7 +39,7 @@ namespace DidiFrame.Clients.DSharp
 		public ITextChannelBase TextChannel => owner;
 
 		/// <inheritdoc/>
-		public IMember Author => TextChannel.Server.GetMember(AccessBase().Id);
+		public IMember Author => TextChannel.Server.GetMember(AccessBase().Author.Id);
 
 		/// <inheritdoc/>
 		public bool IsExist => owner.HasMessage(Id);
