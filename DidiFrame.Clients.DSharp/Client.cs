@@ -1,9 +1,11 @@
 ﻿using DidiFrame.Culture;
+using DidiFrame.Entities.Message;
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Globalization;
@@ -66,6 +68,8 @@ namespace DidiFrame.Clients.DSharp
 
 		internal ILogger<Client> Logger => logger;
 
+		internal IValidator<MessageSendModel> MessageSendModelValidator { get; }
+
 
 		/// <summary>
 		/// Creates instance of DidiFrame.DSharpAdapter.Client
@@ -73,9 +77,11 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="servicesForExtensions">Services that will be used for extensions</param>
 		/// <param name="options">Configuration of DSharp client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <param name="factory">Loggers for DSharp client</param>
+		/// <param name="messageSendModelValidator">Validator for DidiFrame.Entities.Message.MessageSendModel</param>
 		/// <param name="cultureProvider">Culture provider for event thread culture</param>
 		/// <param name="messagesCacheFactory">Optional custom factory for server's channel messages caches</param>
-		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IServerCultureProvider? cultureProvider = null, IChannelMessagesCacheFactory? messagesCacheFactory = null)
+		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IValidator<MessageSendModel> messageSendModelValidator,
+			IServerCultureProvider? cultureProvider = null, IChannelMessagesCacheFactory? messagesCacheFactory = null)
 		{
 			this.options = options.Value;
 			logger = factory.CreateLogger<Client>();
@@ -93,7 +99,8 @@ namespace DidiFrame.Clients.DSharp
 			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
 			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
 			Services = servicesForExtensions;
-			this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
+            MessageSendModelValidator = messageSendModelValidator;
+            this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
 				?? throw new ArgumentException("Cache options can't be null if no custom messages cache factory provided", nameof(options)));
 		}
 

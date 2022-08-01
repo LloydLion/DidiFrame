@@ -15,7 +15,6 @@ namespace DidiFrame.Clients.DSharp
 	{
 		private readonly ObjectSourceDelegate<DiscordMessage> message;
 		private readonly TextChannelBase owner;
-		private readonly IValidator<MessageSendModel> validator;
 
 
 		/// <inheritdoc/>
@@ -27,7 +26,7 @@ namespace DidiFrame.Clients.DSharp
 			get
 			{
 				var sm = MessageConverter.ConvertDown(AccessBase());
-				validator.ValidateAndThrow(sm);
+				BaseChannel.BaseServer.SourceClient.MessageSendModelValidator.ValidateAndThrow(sm);
 				return sm;
 			}
 		}
@@ -61,7 +60,6 @@ namespace DidiFrame.Clients.DSharp
 			Id = id;
 			this.message = message;
 			this.owner = owner;
-			validator = owner.BaseServer.SourceClient.Services.GetRequiredService<IValidator<MessageSendModel>>();
 		}
 
 
@@ -77,7 +75,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
 		{
-			validator.ValidateAndThrow(sendModel);
+			BaseChannel.BaseServer.SourceClient.MessageSendModelValidator.ValidateAndThrow(sendModel);
 
 			return owner.BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
@@ -90,7 +88,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public void ResetInteractionDispatcher()
 		{
-			((Server)owner.Server).ResetInteractionDispatcherFor(Id);
+            owner.BaseServer.ResetInteractionDispatcherFor(Id);
 		}
 
 		private DiscordMessage AccessBase([CallerMemberName] string nameOfCaller = "")
