@@ -62,6 +62,9 @@ namespace DidiFrame.Clients.DSharp
 								&& CacheEnabled.Contains(msg.Channel) == false) return;
 
 							var cache = messages[msg.Channel];
+
+							if (cache.Messages.ContainsKey(msg.Id)) return;
+
 							cache.Messages.Add(msg);
 
 							if (cache.Messages.Count > cacheSize)
@@ -92,8 +95,12 @@ namespace DidiFrame.Clients.DSharp
 								&& CacheEnabled.Contains(textChannel) == false) return;
 
 							var cache = messages[textChannel];
-							var message = GetMessage(msgId, textChannel);
-							cache.Messages.Remove(message);
+							if (cache.Messages.ContainsKey(msgId) == false) return;
+							else
+							{
+								var message = GetMessage(msgId, textChannel);
+								cache.Messages.Remove(message);
+							}
 						}
 						break;
 					default:
@@ -118,6 +125,7 @@ namespace DidiFrame.Clients.DSharp
 						else
 						{
 							CacheEnabled.Add(textChannel);
+							PreloadMessages(textChannel);
 							var result = client.DoSafeOperation(() => textChannel.GetMessagesAsync(quantity).Result);
 							foreach (var item in result.Reverse())
 								AddMessage(item);
@@ -148,15 +156,23 @@ namespace DidiFrame.Clients.DSharp
 						if (messages[textChannel].Messages.ContainsKey(id)) return true;
 						else return checkRESTExistance();
 					case CachePolicy.CacheChannelByRequest:
-						if (CacheEnabled.Contains(textChannel) && messages[textChannel].Messages.ContainsKey(id))
-							return true;
-						CacheEnabled.Add(textChannel);
-						PreloadMessages(textChannel);
-						return checkRESTExistance();
+						if (CacheEnabled.Contains(textChannel) == false)
+						{
+							CacheEnabled.Add(textChannel);
+							PreloadMessages(textChannel);
+						}
+
+						if (messages[textChannel].Messages.ContainsKey(id)) return true;
+						else return checkRESTExistance();
 					case CachePolicy.CacheAllWithoutREST:
 						return messages[textChannel].Messages.ContainsKey(id);
 					case CachePolicy.CacheChannelByRequestWithoutREST:
-						if (CacheEnabled.Contains(textChannel) == false) CacheEnabled.Add(textChannel);
+						if (CacheEnabled.Contains(textChannel) == false)
+						{
+							CacheEnabled.Add(textChannel);
+							PreloadMessages(textChannel);
+						}
+
 						return messages[textChannel].Messages.ContainsKey(id);
 					default:
 						throw new ImpossibleVariantException();
@@ -227,21 +243,17 @@ namespace DidiFrame.Clients.DSharp
 				{
 					case CachePolicy.Disable:
 						return textChannel.GetMessageAsync(id, true).Result;
-					case CachePolicy.CacheMessageByRequest:
+					case CachePolicy.CacheAll or CachePolicy.CacheMessageByRequest:
 						{
 							var cache = messages[textChannel].Messages;
 							if (cache.ContainsKey(id)) return cache[id];
 							else
 							{
 								var request = sendRESTRequest();
-								messages[textChannel].Messages.Add(request);
+								if (policy == CachePolicy.CacheMessageByRequest)
+									messages[textChannel].Messages.Add(request);
 								return request;
 							}
-						}
-					case CachePolicy.CacheAll:
-						{
-							var msg = messages[textChannel].Messages[id];
-							return msg ?? sendRESTRequest();
 						}
 					case CachePolicy.CacheChannelByRequest:
 						{
@@ -249,13 +261,11 @@ namespace DidiFrame.Clients.DSharp
 							{
 								CacheEnabled.Add(textChannel);
 								PreloadMessages(textChannel);
-								return sendRESTRequest();
 							}
-							else
-							{
-								var msg = messages[textChannel].Messages[id];
-								return msg ?? sendRESTRequest();
-							}
+
+							var cache = messages[textChannel].Messages;
+							if (cache.ContainsKey(id)) return cache[id];
+							else return sendRESTRequest();
 						}
 					case CachePolicy.CacheAllWithoutREST:
 						{
@@ -267,9 +277,9 @@ namespace DidiFrame.Clients.DSharp
 							{
 								CacheEnabled.Add(textChannel);
 								PreloadMessages(textChannel);
-								return sendRESTRequest();
 							}
-							else return messages[textChannel].Messages[id];
+
+							return messages[textChannel].Messages[id];
 						}
 					default:
 						throw new ImpossibleVariantException();

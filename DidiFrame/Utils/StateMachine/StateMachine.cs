@@ -114,14 +114,6 @@
 			Logger.Log(LogLevel.Debug, MachineStartupID, "Machine has started");
 		}
 
-		/// <inheritdoc/>
-		public void Dispose()
-		{
-			GC.SuppressFinalize(this);
-			observeTask.Wait();
-			observeTask.Dispose();
-		}
-
 		private void UpdateActiveWorkers()
 		{
 			foreach (var worker in activeWorkers)

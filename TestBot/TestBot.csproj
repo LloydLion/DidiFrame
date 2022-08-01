@@ -15,8 +15,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Translations\DidiFrame\UserCommands\ContextValidation\ContextValidator.resx">
-      <Generator></Generator>
+    <Compile Update="Translations\DidiFrame\Clients\DSharp\ApplicationCommandDispatcher.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ApplicationCommandDispatcher.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Translations\DidiFrame\Clients\DSharp\ApplicationCommandDispatcher.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ApplicationCommandDispatcher.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Translations\Systems\Test\CommandsHandler.resx">
       <SubType>Designer</SubType>

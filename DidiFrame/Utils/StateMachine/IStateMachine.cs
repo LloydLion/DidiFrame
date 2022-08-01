@@ -13,7 +13,7 @@
 	/// Represents finite state machine
 	/// </summary>
 	/// <typeparam name="TState">Struct that represents state of statemahcine</typeparam>
-	public interface IStateMachine<TState> : IDisposable where TState : struct
+	public interface IStateMachine<TState> where TState : struct
 	{
 		/// <summary>
 		/// Event that fires when statmachine changing state

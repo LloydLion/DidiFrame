@@ -38,6 +38,7 @@ namespace TestBot.Systems.Test
 		}
 
 		[Command("printname")]
+		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult PrintChannelName(UserCommandContext ctx)
 		{
 			return new(UserCommandCode.Sucssesful) { RespondMessage = new("Welcome to the " + ctx.Channel.Name) };
@@ -64,6 +65,19 @@ namespace TestBot.Systems.Test
 			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new($"Now - {msg.Content}, Was - {content}") };
 		}
 
+		[Command("reply date")]
+		[SuppressMessage("Performance", "CA1822")]
+		public UserCommandResult ReplyDate(UserCommandContext _, DateTime date)
+		{
+			return new(UserCommandCode.Sucssesful) { RespondMessage = new($"You entered: {date.Ticks} - {date:D}") };
+		}
+
+		[Command("reply time")]
+		[SuppressMessage("Performance", "CA1822")]
+		public UserCommandResult ReplyTime(UserCommandContext _, TimeSpan time)
+		{
+			return new(UserCommandCode.Sucssesful) { RespondMessage = new($"You entered: {time.Ticks} - {time.TotalSeconds}") };
+		}
 
 
 		public class MyProv : IUserCommandArgumentValuesProvider

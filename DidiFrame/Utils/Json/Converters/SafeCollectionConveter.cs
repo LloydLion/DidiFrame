@@ -14,22 +14,31 @@ namespace DidiFrame.Utils.Json.Converters
 			this.invalidElementCallback = invalidElementCallback;
 		}
 
-
+		
 		public override bool CanConvert(Type objectType)
 		{
-			var isDic =
-				objectType.IsAssignableTo(typeof(IDictionary)) ||
-				(objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)) ||
-				objectType.GetInterfaces().Any(s => s.IsGenericType && s.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)) ||
-				objectType.GetInterfaces().Any(s => s.IsGenericType && s.GetGenericTypeDefinition() == typeof(IDictionary<,>));
-			return objectType.IsInterface && objectType.GetInterfaces().Any(s => s.IsGenericType && s.GetGenericTypeDefinition() == typeof(IEnumerable<>)) && !isDic;
+			return ContainsOrIsGeneric(objectType, typeof(ICollection<>));
 		}
 
 		public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
 		{
-			var generic = objectType.GetInterfaces().First(s => s.IsGenericType && s.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+			var isDic = ContainsOrIsGeneric(objectType, typeof(IDictionary<,>));
+
+			object returnObj;
+
+			var generic = ExtractConstructedGeneric(objectType, typeof(ICollection<>));
 			var collectionType = generic.GetGenericArguments()[0];
-			var list = (IList)(Activator.CreateInstance(typeof(List<>).MakeGenericType(collectionType)) ?? throw new ImpossibleVariantException());
+
+			if (objectType.IsInterface)
+			{
+				if (isDic)
+					//collectionType is KeyValuePair
+					returnObj = Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(collectionType.GetGenericArguments())) ?? throw new ImpossibleVariantException();
+				else returnObj = Activator.CreateInstance(typeof(List<>).MakeGenericType(collectionType)) ?? throw new ImpossibleVariantException();
+			}
+			else returnObj = Activator.CreateInstance(objectType) ?? throw new ImpossibleVariantException();
+
+			var addMethod = typeof(ICollection<>).MakeGenericType(collectionType).GetMethod("Add") ?? throw new NullReferenceException();
 
 			var jarr = JArray.Load(reader);
 
@@ -37,21 +46,45 @@ namespace DidiFrame.Utils.Json.Converters
 				try
 				{
 					var obj = el.ToObject(collectionType, serializer);
-					list.Add(obj);
+					addMethod.Invoke(returnObj, new[] { obj ?? throw new NullReferenceException() });
 				}
 				catch (Exception ex)
 				{
 					invalidElementCallback(el.Parent ?? throw new ImpossibleVariantException(), el.Path, ex);
 				}
 
-			return list;
+			return returnObj;
 		}
-
-		public override bool CanWrite => false;
 
 		public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
 		{
-			throw new NotImplementedException();
+			if (value is null)
+				writer.WriteNull();
+			else
+			{
+				var array = new JArray();
+
+				foreach (var item in (IEnumerable)value)
+					array.Add(JToken.FromObject(item, serializer));
+
+				array.WriteTo(writer);
+			}
+		}
+
+		private static bool ContainsOrIsGeneric(Type originType, Type targetType)
+		{
+			var isType = originType.IsGenericType && originType.GetGenericTypeDefinition() == targetType;
+			var contains = originType.GetInterfaces().Any(s => s.IsGenericType && s.GetGenericTypeDefinition() == targetType);
+			return isType || contains;
+		}
+
+		private static Type ExtractConstructedGeneric(Type originType, Type targetType)
+		{
+			var isType = originType.IsGenericType && originType.GetGenericTypeDefinition() == targetType;
+			if (isType) return originType;
+
+			var contains = originType.GetInterfaces().First(s => s.IsGenericType && s.GetGenericTypeDefinition() == targetType);
+			return contains;
 		}
 	}
 }

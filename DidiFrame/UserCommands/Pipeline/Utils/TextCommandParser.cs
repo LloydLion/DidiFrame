@@ -41,7 +41,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		public override UserCommandPreContext? Process(string content, UserCommandPipelineContext pipelineContext)
 		{
 			var server = pipelineContext.SendData.Channel.Server;
-			var cmds = repository.GetCommandsFor(server);
+			var cmds = repository.GetFullCommandList(server);
 			var command = behaviorModel.ParseCommandName(content, cmds);
 
 			if (command is null)
@@ -72,7 +72,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 					{
 						try
 						{
-							selects.Add(behaviorModel.SelectArgument(ref span));
+							selects.Add(behaviorModel.SelectArgument(span, out span));
 						}
 						catch (Exception)
 						{
@@ -87,7 +87,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 
 				foreach (var argument in command.Arguments)
 				{
-					var result = behaviorModel.ProcessArgument(ref selectsSpan, argument, server);
+					var result = behaviorModel.ProcessArgument(selectsSpan, argument, server, out selectsSpan);
 					if (result is null)
 					{
 						pipelineContext.DropPipeline();
@@ -220,10 +220,11 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 			/// <summary>
 			/// Selects argument from input string and slices given string to continue parsing
 			/// </summary>
-			/// <param name="rawString">String value input and sliced string output</param>
+			/// <param name="rawString">String value input</param>
+			/// <param name="newString">Sliced string output</param>
 			/// <returns>Argument select object</returns>
 			/// <exception cref="InvalidOperationException">If input string is invalid</exception>
-			public virtual ArgumentSelect SelectArgument(ref ReadOnlySpan<char> rawString)
+			public virtual ArgumentSelect SelectArgument(ReadOnlySpan<char> rawString, out ReadOnlySpan<char> newString)
 			{
 				foreach (var key in regexes.Keys)
 				{
@@ -233,7 +234,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 					{
 						var match = macthes.Single();
 						var rawStr = match.Groups[1].Value;
-						rawString = rawString[..rawStr.Length];
+						newString = rawString[rawStr.Length..];
 						return new(rawStr, regexes[key]);
 					}
 				}
@@ -241,14 +242,15 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 				throw new InvalidOperationException("Enable to select some command's argument");
 			}
 
-			/// <summary>
-			/// Processes single user command argument and slices selects collection with required raw arguments
-			/// </summary>
-			/// <param name="selects">All availiable raw arguments and output for sliced raw arguments</param>
-			/// <param name="argument"></param>
-			/// <param name="server"></param>
-			/// <returns></returns>
-			public virtual IReadOnlyList<object>? ProcessArgument(ref ReadOnlySpan<ArgumentSelect> selects, UserCommandArgument argument, IServer server)
+            /// <summary>
+            /// Processes single user command argument and slices selects collection with required raw arguments
+            /// </summary>
+            /// <param name="selects">All availiable raw arguments and output for sliced raw arguments</param>
+            /// <param name="argument">Argument to process</param>
+            /// <param name="server">Server where command was writen</param>
+            /// <param name="unusedSelects">Used selects span output</param>
+            /// <returns>List of ready objects or null if cannot process argument</returns>
+            public virtual IReadOnlyList<object>? ProcessArgument(ReadOnlySpan<ArgumentSelect> selects, UserCommandArgument argument, IServer server, out ReadOnlySpan<ArgumentSelect> unusedSelects)
 			{
 				var result = new List<object>();
 
@@ -256,7 +258,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 				{
 					foreach (var item in selects)
 						result.Add(ConvertArgumentValue(item.SelectedString, item.Type, server));
-					selects = ReadOnlySpan<ArgumentSelect>.Empty;
+					unusedSelects = ReadOnlySpan<ArgumentSelect>.Empty;
 				}
 				else
 				{
@@ -264,17 +266,19 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 
 					if (pa.Length != argument.OriginTypes.Count)
 					{
+						unusedSelects = ReadOnlySpan<ArgumentSelect>.Empty;
 						return null;
 					}
 					for (int i = 0; i < pa.Length; i++)
 						if (argument.OriginTypes[i] != pa[i].Type)
 						{
+							unusedSelects = ReadOnlySpan<ArgumentSelect>.Empty;
 							return null;
 						}
 
 					foreach (var item in pa)
 						result.Add(ConvertArgumentValue(item.SelectedString, item.Type, server));
-					selects = selects[argument.OriginTypes.Count..];
+					unusedSelects = selects[argument.OriginTypes.Count..];
 				}
 
 				return result;
