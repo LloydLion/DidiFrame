@@ -30,18 +30,27 @@ jobs:
       id: version
       uses: battila7/get-version-action@v2
       
-    - name: 'Build solution'
-      run: dotnet build --configuration Release
+    - name: 'Build project 1'
+      run: dotnet build ${{ env.PROJECT_PATH_1 }} --configuration Release
 
     - name: 'Pack project 1'
       run: dotnet pack ${{ env.PROJECT_PATH_1 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+      
+    - name: 'Build project 2'
+      run: dotnet build ${{ env.PROJECT_PATH_2 }} --configuration Release
     
     - name: 'Pack project 2'
       run: dotnet pack ${{ env.PROJECT_PATH_2 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
     
+    - name: 'Build project 3'
+      run: dotnet build ${{ env.PROJECT_PATH_3 }} --configuration Release
+    
     - name: 'Pack project 3'
       run: dotnet pack ${{ env.PROJECT_PATH_3 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
 
+    - name: 'Build project 4'
+      run: dotnet build ${{ env.PROJECT_PATH_4 }} --configuration Release
+      
     - name: 'Pack project 4'
       run: dotnet pack ${{ env.PROJECT_PATH_4 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
 

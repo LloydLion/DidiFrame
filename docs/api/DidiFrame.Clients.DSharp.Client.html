@@ -121,13 +121,13 @@
   
   
   <a id="DidiFrame_Clients_DSharp_Client__ctor_" data-uid="DidiFrame.Clients.DSharp.Client.#ctor*"></a>
-  <h4 id="DidiFrame_Clients_DSharp_Client__ctor_IServiceProvider_Microsoft_Extensions_Options_IOptions_DidiFrame_Clients_DSharp_Client_Options__Microsoft_Extensions_Logging_ILoggerFactory_DidiFrame_Culture_IServerCultureProvider_DidiFrame_Clients_DSharp_IChannelMessagesCacheFactory_" data-uid="DidiFrame.Clients.DSharp.Client.#ctor(IServiceProvider,Microsoft.Extensions.Options.IOptions{DidiFrame.Clients.DSharp.Client.Options},Microsoft.Extensions.Logging.ILoggerFactory,DidiFrame.Culture.IServerCultureProvider,DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)">Client(IServiceProvider, IOptions&lt;Client.Options&gt;, ILoggerFactory, IServerCultureProvider, IChannelMessagesCacheFactory)</h4>
+  <h4 id="DidiFrame_Clients_DSharp_Client__ctor_IServiceProvider_Microsoft_Extensions_Options_IOptions_DidiFrame_Clients_DSharp_Client_Options__Microsoft_Extensions_Logging_ILoggerFactory_FluentValidation_IValidator_DidiFrame_Entities_Message_MessageSendModel__DidiFrame_Culture_IServerCultureProvider_DidiFrame_Clients_DSharp_IChannelMessagesCacheFactory_" data-uid="DidiFrame.Clients.DSharp.Client.#ctor(IServiceProvider,Microsoft.Extensions.Options.IOptions{DidiFrame.Clients.DSharp.Client.Options},Microsoft.Extensions.Logging.ILoggerFactory,FluentValidation.IValidator{DidiFrame.Entities.Message.MessageSendModel},DidiFrame.Culture.IServerCultureProvider,DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)">Client(IServiceProvider, IOptions&lt;Client.Options&gt;, ILoggerFactory, IValidator&lt;MessageSendModel&gt;, IServerCultureProvider, IChannelMessagesCacheFactory)</h4>
   <div class="markdown level1 summary"><p>Creates instance of DidiFrame.DSharpAdapter.Client</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Client(IServiceProvider servicesForExtensions, IOptions&lt;Client.Options&gt; options, ILoggerFactory factory, IServerCultureProvider cultureProvider = null, IChannelMessagesCacheFactory messagesCacheFactory = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public Client(IServiceProvider servicesForExtensions, IOptions&lt;Client.Options&gt; options, ILoggerFactory factory, IValidator&lt;MessageSendModel&gt; messageSendModelValidator, IServerCultureProvider cultureProvider = null, IChannelMessagesCacheFactory messagesCacheFactory = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -155,6 +155,12 @@
         <td><span class="xref">Microsoft.Extensions.Logging.ILoggerFactory</span></td>
         <td><span class="parametername">factory</span></td>
         <td><p>Loggers for DSharp client</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FluentValidation.IValidator</span>&lt;<a class="xref" href="DidiFrame.Entities.Message.MessageSendModel.html">MessageSendModel</a>&gt;</td>
+        <td><span class="parametername">messageSendModelValidator</span></td>
+        <td><p>Validator for DidiFrame.Entities.Message.MessageSendModel</p>
 </td>
       </tr>
       <tr>

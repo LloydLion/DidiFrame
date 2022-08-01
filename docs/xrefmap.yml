@@ -1819,15 +1819,15 @@ references:
   commentId: T:DidiFrame.Clients.DSharp.Client
   fullName: DidiFrame.Clients.DSharp.Client
   nameWithType: Client
-- uid: DidiFrame.Clients.DSharp.Client.#ctor(IServiceProvider,Microsoft.Extensions.Options.IOptions{DidiFrame.Clients.DSharp.Client.Options},Microsoft.Extensions.Logging.ILoggerFactory,DidiFrame.Culture.IServerCultureProvider,DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)
-  name: Client(IServiceProvider, IOptions<Client.Options>, ILoggerFactory, IServerCultureProvider, IChannelMessagesCacheFactory)
-  href: api/DidiFrame.Clients.DSharp.Client.html#DidiFrame_Clients_DSharp_Client__ctor_IServiceProvider_Microsoft_Extensions_Options_IOptions_DidiFrame_Clients_DSharp_Client_Options__Microsoft_Extensions_Logging_ILoggerFactory_DidiFrame_Culture_IServerCultureProvider_DidiFrame_Clients_DSharp_IChannelMessagesCacheFactory_
-  commentId: M:DidiFrame.Clients.DSharp.Client.#ctor(IServiceProvider,Microsoft.Extensions.Options.IOptions{DidiFrame.Clients.DSharp.Client.Options},Microsoft.Extensions.Logging.ILoggerFactory,DidiFrame.Culture.IServerCultureProvider,DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)
-  name.vb: Client(IServiceProvider, IOptions(Of Client.Options), ILoggerFactory, IServerCultureProvider, IChannelMessagesCacheFactory)
-  fullName: DidiFrame.Clients.DSharp.Client.Client(IServiceProvider, Microsoft.Extensions.Options.IOptions<DidiFrame.Clients.DSharp.Client.Options>, Microsoft.Extensions.Logging.ILoggerFactory, DidiFrame.Culture.IServerCultureProvider, DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)
-  fullName.vb: DidiFrame.Clients.DSharp.Client.Client(IServiceProvider, Microsoft.Extensions.Options.IOptions(Of DidiFrame.Clients.DSharp.Client.Options), Microsoft.Extensions.Logging.ILoggerFactory, DidiFrame.Culture.IServerCultureProvider, DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)
-  nameWithType: Client.Client(IServiceProvider, IOptions<Client.Options>, ILoggerFactory, IServerCultureProvider, IChannelMessagesCacheFactory)
-  nameWithType.vb: Client.Client(IServiceProvider, IOptions(Of Client.Options), ILoggerFactory, IServerCultureProvider, IChannelMessagesCacheFactory)
+- uid: DidiFrame.Clients.DSharp.Client.#ctor(IServiceProvider,Microsoft.Extensions.Options.IOptions{DidiFrame.Clients.DSharp.Client.Options},Microsoft.Extensions.Logging.ILoggerFactory,FluentValidation.IValidator{DidiFrame.Entities.Message.MessageSendModel},DidiFrame.Culture.IServerCultureProvider,DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)
+  name: Client(IServiceProvider, IOptions<Client.Options>, ILoggerFactory, IValidator<MessageSendModel>, IServerCultureProvider, IChannelMessagesCacheFactory)
+  href: api/DidiFrame.Clients.DSharp.Client.html#DidiFrame_Clients_DSharp_Client__ctor_IServiceProvider_Microsoft_Extensions_Options_IOptions_DidiFrame_Clients_DSharp_Client_Options__Microsoft_Extensions_Logging_ILoggerFactory_FluentValidation_IValidator_DidiFrame_Entities_Message_MessageSendModel__DidiFrame_Culture_IServerCultureProvider_DidiFrame_Clients_DSharp_IChannelMessagesCacheFactory_
+  commentId: M:DidiFrame.Clients.DSharp.Client.#ctor(IServiceProvider,Microsoft.Extensions.Options.IOptions{DidiFrame.Clients.DSharp.Client.Options},Microsoft.Extensions.Logging.ILoggerFactory,FluentValidation.IValidator{DidiFrame.Entities.Message.MessageSendModel},DidiFrame.Culture.IServerCultureProvider,DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)
+  name.vb: Client(IServiceProvider, IOptions(Of Client.Options), ILoggerFactory, IValidator(Of MessageSendModel), IServerCultureProvider, IChannelMessagesCacheFactory)
+  fullName: DidiFrame.Clients.DSharp.Client.Client(IServiceProvider, Microsoft.Extensions.Options.IOptions<DidiFrame.Clients.DSharp.Client.Options>, Microsoft.Extensions.Logging.ILoggerFactory, FluentValidation.IValidator<DidiFrame.Entities.Message.MessageSendModel>, DidiFrame.Culture.IServerCultureProvider, DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)
+  fullName.vb: DidiFrame.Clients.DSharp.Client.Client(IServiceProvider, Microsoft.Extensions.Options.IOptions(Of DidiFrame.Clients.DSharp.Client.Options), Microsoft.Extensions.Logging.ILoggerFactory, FluentValidation.IValidator(Of DidiFrame.Entities.Message.MessageSendModel), DidiFrame.Culture.IServerCultureProvider, DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory)
+  nameWithType: Client.Client(IServiceProvider, IOptions<Client.Options>, ILoggerFactory, IValidator<MessageSendModel>, IServerCultureProvider, IChannelMessagesCacheFactory)
+  nameWithType.vb: Client.Client(IServiceProvider, IOptions(Of Client.Options), ILoggerFactory, IValidator(Of MessageSendModel), IServerCultureProvider, IChannelMessagesCacheFactory)
 - uid: DidiFrame.Clients.DSharp.Client.#ctor*
   name: Client
   href: api/DidiFrame.Clients.DSharp.Client.html#DidiFrame_Clients_DSharp_Client__ctor_
@@ -12673,15 +12673,15 @@ references:
   isSpec: "True"
   fullName: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ParseCommandName
   nameWithType: TextCommandParser.BehaviorModel.ParseCommandName
-- uid: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument(ReadOnlySpan{DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect}@,UserCommandArgument,IServer)
-  name: ProcessArgument(ref ReadOnlySpan<TextCommandParser.ArgumentSelect>, UserCommandArgument, IServer)
-  href: api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.html#DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_BehaviorModel_ProcessArgument_ReadOnlySpan_DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_ArgumentSelect___UserCommandArgument_IServer_
-  commentId: M:DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument(ReadOnlySpan{DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect}@,UserCommandArgument,IServer)
-  name.vb: ProcessArgument(ByRef ReadOnlySpan(Of TextCommandParser.ArgumentSelect), UserCommandArgument, IServer)
-  fullName: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument(ref ReadOnlySpan<DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect>, UserCommandArgument, IServer)
-  fullName.vb: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument(ByRef ReadOnlySpan(Of DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect), UserCommandArgument, IServer)
-  nameWithType: TextCommandParser.BehaviorModel.ProcessArgument(ref ReadOnlySpan<TextCommandParser.ArgumentSelect>, UserCommandArgument, IServer)
-  nameWithType.vb: TextCommandParser.BehaviorModel.ProcessArgument(ByRef ReadOnlySpan(Of TextCommandParser.ArgumentSelect), UserCommandArgument, IServer)
+- uid: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument(ReadOnlySpan{DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect},UserCommandArgument,IServer,ReadOnlySpan{DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect}@)
+  name: ProcessArgument(ReadOnlySpan<TextCommandParser.ArgumentSelect>, UserCommandArgument, IServer, out ReadOnlySpan<TextCommandParser.ArgumentSelect>)
+  href: api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.html#DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_BehaviorModel_ProcessArgument_ReadOnlySpan_DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_ArgumentSelect__UserCommandArgument_IServer_ReadOnlySpan_DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_ArgumentSelect___
+  commentId: M:DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument(ReadOnlySpan{DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect},UserCommandArgument,IServer,ReadOnlySpan{DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect}@)
+  name.vb: ProcessArgument(ReadOnlySpan(Of TextCommandParser.ArgumentSelect), UserCommandArgument, IServer, ByRef ReadOnlySpan(Of TextCommandParser.ArgumentSelect))
+  fullName: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument(ReadOnlySpan<DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect>, UserCommandArgument, IServer, out ReadOnlySpan<DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect>)
+  fullName.vb: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument(ReadOnlySpan(Of DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect), UserCommandArgument, IServer, ByRef ReadOnlySpan(Of DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect))
+  nameWithType: TextCommandParser.BehaviorModel.ProcessArgument(ReadOnlySpan<TextCommandParser.ArgumentSelect>, UserCommandArgument, IServer, out ReadOnlySpan<TextCommandParser.ArgumentSelect>)
+  nameWithType.vb: TextCommandParser.BehaviorModel.ProcessArgument(ReadOnlySpan(Of TextCommandParser.ArgumentSelect), UserCommandArgument, IServer, ByRef ReadOnlySpan(Of TextCommandParser.ArgumentSelect))
 - uid: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument*
   name: ProcessArgument
   href: api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.html#DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_BehaviorModel_ProcessArgument_
@@ -12689,15 +12689,15 @@ references:
   isSpec: "True"
   fullName: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.ProcessArgument
   nameWithType: TextCommandParser.BehaviorModel.ProcessArgument
-- uid: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument(ReadOnlySpan{System.Char}@)
-  name: SelectArgument(ref ReadOnlySpan<Char>)
-  href: api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.html#DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_BehaviorModel_SelectArgument_ReadOnlySpan_System_Char___
-  commentId: M:DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument(ReadOnlySpan{System.Char}@)
-  name.vb: SelectArgument(ByRef ReadOnlySpan(Of Char))
-  fullName: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument(ref ReadOnlySpan<System.Char>)
-  fullName.vb: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument(ByRef ReadOnlySpan(Of System.Char))
-  nameWithType: TextCommandParser.BehaviorModel.SelectArgument(ref ReadOnlySpan<Char>)
-  nameWithType.vb: TextCommandParser.BehaviorModel.SelectArgument(ByRef ReadOnlySpan(Of Char))
+- uid: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument(ReadOnlySpan{System.Char},ReadOnlySpan{System.Char}@)
+  name: SelectArgument(ReadOnlySpan<Char>, out ReadOnlySpan<Char>)
+  href: api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.html#DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_BehaviorModel_SelectArgument_ReadOnlySpan_System_Char__ReadOnlySpan_System_Char___
+  commentId: M:DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument(ReadOnlySpan{System.Char},ReadOnlySpan{System.Char}@)
+  name.vb: SelectArgument(ReadOnlySpan(Of Char), ByRef ReadOnlySpan(Of Char))
+  fullName: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument(ReadOnlySpan<System.Char>, out ReadOnlySpan<System.Char>)
+  fullName.vb: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument(ReadOnlySpan(Of System.Char), ByRef ReadOnlySpan(Of System.Char))
+  nameWithType: TextCommandParser.BehaviorModel.SelectArgument(ReadOnlySpan<Char>, out ReadOnlySpan<Char>)
+  nameWithType.vb: TextCommandParser.BehaviorModel.SelectArgument(ReadOnlySpan(Of Char), ByRef ReadOnlySpan(Of Char))
 - uid: DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.SelectArgument*
   name: SelectArgument
   href: api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.html#DidiFrame_UserCommands_Pipeline_Utils_TextCommandParser_BehaviorModel_SelectArgument_
@@ -15267,23 +15267,6 @@ references:
   fullName.vb: DidiFrame.Utils.StateMachine.StateMachine(Of TState).CurrentState
   nameWithType: StateMachine<TState>.CurrentState
   nameWithType.vb: StateMachine(Of TState).CurrentState
-- uid: DidiFrame.Utils.StateMachine.StateMachine`1.Dispose
-  name: Dispose()
-  href: api/DidiFrame.Utils.StateMachine.StateMachine-1.html#DidiFrame_Utils_StateMachine_StateMachine_1_Dispose
-  commentId: M:DidiFrame.Utils.StateMachine.StateMachine`1.Dispose
-  fullName: DidiFrame.Utils.StateMachine.StateMachine<TState>.Dispose()
-  fullName.vb: DidiFrame.Utils.StateMachine.StateMachine(Of TState).Dispose()
-  nameWithType: StateMachine<TState>.Dispose()
-  nameWithType.vb: StateMachine(Of TState).Dispose()
-- uid: DidiFrame.Utils.StateMachine.StateMachine`1.Dispose*
-  name: Dispose
-  href: api/DidiFrame.Utils.StateMachine.StateMachine-1.html#DidiFrame_Utils_StateMachine_StateMachine_1_Dispose_
-  commentId: Overload:DidiFrame.Utils.StateMachine.StateMachine`1.Dispose
-  isSpec: "True"
-  fullName: DidiFrame.Utils.StateMachine.StateMachine<TState>.Dispose
-  fullName.vb: DidiFrame.Utils.StateMachine.StateMachine(Of TState).Dispose
-  nameWithType: StateMachine<TState>.Dispose
-  nameWithType.vb: StateMachine(Of TState).Dispose
 - uid: DidiFrame.Utils.StateMachine.StateMachine`1.Freeze
   name: Freeze()
   href: api/DidiFrame.Utils.StateMachine.StateMachine-1.html#DidiFrame_Utils_StateMachine_StateMachine_1_Freeze
