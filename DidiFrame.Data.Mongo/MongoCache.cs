@@ -43,12 +43,6 @@ namespace DidiFrame.Data.Mongo
 
 				var collection = db.GetCollection<BsonDocument>(colName);
 
-				/* Excepted format
-				* "_id" - default Mongo property
-				* "key" - state/settings key
-				* "value" - field with value
-				*/
-
 				foreach (var document in await collection.Find(FilterDefinition<BsonDocument>.Empty).ToListAsync())
 				{
 					try
@@ -117,9 +111,9 @@ namespace DidiFrame.Data.Mongo
 
 		public Task SaveAsync(ulong serverId, string key, JsonSerializer serializer)
 		{
-			var jobj = (JContainer)JToken.FromObject(states[serverId][key], serializer);
+			return dispatcher.QueueTask(new(serverId, key, getJson));
 
-			return dispatcher.QueueTask(new(serverId, key, jobj));
+			JContainer getJson() => (JContainer)JToken.FromObject(states[serverId][key], serializer);
 		}
 
 
@@ -179,7 +173,9 @@ namespace DidiFrame.Data.Mongo
 						{
 							var collection = database.GetCollection<BsonDocument>(task.Task.Collection.ToString());
 
-							var item = new MongoItem(task.Task.Key, task.Task.Json);
+							var json = task.Task.JsonSource.Invoke();
+
+							var item = new MongoItem(task.Task.Key, json);
 
 							collection.DeleteOne(new BsonDocument("Key", new BsonString(task.Task.Key)));
 							collection.InsertOne(BsonDocument.Parse(JsonConvert.SerializeObject(item)), new InsertOneOptions() { Comment = "Created at " + DateTime.Now.ToString() });
@@ -196,7 +192,7 @@ namespace DidiFrame.Data.Mongo
 			}
 
 
-			public record WriteTask(ulong Collection, string Key, JContainer Json);
+			public record WriteTask(ulong Collection, string Key, Func<JContainer> JsonSource);
 
 			private record ScheduleItem(WriteTask Task, TaskCompletionSource TaskCompletionSource);
 

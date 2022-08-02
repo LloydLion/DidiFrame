@@ -27,6 +27,7 @@ using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
 using DidiFrame.Statistic;
 using DidiFrame.Localization;
+using DidiFrame.Data.Mongo;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -37,8 +38,8 @@ appBuilder.AddLogging(builder => builder.SetMinimumLevel(LogLevel.Trace).AddFacn
 appBuilder.AddServices((services, config) =>
 {
 	services
-		.AddJsonDataManagement(config.GetSection("Data:Json"), true, true)
-		//.AddMongoDataManagement(config.GetSection("Data:Mongo"), true, false)
+		.AddJsonDataManagement(config.GetSection("Data:Json"), false, true)
+		.AddMongoDataManagement(config.GetSection("Data:Mongo"), true, false)
 		.AddAutoDataRepositories()
 		.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
 		.AddDSharpClient(config.GetSection("Discord"))
