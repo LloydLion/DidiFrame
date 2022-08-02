@@ -11,6 +11,7 @@ env:
   PROJECT_PATH_3: 'DidiFrame.Data.Json/DidiFrame.Data.Json.csproj'
   PROJECT_PATH_4: 'DidiFrame.Data.Mongo/DidiFrame.Data.Mongo.csproj'
   NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
+  SNUGET_SOURCE_URL: 'https://symbols.nuget.org/download/symbols'
   
 jobs:
   deploy:
@@ -57,5 +58,5 @@ jobs:
     - name: 'Push packages'
       run: dotnet nuget push "output\*.nupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
       
-    - name: 'Push packages sources'
-      run: dotnet nuget push "output\*.snupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}
+    - name: 'Push packages symbols'
+      run: dotnet nuget push "output\*.snupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.SNUGET_SOURCE_URL }}

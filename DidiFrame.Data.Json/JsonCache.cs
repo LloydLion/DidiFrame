@@ -105,17 +105,26 @@ namespace DidiFrame.Data.Json
 		public Task SaveAsync(string path, JsonSerializer serializer)
 		{
 			var baseDic = initialData.ContainsKey(path) ? initialData[path].ToDictionary(s => s.Key, s => s.Value) : new();
+			var currentState = states[path].ToDictionary(s => s.Key, s => s.Value);
 
-			foreach (var l in states[path])
-			{
-				var jobj = (JContainer)JToken.FromObject(l.Value, serializer);
-				if (baseDic.ContainsKey(l.Key)) baseDic.Remove(l.Key);
-				baseDic.Add(l.Key, jobj);
-			}
-
-			var str = JsonConvert.SerializeObject(baseDic, Formatting.Indented);
 			var file = Path.Combine(basePath, path);
-			return dispatcher.QueueTask(new(file, Encoding.Default.GetBytes(str)));
+
+			return dispatcher.QueueTask(new(file, bytesSource));
+
+
+			byte[] bytesSource()
+            {
+				foreach (var l in currentState)
+				{
+					var jobj = (JContainer)JToken.FromObject(l.Value, serializer);
+					if (baseDic.ContainsKey(l.Key)) baseDic.Remove(l.Key);
+					baseDic.Add(l.Key, jobj);
+				}
+
+				var str = JsonConvert.SerializeObject(baseDic, Formatting.Indented);
+
+				return Encoding.Default.GetBytes(str);
+			}
 		}
 
 
@@ -171,7 +180,8 @@ namespace DidiFrame.Data.Json
 
 						try
 						{
-							File.WriteAllBytes(task.Task.Path, task.Task.Bytes);
+							var bytes = task.Task.BytesSource.Invoke();
+							File.WriteAllBytes(task.Task.Path, bytes);
 						}
 						catch (Exception ex)
 						{
@@ -184,7 +194,7 @@ namespace DidiFrame.Data.Json
 			}
 
 
-			public record FileTask(string Path, byte[] Bytes);
+			public record FileTask(string Path, Func<byte[]> BytesSource);
 
 			private record ScheduleItem(FileTask Task, TaskCompletionSource TaskCompletionSource);
 		}
