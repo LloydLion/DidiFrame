@@ -14,7 +14,7 @@
 		/// <summary>
 		/// Connects to the server using client
 		/// </summary>
-		public void Connect();
+		public Task ConnectAsync();
 
 		/// <summary>
 		/// Does final proporation for bot work

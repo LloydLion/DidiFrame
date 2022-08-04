@@ -42,5 +42,29 @@ namespace DidiFrame
 			Thread.CurrentThread.CurrentUICulture = ui;
 			return ret;
 		}
+
+		public static IDisposable WaitAndCreateDisposable(this AutoResetEvent resetEvent)
+		{
+			resetEvent.WaitOne();
+			return new AutoResetEventDisposable(resetEvent);
+		}
+
+
+		private class AutoResetEventDisposable : IDisposable
+		{
+			private readonly AutoResetEvent autoResetEvent;
+
+
+			public AutoResetEventDisposable(AutoResetEvent autoResetEvent)
+			{
+				this.autoResetEvent = autoResetEvent;
+			}
+
+
+			public void Dispose()
+			{
+				autoResetEvent.Set();	
+			}
+		}
 	}
 }

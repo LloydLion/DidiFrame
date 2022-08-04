@@ -231,7 +231,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="client">Owner client object</param>
 		/// <param name="options">Options for server</param>
 		/// <param name="messagesCache">channel message cache instance</param>
-		public Server(DiscordGuild guild, Client client, Options options, IChannelMessagesCache messagesCache)
+		private Server(DiscordGuild guild, Client client, Options options, IChannelMessagesCache messagesCache)
 		{
 			this.guild = guild;
 			this.client = client;
@@ -300,6 +300,15 @@ namespace DidiFrame.Clients.DSharp
 			globalCacheUpdateTask = CreateServerCacheUpdateTask(cts.Token);
 		}
 
+
+		internal static async Task<Server> CreateServerAsync(DiscordGuild guild, Client client, Options options, IChannelMessagesCache messagesCache)
+		{
+			var server = new Server(guild, client, options, messagesCache);
+
+			await server.UpdateServerCache();
+
+			return server;
+		}
 
 		private Task OnThreadUpdatedForCacheActiveMode(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
@@ -540,100 +549,102 @@ namespace DidiFrame.Clients.DSharp
 		{
 			while (!token.IsCancellationRequested)
 			{
-				update();
 				await Task.Delay(new TimeSpan(0, 5, 0), token);
+				await UpdateServerCache();
 			}
-
-
-			void update() => client.DoSafeOperation(() =>
-				{
-					var guild = AccessBase(nameof(CreateServerCacheUpdateTask));
-
-					var membersFrame = serverCache.GetFrame<DiscordMember>();
-					lock (membersFrame)
-					{
-						var from = guild.GetAllMembersAsync().Result.ToDictionary(s => s.Id);
-						var difference = new CollectionDifference<DiscordMember, DiscordMember, ulong>(from.Values, membersFrame.GetObjects(), s => s.Id, s => s.Id);
-						foreach (var item in difference.CalculateDifference())
-							if (item.Type == CollectionDifference.OperationType.Add)
-							{
-								var member = from[item.Key];
-								membersFrame.AddObject(item.Key, member);
-								events.GetRegistry<IMember>().InvokeCreated(GetMember(item.Key), false);
-							}
-							else
-							{
-								membersFrame.DeleteObject(item.Key);
-								events.GetRegistry<IMember>().InvokeDeleted(this, item.Key);
-							}
-					}
-
-					var rolesFrame = serverCache.GetFrame<DiscordRole>();
-					lock (rolesFrame)
-					{
-						var from = guild.Roles;
-						var difference = new CollectionDifference<DiscordRole, DiscordRole, ulong>(from.Values.ToArray(), rolesFrame.GetObjects(), s => s.Id, s => s.Id);
-						foreach (var item in difference.CalculateDifference())
-							if (item.Type == CollectionDifference.OperationType.Add)
-							{
-								var role = from[item.Key];
-								rolesFrame.AddObject(item.Key, role);
-								events.GetRegistry<IRole>().InvokeCreated(GetRole(item.Key), false);
-							}
-							else
-							{
-								rolesFrame.DeleteObject(item.Key);
-								events.GetRegistry<IRole>().InvokeDeleted(this, item.Key);
-							}
-					}
-
-					var channelsFrame = serverCache.GetFrame<DiscordChannel>();
-					lock (channelsFrame)
-					{
-						var newData = guild.GetChannelsAsync().Result;
-
-						var from = newData.ToDictionary(s => s.Id);
-						var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channelsFrame.GetObjects(), s => s.Id, s => s.Id);
-						foreach (var item in difference.CalculateDifference())
-							if (item.Type == CollectionDifference.OperationType.Add)
-							{
-								var channel = from[item.Key];
-								channelsFrame.AddObject(item.Key, channel);
-								if (channel.IsCategory)
-									events.GetRegistry<IChannelCategory>().InvokeCreated(GetCategory(item.Key), false);
-								else events.GetRegistry<IChannel>().InvokeCreated(GetChannel(item.Key), false);
-							}
-							else
-							{
-								var isCategory = channelsFrame.GetObject(item.Key).IsCategory;
-								channelsFrame.DeleteObject(item.Key);
-								if (isCategory)
-									events.GetRegistry<IChannelCategory>().InvokeDeleted(this, item.Key);
-								else events.GetRegistry<IChannel>().InvokeDeleted(this, item.Key);
-							}
-
-						lock (threads)
-						{
-							var archivedThreads = channelsFrame.GetObjects().SelectMany(s => s.ListPublicArchivedThreadsAsync().Result.Threads.Concat(s.ListPrivateArchivedThreadsAsync().Result.Threads));
-							var activeThreads = guild.ListActiveThreadsAsync().Result.Threads;
-							var fromT = (options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? activeThreads.Concat(archivedThreads) : activeThreads).ToDictionary(s => s.Id);
-							var differenceT = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(fromT.Values.ToArray(), threads.GetThreads(), s => s.Id, s => s.Id);
-							foreach (var item in differenceT.CalculateDifference())
-								if (item.Type == CollectionDifference.OperationType.Add)
-								{
-									var thread = fromT[item.Key];
-									threads.AddThread(thread);
-									events.GetRegistry<IChannel>().InvokeCreated(GetChannel(item.Key), false);
-								}
-								else
-								{
-									threads.RemoveThread(item.Key);
-									events.GetRegistry<IChannel>().InvokeDeleted(this, item.Key);
-								}
-						}
-					}
-				});
 		}
+
+		private Task UpdateServerCache() => Task.Run(() =>
+		{
+			client.DoSafeOperation(() =>
+			{
+				var guild = AccessBase(nameof(CreateServerCacheUpdateTask));
+
+				var membersFrame = serverCache.GetFrame<DiscordMember>();
+				lock (membersFrame)
+				{
+					var from = guild.GetAllMembersAsync().Result.ToDictionary(s => s.Id);
+					var difference = new CollectionDifference<DiscordMember, DiscordMember, ulong>(from.Values, membersFrame.GetObjects(), s => s.Id, s => s.Id);
+					foreach (var item in difference.CalculateDifference())
+						if (item.Type == CollectionDifference.OperationType.Add)
+						{
+							var member = from[item.Key];
+							membersFrame.AddObject(item.Key, member);
+							events.GetRegistry<IMember>().InvokeCreated(GetMember(item.Key), false);
+						}
+						else
+						{
+							membersFrame.DeleteObject(item.Key);
+							events.GetRegistry<IMember>().InvokeDeleted(this, item.Key);
+						}
+				}
+
+				var rolesFrame = serverCache.GetFrame<DiscordRole>();
+				lock (rolesFrame)
+				{
+					var from = guild.Roles;
+					var difference = new CollectionDifference<DiscordRole, DiscordRole, ulong>(from.Values.ToArray(), rolesFrame.GetObjects(), s => s.Id, s => s.Id);
+					foreach (var item in difference.CalculateDifference())
+						if (item.Type == CollectionDifference.OperationType.Add)
+						{
+							var role = from[item.Key];
+							rolesFrame.AddObject(item.Key, role);
+							events.GetRegistry<IRole>().InvokeCreated(GetRole(item.Key), false);
+						}
+						else
+						{
+							rolesFrame.DeleteObject(item.Key);
+							events.GetRegistry<IRole>().InvokeDeleted(this, item.Key);
+						}
+				}
+
+				var channelsFrame = serverCache.GetFrame<DiscordChannel>();
+				lock (channelsFrame)
+				{
+					var newData = guild.GetChannelsAsync().Result;
+
+					var from = newData.ToDictionary(s => s.Id);
+					var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channelsFrame.GetObjects(), s => s.Id, s => s.Id);
+					foreach (var item in difference.CalculateDifference())
+						if (item.Type == CollectionDifference.OperationType.Add)
+						{
+							var channel = from[item.Key];
+							channelsFrame.AddObject(item.Key, channel);
+							if (channel.IsCategory)
+								events.GetRegistry<IChannelCategory>().InvokeCreated(GetCategory(item.Key), false);
+							else events.GetRegistry<IChannel>().InvokeCreated(GetChannel(item.Key), false);
+						}
+						else
+						{
+							var isCategory = channelsFrame.GetObject(item.Key).IsCategory;
+							channelsFrame.DeleteObject(item.Key);
+							if (isCategory)
+								events.GetRegistry<IChannelCategory>().InvokeDeleted(this, item.Key);
+							else events.GetRegistry<IChannel>().InvokeDeleted(this, item.Key);
+						}
+
+					lock (threads)
+					{
+						var archivedThreads = channelsFrame.GetObjects().SelectMany(s => s.ListPublicArchivedThreadsAsync().Result.Threads.Concat(s.ListPrivateArchivedThreadsAsync().Result.Threads));
+						var activeThreads = guild.ListActiveThreadsAsync().Result.Threads;
+						var fromT = (options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? activeThreads.Concat(archivedThreads) : activeThreads).ToDictionary(s => s.Id);
+						var differenceT = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(fromT.Values.ToArray(), threads.GetThreads(), s => s.Id, s => s.Id);
+						foreach (var item in differenceT.CalculateDifference())
+							if (item.Type == CollectionDifference.OperationType.Add)
+							{
+								var thread = fromT[item.Key];
+								threads.AddThread(thread);
+								events.GetRegistry<IChannel>().InvokeCreated(GetChannel(item.Key), false);
+							}
+							else
+							{
+								threads.RemoveThread(item.Key);
+								events.GetRegistry<IChannel>().InvokeDeleted(this, item.Key);
+							}
+					}
+				}
+			});
+		});
 
 
 		private class ThreadsChannelsCollection : IReadOnlyCollection<IChannel>

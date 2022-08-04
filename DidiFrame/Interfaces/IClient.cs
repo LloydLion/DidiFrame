@@ -76,7 +76,7 @@ namespace DidiFrame.Interfaces
 		/// <summary>
 		/// Connects to discord server
 		/// </summary>
-		public void Connect();
+		public Task ConnectAsync();
 
 		/// <summary>
 		/// Gets server by its id

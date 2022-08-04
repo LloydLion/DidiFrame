@@ -55,9 +55,9 @@ namespace DidiFrame.Application
 				logger.Log(LogLevel.Information, ClientExitID, "Client exited. Bot work done. Worktime - {Time}h", (DateTime.Now - now).TotalHours));
 		}
 
-		public void Connect()
+		public async Task ConnectAsync()
 		{
-			client.Connect();
+			await client.ConnectAsync();
 			connected = true;
 			logger.Log(LogLevel.Information, ClientReadyID, "Client connected to discord server");
 		}

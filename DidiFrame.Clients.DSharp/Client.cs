@@ -33,6 +33,7 @@ namespace DidiFrame.Clients.DSharp
 
 		private readonly DiscordClient client;
 		private readonly Dictionary<ulong, Server> servers = new();
+		private readonly AutoResetEvent serversSyncRoot = new(true);
 		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 		private readonly ILogger<Client> logger;
@@ -130,18 +131,20 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 		/// <inheritdoc/>
-		public void Connect()
+		public async Task ConnectAsync()
 		{
-			client.ConnectAsync().Wait();
-			Thread.Sleep(5000);
+			await client.ConnectAsync();
+			await Task.Delay(5000);
+
 			client.GuildCreated += Client_GuildCreated;
 			client.GuildDeleted += Client_GuildDeleted;
+
 			serverListUpdateTask = CreateServerListUpdateTask(cts.Token);
 		}
 
 		private Task Client_GuildDeleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDeleteEventArgs e)
 		{
-			lock (servers)
+			using (serversSyncRoot.WaitAndCreateDisposable())
 			{
 				if (servers.ContainsKey(e.Guild.Id))
 				{
@@ -157,11 +160,11 @@ namespace DidiFrame.Clients.DSharp
 
 		private Task Client_GuildCreated(DiscordClient sender, DSharpPlus.EventArgs.GuildCreateEventArgs e)
 		{
-			lock (servers)
+			using (serversSyncRoot.WaitAndCreateDisposable())
 			{
 				if (servers.ContainsKey(e.Guild.Id) == false)
 				{
-					servers.Add(e.Guild.Id, new Server(e.Guild, this, options.ServerOptions, messagesCacheFactory.Create(e.Guild, this)));
+					servers.Add(e.Guild.Id, Server.CreateServerAsync(e.Guild, this, options.ServerOptions, messagesCacheFactory.Create(e.Guild, this)).Result);
 					OnServerCreated(servers[e.Guild.Id]);
 				}
 			}
@@ -173,34 +176,42 @@ namespace DidiFrame.Clients.DSharp
 		{
 			while (token.IsCancellationRequested == false)
 			{
-				lock (servers)
+				await UpdateServerList(token);
+
+				if (token.IsCancellationRequested) return;
+
+				await Task.Delay(new TimeSpan(5, 0, 0), token);
+			}
+		}
+
+		private async Task UpdateServerList(CancellationToken token)
+		{
+			using (serversSyncRoot.WaitAndCreateDisposable())
+			{
+				var temp = servers.ToDictionary(s => s.Key, s => s.Value);
+				servers.Clear();
+
+				foreach (var server in client.Guilds)
 				{
-					var temp = servers.ToDictionary(s => s.Key, s => s.Value);
-					servers.Clear();
-
-					foreach (var server in client.Guilds)
+					if (temp.TryGetValue(server.Value.Id, out var maybe))
 					{
-						if (temp.TryGetValue(server.Value.Id, out var maybe))
-						{
-							servers.Add(maybe.Id, maybe);
-							temp.Remove(maybe.Id);
-						}
-						else
-						{
-							var serverObj = new Server(server.Value, this, options.ServerOptions, messagesCacheFactory.Create(server.Value, this));
-							servers.Add(serverObj.Id, serverObj);
-							OnServerCreated(serverObj);
-						}
+						servers.Add(maybe.Id, maybe);
+						temp.Remove(maybe.Id);
 					}
-
-					foreach (var item in temp)
+					else
 					{
-						item.Value.Dispose();
-						OnServerRemoved(item.Value);
+						var cache = messagesCacheFactory.Create(server.Value, this);
+						var serverObj = await Server.CreateServerAsync(server.Value, this, options.ServerOptions, cache);
+						servers.Add(serverObj.Id, serverObj);
+						OnServerCreated(serverObj);
 					}
 				}
 
-				await Task.Delay(new TimeSpan(5, 0, 0), token);
+				foreach (var item in temp)
+				{
+					item.Value.Dispose();
+					OnServerRemoved(item.Value);
+				}
 			}
 		}
 

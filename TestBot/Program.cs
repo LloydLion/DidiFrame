@@ -68,9 +68,9 @@ var application = appBuilder.Build();
 	printLogoAnimation(application.Services.GetRequiredService<Colorify.Format>()).Wait();
 #endif
 
-application.Connect();
-application.PrepareAsync().Wait();
-application.AwaitForExit().Wait();
+await application.ConnectAsync();
+await application.PrepareAsync();
+await application.AwaitForExit();
 
 
 
