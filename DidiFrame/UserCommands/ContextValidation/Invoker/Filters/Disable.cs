@@ -13,7 +13,7 @@
 
 
 		/// <inheritdoc/>
-		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx, IServiceProvider locals)
+		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx, IServiceProvider localServices)
 		{
 			return new ValidationFailResult("CommandDisabled", UserCommandCode.InternalError);
 		}

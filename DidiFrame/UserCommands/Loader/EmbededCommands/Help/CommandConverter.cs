@@ -6,7 +6,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 	/// <summary>
 	/// Sub converter for DidiFrame.UserCommands.Models.UserCommandInfo type
 	/// </summary>
-	public class CommandConverter : IUserCommandContextSubConverter
+	public sealed class CommandConverter : IUserCommandContextSubConverter
 	{
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter
@@ -22,9 +22,9 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 
 
 		/// <inheritdoc/>
-		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider locals)
+		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider localServices)
 		{
-			var cmds = services.GetRequiredService<IUserCommandsRepository>().GetFullCommandList(preCtx.Channel.Server);
+			var cmds = services.GetRequiredService<IUserCommandsRepository>().GetFullCommandList(preCtx.SendData.Channel.Server);
 			var cmdName = (string)preObjects.Single();
 
 			var has = cmds.TryGetCommad(cmdName, out var value);
@@ -46,7 +46,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		}
 
 
-		private class PossibleValues : IUserCommandArgumentValuesProvider
+		private sealed class PossibleValues : IUserCommandArgumentValuesProvider
 		{
 			public Type TargetType => typeof(UserCommandInfo);
 

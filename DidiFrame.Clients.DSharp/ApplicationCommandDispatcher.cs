@@ -70,7 +70,7 @@ namespace DidiFrame.Clients.DSharp
 				var server = (Server)client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
 				var result = await behaviorModel.ProcessInteraction(convertedCommands, e.Interaction, server);
 				if (result is null) return;
-				else callback?.Invoke(this, result, new(result.Invoker, result.Channel), new StateObject(e.Interaction));
+				else callback?.Invoke(this, result, new(result.SendData.Invoker, result.SendData.Channel), new StateObject(e.Interaction));
 			}
 			else if (e.Interaction.Type == InteractionType.AutoComplete)
 			{
@@ -98,10 +98,10 @@ namespace DidiFrame.Clients.DSharp
 
 			var state = (StateObject)stateObject;
 
-			if (result.RespondMessage is not null)
+			if (result.ResultType == UserCommandResult.Type.Message)
 			{
 				var builder = new DiscordWebhookBuilder();
-				var msg = MessageConverter.ConvertUp(result.RespondMessage);
+				var msg = MessageConverter.ConvertUp(result.GetRespondMessage());
 				builder.AddComponents(msg.Components);
 				builder.AddFiles(msg.Files.ToDictionary(s => s.FileName, s => s.Stream));
 				builder.AddEmbeds(msg.Embeds);
@@ -110,6 +110,11 @@ namespace DidiFrame.Clients.DSharp
 				state.Interaction.EditOriginalResponseAsync(builder).Wait();
 				state.Responded = true;
 			}
+			else if (result.ResultType == UserCommandResult.Type.None)
+			{
+				//Do nothing
+			}
+			else throw new NotSupportedException("Target type of user command result is not supported by dispatcher");
 		}
 
 		/// <inheritdoc/>
@@ -297,7 +302,7 @@ namespace DidiFrame.Clients.DSharp
 				}
 
 				await interaction.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral());
-				return new UserCommandPreContext(member, channel, cmd.DidiFrameCommand, list);
+				return new UserCommandPreContext(new(member, channel), cmd.DidiFrameCommand, list);
 			}
 
 			/// <summary>

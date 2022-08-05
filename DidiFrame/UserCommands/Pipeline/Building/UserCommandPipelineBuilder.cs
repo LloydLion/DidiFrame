@@ -2,7 +2,7 @@
 
 namespace DidiFrame.UserCommands.Pipeline.Building
 {
-	internal class UserCommandPipelineBuilder : IUserCommandPipelineBuilder
+	public sealed class UserCommandPipelineBuilder : IUserCommandPipelineBuilder
 	{
 		private Func<IServiceProvider, IUserCommandPipelineDispatcher<object>>? origin;
 		private List<Func<IServiceProvider, IUserCommandPipelineMiddleware>>? prev;
@@ -37,7 +37,7 @@ namespace DidiFrame.UserCommands.Pipeline.Building
 		}
 
 
-		private class MiddwareBuilder<TInput> : IUserCommandPipelineMiddlewareBuilder<TInput> where TInput : notnull
+		private sealed class MiddwareBuilder<TInput> : IUserCommandPipelineMiddlewareBuilder<TInput> where TInput : notnull
 		{
 			private readonly List<Func<IServiceProvider, IUserCommandPipelineMiddleware>> prev;
 			private readonly UserCommandPipelineBuilder owner;

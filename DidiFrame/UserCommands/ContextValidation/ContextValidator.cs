@@ -94,7 +94,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 				if (providers is not null)
 					foreach (var provider in providers)
 					{
-						var values = provider.ProvideValues(input.Channel.Server, services);
+						var values = provider.ProvideValues(input.SendData.Channel.Server, services);
 						if (!values.Contains(argument.Value.ComplexObject))
 						{
 							failResult = new(ProviderErrorCode, UserCommandCode.InvalidInput);
@@ -117,7 +117,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 			ValidatedUserCommandContext? fail(string msgContent)
 			{
 				if (failResult is null) throw new ImpossibleVariantException();
-				pipelineContext.FinalizePipeline(new UserCommandResult(failResult.Code) { RespondMessage = new MessageSendModel(msgContent) });
+				pipelineContext.FinalizePipeline(UserCommandResult.CreateWithMessage(failResult.Code, new(msgContent)));
 				return null;
 			}
 		}

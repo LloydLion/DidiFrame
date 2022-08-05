@@ -3,7 +3,7 @@ using FluentValidation.Results;
 
 namespace DidiFrame.Entities.FluentValidation
 {
-	internal class MessageComponentRowValidator : AbstractValidator<MessageComponentsRow>
+	internal sealed class MessageComponentRowValidator : AbstractValidator<MessageComponentsRow>
 	{
 		public MessageComponentRowValidator(IValidator<IInteractionComponent> iicValidator)
 		{
@@ -12,7 +12,7 @@ namespace DidiFrame.Entities.FluentValidation
 		}
 
 
-		private class ComponentValidator : IValidator<IComponent>
+		private sealed class ComponentValidator : IValidator<IComponent>
 		{
 			private readonly IValidator<IInteractionComponent> validator;
 

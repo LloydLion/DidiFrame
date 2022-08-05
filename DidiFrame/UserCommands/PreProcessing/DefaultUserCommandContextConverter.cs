@@ -86,7 +86,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 								var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{preCtx.Command.Name}.{s.Key.Name}:{localeKey}"];
 								var msgContent = localizer["ConvertationErrorMessage", arg];
 
-								pipelineContext.FinalizePipeline(new UserCommandResult(code) { RespondMessage = new MessageSendModel(msgContent) });
+								pipelineContext.FinalizePipeline(UserCommandResult.CreateWithMessage(code, new MessageSendModel(msgContent)));
 								throw new ConvertationException();
 							}
 							else return new UserCommandContext.ArgumentValue(s.Key, convertationResult.DeconstructAsSuccess(), s.Value);
@@ -95,7 +95,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 				});
 
 
-				return new UserCommandContext(preCtx.Invoker, preCtx.Channel, preCtx.Command, arguments, new SimpleModelAdditionalInfoProvider((pipelineContext.LocalServices, typeof(IServiceProvider))));
+				return new UserCommandContext(preCtx.SendData, preCtx.Command, arguments, new SimpleModelAdditionalInfoProvider((pipelineContext.LocalServices, typeof(IServiceProvider))));
 			}
 			catch (ConvertationException)
 			{
@@ -104,6 +104,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 		}
 
 
-		private class ConvertationException : Exception { }
+		[SuppressMessage("Critical Code Smell", "S3871")] //It is only internal exception, it is never be trown into outside context
+		private sealed class ConvertationException : Exception { }
 	}
 }

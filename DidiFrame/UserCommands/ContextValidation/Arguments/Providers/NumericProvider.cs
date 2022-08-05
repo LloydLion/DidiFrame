@@ -5,7 +5,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Providers
 	/// <summary>
 	/// Provider that provides number from some range
 	/// </summary>
-	public class NumericProvider : IUserCommandArgumentValuesProvider
+	public sealed class NumericProvider : IUserCommandArgumentValuesProvider
 	{
 		private readonly int lowBound;
 		private readonly int upBound;
@@ -28,11 +28,10 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Providers
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services) =>
-			(IReadOnlyCollection<object>)new NumericCollection(lowBound, upBound);
+		public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services) => new NumericCollection(lowBound, upBound);
 
 
-		private class NumericCollection : IReadOnlyCollection<int>
+		private sealed class NumericCollection : IReadOnlyCollection<object>
 		{
 			private readonly int lowBound;
 			private readonly int upBound;
@@ -48,7 +47,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Providers
 			public int Count => upBound - lowBound + 1;
 
 
-			public IEnumerator<int> GetEnumerator()
+			public IEnumerator<object> GetEnumerator()
 			{
 				for (int i = lowBound; i <= upBound; i++) yield return i;
 			}

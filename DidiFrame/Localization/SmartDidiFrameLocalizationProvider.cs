@@ -30,16 +30,9 @@ namespace DidiFrame.Localization
 		/// </summary>
 		public LocaleDictionary GetDictionaryFor(CultureInfo culture)
 		{
-		tryAgain:
 			if (!preConfigurated.ContainsKey(culture.Name))
-			{
-				culture = culture.Parent;
-				goto tryAgain;
-			}
-			else
-			{
-				return new(preConfigurated[culture.Name]);
-			}
+				return GetDictionaryFor(culture.Parent);
+			else return new(preConfigurated[culture.Name]);
 		}
 
 		/// <summary>

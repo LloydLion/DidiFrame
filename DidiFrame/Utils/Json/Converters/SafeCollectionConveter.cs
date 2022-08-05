@@ -6,10 +6,10 @@ namespace DidiFrame.Utils.Json.Converters
 {
 	internal class SafeCollectionConveter : JsonConverter
 	{
-		private readonly Action<JContainer, string, Exception> invalidElementCallback;
+		private readonly Action<JContainer, string, Exception>? invalidElementCallback;
 
 
-		public SafeCollectionConveter(Action<JContainer, string, Exception> invalidElementCallback)
+		public SafeCollectionConveter(Action<JContainer, string, Exception>? invalidElementCallback)
 		{
 			this.invalidElementCallback = invalidElementCallback;
 		}
@@ -50,7 +50,7 @@ namespace DidiFrame.Utils.Json.Converters
 				}
 				catch (Exception ex)
 				{
-					invalidElementCallback(el.Parent ?? throw new ImpossibleVariantException(), el.Path, ex);
+					invalidElementCallback?.Invoke(el.Parent ?? throw new ImpossibleVariantException(), el.Path, ex);
 				}
 
 			return returnObj;

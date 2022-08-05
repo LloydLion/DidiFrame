@@ -87,17 +87,20 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 
 				foreach (var argument in command.Arguments)
 				{
-					var result = behaviorModel.ProcessArgument(selectsSpan, argument, server, out selectsSpan);
-					if (result is null)
+					try
+					{
+						var result = behaviorModel.ProcessArgument(selectsSpan, argument, server, out selectsSpan);
+						arguments.Add(argument, result);
+					}
+					catch (Exception)
 					{
 						pipelineContext.DropPipeline();
 						return null;
 					}
 
-					arguments.Add(argument, result);
 				}
 
-				return new(pipelineContext.SendData.Invoker, pipelineContext.SendData.Channel, command, arguments);
+				return new(pipelineContext.SendData, command, arguments);
 			}
 			else
 			{
@@ -108,7 +111,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 				}
 				else
 				{
-					return new(pipelineContext.SendData.Invoker, pipelineContext.SendData.Channel, command, new Dictionary<UserCommandArgument, IReadOnlyList<object>>());
+					return new(pipelineContext.SendData, command, new Dictionary<UserCommandArgument, IReadOnlyList<object>>());
 				}
 			}
 		}
@@ -242,15 +245,15 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 				throw new InvalidOperationException("Enable to select some command's argument");
 			}
 
-            /// <summary>
-            /// Processes single user command argument and slices selects collection with required raw arguments
-            /// </summary>
-            /// <param name="selects">All availiable raw arguments and output for sliced raw arguments</param>
-            /// <param name="argument">Argument to process</param>
-            /// <param name="server">Server where command was writen</param>
-            /// <param name="unusedSelects">Used selects span output</param>
-            /// <returns>List of ready objects or null if cannot process argument</returns>
-            public virtual IReadOnlyList<object>? ProcessArgument(ReadOnlySpan<ArgumentSelect> selects, UserCommandArgument argument, IServer server, out ReadOnlySpan<ArgumentSelect> unusedSelects)
+			/// <summary>
+			/// Processes single user command argument and slices selects collection with required raw arguments
+			/// </summary>
+			/// <param name="selects">All availiable raw arguments and output for sliced raw arguments</param>
+			/// <param name="argument">Argument to process</param>
+			/// <param name="server">Server where command was writen</param>
+			/// <param name="unusedSelects">Used selects span output</param>
+			/// <returns>List of ready objects or null if cannot process argument</returns>
+			public virtual IReadOnlyList<object> ProcessArgument(ReadOnlySpan<ArgumentSelect> selects, UserCommandArgument argument, IServer server, out ReadOnlySpan<ArgumentSelect> unusedSelects)
 			{
 				var result = new List<object>();
 
@@ -265,16 +268,10 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 					var pa = selects[..argument.OriginTypes.Count];
 
 					if (pa.Length != argument.OriginTypes.Count)
-					{
-						unusedSelects = ReadOnlySpan<ArgumentSelect>.Empty;
-						return null;
-					}
+						throw new ArgumentException("Enable to select argument from given selects", nameof(selects));
 					for (int i = 0; i < pa.Length; i++)
 						if (argument.OriginTypes[i] != pa[i].Type)
-						{
-							unusedSelects = ReadOnlySpan<ArgumentSelect>.Empty;
-							return null;
-						}
+							throw new ArgumentException("Enable to select argument from given selects", nameof(selects));
 
 					foreach (var item in pa)
 						result.Add(ConvertArgumentValue(item.SelectedString, item.Type, server));

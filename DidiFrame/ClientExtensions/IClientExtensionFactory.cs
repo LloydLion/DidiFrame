@@ -3,8 +3,8 @@
 	/// <summary>
 	/// Factory that creates extensions for client
 	/// </summary>
-	/// <typeparam name="TExtension"></typeparam>
-	public interface IClientExtensionFactory<TExtension> where TExtension : class
+	/// <typeparam name="TExtension">Target extension type</typeparam>
+	public interface IClientExtensionFactory<out TExtension> where TExtension : class
 	{
 		/// <summary>
 		/// Target type of client

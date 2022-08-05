@@ -1,19 +1,15 @@
-﻿namespace DidiFrame.Utils.StateMachine
+﻿using System.Diagnostics.CodeAnalysis;
+using static DidiFrame.Utils.StateMachine.StateMachineStatic;
+
+namespace DidiFrame.Utils.StateMachine
 {
 	/// <summary>
 	/// Simple implementation of DidiFrame.Utils.StateMachine.IStateMachine`1
 	/// </summary>
 	/// <typeparam name="TState">Struct that represents state of statemahcine</typeparam>
-	public class StateMachine<TState> : IStateMachine<TState> where TState : struct
+	[SuppressMessage("Blocker Bug", "S2931")] //Task needn't to dispose
+	public sealed class StateMachine<TState> : IStateMachine<TState> where TState : struct
 	{
-		private static readonly EventId ActiveWorkersRecalcID = new(32, "ActiveWorkersRecalc");
-		private static readonly EventId StateChangedID = new(45, "StateChanged");
-		private static readonly EventId StateChangingID = new(42, "StateChanging");
-		private static readonly EventId MachineStartupID = new(14, "MachineStartup");
-		private static readonly EventId StateChangedHandlerErrorID = new(65, "StateChangedHandlerError");
-		private static readonly EventId InternalErrorID = new(66, "InternalError");
-
-
 		private readonly List<IStateTransitWorker<TState>> workers;
 		private readonly List<IStateTransitWorker<TState>> activeWorkers = new();
 		private readonly Task observeTask;
@@ -152,5 +148,15 @@
 				return result;
 			});
 		}
+	}
+
+	internal static class StateMachineStatic
+	{
+		public static readonly EventId ActiveWorkersRecalcID = new(32, "ActiveWorkersRecalc");
+		public static readonly EventId StateChangedID = new(45, "StateChanged");
+		public static readonly EventId StateChangingID = new(42, "StateChanging");
+		public static readonly EventId MachineStartupID = new(14, "MachineStartup");
+		public static readonly EventId StateChangedHandlerErrorID = new(65, "StateChangedHandlerError");
+		public static readonly EventId InternalErrorID = new(66, "InternalError");
 	}
 }

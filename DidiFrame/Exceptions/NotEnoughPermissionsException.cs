@@ -1,8 +1,11 @@
-﻿namespace DidiFrame.Exceptions
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DidiFrame.Exceptions
 {
 	/// <summary>
 	/// Exception that will be thrown when bot don't have permission to do something
 	/// </summary>
+	[SuppressMessage("Major Code Smell", "S3925")]
 	public class NotEnoughPermissionsException : Exception
 	{
 		/// <summary>

@@ -13,7 +13,7 @@
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator`1
 		/// </summary>
-		public AbstractArgumentValidator() { }
+		protected AbstractArgumentValidator() { }
 
 
 		/// <inheritdoc/>

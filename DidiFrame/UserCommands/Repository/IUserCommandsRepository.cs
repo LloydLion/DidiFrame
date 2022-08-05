@@ -28,17 +28,17 @@
 		/// <summary>
 		/// Adds command for server
 		/// </summary>
-		/// <param name="cmd">Command itself</param>
+		/// <param name="commandInfo">Command itself</param>
 		/// <param name="server">Target server</param>
 		/// <exception cref="InvalidOperationException">If repository has been fixed</exception>
-		public void AddCommand(UserCommandInfo cmd, IServer server);
+		public void AddCommand(UserCommandInfo commandInfo, IServer server);
 
 		/// <summary>
 		/// Adds command for all servers
 		/// </summary>
-		/// <param name="cmd">Command itself</param>
+		/// <param name="commandInfo">Command itself</param>
 		/// <exception cref="InvalidOperationException">If repository has been fixed</exception>
-		public void AddCommand(UserCommandInfo cmd);
+		public void AddCommand(UserCommandInfo commandInfo);
 
 		/// <summary>
 		/// Fixates all reposity and makes it readonly

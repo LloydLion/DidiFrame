@@ -7,7 +7,7 @@ namespace DidiFrame.UserCommands.Models.FluentValidation
 		public UserCommandPreContextValidator(IValidator<UserCommandInfo> cmdInfoValidator)
 		{
 			RuleFor(s => s.Command).SetValidator(cmdInfoValidator);
-			RuleFor(s => s.Channel).Must((obj, s) => s.Server.Equals(obj.Invoker.Server));
+			RuleFor(s => s.SendData.Channel).Must((obj, s) => s.Server.Equals(obj.SendData.Invoker.Server));
 			RuleFor(s => s.Arguments).Must((obj, s) => s.Keys.SequenceEqual(obj.Command.Arguments));
 			RuleForEach(s => s.Arguments)
 				.Must(s => s.Key.IsArray || s.Value.Count == s.Key.OriginTypes.Count)

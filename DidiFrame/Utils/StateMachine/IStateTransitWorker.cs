@@ -9,8 +9,8 @@
 		/// <summary>
 		/// Activates transit, statemachine calls it when CanActivate(TState) becomes true
 		/// </summary>
-		/// <param name="stateMahcine">Statemachine that called method</param>
-		public void Activate(IStateMachine<TState> stateMahcine);
+		/// <param name="stateMachine">Statemachine that called method</param>
+		public void Activate(IStateMachine<TState> stateMachine);
 
 		/// <summary>
 		/// Checks if can activate transit on given state

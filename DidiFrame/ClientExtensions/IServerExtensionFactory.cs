@@ -6,7 +6,7 @@ namespace DidiFrame.ClientExtensions
 	/// Factory that creates extensions for server
 	/// </summary>
 	/// <typeparam name="TExtension"></typeparam>
-	public interface IServerExtensionFactory<TExtension> where TExtension : class
+	public interface IServerExtensionFactory<out TExtension> where TExtension : class
 	{
 		/// <summary>
 		/// Target type of server

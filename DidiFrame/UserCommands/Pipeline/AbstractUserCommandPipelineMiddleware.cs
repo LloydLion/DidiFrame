@@ -10,7 +10,7 @@
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2
 		/// </summary>
-		public AbstractUserCommandPipelineMiddleware() { }
+		protected AbstractUserCommandPipelineMiddleware() { }
 
 
 		/// <inheritdoc/>

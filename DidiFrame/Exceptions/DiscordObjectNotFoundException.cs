@@ -1,8 +1,11 @@
-﻿namespace DidiFrame.Exceptions
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DidiFrame.Exceptions
 {
 	/// <summary>
 	/// Exception that will be thrown when some discord object hasn't found
 	/// </summary>
+	[SuppressMessage("Major Code Smell", "S3925")]
 	public class DiscordObjectNotFoundException : Exception
 	{
 		/// <summary>

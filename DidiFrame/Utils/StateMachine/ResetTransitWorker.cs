@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using static DidiFrame.Utils.StateMachine.ResetTransitWorkerStatic;
 
 namespace DidiFrame.Utils.StateMachine
 {
@@ -6,11 +7,8 @@ namespace DidiFrame.Utils.StateMachine
 	/// Statemachine transit that based on tasks, but always active
 	/// </summary>
 	/// <typeparam name="TState">Type of statemachine state</typeparam>
-	public class ResetTransitWorker<TState> : IStateTransitWorker<TState> where TState : struct
+	public sealed class ResetTransitWorker<TState> : IStateTransitWorker<TState> where TState : struct
 	{
-		private static readonly EventId TaskErrorID = new(12, "TaskError");
-
-
 		private readonly TState? tstate;
 		private readonly Func<CancellationToken, Task> waitTaskFactory;
 		private CancellationTokenSource cts = new();
@@ -68,9 +66,9 @@ namespace DidiFrame.Utils.StateMachine
 		}
 
 		/// <inheritdoc/>
-		public void Activate(IStateMachine<TState> stateMahcine)
+		public void Activate(IStateMachine<TState> stateMachine)
 		{
-			stateMachine = stateMahcine;
+			this.stateMachine = stateMachine;
 			currentTask = waitTaskFactory(cts.Token);
 		}
 
@@ -79,5 +77,10 @@ namespace DidiFrame.Utils.StateMachine
 		{
 			return tstate;
 		}
+	}
+
+	internal static class ResetTransitWorkerStatic
+	{
+		public static readonly EventId TaskErrorID = new(12, "TaskError");
 	}
 }

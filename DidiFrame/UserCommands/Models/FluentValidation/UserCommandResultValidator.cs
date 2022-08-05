@@ -6,9 +6,11 @@ namespace DidiFrame.UserCommands.Models.FluentValidation
 	{
 		public UserCommandResultValidator(IValidator<MessageSendModel> sendModelValidator)
 		{
-#nullable disable
-			RuleFor(s => s.RespondMessage).SetValidator(sendModelValidator).When(s => s is not null);
-#nullable restore
+			RuleFor(s => s.ResultType).IsInEnum();
+			RuleFor(s => s.GetRespondMessage())
+				.SetValidator(sendModelValidator)
+				.When(s => s.ResultType == UserCommandResult.Type.Message)
+				.OverridePropertyName(nameof(UserCommandResult.ResultType));
 			RuleFor(s => s.Code).IsInEnum();
 		}
 	}

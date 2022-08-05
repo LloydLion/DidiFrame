@@ -21,7 +21,7 @@
 		/// </summary>
 		/// <param name="activation">Activation state</param>
 		/// <param name="destination">Target state or nul to finish statemachine</param>
-		public AbstractTransitWorker(TState activation, TState? destination)
+		protected AbstractTransitWorker(TState activation, TState? destination)
 		{
 			this.activation = activation;
 			this.destination = destination;

@@ -1,20 +1,26 @@
-﻿namespace DidiFrame.UserCommands.Pipeline.Services
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace DidiFrame.UserCommands.Pipeline.Services
 {
 	/// <summary>
 	/// Local service that represents a list of disposable and disposes it at the end of pipeline
 	/// </summary>
-	public class Disposer : IDisposable
+	public sealed class Disposer : IDisposable
 	{
+		private readonly static EventId DisposeErrorID = new(10, "DisposeError");
+
+
 		private readonly List<IDisposable> disposables = new();
+		private readonly ILogger<Disposer> logger;
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Services.Disposer
 		/// </summary>
-		/// <param name="_">Unused service provider</param>
-		public Disposer(IServiceProvider? _)
+		/// <param name="services">Service provider with logger</param>
+		public Disposer(IServiceProvider services)
 		{
-
+			logger = services.GetRequiredService<ILogger<Disposer>>();
 		}
 
 
@@ -27,7 +33,6 @@
 			disposables.Add(toDispose);
 		}
 
-
 		/// <inheritdoc/>
 		public void Dispose()
 		{
@@ -35,7 +40,10 @@
 
 			foreach (var item in disposables)
 				try { item.Dispose(); }
-				catch (Exception) { }
+				catch (Exception ex)
+				{
+					logger.Log(LogLevel.Error, DisposeErrorID, ex, "Exception while disposing {{{Component}}} of type {Type}", item, item.GetType());
+				}
 		}
 	}
 }

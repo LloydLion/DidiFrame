@@ -20,9 +20,9 @@
 
 
 		/// <inheritdoc/>
-		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx, IServiceProvider locals)
+		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx, IServiceProvider localServices)
 		{
-			return ctx.Invoker.HasPermissionIn(permissions, ctx.Channel) ? null : new ValidationFailResult("NoPermissions", UserCommandCode.NoPermission);
+			return ctx.SendData.Invoker.HasPermissionIn(permissions, ctx.SendData.Channel) ? null : new ValidationFailResult("NoPermissions", UserCommandCode.NoPermission);
 		}
 	}
 }

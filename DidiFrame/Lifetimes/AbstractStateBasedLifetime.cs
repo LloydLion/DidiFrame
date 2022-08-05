@@ -21,6 +21,7 @@ namespace DidiFrame.Lifetimes
 		private readonly Dictionary<TState, List<Action>> startupHandlers = new();
 		private readonly List<Action<TState>> stateHandlers = new();
 		private readonly WaitFor waitForCrash = new();
+		private readonly object syncRoot = new();
 
 
 		/// <summary>
@@ -48,7 +49,7 @@ namespace DidiFrame.Lifetimes
 		/// Creates new instance of DidiFrame.Lifetimes.AbstractStateBasedLifetime`2
 		/// </summary>
 		/// <param name="logger">Logger for lifetime</param>
-		public AbstractStateBasedLifetime(ILogger logger)
+		protected AbstractStateBasedLifetime(ILogger logger)
 		{
 			smBuilder = new StateMachineBuilder<TState>(logger);
 			smBuilder.AddStateTransitWorker(new ResetTransitWorker<TState>(null, waitForCrash.Await));
@@ -138,24 +139,24 @@ namespace DidiFrame.Lifetimes
 		}
 
 		/// <inheritdoc/>
-		public void Run(TBase initinalBase, ILifetimeContext<TBase> context)
+		public void Run(TBase initialBase, ILifetimeContext<TBase> context)
 		{
 			this.context = context;
-			server = initinalBase.Server;
-			guid = initinalBase.Guid;
+			server = initialBase.Server;
+			guid = initialBase.Guid;
 
-			OnBuild(initinalBase);
+			OnBuild(initialBase);
 
 			machine = smBuilder.Build();
 			machine.StateChanged += Machine_StateChanged;
 			hasBuilt = true;
 
-			OnRun(initinalBase.State, initinalBase);
+			OnRun(initialBase.State, initialBase);
 
 			foreach (var item in startupHandlers)
 				foreach (var handler in item.Value) handler();
 
-			machine.Start(initinalBase.State);
+			machine.Start(initialBase.State);
 		}
 
 		private void Machine_StateChanged(IStateMachine<TState> stateMahcine, TState oldState)
@@ -185,7 +186,7 @@ namespace DidiFrame.Lifetimes
 		/// <exception cref="InvalidOperationException">If invoked before Run() call (example in ctor)</exception>
 		private ILifetimeContext<TBase> GetContext()
 		{
-			lock (this)
+			lock (syncRoot)
 			{
 				if (!hasBuilt)
 					throw new InvalidOperationException("Enable to get context before starting");
@@ -199,7 +200,7 @@ namespace DidiFrame.Lifetimes
 		/// <exception cref="InvalidOperationException"></exception>
 		protected void ThrowIfFinalized()
 		{
-			lock (this)
+			lock (syncRoot)
 			{
 				if (IsFinalized)
 					throw new InvalidOperationException("Lifetime is finalized");
@@ -214,7 +215,7 @@ namespace DidiFrame.Lifetimes
 
 		private void FinalizeLifetime()
 		{
-			lock (this)
+			lock (syncRoot)
 			{
 				if (IsFinalized == false)
 				{
@@ -233,7 +234,7 @@ namespace DidiFrame.Lifetimes
 		/// <param name="isInvalidBase">If base object was invalid</param>
 		protected void CrashLifetime(Exception exception, bool isInvalidBase)
 		{
-			lock (this)
+			lock (syncRoot)
 			{
 				if (IsFinalized == false)
 				{
@@ -372,7 +373,7 @@ namespace DidiFrame.Lifetimes
 		}
 
 
-		private class BaseWrapController : IObjectController<TBase>
+		private sealed class BaseWrapController : IObjectController<TBase>
 		{
 			private readonly AbstractStateBasedLifetime<TState, TBase> lifetime;
 			private readonly bool asReadOnly;

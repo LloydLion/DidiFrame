@@ -5,7 +5,7 @@
 	/// </summary>
 	/// <typeparam name="TState">Type of statemachine state</typeparam>
 	/// <param name="DisposeDelegate">Object dispose handler</param>
-	public record FreezeModel<TState>(Func<StateUpdateResult<TState>> DisposeDelegate) : IDisposable where TState : struct
+	public sealed record FreezeModel<TState>(Func<StateUpdateResult<TState>> DisposeDelegate) : IDisposable where TState : struct
 	{
 		private StateUpdateResult<TState>? result;
 

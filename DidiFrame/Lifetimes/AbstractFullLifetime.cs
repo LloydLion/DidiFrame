@@ -1,5 +1,6 @@
 ﻿using DidiFrame.Utils;
 using DidiFrame.Utils.StateMachine;
+using static DidiFrame.Lifetimes.AbstractFullLifetimeStatic;
 
 namespace DidiFrame.Lifetimes
 {
@@ -12,11 +13,6 @@ namespace DidiFrame.Lifetimes
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
-		private static readonly EventId FailedToUpdateReportID = new(22, "FailedToUpdateReport");
-		private static readonly EventId FailedToDeleteReportID = new(23, "FailedToDeleteReport");
-		private static readonly EventId FailedToRestoreReportID = new(24, "FailedToRestoreReport");
-
-
 		private readonly WaitFor waitForClose = new();
 		private readonly ILogger logger;
 		private MessageAliveHolder<TBase>? optionalReport = null;
@@ -27,7 +23,7 @@ namespace DidiFrame.Lifetimes
 		/// <summary>
 		/// Creates new instance of DidiFrame.Lifetimes.AbstractFullLifetime`2
 		/// </summary>
-		public AbstractFullLifetime(ILogger logger) : base(logger)
+		protected AbstractFullLifetime(ILogger logger) : base(logger)
 		{
 			AddTransit(new ResetTransitWorker<TState>(null, waitForClose.Await));
 			this.logger = logger;
@@ -261,5 +257,12 @@ namespace DidiFrame.Lifetimes
 
 			return optionalReport;
 		}
+	}
+
+	internal static class AbstractFullLifetimeStatic
+	{
+		public static readonly EventId FailedToUpdateReportID = new(22, "FailedToUpdateReport");
+		public static readonly EventId FailedToDeleteReportID = new(23, "FailedToDeleteReport");
+		public static readonly EventId FailedToRestoreReportID = new(24, "FailedToRestoreReport");
 	}
 }

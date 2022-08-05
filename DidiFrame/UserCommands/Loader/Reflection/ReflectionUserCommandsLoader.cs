@@ -216,7 +216,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 
 				var additionalInfo = new Dictionary<Type, object> { { typeof(IStringLocalizer), handlerLocalizer } };
 
-				var filters = method.GetCustomAttributes<InvokerFilter>().Select(s => s.Filter).ToArray();
+				var filters = method.GetCustomAttributes<InvokerFilterAttribute>().Select(s => s.Filter).ToArray();
 				additionalInfo.Add(typeof(IReadOnlyCollection<IUserCommandInvokerFilter>), filters);
 
 				var description = method.GetCustomAttribute<DescriptionAttribute>()?.CreateModel();
@@ -258,8 +258,8 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 					if (!Regex.IsMatch(@params[i].Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return MethodValiudationResult.Failed;
 				}
 
-				if (@params.Length > 1)
-					if (!Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+")) return MethodValiudationResult.Failed;
+				if (@params.Length > 1 && !Regex.IsMatch(@params.Last().Name ?? throw new ImpossibleVariantException(), @"[a-zA-Z]+"))
+					return MethodValiudationResult.Failed;
 
 				if (attr.ReturnLocaleKey is not null)
 				{
@@ -298,11 +298,11 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 					if (returnLocalizedString is not null)
 					{
 						var cache = returnLocalizedString;
-						if (asSync) return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) });
+						if (asSync) return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new(cache)));
 						else
 						{
 							if (callRes is null) throw new NullReferenceException("Handler method's return was null");
-							return ((Task)callRes).ContinueWith(s => new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new(cache) });
+							return ((Task)callRes).ContinueWith(s => UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new(cache)));
 						}
 					}
 					else

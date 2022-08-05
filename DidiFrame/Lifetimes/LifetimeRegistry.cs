@@ -1,5 +1,6 @@
 ﻿using DidiFrame.Utils;
 using System.Collections.Concurrent;
+using static DidiFrame.Lifetimes.LifetimeRegistryStatic;
 
 namespace DidiFrame.Lifetimes
 {
@@ -8,13 +9,8 @@ namespace DidiFrame.Lifetimes
 	/// </summary>
 	/// <typeparam name="TLifetime">Type of target lifetime</typeparam>
 	/// <typeparam name="TBase">Type of base object of that lifetime</typeparam>
-	public class LifetimeRegistry<TLifetime, TBase> : ILifetimesRegistry<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
+	public sealed class LifetimeRegistry<TLifetime, TBase> : ILifetimesRegistry<TLifetime, TBase> where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
-		private static readonly EventId LifetimeCrachedID = new(11, "LifetimeCrashed");
-		private static readonly EventId LifetimeRegistryFailID = new(23, "LifetimeRegistryFail");
-		private static readonly EventId LifetimeRestoreFailID = new(24, "LifetimeRestoreFail");
-
-
 		private readonly IServersStatesRepository<ICollection<TBase>> states;
 		private readonly ILifetimeFactory<TLifetime, TBase> lifetimeFactory;
 		private readonly ILogger<LifetimeRegistry<TLifetime, TBase>> logger;
@@ -50,7 +46,7 @@ namespace DidiFrame.Lifetimes
 				sls.Lifetimes.TryAdd(item.Guid, lifetime);
 
 				var holder = new BaseObjectHolder(state, sls, item.Guid);
-				var context = new DefaultLifetimeContext<TBase>(lifetime, isNewlyCreated: false, holder, holder.FinalizeObject,
+				var context = new DefaultLifetimeContext<TBase>(isNewlyCreated: false, holder, holder.FinalizeObject,
 					LogError(lifetime.GetType(), item.Guid, item.Server));
 
 				try
@@ -81,7 +77,7 @@ namespace DidiFrame.Lifetimes
 			sls.Lifetimes.TryAdd(baseObject.Guid, lifetime);
 
 			var holder = new BaseObjectHolder(state, sls, baseObject.Guid);
-			var context = new DefaultLifetimeContext<TBase>(lifetime, isNewlyCreated: true, holder, holder.FinalizeObject,
+			var context = new DefaultLifetimeContext<TBase>(isNewlyCreated: true, holder, holder.FinalizeObject,
 				LogError(lifetime.GetType(), baseObject.Guid, baseObject.Server));
 
 			try
@@ -129,7 +125,7 @@ namespace DidiFrame.Lifetimes
 			public ConcurrentDictionary<Guid, TLifetime> Lifetimes { get; }
 		}
 
-		private class BaseObjectHolder : IObjectController<TBase>
+		private sealed class BaseObjectHolder : IObjectController<TBase>
 		{
 			private readonly IObjectController<ICollection<TBase>> state;
 			private readonly ServerLifetimeState sls;
@@ -167,5 +163,12 @@ namespace DidiFrame.Lifetimes
 				sls.Lifetimes.TryRemove(baseId, out _);
 			}
 		}
+	}
+
+	internal static class LifetimeRegistryStatic
+	{
+		public static readonly EventId LifetimeCrachedID = new(11, "LifetimeCrashed");
+		public static readonly EventId LifetimeRegistryFailID = new(23, "LifetimeRegistryFail");
+		public static readonly EventId LifetimeRestoreFailID = new(24, "LifetimeRestoreFail");
 	}
 }

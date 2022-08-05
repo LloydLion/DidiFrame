@@ -36,12 +36,9 @@ namespace DidiFrame.Utils.Json
 			ret.Converters.Add(new ServerConveter(server.Client));
 			ret.Converters.Add(new StringEnumConverter());
 
-			ret.Converters.Add(new SafeCollectionConveter(invalidCollectionElementCallback ?? noCall));
+			ret.Converters.Add(new SafeCollectionConveter(invalidCollectionElementCallback));
 
 			return ret;
-
-
-			static void noCall(JContainer _1, string _2, Exception _3) { };
 		}
 
 		/// <summary>
@@ -81,7 +78,7 @@ namespace DidiFrame.Utils.Json
 			void defCall(JContainer rootEl, string jpath, Exception ex)
 			{
 				invalidCollectionElementLogger.Log(LogLevel.Warning, CollectionElementParseErrorID, ex, "Enable to convert object:\n{Json}", rootEl.SelectToken(jpath));
-			};
+			}
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.UserCommands.Pipeline
 {
-	internal class UserCommandLocalServicesProvider : IServiceProvider, IDisposable
+	internal sealed class UserCommandLocalServicesProvider : IServiceProvider, IDisposable
 	{
 		private readonly Dictionary<Type, IDisposable> dic;
 
@@ -14,8 +14,7 @@
 		public void Dispose()
 		{
 			foreach (var item in dic)
-				try { item.Value.Dispose(); }
-				catch (Exception) { }
+				item.Value.Dispose();
 		}
 
 

@@ -5,7 +5,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 	/// <summary>
 	/// Dispatcher that based on simple discord messages
 	/// </summary>
-	public class MessageUserCommandDispatcher : IUserCommandPipelineDispatcher<IMessage>, IDisposable
+	public sealed class MessageUserCommandDispatcher : IUserCommandPipelineDispatcher<IMessage>, IDisposable
 	{
 		private static readonly EventId EnableToDeleteMessageID = new(55, "EnableToDeleteMessage");
 
@@ -71,15 +71,16 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 
 			IMessage? message = null;
 
-			if (result.RespondMessage is not null)
-				message = ss.Message.TextChannel.SendMessageAsync(result.RespondMessage).Result;
-			else
+			if (result.ResultType == UserCommandResult.Type.Message)
+				message = ss.Message.TextChannel.SendMessageAsync(result.GetRespondMessage()).Result;
+			else if (result.ResultType == UserCommandResult.Type.None)
 			{
 				if (result.Code != UserCommandCode.Sucssesful)
 				{
 					message = ss.Message.TextChannel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code)).Result;
 				}
 			}
+			else throw new NotSupportedException("Target type of user command result is not supported by dispatcher");
 
 			if (message is not null) ss.Responses.Add(message);
 		}
@@ -101,7 +102,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		}
 
 
-		private record StateStruct(IClient Sender, IMessage Message)
+		private sealed record StateStruct(IClient Sender, IMessage Message)
 		{
 			public List<IMessage> Responses { get; } = new();
 		}

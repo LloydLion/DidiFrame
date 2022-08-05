@@ -1,14 +1,13 @@
-﻿namespace DidiFrame.Utils.StateMachine
+﻿using static DidiFrame.Utils.StateMachine.PredicateTransitWorkerStatic;
+
+namespace DidiFrame.Utils.StateMachine
 {
 	/// <summary>
 	/// Statemachine transit that based on predicate
 	/// </summary>
 	/// <typeparam name="TState">Type of statemachine state</typeparam>
-	public class PredicateTransitWorker<TState> : AbstractTransitWorker<TState> where TState : struct
+	public sealed class PredicateTransitWorker<TState> : AbstractTransitWorker<TState> where TState : struct
 	{
-		private static readonly EventId PredicateErrorID = new(12, "PredicateError");
-
-
 		private readonly Func<bool> predicate;
 
 
@@ -44,5 +43,10 @@
 
 		/// <inheritdoc/>
 		public override void Disactivate() { }
+	}
+
+	internal static class PredicateTransitWorkerStatic
+	{
+		public static readonly EventId PredicateErrorID = new(12, "PredicateError");
 	}
 }

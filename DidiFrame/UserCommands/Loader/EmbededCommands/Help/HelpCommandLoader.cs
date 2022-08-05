@@ -11,7 +11,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 	/// <summary>
 	/// Help and cmd commands loader
 	/// </summary>
-	public class HelpCommandLoader : IUserCommandsLoader
+	public sealed class HelpCommandLoader : IUserCommandsLoader
 	{
 		private const int MaxCmdsInOnePage = 20;
 
@@ -49,24 +49,24 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		{
 			var page = ctx.Arguments.Single().Value.As<int>();
 
-			var cmds = repository.GetFullCommandList(ctx.Channel.Server);
+			var cmds = repository.GetFullCommandList(ctx.SendData.Channel.Server);
 
 			var data = cmds.Skip((page - 1) * MaxCmdsInOnePage).Take(MaxCmdsInOnePage).ToArray();
 
 			var tablet = behaviorModel.CreateHelpTablet(data);
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new() { MessageEmbeds = new[] { tablet } } });
+			return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new() { MessageEmbeds = new[] { tablet } }));
 		}
 
 		private Task<UserCommandResult> CmdHandler(UserCommandContext ctx)
 		{
 			var message = behaviorModel.ExecuteCMDCommand(ctx.Arguments.Single().Value.As<UserCommandInfo>(), out var executeCode);
 
-			return Task.FromResult(new UserCommandResult(executeCode) { RespondMessage = message });
+			return Task.FromResult(UserCommandResult.CreateWithMessage(executeCode, message));
 		}
 
 
-		private class Provider : IUserCommandArgumentValuesProvider
+		private sealed class Provider : IUserCommandArgumentValuesProvider
 		{
 			private readonly IUserCommandsRepository repository;
 
@@ -87,7 +87,7 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			}
 
 
-			private class Collection : IReadOnlyCollection<object>
+			private sealed class Collection : IReadOnlyCollection<object>
 			{
 				private readonly int max;
 

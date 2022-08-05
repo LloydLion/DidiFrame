@@ -80,7 +80,7 @@ namespace DidiFrame.Utils.Json.Converters
 		{
 			var settable = type.GetProperties().Where(s => s.CanRead && s.CanWrite && s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() == null).ToArray();
 			var ctor = type.GetProperties().Where(s => s.CanRead && s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() != null).ToArray();
-			ctorInfo = type.GetConstructor(ctor.Select(s => s.PropertyType).ToArray()) ?? throw new ArgumentNullException("No ctor was found");
+			ctorInfo = type.GetConstructor(ctor.Select(s => s.PropertyType).ToArray()) ?? throw new ArgumentNullException(nameof(type), "No constructor with given constructor assignable properties was found");
 
 			return (settable, ctor);
 		}

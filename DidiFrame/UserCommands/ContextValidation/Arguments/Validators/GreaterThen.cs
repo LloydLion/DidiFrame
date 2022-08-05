@@ -47,7 +47,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 		/// <param name="allowEquals">If allow equals with number</param>
 		public GreaterThen(string argumentName, bool inverse, bool allowEquals)
 		{
-			numberSource = (ctx) => (IComparable)ctx.Arguments[ctx.Command.Arguments.Single(s => s.Name == argumentName)];
+			numberSource = (ctx) => (IComparable)ctx.Arguments[ctx.Command.Arguments.Single(s => s.Name == argumentName)].ComplexObject;
 			this.inverse = inverse;
 			this.allowEquals = allowEquals;
 		}
@@ -101,7 +101,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 
 
 		/// <inheritdoc/>
-		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider locals)
+		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
 		{
 			var actualValue = (IComparable)value.ComplexObject;
 			var compare = numberSource(context);

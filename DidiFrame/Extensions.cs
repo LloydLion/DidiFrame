@@ -50,7 +50,7 @@ namespace DidiFrame
 		}
 
 
-		private class AutoResetEventDisposable : IDisposable
+		private sealed class AutoResetEventDisposable : IDisposable
 		{
 			private readonly AutoResetEvent autoResetEvent;
 

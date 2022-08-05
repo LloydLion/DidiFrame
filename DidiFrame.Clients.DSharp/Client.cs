@@ -176,7 +176,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			while (token.IsCancellationRequested == false)
 			{
-				await UpdateServerList(token);
+				await UpdateServerList();
 
 				if (token.IsCancellationRequested) return;
 
@@ -184,7 +184,7 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
-		private async Task UpdateServerList(CancellationToken token)
+		private async Task UpdateServerList()
 		{
 			using (serversSyncRoot.WaitAndCreateDisposable())
 			{

@@ -90,6 +90,16 @@ csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_indexers = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
+dotnet_diagnostic.S2930.severity = error
+dotnet_diagnostic.S2931.severity = error
+dotnet_diagnostic.S2190.severity = error
+dotnet_diagnostic.S1048.severity = error
+dotnet_diagnostic.S1125.severity = silent
+dotnet_diagnostic.S112.severity = silent
+dotnet_diagnostic.S3626.severity = silent
+dotnet_diagnostic.S3011.severity = silent
+dotnet_diagnostic.S2326.severity = silent
+dotnet_diagnostic.S4070.severity = silent
 
 [*.vb]
 #### Стили именования ####
@@ -138,6 +148,7 @@ dotnet_naming_style.всечастиспрописнойбуквы.required_pref
 dotnet_naming_style.всечастиспрописнойбуквы.required_suffix = 
 dotnet_naming_style.всечастиспрописнойбуквы.word_separator = 
 dotnet_naming_style.всечастиспрописнойбуквы.capitalization = pascal_case
+dotnet_diagnostic.CA1047.severity = warning
 
 [*.{cs,vb}]
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
