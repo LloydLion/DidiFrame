@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Represents a discord user
 	/// </summary>
-	public interface IUser : IEquatable<IUser>
+	public interface IUser : IEquatable<IUser>, IMetionable
 	{
 		/// <summary>
 		/// Nickname of the user
@@ -19,11 +19,6 @@
 		/// Client that contains this user
 		/// </summary>
 		public IClient Client { get; }
-
-		/// <summary>
-		/// Mention of the user
-		/// </summary>
-		public string Mention { get; }
 
 		/// <summary>
 		/// If user is bot

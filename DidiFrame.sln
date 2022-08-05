@@ -12,6 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "TestProject\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB4DD5F7-24E1-4E9F-BC90-C3A36290B1A5}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		DidFrameIcon.png = DidFrameIcon.png
 		README.md = README.md
 	EndProjectSection
@@ -24,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidiFrame.Data.Mongo", "Did
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidiFrame.Clients.DSharp", "DidiFrame.Clients.DSharp\DidiFrame.Clients.DSharp.csproj", "{DABFC726-D45B-47EA-BFC9-A71F3DD38F65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidiFrame.Testing", "DidiFrame.Testing\DidiFrame.Testing.csproj", "{C8C68E3B-8133-46F9-86BE-591E9C7A1BD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidiFrame.Testing", "DidiFrame.Testing\DidiFrame.Testing.csproj", "{C8C68E3B-8133-46F9-86BE-591E9C7A1BD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

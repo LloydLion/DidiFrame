@@ -5,20 +5,31 @@
 	/// </summary>
 	public class UserCommandResult
 	{
-		/// <summary>
-		/// Creates new instance of DidiFrame.UserCommands.Models.UserCommandResult
-		/// </summary>
-		/// <param name="code">Status code</param>
-		public UserCommandResult(UserCommandCode code)
+		private readonly object? parameter;
+		private readonly Type type;
+
+
+		private UserCommandResult(UserCommandCode code, Type type, object? parameter)
 		{
 			Code = code;
+			this.type = type;
+			this.parameter = parameter;
 		}
 
 
+		public static UserCommandResult CreateEmpty(UserCommandCode code, string? debugMessage = null, Exception? exception = null) =>
+			new(code, Type.None, null) { DebugMessage = debugMessage, Exception = exception };
+
+		public static UserCommandResult CreateWithMessage(UserCommandCode code, MessageSendModel sendModel, string? debugMessage = null, Exception? exception = null) =>
+			new(code, Type.Message, sendModel) { DebugMessage = debugMessage, Exception = exception };
+
+
 		/// <summary>
-		/// Send model of messages that will be sent as respond to command
+		/// Gets send model of messages that will be sent as respond to command if result contains it
 		/// </summary>
-		public MessageSendModel? RespondMessage { get; init; }
+		/// <exception cref="InvalidOperationException">If result doesn't contain message</exception>
+		public MessageSendModel GetRespondMessage() =>
+			type == Type.Message ? (MessageSendModel)(parameter ?? throw new ImpossibleVariantException()) : throw new InvalidOperationException("Result doesn't contain message");
 
 		/// <summary>
 		/// Debug message that will be sent to console
@@ -34,5 +45,14 @@
 		/// Status code of command
 		/// </summary>
 		public UserCommandCode Code { get; }
+
+		public Type ResultType => type;
+
+
+		public enum Type
+		{
+			None,
+			Message
+		}
 	}
 }

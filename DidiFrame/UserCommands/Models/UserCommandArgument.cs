@@ -20,34 +20,42 @@ namespace DidiFrame.UserCommands.Models
 			/// <summary>
 			/// Some integer number
 			/// </summary>
+			[IndicateType(typeof(int))]
 			Integer,
 			/// <summary>
 			/// Some number with float point
 			/// </summary>
+			[IndicateType(typeof(double))]
 			Double,
 			/// <summary>
 			/// Some string
 			/// </summary>
+			[IndicateType(typeof(string))]
 			String,
 			/// <summary>
 			/// Some server's member
 			/// </summary>
+			[IndicateType(typeof(IMember))]
 			Member,
 			/// <summary>
 			/// Some role
 			/// </summary>
+			[IndicateType(typeof(IRole))]
 			Role,
 			/// <summary>
 			/// Some role or member
 			/// </summary>
+			[IndicateType(typeof(object))]
 			Mentionable,
 			/// <summary>
 			/// Some tine span
 			/// </summary>
+			[IndicateType(typeof(TimeSpan))]
 			TimeSpan,
 			/// <summary>
 			/// Some date and time
 			/// </summary>
+			[IndicateType(typeof(DateTime))]
 			DateTime
 		}
 	}

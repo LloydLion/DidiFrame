@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Represents a discord member - user on server
 	/// </summary>
-	public interface IMember : IServerEntity, IUser
+	public interface IMember : IServerEntity, IEquatable<IMember>, IUser
 	{
 		/// <summary>
 		/// Gets a list of members's roles

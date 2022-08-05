@@ -5,14 +5,12 @@ namespace DidiFrame.UserCommands.Models
 	/// <summary>
 	/// Ready-to-use model for command execution
 	/// </summary>
-	/// <param name="Invoker">A member that has called a command</param>
-	/// <param name="Channel">A channel where it has written</param>
+	/// <param name="SendData">Send data of command</param>
 	/// <param name="Command">A command that has been invoked</param>
 	/// <param name="Arguments">Arguments that has been recived to command execute</param>
 	/// <param name="AdditionalInfo">A model additional info provider to provide additional and dynamic data about model</param>
 	public record UserCommandContext(
-		IMember Invoker,
-		ITextChannelBase Channel,
+		UserCommandSendData SendData,
 		UserCommandInfo Command,
 		IReadOnlyDictionary<UserCommandArgument, UserCommandContext.ArgumentValue> Arguments,
 		IModelAdditionalInfoProvider AdditionalInfo)

@@ -5,8 +5,8 @@ namespace DidiFrame.UserCommands.Models
 	/// <summary>
 	/// Delegate that handles user commands
 	/// </summary>
-	/// <param name="ctx"></param>
-	/// <returns></returns>
+	/// <param name="ctx">Context to handle</param>
+	/// <returns>Task with execution result</returns>
 	public delegate Task<UserCommandResult> UserCommandHandler(UserCommandContext ctx);
 
 

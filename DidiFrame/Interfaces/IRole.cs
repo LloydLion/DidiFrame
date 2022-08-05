@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Represents a discord role on server
 	/// </summary>
-	public interface IRole : IServerEntity, IEquatable<IRole>
+	public interface IRole : IServerEntity, IEquatable<IRole>, IMetionable
 	{
 		/// <summary>
 		/// Permissions that role grants
