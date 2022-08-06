@@ -22,7 +22,7 @@ namespace DidiFrame.Clients.DSharp
 	/// </summary>
 	public class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>
 	{
-		private DispatcherSyncCallback<UserCommandPreContext>? callback;
+		private DispatcherCallback<UserCommandPreContext>? callback;
 		private readonly Dictionary<string, ApplicationCommandPair> convertedCommands;
 		private readonly Client client;
 		private readonly BehaviorModel behaviorModel;
@@ -92,7 +92,7 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 		/// <inheritdoc/>
-		public void Respond(object stateObject, UserCommandResult result)
+		public async Task RespondAsync(object stateObject, UserCommandResult result)
 		{
 			resultValidator.ValidateAndThrow(result);
 
@@ -107,7 +107,9 @@ namespace DidiFrame.Clients.DSharp
 				builder.AddEmbeds(msg.Embeds);
 				builder.WithContent(msg.Content);
 				builder.WithTTS(msg.IsTTS);
-				state.Interaction.EditOriginalResponseAsync(builder).Wait();
+
+				await state.Interaction.EditOriginalResponseAsync(builder);
+
 				state.Responded = true;
 			}
 			else if (result.ResultType == UserCommandResult.Type.None)
@@ -118,7 +120,7 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 		/// <inheritdoc/>
-		public void SetSyncCallback(DispatcherSyncCallback<UserCommandPreContext> callback)
+		public void SetSyncCallback(DispatcherCallback<UserCommandPreContext> callback)
 		{
 			this.callback = callback;
 		}

@@ -44,7 +44,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 			subConverters.Single(s => s.PreObjectTypes.SequenceEqual(inputs));
 
 		/// <inheritdoc/>
-		public override UserCommandContext? Process(UserCommandPreContext preCtx, UserCommandPipelineContext pipelineContext)
+		public override UserCommandMiddlewareExcutionResult<UserCommandContext> Process(UserCommandPreContext preCtx, UserCommandPipelineContext pipelineContext)
 		{
 			// preCtx.Arguments is dictionary from argument to array of pre objects which parsed by cmd parser
 			// pre objects are original objects directly from writen cmd
@@ -86,8 +86,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 								var arg = cmdLocalizer is null ? localizer["NoDataProvided"] : cmdLocalizer[$"{preCtx.Command.Name}.{s.Key.Name}:{localeKey}"];
 								var msgContent = localizer["ConvertationErrorMessage", arg];
 
-								pipelineContext.FinalizePipeline(UserCommandResult.CreateWithMessage(code, new MessageSendModel(msgContent)));
-								throw new ConvertationException();
+								throw new ConvertationException(UserCommandResult.CreateWithMessage(code, new MessageSendModel(msgContent)));
 							}
 							else return new UserCommandContext.ArgumentValue(s.Key, convertationResult.DeconstructAsSuccess(), s.Value);
 						}
@@ -97,14 +96,23 @@ namespace DidiFrame.UserCommands.PreProcessing
 
 				return new UserCommandContext(preCtx.SendData, preCtx.Command, arguments, new SimpleModelAdditionalInfoProvider((pipelineContext.LocalServices, typeof(IServiceProvider))));
 			}
-			catch (ConvertationException)
+			catch (ConvertationException cex)
 			{
-				return null;
+				return UserCommandMiddlewareExcutionResult<UserCommandContext>.CreateWithFinalization(cex.Result);
 			}
 		}
 
 
 		[SuppressMessage("Critical Code Smell", "S3871")] //It is only internal exception, it is never be trown into outside context
-		private sealed class ConvertationException : Exception { }
+		private sealed class ConvertationException : Exception
+		{
+			public UserCommandResult Result { get; }
+
+
+			public ConvertationException(UserCommandResult result)
+			{
+				Result = result;
+			}
+		}
 	}
 }

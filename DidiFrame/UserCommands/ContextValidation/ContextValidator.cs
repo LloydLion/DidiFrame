@@ -35,7 +35,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 
 
 		/// <inheritdoc/>
-		public override ValidatedUserCommandContext? Process(UserCommandContext input, UserCommandPipelineContext pipelineContext)
+		public override UserCommandMiddlewareExcutionResult<ValidatedUserCommandContext> Process(UserCommandContext input, UserCommandPipelineContext pipelineContext)
 		{
 			ctxValidator.ValidateAndThrow(input);
 
@@ -112,13 +112,14 @@ namespace DidiFrame.UserCommands.ContextValidation
 					}
 			}
 			
-			return new(input);
+			return UserCommandMiddlewareExcutionResult<ValidatedUserCommandContext>.CreateWithOutput(new(input));
 
-			ValidatedUserCommandContext? fail(string msgContent)
+
+			UserCommandMiddlewareExcutionResult<ValidatedUserCommandContext> fail(string msgContent)
 			{
 				if (failResult is null) throw new ImpossibleVariantException();
-				pipelineContext.FinalizePipeline(UserCommandResult.CreateWithMessage(failResult.Code, new(msgContent)));
-				return null;
+				var result = UserCommandResult.CreateWithMessage(failResult.Code, new(msgContent));
+				return UserCommandMiddlewareExcutionResult<ValidatedUserCommandContext>.CreateWithFinalization(result);
 			}
 		}
 	}

@@ -13,10 +13,11 @@
 		protected AbstractUserCommandPipelineMiddleware() { }
 
 
-		/// <inheritdoc/>
-		public abstract TOut? Process(TIn input, UserCommandPipelineContext pipelineContext);
+		public abstract UserCommandMiddlewareExcutionResult<TOut> Process(TIn input, UserCommandPipelineContext pipelineContext);
 
-		/// <inheritdoc/>
-		public object? Process(object input, UserCommandPipelineContext pipelineContext) => Process((TIn)input, pipelineContext);
+		public ValueTask<UserCommandMiddlewareExcutionResult<TOut>> ProcessAsync(TIn input, UserCommandPipelineContext pipelineContext) =>
+			ValueTask.FromResult(Process(input, pipelineContext));
+		public ValueTask<UserCommandMiddlewareExcutionResult<object>> ProcessAsync(object input, UserCommandPipelineContext pipelineContext) =>
+			ValueTask.FromResult(Process((TIn)input, pipelineContext).UnsafeCast<object>());
 	}
 }

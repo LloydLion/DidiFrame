@@ -21,12 +21,11 @@
 
 
 		/// <inheritdoc/>
-		public override TOutput? Process(TInput input, UserCommandPipelineContext pipelineContext)
+		public override UserCommandMiddlewareExcutionResult<TOutput> Process(TInput input, UserCommandPipelineContext pipelineContext)
 		{
-			var res = selector(input);
-			if (res is null)
-				pipelineContext.DropPipeline();
-			return res;
+			var result = selector(input);
+			if (result is null) throw new UserCommandPipelineDropException();
+			else return UserCommandMiddlewareExcutionResult<TOutput>.CreateWithOutput(result);
 		}
 	}
 }

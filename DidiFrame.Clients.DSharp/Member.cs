@@ -50,10 +50,14 @@ namespace DidiFrame.Clients.DSharp
 
 
 		/// <inheritdoc/>
-		public bool Equals(IServerEntity? other) => other is Member member && member.IsExist && IsExist && base.Equals(member) && member.Server == Server;
+		public bool Equals(IServerEntity? other) => Equals(other as Member);
+
+		/// <inheritdoc/>
+		public bool Equals(IMember? other) => other is Member member && member.IsExist && IsExist && base.Equals(member) && member.Server == Server;
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Member);
+
 
 		/// <inheritdoc/>
 		public override int GetHashCode() => HashCode.Combine(Id, Server);

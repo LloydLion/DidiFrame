@@ -38,7 +38,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 
 
 		/// <inheritdoc/>
-		public override UserCommandPreContext? Process(string content, UserCommandPipelineContext pipelineContext)
+		public override UserCommandMiddlewareExcutionResult<UserCommandPreContext> Process(string content, UserCommandPipelineContext pipelineContext)
 		{
 			var server = pipelineContext.SendData.Channel.Server;
 			var cmds = repository.GetFullCommandList(server);
@@ -46,8 +46,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 
 			if (command is null)
 			{
-				pipelineContext.DropPipeline();
-				return null;
+				throw new UserCommandPipelineDropException($"Command not found for string: {content}");
 			}
 
 			var arguments = new Dictionary<UserCommandArgument, IReadOnlyList<object>>();
@@ -70,15 +69,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 					}
 					else
 					{
-						try
-						{
-							selects.Add(behaviorModel.SelectArgument(span, out span));
-						}
-						catch (Exception)
-						{
-							pipelineContext.DropPipeline();
-							return null;
-						}
+						selects.Add(behaviorModel.SelectArgument(span, out span));
 					}
 				}
 
@@ -87,31 +78,22 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 
 				foreach (var argument in command.Arguments)
 				{
-					try
-					{
-						var result = behaviorModel.ProcessArgument(selectsSpan, argument, server, out selectsSpan);
-						arguments.Add(argument, result);
-					}
-					catch (Exception)
-					{
-						pipelineContext.DropPipeline();
-						return null;
-					}
 
+					var result = behaviorModel.ProcessArgument(selectsSpan, argument, server, out selectsSpan);
+					arguments.Add(argument, result);
 				}
 
-				return new(pipelineContext.SendData, command, arguments);
+				return new UserCommandPreContext(pipelineContext.SendData, command, arguments);
 			}
 			else
 			{
 				if (command.Arguments.Any())
 				{
-					pipelineContext.DropPipeline();
-					return null;
+					throw new UserCommandPipelineDropException("Original content doesn't contain arguments, but command contains them");
 				}
 				else
 				{
-					return new(pipelineContext.SendData, command, new Dictionary<UserCommandArgument, IReadOnlyList<object>>());
+					return new UserCommandPreContext(pipelineContext.SendData, command, new Dictionary<UserCommandArgument, IReadOnlyList<object>>());
 				}
 			}
 		}

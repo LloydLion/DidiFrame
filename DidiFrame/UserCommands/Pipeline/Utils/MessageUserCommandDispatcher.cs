@@ -13,7 +13,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		private readonly IClient client;
 		private readonly ILogger<MessageUserCommandDispatcher> logger;
 		private readonly IValidator<UserCommandResult> resultValidator;
-		private DispatcherSyncCallback<IMessage>? callback = null;
+		private DispatcherCallback<IMessage>? callback = null;
 
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		}
 
 		/// <inheritdoc/>
-		public void Respond(object stateObject, UserCommandResult result)
+		public async Task RespondAsync(object stateObject, UserCommandResult result)
 		{
 			resultValidator.ValidateAndThrow(result);
 
@@ -72,7 +72,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 			IMessage? message = null;
 
 			if (result.ResultType == UserCommandResult.Type.Message)
-				message = ss.Message.TextChannel.SendMessageAsync(result.GetRespondMessage()).Result;
+				message = await ss.Message.TextChannel.SendMessageAsync(result.GetRespondMessage());
 			else if (result.ResultType == UserCommandResult.Type.None)
 			{
 				if (result.Code != UserCommandCode.Sucssesful)
@@ -86,7 +86,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 		}
 
 		/// <inheritdoc/>
-		public void SetSyncCallback(DispatcherSyncCallback<IMessage> callback)
+		public void SetSyncCallback(DispatcherCallback<IMessage> callback)
 		{
 			this.callback = callback;
 		}

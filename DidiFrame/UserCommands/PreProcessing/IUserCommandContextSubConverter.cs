@@ -24,6 +24,7 @@
 		/// <param name="preObjects">Pre objects that types described in PreObjectTypes property</param>
 		/// <param name="localServices">Local services from pipeline</param>
 		/// <returns>Result of convertation: final object or error locale key</returns>
+		//TODO: Delete context dependency and remove pipeline dependency
 		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider localServices);
 
 		/// <summary>

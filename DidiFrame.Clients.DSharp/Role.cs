@@ -49,6 +49,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public bool IsExist => role() is not null;
 
+		/// <inheritdoc/>
+		public string Mention => AccessBase().Mention;
+
 
 		/// <inheritdoc/>
 		public bool Equals(IServerEntity? other) => Equals(other as Role);

@@ -109,7 +109,7 @@ namespace DidiFrame.Application
 				try
 				{
 					var result = await executor.ProcessAsync(pipeline, obj, sendData, state);
-					if (result is not null) dispatcher.Respond(state, result);
+					if (result is not null) await dispatcher.RespondAsync(state, result);
 					dispatcher.FinalizePipeline(state);
 				}
 				catch (Exception ex)

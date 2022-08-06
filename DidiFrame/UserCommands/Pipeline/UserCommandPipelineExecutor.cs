@@ -44,60 +44,61 @@ namespace DidiFrame.UserCommands.Pipeline
 
 
 		/// <inheritdoc/>
-		public Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData, object dispatcherState)
+		public async Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData, object dispatcherState)
 		{
 			sendDataValidator.ValidateAndThrow(sendData);
 
-			return Task.Run(() =>
+
+			var guid = Guid.NewGuid();
+
+			logger.Log(LogLevel.Information, PipelineStartID, "({PipelineExecutionId}) Command pipeline executing started in {ServerId} #{ChannelName} by {MemberName}",
+				guid, sendData.Channel.Server.Id, sendData.Channel.Name, sendData.Invoker.UserName);
+
+			using var services = new UserCommandLocalServicesProvider(descriptors.Select(s => s.CreateInstance(serviceProvider)).ToArray());
+
+			var result = await wrap(input, pipeline, serviceProvider, sendData, dispatcherState);
+
+			if (result is null)
+				logger.Log(LogLevel.Debug, PipelineDroppedID, "({PipelineExecutionId}) Command pipeline dropped", guid);
+			else
 			{
-				var guid = Guid.NewGuid();
+				resultValidator.ValidateAndThrow(result);
 
-				logger.Log(LogLevel.Information, PipelineStartID, "({Id}) Command pipeline executing started in {ServerId} #{ChannelName} by {MemberName}", guid, sendData.Channel.Server.Id, sendData.Channel.Name, sendData.Invoker.UserName);
+				logger.Log(LogLevel.Debug, PipelineFinalizedID, "({PipelineExecutionId}) Command pipeline finalized successfully", guid);
 
-				using var services = new UserCommandLocalServicesProvider(descriptors.Select(s => s.CreateInstance(serviceProvider)).ToArray());
+				if (result.DebugMessage is not null)
+					logger.Log(LogLevel.Information, PipelineInforationID, result.Exception, "({PipelineExecutionId}) Executed pipeline informs: {Message}", guid, result.DebugMessage);
 
-				var result = wrap(input, pipeline, serviceProvider, sendData, dispatcherState);
+				if (result.Exception is not null)
+					logger.Log(LogLevel.Error, PipelineExceptionID, result.Exception, "({PipelineExecutionId}) Executed pipeline finished with exception", guid);
+			}
 
-				if (result is null)
-					logger.Log(LogLevel.Debug, PipelineDroppedID, "({Id}) Command pipeline dropped", guid);
-				else
+			return result;
+
+
+			static async ValueTask<UserCommandResult?> wrap(object input, UserCommandPipeline pipeline, IServiceProvider services, UserCommandSendData sendData, object dispatcherState)
+			{
+				object currentValue = input;
+
+				foreach (var middleware in pipeline.Middlewares)
 				{
-					resultValidator.ValidateAndThrow(result);
+					var context = new UserCommandPipelineContext(services, sendData, (result) => pipeline.Origin.RespondAsync(dispatcherState, result));
 
-					logger.Log(LogLevel.Debug, PipelineFinalizedID, "({Id}) Command pipeline finalized successfully", guid);
-
-					if (result.DebugMessage is not null)
-						logger.Log(LogLevel.Information, PipelineInforationID, result.Exception, "({Id}) Executed pipeline informs: {Message}", guid, result.DebugMessage);
-
-					if (result.Exception is not null)
-						logger.Log(LogLevel.Error, PipelineExceptionID, result.Exception, "({Id}) Executed pipeline finished with exception", guid);
-				}
-
-				return result;
-
-
-				static UserCommandResult? wrap(object input, UserCommandPipeline pipeline, IServiceProvider services, UserCommandSendData sendData, object dispatcherState)
-				{
-					object currentValue = input;
-
-					foreach (var middleware in pipeline.Middlewares)
+					try
 					{
-						var context = new UserCommandPipelineContext(services, sendData, (result) => pipeline.Origin.Respond(dispatcherState, result));
+						var result = await middleware.ProcessAsync(currentValue, context);
 
-						var newValue = middleware.Process(currentValue, context);
-
-						if (newValue is null)
-						{
-							if (context.CurrentStatus == UserCommandPipelineContext.Status.BeginDrop) return null;
-							else if (context.CurrentStatus == UserCommandPipelineContext.Status.BeginFinalize) return context.GetExecutionResult();
-							else throw new InvalidOperationException("Enable to return null and don't set any status in context");
-						}
-						else currentValue = newValue;
+						if (result.ResultType == UserCommandMiddlewareExcutionResult.Type.Finalization) return result.GetFinalizationResult();
+						else currentValue = result.GetOutput();
 					}
-
-					return (UserCommandResult)currentValue;
+					catch (Exception)
+					{
+						return null;
+					}
 				}
-			});
+
+				return (UserCommandResult)currentValue;
+			}
 		}
 	}
 }
