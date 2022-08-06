@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace DidiFrame.UserCommands.Pipeline.Utils
+namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 {
 	/// <summary>
 	/// Parser for text commands

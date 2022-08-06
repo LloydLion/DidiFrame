@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DidiFrame.UserCommands.Pipeline.Utils
+namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 {
 	/// <summary>
 	/// Dispatcher that based on simple discord messages
@@ -46,7 +46,8 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 
 			Thread.Sleep(60000);
 
-			try { ss.Message.DeleteAsync().Wait(); } catch(Exception ex)
+			try { ss.Message.DeleteAsync().Wait(); }
+			catch (Exception ex)
 			{ logger.Log(LogLevel.Warning, EnableToDeleteMessageID, ex, "Enable to delete call message with id {Id}", ss.Message.Id); }
 
 			foreach (var msg in ss.Responses)
@@ -55,7 +56,7 @@ namespace DidiFrame.UserCommands.Pipeline.Utils
 				{
 					msg.DeleteAsync().Wait();
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					logger.Log(LogLevel.Warning, EnableToDeleteMessageID, ex, "Enable to delete respond message with id {Id}", msg.Id);
 				}
