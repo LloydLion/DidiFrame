@@ -1,16 +1,21 @@
 ﻿using FluentValidation;
+using System.Collections;
+using System.Linq;
 
 namespace DidiFrame.UserCommands.Repository
 {
 	/// <summary>
 	/// Simple implementation of DidiFrame.UserCommands.Repository.IUserCommandsRepository
 	/// </summary>
-	public class SimpleUserCommandsRepository : IUserCommandsRepository
+	public sealed class SimpleUserCommandsRepository : IUserCommandsRepository
 	{
-		private readonly List<UserCommandInfo> globalInfos = new();
-		private readonly Dictionary<IServer, List<UserCommandInfo>> localInfos = new();
+		private readonly UserCommandInfoHelpCollection globalInfos = new();
+		private readonly Dictionary<IServer, UserCommandInfoHelpCollection> localInfos = new();
 		private readonly IValidator<UserCommandInfo> cmdValidator;
-		private bool built = false;
+
+
+		/// <inheritdoc/>
+		public object SyncRoot { get; } = new();
 
 
 		/// <summary>
@@ -25,50 +30,148 @@ namespace DidiFrame.UserCommands.Repository
 		/// <inheritdoc/>
 		public IUserCommandsCollection GetCommandsFor(IServer server)
 		{
-			return localInfos.ContainsKey(server) ? new UserCommandsCollection(localInfos[server]) : new UserCommandsCollection(Array.Empty<UserCommandInfo>());
+			lock (SyncRoot)
+			{
+				return localInfos.ContainsKey(server) ? new UserCommandsCollection(localInfos[server], SyncRoot) : new UserCommandsCollection(null, SyncRoot);
+			}
 		}
 
 		/// <inheritdoc/>
 		public void AddCommand(UserCommandInfo commandInfo)
 		{
-			if (built) throw new InvalidOperationException("Object has built");
-			if (globalInfos.Any(s => s.Name == commandInfo.Name))
-				throw new InvalidOperationException("Command with given name already present in repository");
-			cmdValidator.ValidateAndThrow(commandInfo);
-			globalInfos.Add(commandInfo);
+			lock (SyncRoot)
+			{
+				cmdValidator.ValidateAndThrow(commandInfo);
+
+				CheckExistanceAndFixErrors(commandInfo);
+
+				globalInfos.Add(commandInfo);
+			}
 		}
 
 		/// <inheritdoc/>
 		public void AddCommand(UserCommandInfo commandInfo, IServer server)
 		{
-			if (built) throw new InvalidOperationException("Object has built");
-			if (globalInfos.Any(s => s.Name == commandInfo.Name))
-				throw new InvalidOperationException("Command with given name already present in repository");
-			cmdValidator.ValidateAndThrow(commandInfo);
+			lock (SyncRoot)
+			{
+				cmdValidator.ValidateAndThrow(commandInfo);
 
-			if (localInfos.ContainsKey(server) == false) localInfos.Add(server, new());
-			localInfos[server].Add(commandInfo);
-		}
+				CheckExistanceAndFixErrors(commandInfo, server);
 
-		/// <inheritdoc/>
-		public void Fix()
-		{
-			built = true;
+				if (localInfos.ContainsKey(server) == false) localInfos.Add(server, new());
+				localInfos[server].Add(commandInfo);
+			}
 		}
 
 		/// <inheritdoc/>
 		public IUserCommandsCollection GetGlobalCommands()
 		{
-			return new UserCommandsCollection(globalInfos);
+			lock (SyncRoot)
+			{
+				return new UserCommandsCollection(globalInfos, SyncRoot);
+			}
 		}
 
 		/// <inheritdoc/>
 		public IUserCommandsCollection GetFullCommandList(IServer server)
 		{
-			var list = new List<UserCommandInfo>();
-			list.AddRange(globalInfos);
-			if (localInfos.ContainsKey(server)) list.AddRange(localInfos[server]);
-			return new UserCommandsCollection(list);
+			lock (SyncRoot)
+			{
+				var list = new UserCommandInfoHelpCollection();
+
+				foreach (var item in globalInfos) list.Add(item);
+				if (localInfos.ContainsKey(server))
+					foreach (var item in localInfos[server]) list.Add(item);
+
+				return new UserCommandsCollection(list, SyncRoot);
+			}
+		}
+
+		private void CheckExistanceAndFixErrors(UserCommandInfo command)
+		{
+			if (globalInfos.ContainsKey(command.Name))
+				throw new InvalidOperationException("Command with given name already present in global commands");
+
+			foreach (var col in localInfos.Where(col => col.Value.ContainsKey(command.Name)).Select(s => s.Value))
+			{
+				col.Remove(col[command.Name]);
+			}
+		}
+
+		private void CheckExistanceAndFixErrors(UserCommandInfo command, IServer server)
+		{
+			if (globalInfos.ContainsKey(command.Name))
+				throw new InvalidOperationException("Command with given name already present in global commands");
+
+			if (localInfos.ContainsKey(server) == false) return;
+			else
+			{
+				var collection = localInfos[server];
+
+				if (collection.ContainsKey(command.Name))
+					throw new InvalidOperationException("Command with given name already present in this server commands");
+			}
+		}
+
+
+		private sealed class UserCommandsCollection : IUserCommandsCollection
+		{
+			private readonly UserCommandInfoHelpCollection? commands;
+			private readonly object syncRoot;
+
+
+			internal UserCommandsCollection(UserCommandInfoHelpCollection? commands, object syncRoot)
+			{
+				this.commands = commands;
+				this.syncRoot = syncRoot;
+			}
+
+
+			/// <inheritdoc/>
+			public int Count
+			{
+				get
+				{
+					lock (syncRoot)
+					{
+						return commands?.Count ?? 0;
+					}
+				}
+			}
+
+			/// <inheritdoc/>
+			public UserCommandInfo GetCommad(string name)
+			{
+				lock (syncRoot)
+				{
+					return commands?[name] ?? throw new KeyNotFoundException();
+				}
+			}
+
+			/// <inheritdoc/>
+			public bool TryGetCommad(string name, out UserCommandInfo? command)
+			{
+				lock (syncRoot)
+				{
+					if (commands is null)
+					{
+						command = null;
+						return false;
+					}
+					else return commands.TryGetValue(name, out command);
+				}
+			}
+
+			/// <inheritdoc/>
+			public IEnumerator<UserCommandInfo> GetEnumerator()
+			{
+				lock (syncRoot)
+				{
+					return commands?.GetEnumerator() ?? Enumerable.Empty<UserCommandInfo>().GetEnumerator();
+				}
+			}
+
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 	}
 }
