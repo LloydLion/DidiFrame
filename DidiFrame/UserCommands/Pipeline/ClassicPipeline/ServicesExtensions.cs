@@ -25,7 +25,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 
 			services.AddTransient<IUserCommandContextConverter, DefaultUserCommandContextConverter>();
 
-			services.AddUserCommandLocalService<Disposer>();
+			services.AddScoped<Disposer>();
 
 			return services.AddUserCommandPipeline(builder =>
 			{

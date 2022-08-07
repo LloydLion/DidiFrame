@@ -73,7 +73,6 @@ namespace DidiFrame.Application
 				logger.Log(LogLevel.Debug, LoaderDoneID, "Loding from {HandlerType} complite", loader.GetType().FullName);
 			}
 
-			rp.Fix();
 			logger.Log(LogLevel.Information, LoadingDoneID, "Commands loding complite. Commands repository done");
 
 

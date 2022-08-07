@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.UserCommands.Pipeline
 {
@@ -14,8 +15,7 @@ namespace DidiFrame.UserCommands.Pipeline
 		private static readonly EventId PipelineExceptionID = new(95, "PipelineException");
 
 
-		private readonly IReadOnlyCollection<IUserCommandLocalServiceDescriptor> descriptors;
-		private readonly IServiceProvider serviceProvider;
+		private readonly IServiceScopeFactory scopeFactory;
 		private readonly ILogger<UserCommandPipelineExecutor> logger;
 		private readonly IValidator<UserCommandSendData> sendDataValidator;
 		private readonly IValidator<UserCommandResult> resultValidator;
@@ -24,19 +24,16 @@ namespace DidiFrame.UserCommands.Pipeline
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor with local services
 		/// </summary>
-		/// <param name="descriptors">Enumerable of local services' descriptors</param>
-		/// <param name="serviceProvider">Global service provider</param>
 		/// <param name="logger">Logger for executor</param>
 		/// <param name="sendDataValidator">Validator for DidiFrame.UserCommands.Models.UserCommandSendData</param>
 		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
-		public UserCommandPipelineExecutor(IEnumerable<IUserCommandLocalServiceDescriptor> descriptors,
-			IServiceProvider serviceProvider,
+		public UserCommandPipelineExecutor(
+			IServiceScopeFactory scopeFactory,
 			ILogger<UserCommandPipelineExecutor> logger,
 			IValidator<UserCommandSendData> sendDataValidator,
 			IValidator<UserCommandResult> resultValidator)
 		{
-			this.descriptors = descriptors.ToArray();
-			this.serviceProvider = serviceProvider;
+			this.scopeFactory = scopeFactory;
 			this.logger = logger;
 			this.sendDataValidator = sendDataValidator;
 			this.resultValidator = resultValidator;
@@ -48,53 +45,48 @@ namespace DidiFrame.UserCommands.Pipeline
 		{
 			sendDataValidator.ValidateAndThrow(sendData);
 
-
-			var guid = Guid.NewGuid();
-
-			logger.Log(LogLevel.Information, PipelineStartID, "({PipelineExecutionId}) Command pipeline executing started in {ServerId} #{ChannelName} by {MemberName}",
-				guid, sendData.Channel.Server.Id, sendData.Channel.Name, sendData.Invoker.UserName);
-
-			using var services = new UserCommandLocalServicesProvider(descriptors.Select(s => s.CreateInstance(serviceProvider)).ToArray());
-
-			var result = await wrap(input, pipeline, serviceProvider, sendData, dispatcherState);
-
-			if (result is null)
-				logger.Log(LogLevel.Debug, PipelineDroppedID, "({PipelineExecutionId}) Command pipeline dropped", guid);
-			else
+			using (var scope = scopeFactory.CreateScope())
 			{
-				resultValidator.ValidateAndThrow(result);
+				var guid = Guid.NewGuid();
 
-				logger.Log(LogLevel.Debug, PipelineFinalizedID, "({PipelineExecutionId}) Command pipeline finalized successfully", guid);
+				try
+				{
+					logger.Log(LogLevel.Information, PipelineStartID, "({PipelineExecutionId}) Command pipeline executing started in {ServerId} #{ChannelName} by {MemberName}",
+						guid, sendData.Channel.Server.Id, sendData.Channel.Name, sendData.Invoker.UserName);
 
-				if (result.DebugMessage is not null)
-					logger.Log(LogLevel.Information, PipelineInforationID, result.Exception, "({PipelineExecutionId}) Executed pipeline informs: {Message}", guid, result.DebugMessage);
+					var result = await wrap(input, pipeline, sendData, dispatcherState, scope);
 
-				if (result.Exception is not null)
-					logger.Log(LogLevel.Error, PipelineExceptionID, result.Exception, "({PipelineExecutionId}) Executed pipeline finished with exception", guid);
+					resultValidator.ValidateAndThrow(result);
+
+					logger.Log(LogLevel.Debug, PipelineFinalizedID, "({PipelineExecutionId}) Command pipeline finalized successfully", guid);
+
+					if (result.DebugMessage is not null)
+						logger.Log(LogLevel.Information, PipelineInforationID, result.Exception, "({PipelineExecutionId}) Executed pipeline informs: {Message}", guid, result.DebugMessage);
+
+					if (result.Exception is not null)
+						logger.Log(LogLevel.Error, PipelineExceptionID, result.Exception, "({PipelineExecutionId}) Executed pipeline finished with exception", guid);
+
+					return result;
+				}
+				catch (Exception ex)
+				{
+					logger.Log(LogLevel.Debug, PipelineDroppedID, ex, "({PipelineExecutionId}) Command pipeline dropped with error", guid);
+					return null;
+				}
 			}
 
-			return result;
 
-
-			static async ValueTask<UserCommandResult?> wrap(object input, UserCommandPipeline pipeline, IServiceProvider services, UserCommandSendData sendData, object dispatcherState)
+			static async ValueTask<UserCommandResult> wrap(object input, UserCommandPipeline pipeline, UserCommandSendData sendData, object dispatcherState, IServiceScope scope)
 			{
 				object currentValue = input;
 
 				foreach (var middleware in pipeline.Middlewares)
 				{
-					var context = new UserCommandPipelineContext(services, sendData, (result) => pipeline.Origin.RespondAsync(dispatcherState, result));
+					var context = new UserCommandPipelineContext(scope.ServiceProvider, sendData, (result) => pipeline.Origin.RespondAsync(dispatcherState, result));
+					var result = await middleware.ProcessAsync(currentValue, context);
 
-					try
-					{
-						var result = await middleware.ProcessAsync(currentValue, context);
-
-						if (result.ResultType == UserCommandMiddlewareExcutionResult.Type.Finalization) return result.GetFinalizationResult();
-						else currentValue = result.GetOutput();
-					}
-					catch (Exception)
-					{
-						return null;
-					}
+					if (result.ResultType == UserCommandMiddlewareExcutionResult.Type.Finalization) return result.GetFinalizationResult();
+					else currentValue = result.GetOutput();
 				}
 
 				return (UserCommandResult)currentValue;

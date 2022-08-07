@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace DidiFrame.UserCommands.Pipeline.Services
+﻿namespace DidiFrame.UserCommands.Pipeline.Services
 {
 	/// <summary>
 	/// Local service that represents a list of disposable and disposes it at the end of pipeline
@@ -18,9 +16,9 @@ namespace DidiFrame.UserCommands.Pipeline.Services
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Services.Disposer
 		/// </summary>
 		/// <param name="services">Service provider with logger</param>
-		public Disposer(IServiceProvider services)
+		public Disposer(ILogger<Disposer> logger)
 		{
-			logger = services.GetRequiredService<ILogger<Disposer>>();
+			this.logger = logger;
 		}
 
 
