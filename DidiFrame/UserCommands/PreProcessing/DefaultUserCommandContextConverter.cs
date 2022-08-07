@@ -12,10 +12,9 @@ namespace DidiFrame.UserCommands.PreProcessing
 	/// </summary>
 	public class DefaultUserCommandContextConverter : AbstractUserCommandPipelineMiddleware<UserCommandPreContext, UserCommandContext>, IUserCommandContextConverter
 	{
-		private readonly IReadOnlyCollection<IUserCommandContextSubConverter> subConverters;
-		private readonly IValidator<UserCommandPreContext> preCtxValidator;
-		private readonly IServiceProvider services;
+		private readonly IEnumerable<IUserCommandContextSubConverter> subConverters;
 		private readonly IStringLocalizer<DefaultUserCommandContextConverter> localizer;
+		private readonly IValidator<UserCommandPreContext> preCtxValidator;
 
 
 		/// <summary>
@@ -25,13 +24,13 @@ namespace DidiFrame.UserCommands.PreProcessing
 		/// <param name="services">Services that will be provided to sub converters</param>
 		/// <param name="subConverters">Sub converters that converts raw arguments to ready-to-use</param>
 		/// <param name="localizer">Localizer that will be used for print error messages</param>
-		public DefaultUserCommandContextConverter(IValidator<UserCommandPreContext> preCtxValidator, IServiceProvider services,
-			IEnumerable<IUserCommandContextSubConverter> subConverters,
-			IStringLocalizer<DefaultUserCommandContextConverter> localizer)
+		public DefaultUserCommandContextConverter(
+			IEnumerable<IContextSubConverterInstanceCreator> subConverters,
+			IStringLocalizer<DefaultUserCommandContextConverter> localizer,
+			IValidator<UserCommandPreContext> preCtxValidator)
 		{
-			this.subConverters = subConverters.ToArray();
+			this.subConverters = subConverters.Select(s => s.Create()).ToArray();
 			this.preCtxValidator = preCtxValidator;
-			this.services = services;
 			this.localizer = localizer;
 		}
 
@@ -77,7 +76,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 						else //Complex non-array argument case
 						{
 							var converter = GetSubConverter(s.Key.TargetType);
-							var convertationResult = converter.Convert(services, preCtx, s.Value, pipelineContext.LocalServices);
+							var convertationResult = converter.Convert(preCtx.SendData, s.Value, pipelineContext.LocalServices);
 							if (convertationResult.IsSuccessful == false)
 							{
 								convertationResult.DeconstructAsFailture(out var localeKey, out var code);

@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Loader.Reflection
+﻿using DidiFrame.Dependencies;
+
+namespace DidiFrame.UserCommands.Loader.Reflection
 {
 	/// <summary>
 	/// Adds validator to command's argument
@@ -6,6 +8,10 @@
 	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = true)]
 	public class ValidatorAttribute : Attribute
 	{
+		private readonly Type validatorType;
+		private readonly object[] ctorArgs;
+
+
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Loader.Reflection.ValidatorAttribute
 		/// </summary>
@@ -13,13 +19,12 @@
 		/// <param name="ctorArgs">Parameters to create the validator</param>
 		public ValidatorAttribute(Type validatorType, params object[] ctorArgs)
 		{
-			Validator = (IUserCommandArgumentValidator)(Activator.CreateInstance(validatorType, ctorArgs) ?? throw new ImpossibleVariantException());
+			this.validatorType = validatorType;
+			this.ctorArgs = ctorArgs;
 		}
 
 
-		/// <summary>
-		/// Created validator
-		/// </summary>
-		public IUserCommandArgumentValidator Validator { get; }
+		public IUserCommandArgumentValidator CreateFilter(IServiceProvider services) =>
+			(IUserCommandArgumentValidator)services.ResolveObjectWithDependencies(validatorType, ctorArgs);
 	}
 }

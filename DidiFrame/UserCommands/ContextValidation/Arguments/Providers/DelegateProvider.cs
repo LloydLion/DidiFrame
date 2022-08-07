@@ -28,9 +28,9 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Providers
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+		public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData)
 		{
-			return (IReadOnlyCollection<object>)(methodInfo.Invoke(null, new object[] { server, services }) ?? throw new NullReferenceException());
+			return (IReadOnlyCollection<object>)(methodInfo.Invoke(null, new object[] { sendData }) ?? throw new NullReferenceException());
 		}
 	}
 }

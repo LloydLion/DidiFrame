@@ -14,6 +14,6 @@
 		/// <param name="value">Argument value to validate</param>
 		/// <param name="localServices">Local services from pipeline</param>
 		/// <returns>Validation fail result if validation don't passed else null</returns>
-		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider localServices);
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices);
 	}
 }

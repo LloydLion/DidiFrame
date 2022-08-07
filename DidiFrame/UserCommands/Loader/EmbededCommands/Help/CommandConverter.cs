@@ -8,10 +8,16 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 	/// </summary>
 	public sealed class CommandConverter : IUserCommandContextSubConverter
 	{
+		private readonly IUserCommandsReadOnlyRepository repository;
+
+
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter
 		/// </summary>
-		public CommandConverter() { }
+		public CommandConverter(IUserCommandsReadOnlyRepository repository)
+		{
+			this.repository = repository;
+		}
 
 
 		/// <inheritdoc/>
@@ -22,9 +28,9 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 
 
 		/// <inheritdoc/>
-		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider localServices)
+		public ConvertationResult Convert(UserCommandSendData sendData, IReadOnlyList<object> preObjects, IServiceProvider? localServices = null)
 		{
-			var cmds = services.GetRequiredService<IUserCommandsRepository>().GetFullCommandList(preCtx.SendData.Channel.Server);
+			var cmds = repository.GetFullCommandList(sendData.Channel.Server);
 			var cmdName = (string)preObjects.Single();
 
 			var has = cmds.TryGetCommad(cmdName, out var value);
@@ -34,27 +40,50 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 		}
 
 		/// <inheritdoc/>
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
+		public BackConvertationResult ConvertBack(object convertationResult)
 		{
-			return new[] { ((UserCommandInfo)convertationResult).Name };
+			return new BackConvertationResult(new[] { ((UserCommandInfo)convertationResult).Name });
 		}
 
 		/// <inheritdoc/>
 		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()
 		{
-			return new PossibleValues();
+			return new PossibleValues(repository);
 		}
 
 
 		private sealed class PossibleValues : IUserCommandArgumentValuesProvider
 		{
+			private readonly IUserCommandsReadOnlyRepository repository;
+
+
+			public PossibleValues(IUserCommandsReadOnlyRepository repository)
+			{
+				this.repository = repository;
+			}
+
+
 			public Type TargetType => typeof(UserCommandInfo);
 
 
-			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+			public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData)
 			{
-				return services.GetRequiredService<IUserCommandsRepository>().GetFullCommandList(server);
+				return repository.GetFullCommandList(sendData.Channel.Server);
 			}
+		}
+
+		public class Creator : IContextSubConverterInstanceCreator
+		{
+			private readonly IUserCommandsReadOnlyRepository repository;
+
+
+			public Creator(IUserCommandsReadOnlyRepository repository)
+			{
+				this.repository = repository;
+			}
+
+
+			public IUserCommandContextSubConverter Create() => new CommandConverter(repository);
 		}
 	}
 }

@@ -6,6 +6,10 @@
 	[AttributeUsage(AttributeTargets.Parameter)]
 	public class ValuesProviderAttribute : Attribute
 	{
+		private readonly Type providerType;
+		private readonly object[] ctorArgs;
+
+
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Loader.Reflection.ValuesProviderAttribute
 		/// </summary>
@@ -13,13 +17,12 @@
 		/// <param name="ctorArgs">Argumnets to create provider</param>
 		public ValuesProviderAttribute(Type providerType, params object[] ctorArgs)
 		{
-			Provider = (IUserCommandArgumentValuesProvider)(Activator.CreateInstance(providerType, ctorArgs) ?? throw new ImpossibleVariantException());
+			this.providerType = providerType;
+			this.ctorArgs = ctorArgs;
 		}
 
 
-		/// <summary>
-		/// Created provider
-		/// </summary>
-		public IUserCommandArgumentValuesProvider Provider { get; }
+		public IUserCommandArgumentValuesProvider CreateProvider(IServiceProvider services) =>
+			(IUserCommandArgumentValuesProvider)services.ResolveObjectWithDependencies(validatorType, ctorArgs);
 	}
 }

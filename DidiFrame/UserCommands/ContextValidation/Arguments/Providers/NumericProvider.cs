@@ -28,7 +28,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Providers
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services) => new NumericCollection(lowBound, upBound);
+		public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData) => new NumericCollection(lowBound, upBound);
 
 
 		private sealed class NumericCollection : IReadOnlyCollection<object>

@@ -80,9 +80,9 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			public Type TargetType => typeof(int);
 
 
-			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+			public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData)
 			{
-				var max = repository.GetFullCommandList(server).Count / MaxCmdsInOnePage; //Max page INDEX
+				var max = repository.GetFullCommandList(sendData.Channel.Server).Count / MaxCmdsInOnePage; //Max page INDEX
 				return new Collection(max + 1);
 			}
 

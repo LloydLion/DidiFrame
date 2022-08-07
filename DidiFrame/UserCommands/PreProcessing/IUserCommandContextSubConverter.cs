@@ -24,8 +24,7 @@
 		/// <param name="preObjects">Pre objects that types described in PreObjectTypes property</param>
 		/// <param name="localServices">Local services from pipeline</param>
 		/// <returns>Result of convertation: final object or error locale key</returns>
-		//TODO: Delete context dependency and remove pipeline dependency
-		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider localServices);
+		public ConvertationResult Convert(UserCommandSendData sendData, IReadOnlyList<object> preObjects, IServiceProvider? localServices = null);
 
 		/// <summary>
 		/// Converts ready-to-use object to raw argumnets
@@ -33,7 +32,7 @@
 		/// <param name="services">Global service provider</param>
 		/// <param name="convertationResult">Ready-to-use object</param>
 		/// <returns></returns>
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult);
+		public BackConvertationResult ConvertBack(object convertationResult);
 
 		/// <summary>
 		/// Creates values provider that provides all possible values of converter output or null if no provider can be created

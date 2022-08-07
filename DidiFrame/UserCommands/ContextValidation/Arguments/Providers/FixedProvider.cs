@@ -129,6 +129,6 @@
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services) => (IReadOnlyCollection<object>)values;
+		public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData) => (IReadOnlyCollection<object>)values;
 	}
 }
