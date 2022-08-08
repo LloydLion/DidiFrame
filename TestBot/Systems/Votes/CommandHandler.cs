@@ -21,7 +21,7 @@ namespace TestBot.Systems.Votes
 		[Command("vote", "VoteCreated")]
 		public void CreateVote(UserCommandContext ctx, string voteTitle, string[] options)
 		{
-			core.CreateVote(ctx.Invoker, ctx.Channel, voteTitle, options);
+			core.CreateVote(ctx.SendData.Invoker, ctx.SendData.Channel, voteTitle, options);
 		}
 	}
 }

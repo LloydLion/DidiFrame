@@ -19,14 +19,14 @@ namespace DidiFrame.UserCommands.Models
 
 		public TOut GetOutput()
 		{
-			if (ResultType == Type.Output)
+			if (ResultType != Type.Output)
 				throw new InvalidOperationException("Enable to get output if result isn't Output type");
 			else return (TOut)parameter;
 		}
 
 		public UserCommandResult GetFinalizationResult()
 		{
-			if (ResultType == Type.Finalization)
+			if (ResultType != Type.Finalization)
 				throw new InvalidOperationException("Enable to get finalization result if result isn't Finalization type");
 			else return (UserCommandResult)parameter;
 		}

@@ -1,27 +1,35 @@
 ﻿using DidiFrame.UserCommands.PreProcessing;
-using Microsoft.Extensions.DependencyInjection;
+using DidiFrame.Utils.Collections;
 
 namespace TestBot.Systems.Streaming.CommandEvironment
 {
 	internal class StreamConverter : IUserCommandContextSubConverter
 	{
+		private ISystemCore core;
+
+
 		public Type WorkType => typeof(StreamLifetime);
 
 		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes => new[] { UserCommandArgument.Type.String };
 
 
-		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider locals)
+		public StreamConverter(ISystemCore core)
 		{
-			var sysCore = services.GetRequiredService<ISystemCore>();
-			var name = (string)preObjects[0];
-			if (sysCore.HasStream(preCtx.Invoker.Server, name)) return ConvertationResult.Success(sysCore.GetStream(preCtx.Invoker.Server, name));
+			this.core = core;
+		}
+
+
+		public ConvertationResult Convert(UserCommandSendData sendData, IReadOnlyList<object> preObjects, IServiceProvider? locals = null)
+		{
+			var name = (string)preObjects.Single();
+			if (core.HasStream(sendData.Invoker.Server, name)) return ConvertationResult.Success(core.GetStream(sendData.Invoker.Server, name));
 			else return ConvertationResult.Failture("StreamNotFound", UserCommandCode.InvalidInput);
 		}
 
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
+		public BackConvertationResult ConvertBack(object convertationResult)
 		{
 			var sl = (StreamLifetime)convertationResult;
-			return new object[] { sl };
+			return new BackConvertationResult(sl.StoreSingle(), sl.GetOwner());
 		}
 
 		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()

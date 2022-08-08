@@ -4,7 +4,7 @@
 	/// Validator that requires non-invoker member
 	/// Keys: MemberIsInvoker
 	/// </summary>
-	public class NoInvoker : AbstractArgumentValidator<IMember>
+	public class NoInvoker : IUserCommandArgumentValidator
 	{
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NoInvoker
@@ -13,9 +13,9 @@
 
 
 		/// <inheritdoc/>
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, IMember value)
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
 		{
-			return context.SendData.Invoker == value ? new("MemberIsInvoker", UserCommandCode.InvalidInput) : null;
+			return context.SendData.Invoker.Equals(value.As<IMember>()) ? new("MemberIsInvoker", UserCommandCode.InvalidInput) : null;
 		}
 	}
 }

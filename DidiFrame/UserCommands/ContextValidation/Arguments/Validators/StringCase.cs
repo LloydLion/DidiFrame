@@ -4,7 +4,7 @@
 	/// Validator that requires specified case from string
 	/// Keys: OnlyInUpperCase, OnlyInLowerCase
 	/// </summary>
-	public class StringCase : AbstractArgumentValidator<string>
+	public class StringCase : IUserCommandArgumentValidator
 	{
 		private readonly bool onlyUpperNotLower;
 
@@ -20,15 +20,17 @@
 
 
 		/// <inheritdoc/>
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, string value)
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
 		{
+			var strValue = value.As<string>();
+
 			if (onlyUpperNotLower)
 			{
-				if (value != value.ToUpper()) return new("OnlyInUpperCase", UserCommandCode.InvalidInputFormat);
+				if (strValue != strValue.ToUpper()) return new("OnlyInUpperCase", UserCommandCode.InvalidInputFormat);
 			}
 			else
 			{
-				if (value != value.ToLower()) return new("OnlyInLowerCase", UserCommandCode.InvalidInputFormat);
+				if (strValue != strValue.ToLower()) return new("OnlyInLowerCase", UserCommandCode.InvalidInputFormat);
 			}
 
 			return null;

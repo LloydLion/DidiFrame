@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Loader.Reflection
+﻿using DidiFrame.Dependencies;
+
+namespace DidiFrame.UserCommands.Loader.Reflection
 {
 	/// <summary>
 	/// Attribute that add values provider to argument
@@ -23,6 +25,6 @@
 
 
 		public IUserCommandArgumentValuesProvider CreateProvider(IServiceProvider services) =>
-			(IUserCommandArgumentValuesProvider)services.ResolveObjectWithDependencies(validatorType, ctorArgs);
+			(IUserCommandArgumentValuesProvider)services.ResolveObjectWithDependencies(providerType, ctorArgs);
 	}
 }

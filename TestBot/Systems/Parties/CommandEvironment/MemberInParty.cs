@@ -3,7 +3,7 @@ using DidiFrame.Utils;
 
 namespace TestBot.Systems.Parties.CommandEvironment
 {
-	internal class MemberInParty : AbstractArgumentValidator<IMember>
+	internal class MemberInParty : IUserCommandArgumentValidator
 	{
 		private readonly string partyArgumentName;
 		private readonly bool inverse;
@@ -16,19 +16,16 @@ namespace TestBot.Systems.Parties.CommandEvironment
 		}
 
 
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, IMember value)
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
 		{
-			var party = context.Arguments[context.Command.Arguments.Single(s => s.Name == partyArgumentName)].As<ObjectHolder<PartyModel>>();
+			var ctrl = context.Arguments[context.Command.Arguments.Single(s => s.Name == partyArgumentName)].As<IObjectController<PartyModel>>();
 
-			var isIn = party.Object.Members.Any(s => s == value);
+			using var party = ctrl.Open();
 
-			ValidationFailResult? ret;
+			var isIn = party.Object.Members.Any(s => s == value.As<IMember>());
 
-			if (inverse) ret = isIn ? new("MemberInParty", UserCommandCode.InvalidInput) : null;
-			else ret = isIn ? null : new("NoMemberInParty", UserCommandCode.InvalidInput);
-
-			if (ret is not null) party.Dispose();
-			return ret;
+			if (inverse) return isIn ? new("MemberInParty", UserCommandCode.InvalidInput) : null;
+			else return isIn ? null : new("NoMemberInParty", UserCommandCode.InvalidInput);
 		}
 	}
 }

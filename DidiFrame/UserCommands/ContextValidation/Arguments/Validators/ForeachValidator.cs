@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DidiFrame.Dependencies;
+using System.Collections;
 
 namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 {
@@ -16,9 +17,9 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 		/// </summary>
 		/// <param name="validatorType">"Foreach" validator type</param>
 		/// <param name="creationArgs">Parameters to create the validator</param>
-		public ForeachValidator(Type validatorType, object[] creationArgs)
+		public ForeachValidator([Dependency] IServiceProvider servicesForValidator, Type validatorType, object[] creationArgs)
 		{
-			validator = (IUserCommandArgumentValidator)(Activator.CreateInstance(validatorType, creationArgs) ?? throw new ImpossibleVariantException());
+			validator = (IUserCommandArgumentValidator)servicesForValidator.ResolveObjectWithDependencies(validatorType, creationArgs);
 		}
 
 		/// <summary>
@@ -32,13 +33,13 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 
 
 		/// <inheritdoc/>
-		public ValidationFailResult? Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
 		{
 			var array = (IEnumerable)value.ComplexObject;
 
 			foreach (var item in array)
 			{
-				var tf = validator.Validate(services, context, argument, new(argument, item, value.PreObjects), localServices);
+				var tf = validator.Validate(context, new(value.Argument, item, value.PreObjects), localServices);
 				if (tf is not null) return tf;
 			}
 

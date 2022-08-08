@@ -321,10 +321,13 @@ namespace DidiFrame.Clients.DSharp
 				var cmd = convertedCommands[interaction.Data.Name];                                   //Command that was called (pair - AppCmd|DidiFrameCmd)
 
 				var darg = interaction.Data.Options.Single(s => s.Focused);                           //Focused argument
-				var argInfo = cmd.ApplicationArguments[darg.Name];                                      //Focused DidiFrame's argument
+				var argInfo = cmd.ApplicationArguments[darg.Name];                                    //Focused DidiFrame's argument
+
 				var objIndex = argInfo.PutIndex;
 				var arg = argInfo.Argument;
 				var type = argInfo.Type;
+
+				var sendData = new UserCommandSendData(member, channel);
 
 				var providers = arg.AdditionalInfo.GetExtension<IReadOnlyCollection<IUserCommandArgumentValuesProvider>>();
 				if (providers is not null)
@@ -332,8 +335,8 @@ namespace DidiFrame.Clients.DSharp
 					var values = new HashSet<object>();
 					if (providers.Any())
 					{
-						foreach (var item in providers.First().ProvideValues(server, Services)) values.Add(item);
-						foreach (var prov in providers.Skip(1)) values.IntersectWith(prov.ProvideValues(server, Services));
+						foreach (var item in providers.First().ProvideValues(sendData)) values.Add(item);
+						foreach (var prov in providers.Skip(1)) values.IntersectWith(prov.ProvideValues(sendData));
 					}
 
 					object[] baseCollection;
@@ -342,7 +345,7 @@ namespace DidiFrame.Clients.DSharp
 					else
 					{
 						var subconverter = Converter.GetSubConverter(arg.TargetType);
-						baseCollection = values.Select(s => subconverter.ConvertBack(Services, s)[objIndex]).ToArray();
+						baseCollection = values.Select(s => subconverter.ConvertBack(s).PreArguments[objIndex]).ToArray();
 					}
 
 					var autoComplite = baseCollection.Where(s => s is not string str || str.StartsWith((string)darg.Value))

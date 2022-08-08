@@ -76,7 +76,7 @@ namespace DidiFrame.Clients.DSharp
 
 
 		/// <inheritdoc/>
-		public string Name => AccessBase().Name;
+		public string Name => guild.Name;
 
 		/// <inheritdoc/>
 		public IClient Client => client;
@@ -87,7 +87,7 @@ namespace DidiFrame.Clients.DSharp
 		public Client SourceClient => client;
 
 		/// <inheritdoc/>
-		public ulong Id => AccessBase().Id;
+		public ulong Id => guild.Id;
 
 		/// <summary>
 		/// Base DiscordGuild from DSharp

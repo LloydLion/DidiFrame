@@ -1,15 +1,23 @@
-﻿using DidiFrame.UserCommands.ContextValidation;
+﻿using DidiFrame.Dependencies;
+using DidiFrame.UserCommands.ContextValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Games.CommandEvironment
 {
-	internal class NoGameExist : AbstractArgumentValidator<string>
+	internal class NoGameExist : IUserCommandArgumentValidator
 	{
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, string value)
-		{
-			var system = GetServiceProvider().GetRequiredService<ISystemCore>();
+		private readonly ISystemCore core;
 
-			var exist = system.HasGame(context.Invoker, value);
+
+		public NoGameExist([Dependency] ISystemCore core)
+		{
+			this.core = core;
+		}
+
+
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
+		{
+			var exist = core.HasGame(context.SendData.Invoker, value.As<string>());
 
 			return exist ? new("GameExist", UserCommandCode.InvalidInput) : null;
 		}

@@ -4,7 +4,7 @@
 	/// Validator that requires "normal" string
 	/// Key: WhiteSpace
 	/// </summary>
-	public class NormalString : AbstractArgumentValidator<string>
+	public class NormalString : IUserCommandArgumentValidator
 	{
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NormalString
@@ -13,11 +13,10 @@
 
 
 		/// <inheritdoc/>
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, string value)
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
 		{
-			if (string.IsNullOrWhiteSpace(value)) return new("WhiteSpace", UserCommandCode.InvalidInputFormat);
-
-			return null;
+			if (string.IsNullOrWhiteSpace(value.As<string>())) return new("WhiteSpace", UserCommandCode.InvalidInputFormat);
+			else return null;
 		}
 	}
 }

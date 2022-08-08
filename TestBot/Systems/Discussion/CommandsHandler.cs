@@ -20,9 +20,9 @@ namespace TestBot.Systems.Discussion
 		[Command("discuss")]
 		public async Task<UserCommandResult> CreateDiscuss(UserCommandContext ctx, [Validator(typeof(StringCase), true)] string name)
 		{
-			await system.CreateDiscussionAsync(name, ctx.Channel.Category);			
+			await system.CreateDiscussionAsync(name, ctx.SendData.Channel.Category);			
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["DiscussCreated", name]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["DiscussCreated", name]));
 		}
 	}
 }

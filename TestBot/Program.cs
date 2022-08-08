@@ -28,6 +28,8 @@ using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
 using DidiFrame.Statistic;
 using DidiFrame.Localization;
 using DidiFrame.Data.Mongo;
+using DidiFrame.UserCommands.Pipeline.ClassicPipeline;
+using DidiFrame.UserCommands.Repository;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -43,8 +45,8 @@ appBuilder.AddServices((services, config) =>
 		.AddAutoDataRepositories()
 		.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
 		.AddDSharpClient(config.GetSection("Discord"))
-		//.AddApplicationCommandsUserCommandsPipeline(config.GetSection("Commands:ApplicationCommands"), config.GetSection("Commands:Executing"))
-		.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
+		.AddApplicationCommandsUserCommandsPipeline(config.GetSection("Commands:ApplicationCommands"), config.GetSection("Commands:Executing"))
+		//.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
 		.AddSimpleUserCommandsRepository()
 		.AddReflectionUserCommandsLoader()
 		.AddHelpCommands()

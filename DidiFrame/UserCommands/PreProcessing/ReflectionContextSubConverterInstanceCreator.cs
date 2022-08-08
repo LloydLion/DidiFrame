@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.PreProcessing
+﻿using DidiFrame.Dependencies;
+
+namespace DidiFrame.UserCommands.PreProcessing
 {
 	public class ReflectionContextSubConverterInstanceCreator<TConverter> : IContextSubConverterInstanceCreator where TConverter : IUserCommandContextSubConverter
 	{
@@ -11,6 +13,6 @@
 		}
 
 
-		public IUserCommandContextSubConverter Create() => services.ResovleObject<TConverter>();
+		public IUserCommandContextSubConverter Create() => services.ResolveDependencyObject<TConverter>();
 	}
 }

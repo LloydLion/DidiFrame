@@ -139,6 +139,8 @@ namespace DidiFrame.Clients.DSharp
 			client.GuildCreated += Client_GuildCreated;
 			client.GuildDeleted += Client_GuildDeleted;
 
+			await UpdateServerList();
+
 			serverListUpdateTask = CreateServerListUpdateTask(cts.Token);
 		}
 

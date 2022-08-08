@@ -20,7 +20,7 @@
 
 
 		/// <inheritdoc/>
-		public ValidationFailResult? Filter(IServiceProvider services, UserCommandContext ctx, IServiceProvider localServices)
+		public ValidationFailResult? Filter(UserCommandContext ctx, IServiceProvider localServices)
 		{
 			return ctx.SendData.Invoker.HasPermissionIn(permissions, ctx.SendData.Channel) ? null : new ValidationFailResult("NoPermissions", UserCommandCode.NoPermission);
 		}

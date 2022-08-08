@@ -54,7 +54,7 @@ namespace DidiFrame.Dependencies
 			{
 				var para = ctorParameters[i];
 
-				if (para.GetCustomAttribute<DependencyAttribute>() is null)
+				if (para.GetCustomAttribute<DependencyAttribute>() is not null)
 				{
 					var service = services.GetService(para.ParameterType);
 

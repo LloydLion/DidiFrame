@@ -17,7 +17,6 @@ namespace DidiFrame.UserCommands.ContextValidation
 
 		private readonly IValidator<UserCommandContext> ctxValidator;
 		private readonly IStringLocalizer<ContextValidator> localizer;
-		private readonly IServiceProvider services;
 
 
 		/// <summary>
@@ -25,12 +24,10 @@ namespace DidiFrame.UserCommands.ContextValidation
 		/// </summary>
 		/// <param name="ctxValidator">Validator for DidiFrame.UserCommands.Models.UserCommandContext</param>
 		/// <param name="localizer">Localizer to print error messages</param>
-		/// <param name="services">Serivce to be used in filters and validators</param>
-		public ContextValidator(IValidator<UserCommandContext> ctxValidator, IStringLocalizer<ContextValidator> localizer, IServiceProvider services)
+		public ContextValidator(IValidator<UserCommandContext> ctxValidator, IStringLocalizer<ContextValidator> localizer)
 		{
 			this.ctxValidator = ctxValidator;
 			this.localizer = localizer;
-			this.services = services;
 		}
 
 
@@ -51,7 +48,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 
 				foreach (var filter in filters)
 				{
-					failResult = filter.Filter(services, input, pipelineContext.LocalServices);
+					failResult = filter.Filter(input, pipelineContext.LocalServices);
 					if (failResult is not null)
 					{
 						string readyText;
@@ -76,7 +73,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 				if (validators is not null)
 					foreach (var validator in validators)
 					{
-						failResult = validator.Validate(services, input, argument.Key, argument.Value, pipelineContext.LocalServices);
+						failResult = validator.Validate(input, argument.Value, pipelineContext.LocalServices);
 						if (failResult is not null)
 						{
 							string readyText;
@@ -94,7 +91,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 				if (providers is not null)
 					foreach (var provider in providers)
 					{
-						var values = provider.ProvideValues(input.SendData.Channel.Server, services);
+						var values = provider.ProvideValues(input.SendData);
 						if (!values.Contains(argument.Value.ComplexObject))
 						{
 							failResult = new(ProviderErrorCode, UserCommandCode.InvalidInput);

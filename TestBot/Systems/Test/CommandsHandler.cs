@@ -23,8 +23,7 @@ namespace TestBot.Systems.Test
 		[Command("hello")]
 		public Task<UserCommandResult> TestCmd(UserCommandContext _, string to)
 		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+			return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new(localizer["Greeting", to])));
 		}
 
 		[Command("shello", "SimpleGreeting")]
@@ -34,24 +33,24 @@ namespace TestBot.Systems.Test
 		[Command("display", "DisplayComplite")]
 		public async Task Display(UserCommandContext ctx)
 		{
-			await core.SendDisplayMessageAsync(ctx.Invoker.Server);
+			await core.SendDisplayMessageAsync(ctx.SendData.Invoker.Server);
 		}
 
 		[Command("printname")]
 		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult PrintChannelName(UserCommandContext ctx)
 		{
-			return new(UserCommandCode.Sucssesful) { RespondMessage = new("Welcome to the " + ctx.Channel.Name) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Welcome to the " + ctx.SendData.Channel.Name));
 		}
 
 		[Command("get reactions")]
 		[SuppressMessage("Performance", "CA1822")]
 		public async Task<UserCommandResult> GetReactions(UserCommandContext ctx)
 		{
-			var msg = await ctx.Channel.SendMessageAsync(new MessageSendModel("Set 🍎 here!"));
+			var msg = await ctx.SendData.Channel.SendMessageAsync(new MessageSendModel("Set 🍎 here!"));
 			await Task.Delay(5000);
 			var count = msg.GetReactions(":apple:");
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new($"You setted {count} 🍎") };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You setted {count} 🍎"));
 		}
 
 		[Command("get msg")]
@@ -59,24 +58,24 @@ namespace TestBot.Systems.Test
 		public async Task<UserCommandResult> GetMessage(UserCommandContext ctx, string ulongId)
 		{
 			var id = ulong.Parse(ulongId);
-			var msg = ctx.Channel.GetMessage(id);
+			var msg = ctx.SendData.Channel.GetMessage(id);
 			var content = msg.Content;
 			await Task.Delay(5000);
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new($"Now - {msg.Content}, Was - {content}") };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"Now - {msg.Content}, Was - {content}"));
 		}
 
 		[Command("reply date")]
 		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult ReplyDate(UserCommandContext _, DateTime date)
 		{
-			return new(UserCommandCode.Sucssesful) { RespondMessage = new($"You entered: {date.Ticks} - {date:D}") };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You entered: {date.Ticks} - {date:D}"));
 		}
 
 		[Command("reply time")]
 		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult ReplyTime(UserCommandContext _, TimeSpan time)
 		{
-			return new(UserCommandCode.Sucssesful) { RespondMessage = new($"You entered: {time.Ticks} - {time.TotalSeconds}") };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You entered: {time.Ticks} - {time.TotalSeconds}"));
 		}
 
 
@@ -96,7 +95,7 @@ namespace TestBot.Systems.Test
 			public Type TargetType => typeof(string);
 
 
-			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+			public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData)
 			{
 				return new Collection(magicBase, count);
 			}

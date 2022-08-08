@@ -12,6 +12,7 @@ namespace DidiFrame.UserCommands.Repository
 		public static IServiceCollection AddSimpleUserCommandsRepository(this IServiceCollection services)
 		{
 			services.AddSingleton<IUserCommandsRepository, SimpleUserCommandsRepository>();
+			services.AddSingleton<IUserCommandsReadOnlyRepository>(sp => sp.GetRequiredService<IUserCommandsRepository>());
 			return services;
 		}
 	}

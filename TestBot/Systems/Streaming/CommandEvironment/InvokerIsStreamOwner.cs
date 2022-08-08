@@ -2,9 +2,9 @@
 
 namespace TestBot.Systems.Streaming.CommandEvironment
 {
-	internal class InvokerIsStreamOwner : AbstractArgumentValidator<StreamLifetime>
+	internal class InvokerIsStreamOwner : IUserCommandArgumentValidator
 	{
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, StreamLifetime value) =>
-			value.GetOwner().Equals((IUser)context.Invoker) ? null : new("Unauthorizated", UserCommandCode.Unauthorizated);
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices) =>
+			value.As<StreamLifetime>().GetOwner().Equals(context.SendData.Invoker) ? null : new("Unauthorizated", UserCommandCode.Unauthorizated);
 	}
 }

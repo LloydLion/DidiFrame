@@ -4,7 +4,7 @@
 	/// Validator that requires non-bot member
 	/// Keys: IsBot
 	/// </summary>
-	public class NoBot : AbstractArgumentValidator<IMember>
+	public class NoBot : IUserCommandArgumentValidator
 	{
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NoBot
@@ -13,9 +13,9 @@
 
 
 		/// <inheritdoc/>
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, IMember value)
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
 		{
-			return value.IsBot ? new("IsBot", UserCommandCode.InvalidInput) : null;
+			return value.As<IMember>().IsBot ? new("IsBot", UserCommandCode.InvalidInput) : null;
 		}
 	}
 }
