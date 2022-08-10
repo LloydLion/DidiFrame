@@ -1,12 +1,11 @@
-﻿using DidiFrame.Clients.DSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using DSharpClient = DidiFrame.Clients.DSharp.Client;
-using DSharpMessage = DidiFrame.Clients.DSharp.Message;
+using DSharpMessage = DidiFrame.Clients.DSharp.Entities.Message;
 using DSharpPlus.Entities;
 
 namespace TestBot.Systems.Test.ClientExtensions

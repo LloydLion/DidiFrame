@@ -4,7 +4,7 @@ using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
 using System.Runtime.CompilerServices;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Clients.DSharp.Entities
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IChannel
@@ -60,7 +60,8 @@ namespace DidiFrame.Clients.DSharp
 			var obj = channel();
 			if (obj is null) return null;
 			else return (ChannelCategory)server.GetCategory(obj.ParentId);
-		}) { }
+		})
+		{ }
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Clients.DSharp.Channel with overrided category

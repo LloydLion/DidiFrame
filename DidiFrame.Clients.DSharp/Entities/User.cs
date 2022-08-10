@@ -5,7 +5,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using System.Runtime.CompilerServices;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Clients.DSharp.Entities
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IUser

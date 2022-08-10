@@ -1,4 +1,5 @@
 ﻿using DidiFrame.Clients.DSharp;
+using DidiFrame.Clients.DSharp.DiscordServer;
 
 namespace TestBot.Overrides
 {

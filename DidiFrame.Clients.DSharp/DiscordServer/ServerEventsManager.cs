@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Clients.DSharp.DiscordServer
 {
 	internal class ServerEventsManager
 	{
@@ -131,7 +131,7 @@ namespace DidiFrame.Clients.DSharp
 
 		public abstract class Registry
 		{
-		
+
 		}
 	}
 }

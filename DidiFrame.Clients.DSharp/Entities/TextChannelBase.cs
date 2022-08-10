@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Clients.DSharp.Entities
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.ITextChannelBase

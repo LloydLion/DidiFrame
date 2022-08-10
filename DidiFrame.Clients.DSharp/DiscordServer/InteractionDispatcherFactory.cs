@@ -6,14 +6,14 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Clients.DSharp.DiscordServer
 {
 	internal class InteractionDispatcherFactory
 	{
 		private static readonly EventId InteractionHandlerErrorID = new(10, "InteractionHandlerError");
 
 
-		private readonly Dictionary<ulong, List<EventHolder>> subs = new();
+		private readonly Dictionary<MessageIdentitify, List<EventHolder>> subs = new();
 		private readonly ILogger<Client> logger;
 
 
@@ -24,19 +24,29 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
-		public void DisposeInstance(ulong msgId)
+		public void DisposeInstance(ulong msgId, DiscordChannel channel)
 		{
 			lock (this)
 			{
-				subs.Remove(msgId);
+				subs.Remove(new(msgId, channel.Id));
 			}
 		}
 
-		public void ResetInstance(ulong msgId)
+		public void ResetInstance(ulong msgId, DiscordChannel channel)
 		{
 			lock (this)
 			{
-				if (subs.ContainsKey(msgId)) subs[msgId].Clear();
+				var id = new MessageIdentitify(msgId, channel.Id);
+				if (subs.ContainsKey(id)) subs[id].Clear();
+			}
+		}
+
+		public void ClearSubscribers(DiscordChannel channel)
+		{
+			lock (this)
+			{
+				var toRemove = subs.Where(s => s.Key.ChannelId == channel.Id).ToArray();
+				foreach (var item in toRemove) subs.Remove(item.Key);
 			}
 		}
 
@@ -44,10 +54,10 @@ namespace DidiFrame.Clients.DSharp
 		{
 			lock (this)
 			{
-				//if (server.Client.SelfAccount.Id != message.Author.Id)
-				//	throw new ArgumentException("Enable to create InteractionDispatcher if message sent not by bot");
-				if (!subs.ContainsKey(message.Id)) subs.Add(message.Id, new());
-				var list = subs[message.Id];
+				var id = new MessageIdentitify(message.Id, message.BaseChannel.Id);
+
+				if (!subs.ContainsKey(id)) subs.Add(id, new());
+				var list = subs[id];
 				return new Instance(this, message, list);
 			}
 		}
@@ -58,9 +68,11 @@ namespace DidiFrame.Clients.DSharp
 
 			lock (this)
 			{
-				if (!subs.ContainsKey(args.Message.Id))
+				var id = new MessageIdentitify(args.Message.Id, args.Channel.Id);
+
+				if (!subs.ContainsKey(id))
 					return Task.CompletedTask;
-				holders = subs[args.Message.Id].ToArray();
+				holders = subs[id].ToArray();
 			}
 
 			Task.Run(() =>
@@ -173,6 +185,20 @@ namespace DidiFrame.Clients.DSharp
 		private abstract class EventHolder
 		{
 			public abstract Task<ComponentInteractionResult>? Handle(ComponentInteractionCreateEventArgs args);
+		}
+
+		private struct MessageIdentitify
+		{
+			public MessageIdentitify(ulong messageId, ulong channelId)
+			{
+				MessageId = messageId;
+				ChannelId = channelId;
+			}
+
+
+			public ulong MessageId { get; }
+
+			public ulong ChannelId { get; }
 		}
 	}
 }

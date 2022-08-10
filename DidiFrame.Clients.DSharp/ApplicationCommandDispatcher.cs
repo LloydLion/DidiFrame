@@ -1,4 +1,5 @@
-﻿using DidiFrame.Entities;
+﻿using DidiFrame.Clients.DSharp.Entities;
+using DidiFrame.Entities;
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DidiFrame.UserCommands.ContextValidation.Arguments;

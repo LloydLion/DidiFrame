@@ -10,8 +10,9 @@ using Microsoft.Extensions.Logging;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using DChannelType = DidiFrame.Entities.ChannelType;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Clients.DSharp.DiscordServer
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IServer
@@ -24,11 +25,9 @@ namespace DidiFrame.Clients.DSharp
 		private readonly Task globalCacheUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 
-		private readonly ThreadsChannelsCollection threadsAndChannels;
-		private readonly ChannelCategory globalCategory;
+		private readonly ServerChannelsStore channels;
 		private readonly ObjectsCache<ulong> serverCache = new();
 		private readonly IChannelMessagesCache messages;
-		private readonly TextChannelThreadsCache threads;
 		private readonly InteractionDispatcherFactory dispatcherFactory;
 		private readonly ServerEventsManager events;
 		private readonly MessagesEventsManager messagesEvents;
@@ -104,12 +103,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="channel">Target channel</param>
 		public void CacheChannel(DiscordChannel channel)
 		{
-			var frame = serverCache.GetFrame<DiscordChannel>();
-			lock (frame)
+			lock (channels.SyncRoot)
 			{
-				if (frame.HasObject(channel.Id))
-					frame.DeleteObject(channel.Id);
-				frame.AddObject(channel.Id, channel);
+				channels.UpdateChannel(channel);
 			}
 		}
 
@@ -137,20 +133,11 @@ namespace DidiFrame.Clients.DSharp
 
 		internal IChannelMessagesCache GetMessagesCache() => messages;
 
-		internal IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel)
-		{
-			var baseChannel = channel.BaseChannel;
-			var channelThreads = threads.GetThreadsFor(baseChannel);
-			return channelThreads.Select(s =>
-			{
-				var threadId = s.Id;
-				return new TextThread(threadId, channel, () => threads.GetNullableThread(threadId), this, () => (ChannelCategory?)channel.Category);
-			}).ToArray();
-		}
+		internal IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel) => channels.GetThreadsFor(channel.Id);
 
 		internal IInteractionDispatcher GetInteractionDispatcherFor(Message message) => dispatcherFactory.CreateInstance(message);
 
-		internal void ResetInteractionDispatcherFor(ulong messageId) => dispatcherFactory.ResetInstance(messageId);
+		internal void ResetInteractionDispatcherFor(ulong messageId, DiscordChannel channel) => dispatcherFactory.ResetInstance(messageId, channel);
 
 		/// <inheritdoc/>
 		public IMember GetMember(ulong id) => new Member(id, () => serverCache.GetFrame<DiscordMember>().GetNullableObject(id), this);
@@ -159,16 +146,16 @@ namespace DidiFrame.Clients.DSharp
 		public IReadOnlyCollection<IMember> GetMembers() => serverCache.GetFrame<DiscordMember>().GetObjects().Select(s => GetMember(s.Id)).ToArray();
 
 		/// <inheritdoc/>
-		public IChannelCategory GetCategory(ulong? id) => id is null ? globalCategory : new ChannelCategory(id.Value, () => serverCache.GetFrame<DiscordChannel>().GetNullableObject(id.Value), this);
+		public IChannelCategory GetCategory(ulong? id) => channels.GetCategory(id);
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IChannelCategory> GetCategories() => new CategoriesCollection(serverCache.GetFrame<DiscordChannel>(), globalCategory, this).ToArray();
+		public IReadOnlyCollection<IChannelCategory> GetCategories() => channels.GetCategories();
 
 		/// <inheritdoc/>
-		public IChannel GetChannel(ulong id) => threadsAndChannels.GetChannel(id);
+		public IChannel GetChannel(ulong id) => channels.GetChannel(id);
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IChannel> GetChannels() => threadsAndChannels.ToArray();
+		public IReadOnlyCollection<IChannel> GetChannels() => channels.GetChannels();
 
 		/// <inheritdoc/>
 		public IRole GetRole(ulong id) => new Role(id, () => serverCache.GetFrame<DiscordRole>().GetNullableObject(id), this);
@@ -181,6 +168,12 @@ namespace DidiFrame.Clients.DSharp
 
 		private DiscordGuild AccessBase([CallerMemberName] string nameOfCaller = "") =>
 			IsClosed ? throw new ObjectDoesNotExistException(nameOfCaller) : guild;
+
+		private T ThrowIfClosed<T>(Func<T> getter, [CallerMemberName] string nameOfCaller = "")
+		{
+			if (IsClosed) throw new ObjectDoesNotExistException(nameOfCaller);
+			else return getter();
+		}
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Server);
@@ -236,47 +229,38 @@ namespace DidiFrame.Clients.DSharp
 			this.guild = guild;
 			this.client = client;
 			this.options = options;
-			globalCategory = new(this);
 			dispatcherFactory = new(this);
 			messages = messagesCache;
 			events = new ServerEventsManager(client.Logger, guild.Id);
 			messagesEvents = new(this, client.Logger);
 
+			channels = new(this);
 
-			threads = new(
-			(thread) =>
+			channels.ChannelCreated += (channel, isModified) =>
 			{
-				messages.InitChannelAsync(thread).Wait();
-			},
-
-			(thread) =>
-			{
-				messages.DeleteChannelCache(thread);
-			});
-
-			serverCache.SetRemoveActionHandler<DiscordChannel>((id, channel) =>
-			{
-				if (channel.IsCategory) return;
-
-				messagesEvents.OnChannelDeleted(channel);
+				if (channel.IsCategory)
+					events.GetRegistry<IChannelCategory>().InvokeCreated(channels.GetCategory(channel.Id), isModified);
+				else events.GetRegistry<IChannel>().InvokeCreated(channels.GetChannel(channel.Id), isModified);
 
 				var type = channel.Type.GetAbstract();
-				if (type == Entities.ChannelType.TextCompatible || type == Entities.ChannelType.Voice)
+				var isTextType = type == DChannelType.TextCompatible || type == DChannelType.TextCompatible;
+				if (!isModified && !channel.IsCategory && isTextType) messages.InitChannelAsync(channel).Wait();
+			};
+
+			channels.ChannelDeleted += (channel) =>
+			{
+				if (channel.IsCategory)
+					events.GetRegistry<IChannelCategory>().InvokeDeleted(this, channel.Id);
+				else events.GetRegistry<IChannel>().InvokeDeleted(this, channel.Id);
+
+				var type = channel.Type.GetAbstract();
+				var isTextType = type == DChannelType.TextCompatible || type == DChannelType.TextCompatible;
+				if (!channel.IsCategory && isTextType)
+				{
 					messages.DeleteChannelCache(channel);
-
-				if (type == Entities.ChannelType.TextCompatible) threads.RemoveAllThreadsThatAssociatedWith(channel);
-			});
-
-			serverCache.SetAddActionHandler<DiscordChannel>((id, channel) =>
-			{
-				if (channel.IsCategory) return;
-				var type = channel.Type.GetAbstract();
-				if (type == Entities.ChannelType.TextCompatible || type == Entities.ChannelType.Voice)
-					messages.InitChannelAsync(channel).Wait();
-			});
-
-			threadsAndChannels = new(serverCache.GetFrame<DiscordChannel>(), threads, this);
-
+					dispatcherFactory.ClearSubscribers(channel);
+				}
+			};
 
 			client.BaseClient.GuildMemberAdded += OnMemberAdded;
 			client.BaseClient.GuildRoleCreated += OnRoleCreated;
@@ -315,35 +299,8 @@ namespace DidiFrame.Clients.DSharp
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			if (e.ThreadAfter.ThreadMetadata.IsArchived != e.ThreadBefore.ThreadMetadata.IsArchived)
-			{
-				//Archived case (Non resumed case, I don't know because discord works as)
-
-				lock (threads)
-				{
-					threads.RemoveThread(e.ThreadAfter.Id);
-				}
-			}
-			else
-			{
-				//Other change case or resumed case
-
-				lock (threads)
-				{
-					//If thread was archived, threads collection doesn't contains this
-					if (!threads.HasThread(e.ThreadAfter.Id))
-					{
-						//Resumed case
-						threads.AddThread(e.ThreadAfter);
-					}
-					else
-					{
-						//Other change case
-						threads.RemoveThread(e.ThreadAfter.Id);
-						threads.AddThread(e.ThreadAfter);
-						events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.ThreadAfter.Id), true);
-					}					
-				}
-			}
+				channels.DeleteChannel(e.ThreadAfter.Id); //Archived case (Non resumed case, I don't know because discord works as)
+			else channels.UpdateChannel(e.ThreadAfter); //Other change case or resumed case
 
 			return Task.CompletedTask;
 		}
@@ -351,31 +308,14 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnThreadUpdatedForCacheAllMode(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-
-			lock (threads)
-			{
-				threads.RemoveThread(e.ThreadAfter.Id);
-				threads.AddThread(e.ThreadAfter);
-				events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.ThreadAfter.Id), true);
-			}
-
+			channels.UpdateChannel(e.ThreadAfter);
 			return Task.CompletedTask;
 		}
 
 		private Task OnChannelUpdated(DiscordClient sender, ChannelUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-
-			var frame = serverCache.GetFrame<DiscordChannel>();
-			lock (frame)
-			{
-				frame.DeleteObject(e.ChannelAfter.Id);
-				frame.AddObject(e.ChannelAfter.Id, e.ChannelAfter);
-				if (e.ChannelAfter.IsCategory)
-					events.GetRegistry<IChannelCategory>().InvokeCreated(GetCategory(e.ChannelAfter.Id), true);
-				else events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.ChannelAfter.Id), true);
-			}
-
+			channels.UpdateChannel(e.ChannelAfter);
 			return Task.CompletedTask;
 		}
 
@@ -431,32 +371,21 @@ namespace DidiFrame.Clients.DSharp
 		private Task OnThreadDeleted(DiscordClient sender, ThreadDeleteEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-
-			threads.RemoveThread(e.Thread.Id);
-			events.GetRegistry<IMember>().InvokeDeleted(this, e.Thread.Id);
-
+			channels.DeleteChannel(e.Thread.Id);
 			return Task.CompletedTask;
 		}
 
 		private Task OnThreadCreated(DiscordClient sender, ThreadCreateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-
-			threads.AddThread(e.Thread);
-			events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.Thread.Id), true);
-
+			channels.UpdateChannel(e.Thread);
 			return Task.CompletedTask;
 		}
 
 		private Task OnChannelDeleted(DiscordClient sender, ChannelDeleteEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-
-			serverCache.DeleteObject<DiscordChannel>(e.Channel.Id);
-			if (e.Channel.IsCategory)
-				events.GetRegistry<IChannelCategory>().InvokeDeleted(this, e.Channel.Id);
-			else events.GetRegistry<IChannel>().InvokeDeleted(this, e.Channel.Id);
-
+			channels.DeleteChannel(e.Channel.Id);
 			return Task.CompletedTask;
 		}
 
@@ -488,7 +417,7 @@ namespace DidiFrame.Clients.DSharp
 			{
 				var channel = (TextChannelBase)GetChannel(e.Message.ChannelId);
 				messages.DeleteMessage(e.Message.Id, e.Channel);
-				dispatcherFactory.DisposeInstance(e.Message.Id);
+				dispatcherFactory.DisposeInstance(e.Message.Id, e.Channel);
 				messagesEvents.InvokeDeletedEvent((ITextChannelBase)GetChannel(e.Channel.Id), e.Message.Id);
 			}
 			return Task.CompletedTask;
@@ -598,127 +527,23 @@ namespace DidiFrame.Clients.DSharp
 						}
 				}
 
-				var channelsFrame = serverCache.GetFrame<DiscordChannel>();
-				lock (channelsFrame)
+				lock (channels.SyncRoot)
 				{
 					var newData = guild.GetChannelsAsync().Result;
 
-					var from = newData.ToDictionary(s => s.Id);
-					var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channelsFrame.GetObjects(), s => s.Id, s => s.Id);
+					var archivedThreads = newData.SelectMany(s => s.ListPublicArchivedThreadsAsync().Result.Threads.Concat(s.ListPrivateArchivedThreadsAsync().Result.Threads));
+					var activeThreads = guild.ListActiveThreadsAsync().Result.Threads;
+					var from = newData.Concat(options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? activeThreads.Concat(archivedThreads) : activeThreads).ToDictionary(s => s.Id);
+
+					var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channels.GetRawChannels(categoriesFilter: null), s => s.Id, s => s.Id);
 					foreach (var item in difference.CalculateDifference())
 						if (item.Type == CollectionDifference.OperationType.Add)
-						{
-							var channel = from[item.Key];
-							channelsFrame.AddObject(item.Key, channel);
-							if (channel.IsCategory)
-								events.GetRegistry<IChannelCategory>().InvokeCreated(GetCategory(item.Key), false);
-							else events.GetRegistry<IChannel>().InvokeCreated(GetChannel(item.Key), false);
-						}
-						else
-						{
-							var isCategory = channelsFrame.GetObject(item.Key).IsCategory;
-							channelsFrame.DeleteObject(item.Key);
-							if (isCategory)
-								events.GetRegistry<IChannelCategory>().InvokeDeleted(this, item.Key);
-							else events.GetRegistry<IChannel>().InvokeDeleted(this, item.Key);
-						}
-
-					lock (threads)
-					{
-						var archivedThreads = channelsFrame.GetObjects().SelectMany(s => s.ListPublicArchivedThreadsAsync().Result.Threads.Concat(s.ListPrivateArchivedThreadsAsync().Result.Threads));
-						var activeThreads = guild.ListActiveThreadsAsync().Result.Threads;
-						var fromT = (options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? activeThreads.Concat(archivedThreads) : activeThreads).ToDictionary(s => s.Id);
-						var differenceT = new CollectionDifference<DiscordThreadChannel, DiscordThreadChannel, ulong>(fromT.Values.ToArray(), threads.GetThreads(), s => s.Id, s => s.Id);
-						foreach (var item in differenceT.CalculateDifference())
-							if (item.Type == CollectionDifference.OperationType.Add)
-							{
-								var thread = fromT[item.Key];
-								threads.AddThread(thread);
-								events.GetRegistry<IChannel>().InvokeCreated(GetChannel(item.Key), false);
-							}
-							else
-							{
-								threads.RemoveThread(item.Key);
-								events.GetRegistry<IChannel>().InvokeDeleted(this, item.Key);
-							}
-					}
+							channels.UpdateChannel(from[item.Key]);
+						else channels.DeleteChannel(item.Key);
 				}
 			});
 		});
 
-
-		private class ThreadsChannelsCollection : IReadOnlyCollection<IChannel>
-		{
-			private readonly ObjectsCache<ulong>.Frame<DiscordChannel> channels;
-			private readonly TextChannelThreadsCache threads;
-			private readonly Server server;
-
-
-			public int Count => channels.GetObjects().Where(s => !s.IsCategory).Count() + threads.GetThreads().Count;
-
-
-			public ThreadsChannelsCollection(ObjectsCache<ulong>.Frame<DiscordChannel> channels, TextChannelThreadsCache threads, Server server)
-			{
-				this.channels = channels;
-				this.threads = threads;
-				this.server = server;
-			}
-
-
-			public IEnumerator<IChannel> GetEnumerator()
-			{
-				lock (channels)
-				{
-					lock (threads)
-					{
-						foreach (var item in channels.GetObjects().Where(s => !s.IsCategory))
-						{
-							var id = item.Id;
-							yield return Channel.Construct(id, item.Type.GetAbstract(), () => channels.GetNullableObject(id), server);
-						}
-
-						foreach (var item in threads.GetThreads())
-						{
-							var id = item.Id;
-							var parentId = item.Parent.Id;
-							yield return new TextThread(id, (TextChannel)server.GetChannel(parentId), () => threads.GetThread(id), server, () => (ChannelCategory?)server.GetChannel(parentId).Category);
-						}
-					}
-				}
-			}
-
-			public IChannel GetChannel(ulong id)
-			{
-				lock (channels)
-				{
-					lock (threads)
-					{
-						if (channels.HasObject(id) && !channels.GetObject(id).IsCategory)
-							return Channel.Construct(id, channels.GetObject(id).Type.GetAbstract(), () => channels.GetNullableObject(id), server);
-						else if (threads.HasThread(id))
-						{
-							var categoryId = threads.GetThread(id).Parent.ParentId;
-							var parentId = threads.GetThread(id).Parent.Id;
-							return new TextThread(id, (TextChannel)server.GetChannel(parentId), () => threads.GetThread(id), server, () => (ChannelCategory?)server.GetCategory(categoryId));
-						}
-						else return new NullChannel(id);
-					}
-				}
-			}
-
-			public bool HasChannel(ulong id)
-			{
-				lock (channels)
-				{
-					lock (threads)
-					{
-						return (channels.HasObject(id) && !channels.GetObject(id).IsCategory) || threads.HasThread(id);
-					}
-				}
-			}
-
-			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-		}
 
 		private class MessagesEventsManager
 		{
@@ -809,126 +634,6 @@ namespace DidiFrame.Clients.DSharp
 					messageSentHandlers.TryRemove(channel.Id, out _);
 				}
 			}
-		}
-
-		private class TextChannelThreadsCache
-		{
-			private readonly Dictionary<ulong, DiscordThreadChannel> threads = new();
-			private readonly Action<DiscordThreadChannel> addAction;
-			private readonly Action<DiscordThreadChannel> removeAction;
-
-
-			public TextChannelThreadsCache(Action<DiscordThreadChannel> addAction, Action<DiscordThreadChannel> removeAction)
-			{
-				this.addAction = addAction;
-				this.removeAction = removeAction;
-			}
-
-
-			public void AddThread(DiscordThreadChannel thread)
-			{
-				lock (this)
-				{
-					threads.Add(thread.Id, thread);
-					addAction(thread);
-				}
-			}
-
-			public void RemoveThread(ulong threadId)
-			{
-				lock (this)
-				{
-					var removed = GetThread(threadId);
-					threads.Remove(threadId);
-					removeAction(removed);
-				}
-			}
-
-			public DiscordThreadChannel GetThread(ulong threadId)
-			{
-				lock (this)
-				{
-					return threads[threadId];
-				}
-			}
-
-			public DiscordThreadChannel? GetNullableThread(ulong threadId)
-			{
-				lock (this)
-				{
-					return threads.ContainsKey(threadId) ? threads[threadId] : null;
-				}
-			}
-
-			public IReadOnlyCollection<DiscordThreadChannel> GetThreads()
-			{
-				lock (this)
-				{
-					return threads.Values;
-				}
-			}
-
-			public void RemoveAllThreadsThatAssociatedWith(DiscordChannel channel)
-			{
-				lock (this)
-				{
-					var toRemove = new List<ulong>();
-
-					foreach (var item in threads)
-						if (item.Value.Parent == channel)
-							toRemove.Add(item.Key);
-
-					foreach (var item in toRemove) RemoveThread(item);
-				}
-			}
-
-			public IReadOnlyCollection<DiscordThreadChannel> GetThreadsFor(DiscordChannel channel)
-			{
-				lock (this)
-				{
-					var toRet = new List<DiscordThreadChannel>();
-
-					foreach (var item in threads.Values)
-						if (item.Parent == channel)
-							toRet.Add(item);
-
-					return toRet;
-				}
-			}
-
-			public bool HasThread(ulong id)
-			{
-				lock (this)
-				{
-					return threads.ContainsKey(id);
-				}
-			}
-		}
-
-		private class CategoriesCollection : IReadOnlyCollection<ChannelCategory>
-		{
-			private readonly IReadOnlyCollection<ChannelCategory> categories;
-
-
-			public int Count => categories.Count;
-
-
-			public CategoriesCollection(ObjectsCache<ulong>.Frame<DiscordChannel> frame, ChannelCategory globalCategory, Server server)
-			{
-				categories = frame.GetObjects().Where(s => s.IsCategory).Select(s =>
-				{
-					var id = s.Id;
-					return new ChannelCategory(id, () => frame.GetNullableObject(id), server);
-				}).Append(globalCategory).ToArray();
-			}
-
-
-			public IEnumerator<ChannelCategory> GetEnumerator()
-			{
-				foreach (var item in categories) yield return item;
-			}
-
-			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
 		/// <summary>

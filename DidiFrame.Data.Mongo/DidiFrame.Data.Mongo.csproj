@@ -33,6 +33,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Include="C:\Users\GGJJ1\OneDrive\Разработка\С# projects\Other\DidiFrame\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +42,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\GGJJ1\OneDrive\Разработка\С# projects\Other\DidiFrame\.editorconfig" />
   </ItemGroup>
 
 </Project>

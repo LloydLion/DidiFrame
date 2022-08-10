@@ -1,4 +1,6 @@
-﻿using DidiFrame.Culture;
+﻿using DidiFrame.Clients.DSharp.Entities;
+using DidiFrame.Clients.DSharp.DiscordServer;
+using DidiFrame.Culture;
 using DidiFrame.Entities.Message;
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;

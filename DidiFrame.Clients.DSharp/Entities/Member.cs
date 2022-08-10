@@ -5,7 +5,7 @@ using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
 using System.Runtime.CompilerServices;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Clients.DSharp.Entities
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IMember
@@ -77,7 +77,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public Task RevokeRoleAsync(IRole role)
 		{
-			return BaseServer.SourceClient.DoSafeOperationAsync(() =>  AccessBase().RevokeRoleAsync(((Role)role).BaseRole));
+			return BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().RevokeRoleAsync(((Role)role).BaseRole));
 		}
 
 		/// <inheritdoc/>

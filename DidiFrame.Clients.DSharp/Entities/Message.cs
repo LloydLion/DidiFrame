@@ -6,7 +6,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Clients.DSharp.Entities
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IMessage
@@ -41,7 +41,7 @@ namespace DidiFrame.Clients.DSharp
 		public IMember Author => TextChannel.Server.GetMember(AccessBase().Author.Id);
 
 		/// <inheritdoc/>
-		public bool IsExist => owner.HasMessage(Id);
+		public bool IsExist => message() is not null;
 
 		/// <summary>
 		/// Base DiscordMessage from DSharp
@@ -88,7 +88,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public void ResetInteractionDispatcher()
 		{
-            owner.BaseServer.ResetInteractionDispatcherFor(Id);
+			owner.BaseServer.ResetInteractionDispatcherFor(Id, owner.BaseChannel);
 		}
 
 		private DiscordMessage AccessBase([CallerMemberName] string nameOfCaller = "")
