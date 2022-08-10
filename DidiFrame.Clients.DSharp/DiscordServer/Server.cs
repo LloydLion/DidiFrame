@@ -231,8 +231,8 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			this.options = options;
 			dispatcherFactory = new(this);
 			messages = messagesCache;
-			events = new ServerEventsManager(client.Logger, guild.Id);
-			messagesEvents = new(this, client.Logger);
+			events = new ServerEventsManager(client.Logger, this);
+			messagesEvents = new(client.Logger, this);
 
 			channels = new(this);
 
@@ -250,8 +250,8 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			channels.ChannelDeleted += (channel) =>
 			{
 				if (channel.IsCategory)
-					events.GetRegistry<IChannelCategory>().InvokeDeleted(this, channel.Id);
-				else events.GetRegistry<IChannel>().InvokeDeleted(this, channel.Id);
+					events.GetRegistry<IChannelCategory>().InvokeDeleted(channel.Id);
+				else events.GetRegistry<IChannel>().InvokeDeleted(channel.Id);
 
 				var type = channel.Type.GetAbstract();
 				var isTextType = type == DChannelType.TextCompatible || type == DChannelType.TextCompatible;
@@ -394,7 +394,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			serverCache.DeleteObject<DiscordRole>(e.Role.Id);
-			events.GetRegistry<IRole>().InvokeDeleted(this, e.Role.Id);
+			events.GetRegistry<IRole>().InvokeDeleted(e.Role.Id);
 
 			return Task.CompletedTask;
 		}
@@ -404,7 +404,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			if (e.Guild != guild) return Task.CompletedTask;
 
 			serverCache.DeleteObject<DiscordMember>(e.Member.Id);
-			events.GetRegistry<IMember>().InvokeDeleted(this, e.Member.Id);
+			events.GetRegistry<IMember>().InvokeDeleted(e.Member.Id);
 
 			return Task.CompletedTask;
 		}
@@ -504,7 +504,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 						else
 						{
 							membersFrame.DeleteObject(item.Key);
-							events.GetRegistry<IMember>().InvokeDeleted(this, item.Key);
+							events.GetRegistry<IMember>().InvokeDeleted(item.Key);
 						}
 				}
 
@@ -523,7 +523,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 						else
 						{
 							rolesFrame.DeleteObject(item.Key);
-							events.GetRegistry<IRole>().InvokeDeleted(this, item.Key);
+							events.GetRegistry<IRole>().InvokeDeleted(item.Key);
 						}
 				}
 
@@ -559,7 +559,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			private readonly ILogger logger;
 
 
-			public MessagesEventsManager(Server owner, ILogger logger)
+			public MessagesEventsManager(ILogger logger, Server owner)
 			{
 				this.owner = owner;
 				this.logger = logger;

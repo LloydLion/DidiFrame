@@ -1,4 +1,5 @@
-﻿using DidiFrame.Interfaces;
+﻿using DidiFrame.Culture;
+using DidiFrame.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
@@ -8,18 +9,18 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 	{
 		private readonly ConcurrentDictionary<Type, Registry> registries = new();
 		private readonly ILogger logger;
-		private readonly ulong serverId;
+		private readonly Server server;
 
 
-		public ServerEventsManager(ILogger logger, ulong serverId)
+		public ServerEventsManager(ILogger logger, Server server)
 		{
 			this.logger = logger;
-			this.serverId = serverId;
+			this.server = server;
 		}
 
 
 		public Registry<TEntity> GetRegistry<TEntity>() where TEntity : IServerEntity =>
-			(Registry<TEntity>)registries.GetOrAdd(typeof(TEntity), _ => new Registry<TEntity>(logger, serverId));
+			(Registry<TEntity>)registries.GetOrAdd(typeof(TEntity), _ => new Registry<TEntity>(logger, server));
 
 
 		public class Registry<TEntity> : Registry where TEntity : IServerEntity
@@ -32,13 +33,13 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			private readonly HashSet<ServerObjectCreatedEventHandler<TEntity>> createdHandlers = new();
 			private readonly HashSet<ServerObjectDeletedEventHandler> deletedHandlers = new();
 			private readonly ILogger logger;
-			private readonly ulong serverId;
+			private readonly Server server;
 
 
-			public Registry(ILogger logger, ulong serverId)
+			public Registry(ILogger logger, Server server)
 			{
 				this.logger = logger;
-				this.serverId = serverId;
+				this.server = server;
 			}
 
 
@@ -90,8 +91,10 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			{
 				lock (this)
 				{
+					server.SourceClient.CultureProvider.SetupCulture(server);
+
 					logger.Log(LogLevel.Trace, ServerObjectCreatedID, "{EnityName} was created ({ModifyStatus}) in {ServerId}",
-						typeof(TEntity).Name, isModified ? "Modified" : "Created", serverId);
+						typeof(TEntity).Name, isModified ? "Modified" : "Created", server.Id);
 
 					foreach (var handler in createdHandlers)
 					{
@@ -102,17 +105,19 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 						catch (Exception ex)
 						{
 							logger.Log(LogLevel.Warning, EventHandlerErrorID, ex, "Exception in event handler for {EnityName} creation ({ModifyStatus}) in {ServerId}",
-								typeof(TEntity).Name, isModified ? "Modify" : "Create", serverId);
+								typeof(TEntity).Name, isModified ? "Modify" : "Create", server.Id);
 						}
 					}
 				}
 			}
 
-			public void InvokeDeleted(IServer server, ulong id)
+			public void InvokeDeleted(ulong id)
 			{
 				lock (this)
 				{
-					logger.Log(LogLevel.Trace, ServerObjectDeletedID, "{EnityName} with id {Id} was deleted from {ServerId}", typeof(TEntity).Name, id, serverId);
+					server.SourceClient.CultureProvider.SetupCulture(server);
+
+					logger.Log(LogLevel.Trace, ServerObjectDeletedID, "{EnityName} with id {Id} was deleted from {ServerId}", typeof(TEntity).Name, id, server.Id);
 
 					foreach (var handler in deletedHandlers)
 					{
@@ -122,7 +127,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 						}
 						catch (Exception ex)
 						{
-							logger.Log(LogLevel.Warning, EventHandlerErrorID, ex, "Exception in event handler for {EnityName} deleting in {ServerId}", typeof(TEntity).Name, serverId);
+							logger.Log(LogLevel.Warning, EventHandlerErrorID, ex, "Exception in event handler for {EnityName} deleting in {ServerId}", typeof(TEntity).Name, server.Id);
 						}
 					}
 				}

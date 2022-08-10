@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using DidiFrame.Culture;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.UserCommands.Pipeline
@@ -17,6 +18,7 @@ namespace DidiFrame.UserCommands.Pipeline
 
 		private readonly IServiceScopeFactory scopeFactory;
 		private readonly ILogger<UserCommandPipelineExecutor> logger;
+		private readonly IServerCultureProvider cultureProvider;
 		private readonly IValidator<UserCommandSendData> sendDataValidator;
 		private readonly IValidator<UserCommandResult> resultValidator;
 
@@ -30,11 +32,13 @@ namespace DidiFrame.UserCommands.Pipeline
 		public UserCommandPipelineExecutor(
 			IServiceScopeFactory scopeFactory,
 			ILogger<UserCommandPipelineExecutor> logger,
+			IServerCultureProvider cultureProvider,
 			IValidator<UserCommandSendData> sendDataValidator,
 			IValidator<UserCommandResult> resultValidator)
 		{
 			this.scopeFactory = scopeFactory;
 			this.logger = logger;
+			this.cultureProvider = cultureProvider;
 			this.sendDataValidator = sendDataValidator;
 			this.resultValidator = resultValidator;
 		}
@@ -45,10 +49,12 @@ namespace DidiFrame.UserCommands.Pipeline
 		{
 			sendDataValidator.ValidateAndThrow(sendData);
 
+			cultureProvider.SetupCulture(sendData.Channel.Server);
+
+			var guid = Guid.NewGuid();
+
 			using (var scope = scopeFactory.CreateScope())
 			{
-				var guid = Guid.NewGuid();
-
 				try
 				{
 					logger.Log(LogLevel.Information, PipelineStartID, "({PipelineExecutionId}) Command pipeline executing started in {ServerId} #{ChannelName} by {MemberName}",

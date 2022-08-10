@@ -5,6 +5,8 @@ using DSharpPlus.EventArgs;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
+using Emzi0767.Utilities;
+using DidiFrame.Culture;
 
 namespace DidiFrame.Clients.DSharp.DiscordServer
 {
@@ -15,12 +17,14 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 		private readonly Dictionary<MessageIdentitify, List<EventHolder>> subs = new();
 		private readonly ILogger<Client> logger;
+		private readonly Server server;
 
 
 		public InteractionDispatcherFactory(Server server)
 		{
 			server.SourceClient.BaseClient.ComponentInteractionCreated += InteractionCreated;
 			logger = server.SourceClient.Logger;
+			this.server = server;
 		}
 
 
@@ -79,6 +83,8 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			{
 				try
 				{
+					server.SourceClient.CultureProvider.SetupCulture(server);
+
 					foreach (var item in holders)
 					{
 						var result = item.Handle(args);
