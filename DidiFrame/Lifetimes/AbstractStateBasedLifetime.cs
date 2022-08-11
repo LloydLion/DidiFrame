@@ -42,7 +42,7 @@ namespace DidiFrame.Lifetimes
 		/// <summary>
 		/// Server that contains this lifetime
 		/// </summary>
-		public IServer Server => server ?? throw new InvalidOperationException("Enable to get GUID before starting");
+		public IServer Server => server ?? throw new InvalidOperationException("Enable to get Server before starting");
 
 
 		/// <summary>
