@@ -1,18 +1,9 @@
 ﻿using DidiFrame.Data.ContextBased;
 using DidiFrame.Interfaces;
-using DidiFrame.Utils;
 using DidiFrame.Utils.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using static MongoDB.Driver.WriteConcern;
 
 namespace DidiFrame.Data.Mongo
 {
@@ -34,9 +25,9 @@ namespace DidiFrame.Data.Mongo
 		/// <param name="logger">Logger</param>
 		/// <param name="_">Service provider to provide addititional data</param>
 		/// <exception cref="ArgumentNullException">If required option is null</exception>
-		public MongoDBContext(DataOptions options, ContextBased.ContextType contextType, ILogger logger, IServiceProvider _)
+		public MongoDBContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider services)
 		{
-			DataOptions.DataOption? option = contextType == ContextBased.ContextType.States ? options.States : options.Settings;
+			DataOptions.DataOption? option = contextType == ContextType.States ? options.States : options.Settings;
 
 			if (option is null) throw new ArgumentNullException(nameof(options));
 
@@ -44,9 +35,18 @@ namespace DidiFrame.Data.Mongo
 			db = dbClient.GetDatabase(option.DatabaseName);
 			this.logger = logger;
 
+			//Context and notifier is global objects, we can don't ubsubcribe
+			var notify = services.GetRequiredService<IServersNotify>();
+			notify.ServerRemoved += OnServerRemoved;
+
 			cache = new(db, logger);
 		}
 
+
+		private void OnServerRemoved(IServer server)
+		{
+			cache.Delete(server.Id);
+		}
 
 		/// <inheritdoc/>
 		public async void Put<TModel>(IServer server, string key, TModel model) where TModel : class

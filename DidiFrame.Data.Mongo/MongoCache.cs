@@ -13,11 +13,12 @@ namespace DidiFrame.Data.Mongo
 	{
 		private static readonly EventId FailedToLoadDocumentID = new(45, "FailedToLoadDocument");
 		private static readonly EventId FailedToSaveDocumentID = new(46, "FailedToSaveDocument");
+		private static readonly EventId FailedToDeleteCollectionID = new(47, "FailedToDeleteCollection");
+		private static readonly EventId InvalidMongoTaskID = new(11, "InvalidMongoTask");
 
 
 		private readonly Dictionary<ulong, Dictionary<string, object>> states = new();
 		private readonly Dictionary<ulong, Dictionary<string, JContainer>> initialData = new();
-		private readonly ThreadLocker<(ulong, string)> globalLocker = new();
 		private readonly DatabaseWriteDispatcher dispatcher;
 		private readonly IMongoDatabase db;
 		private readonly ILogger logger;
@@ -66,6 +67,14 @@ namespace DidiFrame.Data.Mongo
 			cursor.Dispose();
 		}
 
+		public void Delete(ulong id)
+		{
+			lock (this)
+			{
+				dispatcher.QueueTask(new DatabaseWriteDispatcher.DeleteTask(id));
+			}
+		}
+
 		private async Task PutDirectAsync<TModel>(ulong serverId, string key, TModel value, JsonSerializer serializer) where TModel : class
 		{
 			if (states.ContainsKey(serverId) == false) states.Add(serverId, new());
@@ -78,7 +87,7 @@ namespace DidiFrame.Data.Mongo
 
 		public Task PutAsync<TModel>(ulong serverId, string key, TModel value, JsonSerializer serializer) where TModel : class
 		{
-			using (globalLocker.Lock((serverId, key)))
+			lock (this)
 			{
 				return PutDirectAsync(serverId, key, value, serializer);
 			}
@@ -86,7 +95,7 @@ namespace DidiFrame.Data.Mongo
 
 		public TModel Get<TModel>(ulong serverId, string key, JsonSerializer serializer, out Task? putTask) where TModel : class
 		{
-			using (globalLocker.Lock((serverId, key)))
+			lock (this)
 			{
 				if (states.ContainsKey(serverId) && states[serverId].ContainsKey(key))
 				{
@@ -105,15 +114,21 @@ namespace DidiFrame.Data.Mongo
 
 		public bool Has(ulong serverId, string key)
 		{
-			return (states.ContainsKey(serverId) && states[serverId].ContainsKey(key)) ||
-				(initialData.ContainsKey(serverId) && initialData[serverId].ContainsKey(key));
+			lock (this)
+			{
+				return (states.ContainsKey(serverId) && states[serverId].ContainsKey(key)) ||
+					(initialData.ContainsKey(serverId) && initialData[serverId].ContainsKey(key));
+			}
 		}
 
 		public Task SaveAsync(ulong serverId, string key, JsonSerializer serializer)
 		{
-			return dispatcher.QueueTask(new(serverId, key, getJson));
+			lock (this)
+			{
+				return dispatcher.QueueTask(new DatabaseWriteDispatcher.WriteTask(serverId, key, getJson));
 
-			JContainer getJson() => (JContainer)JToken.FromObject(states[serverId][key], serializer);
+				JContainer getJson() => (JContainer)JToken.FromObject(states[serverId][key], serializer);
+			}
 		}
 
 
@@ -143,7 +158,7 @@ namespace DidiFrame.Data.Mongo
 				thread.Join();
 			}
 
-			public Task QueueTask(WriteTask task)
+			public Task QueueTask(CollectionTask task)
 			{
 				lock (tasks)
 				{
@@ -169,21 +184,39 @@ namespace DidiFrame.Data.Mongo
 							task = tasks.Dequeue();
 						}
 
-						try
+						if (task.Task is WriteTask wt)
 						{
-							var collection = database.GetCollection<BsonDocument>(task.Task.Collection.ToString());
+							try
+							{
+								var collection = database.GetCollection<BsonDocument>(wt.Collection.ToString());
 
-							var json = task.Task.JsonSource.Invoke();
+								var json = wt.JsonSource.Invoke();
 
-							var item = new MongoItem(task.Task.Key, json);
+								var item = new MongoItem(wt.Key, json);
 
-							collection.DeleteOne(new BsonDocument("Key", new BsonString(task.Task.Key)));
-							collection.InsertOne(BsonDocument.Parse(JsonConvert.SerializeObject(item)), new InsertOneOptions() { Comment = "Created at " + DateTime.Now.ToString() });
+								collection.DeleteOne(new BsonDocument("Key", new BsonString(wt.Key)));
+								collection.InsertOne(BsonDocument.Parse(JsonConvert.SerializeObject(item)), new InsertOneOptions() { Comment = "Created at " + DateTime.Now.ToString() });
 
+							}
+							catch (Exception ex)
+							{
+								logger.Log(LogLevel.Error, FailedToSaveDocumentID, ex, "Enable to write state/settings to MongoDb for server {ServerId} and key {DataKey}", wt.Collection, wt.Key);
+							}
 						}
-						catch (Exception ex)
+						else if (task.Task is DeleteTask dt)
 						{
-							logger.Log(LogLevel.Error, FailedToSaveDocumentID, ex, "Enable to write state/settings to MongoDb for server {ServerId} and key {DataKey}", task.Task.Collection, task.Task.Key);
+							try
+							{
+								database.DropCollection(dt.Collection.ToString());
+							}
+							catch (Exception ex)
+							{
+								logger.Log(LogLevel.Error, FailedToSaveDocumentID, ex, "Enable to delete state/settings from MongoDb for server {ServerId}", dt.Collection);
+							}
+						}
+						else
+						{
+							logger.Log(LogLevel.Error, InvalidMongoTaskID, "Invalid type of mongo task. Enable to execute: {TypeOfTask}", task.Task.GetType().FullName);
 						}
 
 						task.TaskCompletionSource.SetResult();
@@ -192,9 +225,13 @@ namespace DidiFrame.Data.Mongo
 			}
 
 
-			public record WriteTask(ulong Collection, string Key, Func<JContainer> JsonSource);
+			public record WriteTask(ulong Collection, string Key, Func<JContainer> JsonSource) : CollectionTask;
 
-			private record ScheduleItem(WriteTask Task, TaskCompletionSource TaskCompletionSource);
+			public record DeleteTask(ulong Collection) : CollectionTask;
+
+			public record CollectionTask();
+
+			private record ScheduleItem(CollectionTask Task, TaskCompletionSource TaskCompletionSource);
 
 			private record MongoItem(string Key, JContainer Container);
 		}

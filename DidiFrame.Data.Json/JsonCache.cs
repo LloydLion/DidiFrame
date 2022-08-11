@@ -14,7 +14,6 @@ namespace DidiFrame.Data.Json
 		private readonly Dictionary<string, Dictionary<string, object>> states = new();
 		private readonly Dictionary<string, Dictionary<string, JContainer>> initialData = new();
 		private readonly string basePath;
-		private readonly ThreadLocker<string> fileLocker = new();
 		private readonly FileWriteDispatcher dispatcher;
 
 
@@ -56,19 +55,19 @@ namespace DidiFrame.Data.Json
 			}
 		}
 
-		private async Task PutDirectAsync<TModel>(string path, string key, TModel value, JsonSerializer serializer) where TModel : class
+		private Task PutDirectAsync<TModel>(string path, string key, TModel value, JsonSerializer serializer) where TModel : class
 		{
 			if (states.ContainsKey(path) == false) states.Add(path, new());
 			var file = states[path];
 			if (file.ContainsKey(key)) file.Remove(key);
 			file.Add(key, value);
 
-			await SaveAsync(path, serializer);
+			return SaveAsync(path, serializer);
 		}
 
 		public Task PutAsync<TModel>(string path, string key, TModel value, JsonSerializer serializer) where TModel : class
 		{
-			using (fileLocker.Lock(path))
+			lock (this)
 			{
 				return PutDirectAsync(path, key, value, serializer);
 			}
@@ -76,7 +75,7 @@ namespace DidiFrame.Data.Json
 
 		public TModel Get<TModel>(string path, string key, JsonSerializer serializer, out Task? putTask) where TModel : class
 		{
-			using (fileLocker.Lock(path))
+			lock (this)
 			{
 				if (states.ContainsKey(path) && states[path].ContainsKey(key))
 				{
@@ -95,7 +94,7 @@ namespace DidiFrame.Data.Json
 
 		public bool Has(string path, string key)
 		{
-			using (fileLocker.Lock(path))
+			lock (this)
 			{
 				return (states.ContainsKey(path) && states[path].ContainsKey(key)) ||
 					(initialData.ContainsKey(path) && initialData[path].ContainsKey(key));
@@ -104,26 +103,40 @@ namespace DidiFrame.Data.Json
 
 		public Task SaveAsync(string path, JsonSerializer serializer)
 		{
-			var baseDic = initialData.ContainsKey(path) ? initialData[path].ToDictionary(s => s.Key, s => s.Value) : new();
-			var currentState = states[path].ToDictionary(s => s.Key, s => s.Value);
+			lock (this)
+			{
+				var baseDic = initialData.ContainsKey(path) ? initialData[path].ToDictionary(s => s.Key, s => s.Value) : new();
+				var currentState = states[path].ToDictionary(s => s.Key, s => s.Value);
 
-			var file = Path.Combine(basePath, path);
+				var file = Path.Combine(basePath, path);
 
-			return dispatcher.QueueTask(new(file, bytesSource));
+				return dispatcher.QueueTask(new(file, bytesSource));
 
 
-			byte[] bytesSource()
-            {
-				foreach (var l in currentState)
+				byte[] bytesSource()
 				{
-					var jobj = (JContainer)JToken.FromObject(l.Value, serializer);
-					if (baseDic.ContainsKey(l.Key)) baseDic.Remove(l.Key);
-					baseDic.Add(l.Key, jobj);
+					foreach (var l in currentState)
+					{
+						var jobj = (JContainer)JToken.FromObject(l.Value, serializer);
+						if (baseDic.ContainsKey(l.Key)) baseDic.Remove(l.Key);
+						baseDic.Add(l.Key, jobj);
+					}
+
+					var str = JsonConvert.SerializeObject(baseDic, Formatting.Indented);
+
+					return Encoding.Default.GetBytes(str);
 				}
+			}
+		}
 
-				var str = JsonConvert.SerializeObject(baseDic, Formatting.Indented);
+		public void Delete(string path)
+		{
+			lock (this)
+			{
+				initialData.Remove(path);
+				states.Remove(path);
 
-				return Encoding.Default.GetBytes(str);
+				dispatcher.QueueTask(new(path, () => null));
 			}
 		}
 
@@ -181,11 +194,14 @@ namespace DidiFrame.Data.Json
 						try
 						{
 							var bytes = task.Task.BytesSource.Invoke();
-							File.WriteAllBytes(task.Task.Path, bytes);
+
+							if (bytes is null)
+								File.Delete(task.Task.Path);
+							else File.WriteAllBytes(task.Task.Path, bytes);
 						}
 						catch (Exception ex)
 						{
-							logger.Log(LogLevel.Warning, FileSaveErrorID, ex, "Enable save changes into file at {FilePath}", task.Task.Path);
+							logger.Log(LogLevel.Warning, FileSaveErrorID, ex, "Enable to save changes into file / delete file at {FilePath}", task.Task.Path);
 						}
 
 						task.TaskCompletionSource.SetResult();
@@ -194,7 +210,10 @@ namespace DidiFrame.Data.Json
 			}
 
 
-			public record FileTask(string Path, Func<byte[]> BytesSource);
+			/// <summary>
+			/// Contract: if BytesSource returns null file will be deleted else data will be writen into file
+			/// </summary>
+			public record FileTask(string Path, Func<byte[]?> BytesSource);
 
 			private record ScheduleItem(FileTask Task, TaskCompletionSource TaskCompletionSource);
 		}

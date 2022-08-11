@@ -30,6 +30,7 @@ namespace DidiFrame.Clients.DSharp
 			services.Configure<Client.Options>(configuration);
 			services.Configure<LoggerFilterOptions>(options => options.AddFilter("DSharpPlus.", LogLevel.Information));
 			services.AddSingleton<IClient, Client>();
+			services.AddSingleton<IServersNotify>(sp => sp.GetRequiredService<IClient>());
 			return services;
 		}
 
