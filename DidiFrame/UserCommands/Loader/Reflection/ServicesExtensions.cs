@@ -12,7 +12,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// </summary>
 		/// <param name="services"></param>
 		/// <returns></returns>
-		//TODO: rewrite
+		//TODO: rewrite description
 		public static IServiceCollection AddReflectionUserCommandsLoader(this IServiceCollection services)
 		{
 			services.AddTransient<IUserCommandsLoader, ReflectionUserCommandsLoader>();

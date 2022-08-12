@@ -64,7 +64,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Culture info provider that using in event to setup culture
 		/// </summary>
-		public IServerCultureProvider CultureProvider { get; }
+		public IServerCultureProvider? CultureProvider { get; private set; }
 
 		/// <inheritdoc/>
 		public IServiceProvider Services { get; }
@@ -81,10 +81,12 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="options">Configuration of DSharp client (DidiFrame.DSharpAdapter.Client.Options)</param>
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="messageSendModelValidator">Validator for DidiFrame.Entities.Message.MessageSendModel</param>
-		/// <param name="cultureProvider">Culture provider for event thread culture</param>
 		/// <param name="messagesCacheFactory">Optional custom factory for server's channel messages caches</param>
-		public Client(IServiceProvider servicesForExtensions, IOptions<Options> options, ILoggerFactory factory, IValidator<MessageSendModel> messageSendModelValidator,
-			IServerCultureProvider? cultureProvider = null, IChannelMessagesCacheFactory? messagesCacheFactory = null)
+		public Client(IServiceProvider servicesForExtensions,
+			IOptions<Options> options,
+			ILoggerFactory factory,
+			IValidator<MessageSendModel> messageSendModelValidator,
+			IChannelMessagesCacheFactory? messagesCacheFactory = null)
 		{
 			this.options = options.Value;
 			logger = factory.CreateLogger<Client>();
@@ -99,7 +101,7 @@ namespace DidiFrame.Clients.DSharp
 				Intents = DiscordIntents.All
 			});
 
-			CultureProvider = cultureProvider ?? new GagCultureProvider(new CultureInfo("en-US"));
+			CultureProvider = null;
 			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
 			Services = servicesForExtensions;
             MessageSendModelValidator = messageSendModelValidator;
@@ -110,6 +112,14 @@ namespace DidiFrame.Clients.DSharp
 
 		/// <inheritdoc/>
 		public IServer GetServer(ulong id) => servers[id];
+
+		/// <inheritdoc/>
+		public void SetupCultureProvider(IServerCultureProvider? cultureProvider)
+		{
+			if (CultureProvider is not null)
+				throw new InvalidOperationException("Enable to setup culture provider twice");
+			CultureProvider = cultureProvider;
+		}
 
 		/// <inheritdoc/>
 		public async Task AwaitForExit()

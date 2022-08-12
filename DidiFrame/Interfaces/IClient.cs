@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.Interfaces
+﻿using DidiFrame.Culture;
+
+namespace DidiFrame.Interfaces
 {
 	/// <summary>
 	/// Global class of discord api, single way to interact with discord
@@ -38,5 +40,7 @@
 		/// <param name="id">Id of server to get</param>
 		/// <returns>Target server</returns>
 		public IServer GetServer(ulong id);
+
+		public void SetupCultureProvider(IServerCultureProvider? cultureProvider);
 	}
 }

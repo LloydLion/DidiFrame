@@ -83,7 +83,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			{
 				try
 				{
-					server.SourceClient.CultureProvider.SetupCulture(server);
+					server.SourceClient.CultureProvider?.SetupCulture(server);
 
 					foreach (var item in holders)
 					{

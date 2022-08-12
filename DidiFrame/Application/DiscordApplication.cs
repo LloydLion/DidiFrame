@@ -81,6 +81,9 @@ namespace DidiFrame.Application
 			logger.Log(LogLevel.Debug, DataPreloadCompliteID, "Servers data preloaded (states and settings)");
 
 
+			client.SetupCultureProvider(services.GetService<IServerCultureProvider>());
+
+
 			var se = services.GetService<StartupEvent>();
 			if (se is not null)
 			{

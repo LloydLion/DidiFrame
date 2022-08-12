@@ -8,7 +8,7 @@ namespace DidiFrame.Data
 	/// <typeparam name="TModel">Type of state model</typeparam>
 	public class StateObjectController<TModel> : IObjectController<TModel> where TModel : class
 	{
-		private readonly AutoResetEvent syncRoot;
+		private readonly ThreadLocker<IServer>.Agent syncRoot;
 		private readonly IServer server;
 		private readonly Action<IServer, TModel> finalizeAction;
 		private readonly Func<IServer, TModel> objectGetter;
@@ -21,7 +21,7 @@ namespace DidiFrame.Data
 		/// <param name="server">Server as delegates paramter</param>
 		/// <param name="finalizeAction">Action to close object</param>
 		/// <param name="objectGetter">Function to get object and start open object</param>
-		public StateObjectController(AutoResetEvent syncRoot, IServer server, Action<IServer, TModel> finalizeAction, Func<IServer, TModel> objectGetter)
+		public StateObjectController(ThreadLocker<IServer>.Agent syncRoot, IServer server, Action<IServer, TModel> finalizeAction, Func<IServer, TModel> objectGetter)
 		{
 			this.syncRoot = syncRoot;
 			this.server = server;
@@ -33,14 +33,14 @@ namespace DidiFrame.Data
 		/// <inheritdoc/>
 		public ObjectHolder<TModel> Open()
 		{
-			syncRoot.WaitOne();
-			return new ObjectHolder<TModel>(objectGetter(server), Callback);
+			var syncObject = syncRoot.Lock();
+			return new ObjectHolder<TModel>(objectGetter(server), oh => Callback(oh, syncObject));
 		}
 
-		private void Callback(ObjectHolder<TModel> oh)
+		private void Callback(ObjectHolder<TModel> oh, IDisposable syncObject)
 		{
 			finalizeAction(server, oh.Object);
-			syncRoot.Set();
+			syncObject.Dispose();
 		}
 	}
 }

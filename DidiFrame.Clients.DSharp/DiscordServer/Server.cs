@@ -593,7 +593,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 			public void InvokeSentEvent(IMessage message, bool isModified)
 			{
-				owner.SourceClient.CultureProvider.SetupCulture(owner);
+				owner.SourceClient.CultureProvider?.SetupCulture(owner);
 
 				foreach (var handler in messageSentGHandlers.Concat(messageSentHandlers.GetOrAdd(message.TextChannel.Id, _ => new())))
 				{
@@ -611,7 +611,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 			public void InvokeDeletedEvent(ITextChannelBase textChannel, ulong messageId)
 			{
-				owner.SourceClient.CultureProvider.SetupCulture(owner);
+				owner.SourceClient.CultureProvider?.SetupCulture(owner);
 
 				foreach (var handler in messageDeletedGHandlers.Concat(messageDeletedHandlers.GetOrAdd(textChannel.Id, _ => new())))
 				{
