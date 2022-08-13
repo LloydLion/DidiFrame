@@ -36,38 +36,92 @@ namespace DidiFrame.Clients.DSharp
 		private readonly DiscordClient client;
 		private readonly Dictionary<ulong, Server> servers = new();
 		private readonly AutoResetEvent serversSyncRoot = new(true);
-		private Task? serverListUpdateTask;
 		private readonly CancellationTokenSource cts = new();
 		private readonly ILogger<Client> logger;
 		private readonly Lazy<IUser> selfAccount;
 		private readonly Options options;
 		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
+		private readonly IServiceProvider services;
+		private Task? serverListUpdateTask;
+		private ConnectStatus connectStatus = ConnectStatus.NoConnection;
+		private IServerCultureProvider? cultureProvider;
+		private ServerCreatedEventHandler? serverCreatedEvent;
+		private ServerRemovedEventHandler? serverRemovedEvent;
 
 
 		/// <inheritdoc/>
-		public event ServerCreatedEventHandler? ServerCreated;
+		public event ServerCreatedEventHandler? ServerCreated
+		{
+			add { ThrowUnlessConnected(); serverCreatedEvent += value; }
+			remove { ThrowUnlessConnected(); serverCreatedEvent -= value; }
+		}
 
 		/// <inheritdoc/>
-		public event ServerRemovedEventHandler? ServerRemoved;
+		public event ServerRemovedEventHandler? ServerRemoved
+		{
+			add { ThrowUnlessConnected(); serverRemovedEvent += value; }
+			remove { ThrowUnlessConnected(); serverRemovedEvent -= value; }
+		}
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<IServer> Servers => servers.Values;
+		public IReadOnlyCollection<IServer> Servers
+		{
+			get
+			{
+				ThrowUnlessConnected();
+				return servers.Values;
+			}
+		}
 
 		/// <inheritdoc/>
-		public IUser SelfAccount => selfAccount.Value;
+		public IUser SelfAccount
+		{
+			get
+			{
+				ThrowUnlessConnected();
+				return selfAccount.Value;
+			}
+		}
+
 		/// <summary>
 		/// Base client from DSharpPlus library
 		/// </summary>
-		public DiscordClient BaseClient => client;
+		public DiscordClient BaseClient
+		{
+			get
+			{
+				ThrowUnlessConnected();
+				return client;
+			}
+		}
 
 		/// <summary>
 		/// Culture info provider that using in event to setup culture
 		/// </summary>
-		public IServerCultureProvider? CultureProvider { get; private set; }
+		public IServerCultureProvider? CultureProvider
+		{
+			get
+			{
+				ThrowUnlessConnected();
+				return cultureProvider;
+			}
+			private set
+			{
+				ThrowUnlessConnected();
+				cultureProvider = value;
+			}
+		}
 
 		/// <inheritdoc/>
-		public IServiceProvider Services { get; }
+		public IServiceProvider Services
+		{
+			get
+			{
+				ThrowUnlessConnected();
+				return services;
+			}
+		}
 
 		internal ILogger<Client> Logger => logger;
 
@@ -103,19 +157,26 @@ namespace DidiFrame.Clients.DSharp
 
 			CultureProvider = null;
 			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
-			Services = servicesForExtensions;
-            MessageSendModelValidator = messageSendModelValidator;
-            this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
+			services = servicesForExtensions;
+			MessageSendModelValidator = messageSendModelValidator;
+			this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
 				?? throw new ArgumentException("Cache options can't be null if no custom messages cache factory provided", nameof(options)));
 		}
 
 
 		/// <inheritdoc/>
-		public IServer GetServer(ulong id) => servers[id];
+		public IServer GetServer(ulong id)
+		{
+			ThrowUnlessConnected();
+			return servers[id];
+		}
 
 		/// <inheritdoc/>
 		public void SetupCultureProvider(IServerCultureProvider? cultureProvider)
 		{
+			if (connectStatus != ConnectStatus.Connected)
+				throw new InvalidOperationException("Cannot await for exit if client hasn't connected");
+
 			if (CultureProvider is not null)
 				throw new InvalidOperationException("Enable to setup culture provider twice");
 			CultureProvider = cultureProvider;
@@ -124,6 +185,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public async Task AwaitForExit()
 		{
+			if (connectStatus != ConnectStatus.Connected)
+				throw new InvalidOperationException("Cannot await for exit if client hasn't connected");
+
 			int ticks = 0;
 			while (ticks < 5)
 			{
@@ -145,6 +209,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		public async Task ConnectAsync()
 		{
+			if (connectStatus != ConnectStatus.NoConnection)
+				throw new InvalidOperationException("Cannot connect already connected client");
+
 			await client.ConnectAsync();
 			await Task.Delay(5000);
 
@@ -154,10 +221,13 @@ namespace DidiFrame.Clients.DSharp
 			await UpdateServerList();
 
 			serverListUpdateTask = CreateServerListUpdateTask(cts.Token);
+			connectStatus = ConnectStatus.Connected;
 		}
 
 		private Task Client_GuildDeleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDeleteEventArgs e)
 		{
+			if (connectStatus != ConnectStatus.Connected) return Task.CompletedTask;
+
 			using (serversSyncRoot.WaitAndCreateDisposable())
 			{
 				if (servers.ContainsKey(e.Guild.Id))
@@ -174,6 +244,8 @@ namespace DidiFrame.Clients.DSharp
 
 		private Task Client_GuildCreated(DiscordClient sender, DSharpPlus.EventArgs.GuildCreateEventArgs e)
 		{
+			if (connectStatus != ConnectStatus.Connected) return Task.CompletedTask;
+
 			using (serversSyncRoot.WaitAndCreateDisposable())
 			{
 				if (servers.ContainsKey(e.Guild.Id) == false)
@@ -235,7 +307,7 @@ namespace DidiFrame.Clients.DSharp
 
 			try
 			{
-				ServerCreated?.Invoke(server);
+				serverCreatedEvent?.Invoke(server);
 			}
 			catch (Exception ex)
 			{
@@ -249,11 +321,19 @@ namespace DidiFrame.Clients.DSharp
 
 			try
 			{
-				ServerRemoved?.Invoke(server);
+				serverRemovedEvent?.Invoke(server);
 			}
 			catch (Exception ex)
 			{
 				logger.Log(LogLevel.Warning, ServerRemovedEventErrorID, ex, "Exception in event handler for server removement with id {ServerId}", server.Id);
+			}
+		}
+
+		public void ThrowUnlessConnected()
+		{
+			if (connectStatus != ConnectStatus.Connected)
+			{
+				throw new InvalidOperationException("Enable to do this operation if client hasn't connected");
 			}
 		}
 
@@ -477,6 +557,13 @@ namespace DidiFrame.Clients.DSharp
 			public string? ObjectName { get; }
 
 			public ulong ObjectId { get; }
+		}
+
+		private enum ConnectStatus
+		{
+			NoConnection,
+			Connected,
+			Disconnected,
 		}
 	}
 }

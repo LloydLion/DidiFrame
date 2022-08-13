@@ -31,7 +31,8 @@ namespace DidiFrame.Application
 		private readonly ILogger<DiscordApplication> logger;
 		private readonly IServerCultureProvider culture;
 		private readonly DateTime now;
-		private bool connected = false;
+		private readonly Lazy<Task> awaitForExitTask;
+		private ApplicationPhase phase = ApplicationPhase.NoConnection;
 
 
 		public DiscordApplication(IServiceProvider services, DateTime now)
@@ -43,27 +44,41 @@ namespace DidiFrame.Application
 
 			logger.Log(LogLevel.Debug, ClientInstantiationID, "Client instance created");
 			this.now = now;
+
+			awaitForExitTask = new(AwaitForExitTaskCreator);
 		}
 
 
-		public Task AwaitForExit()
+		private Task AwaitForExitTaskCreator()
 		{
-			if (connected == false)
-				throw new InvalidOperationException("Please connect before await for exit (method - Connect())");
+			if (phase == ApplicationPhase.Ready)
+				throw new InvalidOperationException("Please connect and prepare application before await for exit");
 
 			return client.AwaitForExit().ContinueWith((_) =>
-				logger.Log(LogLevel.Information, ClientExitID, "Client exited. Bot work done. Worktime - {Time}h", (DateTime.Now - now).TotalHours));
+			{
+				logger.Log(LogLevel.Information, ClientExitID, "Client exited. Bot work done. Worktime - {Time}h", (DateTime.Now - now).TotalHours);
+				phase = ApplicationPhase.Closed;
+			});
 		}
+
+		public Task AwaitForExit() => awaitForExitTask.Value;
 
 		public async Task ConnectAsync()
 		{
+			if (phase == ApplicationPhase.NoConnection)
+				throw new InvalidOperationException("Enable to connect twice");
+
 			await client.ConnectAsync();
-			connected = true;
 			logger.Log(LogLevel.Information, ClientReadyID, "Client connected to discord server");
+
+			phase = ApplicationPhase.Connected;
 		}
 
 		public async Task PrepareAsync()
 		{
+			if (phase == ApplicationPhase.Connected)
+				throw new InvalidOperationException("Please connect application before prepare it");
+
 			logger.Log(LogLevel.Trace, LoadingStartID, "Commands loading is begining");
 			var rp = services.GetService<IUserCommandsRepository>() ?? throw new ImpossibleVariantException();
 			foreach (var loader in services.GetServices<IUserCommandsLoader>())
@@ -130,11 +145,22 @@ namespace DidiFrame.Application
 				}
 			});
 			logger.Log(LogLevel.Debug, UserCommandsPipelineDoneID, "UserCommandPipeline created and event handler for executor registrated");
+
+			phase = ApplicationPhase.Ready;
 		}
 
 
 		public IServiceProvider Services => services;
 
 		public ILogger Logger => logger;
+
+
+		private enum ApplicationPhase
+		{
+			NoConnection,
+			Connected,
+			Ready,
+			Closed
+		}
 	}
 }
