@@ -45,23 +45,13 @@ namespace DidiFrame.Clients.DSharp
 		private Task? serverListUpdateTask;
 		private ConnectStatus connectStatus = ConnectStatus.NoConnection;
 		private IServerCultureProvider? cultureProvider;
-		private ServerCreatedEventHandler? serverCreatedEvent;
-		private ServerRemovedEventHandler? serverRemovedEvent;
 
 
 		/// <inheritdoc/>
-		public event ServerCreatedEventHandler? ServerCreated
-		{
-			add { ThrowUnlessConnected(); serverCreatedEvent += value; }
-			remove { ThrowUnlessConnected(); serverCreatedEvent -= value; }
-		}
+		public event ServerCreatedEventHandler? ServerCreated;
 
 		/// <inheritdoc/>
-		public event ServerRemovedEventHandler? ServerRemoved
-		{
-			add { ThrowUnlessConnected(); serverRemovedEvent += value; }
-			remove { ThrowUnlessConnected(); serverRemovedEvent -= value; }
-		}
+		public event ServerRemovedEventHandler? ServerRemoved;
 
 
 		/// <inheritdoc/>
@@ -87,31 +77,13 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Base client from DSharpPlus library
 		/// </summary>
-		public DiscordClient BaseClient
-		{
-			get
-			{
-				ThrowUnlessConnected();
-				return client;
-			}
-		}
+		public DiscordClient BaseClient => client;
 
 		/// <summary>
 		/// Culture info provider that using in event to setup culture
 		/// </summary>
 		public IServerCultureProvider? CultureProvider
-		{
-			get
-			{
-				ThrowUnlessConnected();
-				return cultureProvider;
-			}
-			private set
-			{
-				ThrowUnlessConnected();
-				cultureProvider = value;
-			}
-		}
+			{ get => cultureProvider; private set => cultureProvider = value; }
 
 		/// <inheritdoc/>
 		public IServiceProvider Services
@@ -155,7 +127,6 @@ namespace DidiFrame.Clients.DSharp
 				Intents = DiscordIntents.All
 			});
 
-			CultureProvider = null;
 			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
 			services = servicesForExtensions;
 			MessageSendModelValidator = messageSendModelValidator;
@@ -307,7 +278,7 @@ namespace DidiFrame.Clients.DSharp
 
 			try
 			{
-				serverCreatedEvent?.Invoke(server);
+				ServerCreated?.Invoke(server);
 			}
 			catch (Exception ex)
 			{
@@ -321,7 +292,7 @@ namespace DidiFrame.Clients.DSharp
 
 			try
 			{
-				serverRemovedEvent?.Invoke(server);
+				ServerRemoved?.Invoke(server);
 			}
 			catch (Exception ex)
 			{
@@ -352,6 +323,9 @@ namespace DidiFrame.Clients.DSharp
 		/// <returns>Wait task that will be complited only when connection will be alive</returns>
 		public async Task CheckAndAwaitConnectionAsync()
 		{
+			if (connectStatus != ConnectStatus.Connected)
+				return;
+
 		reset:
 			try
 			{

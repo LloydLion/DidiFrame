@@ -3,6 +3,8 @@ using DidiFrame.Entities;
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DidiFrame.UserCommands.ContextValidation.Arguments;
+using DidiFrame.UserCommands.Modals;
+using DidiFrame.UserCommands.Modals.Components;
 using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.PreProcessing;
@@ -21,7 +23,7 @@ namespace DidiFrame.Clients.DSharp
 	/// <summary>
 	/// User command pipeline dispatcher that using discord's application commands
 	/// </summary>
-	public class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>
+	public class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>, IDisposable
 	{
 		private DispatcherCallback<UserCommandPreContext>? callback;
 		private readonly Dictionary<string, ApplicationCommandPair> convertedCommands;
@@ -29,6 +31,7 @@ namespace DidiFrame.Clients.DSharp
 		private readonly BehaviorModel behaviorModel;
 		private readonly IStringLocalizer<ApplicationCommandDispatcher> localizer;
 		private readonly IValidator<UserCommandResult> resultValidator;
+		private readonly ModalHelper modalHelper;
 
 
 		/// <summary>
@@ -43,7 +46,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <param name="behaviorModel">Behavoir model that can override behavior of component</param>
 		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands, 
 			IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter,
-			IValidator<UserCommandResult> resultValidator, IServiceProvider services, BehaviorModel? behaviorModel = null)
+			IValidator<UserCommandResult> resultValidator, IServiceProvider services, IValidator<ModalModel> modalValidator, BehaviorModel? behaviorModel = null)
 		{
 			client = (Client)dsharp;
 			client.BaseClient.InteractionCreated += BaseClient_InteractionCreated;
@@ -53,7 +56,9 @@ namespace DidiFrame.Clients.DSharp
 
 			this.localizer = localizer;
 			this.resultValidator = resultValidator;
+
 			convertedCommands = new();
+
 			foreach (var cmd in commands.GetGlobalCommands())
 			{
 				var converted = behaviorModel.ConvertCommand(cmd);
@@ -61,6 +66,8 @@ namespace DidiFrame.Clients.DSharp
 			}
 
 			client.BaseClient.BulkOverwriteGlobalApplicationCommandsAsync(convertedCommands.Select(s => s.Value.DSharpCommand)).Wait();
+
+			modalHelper = new ModalHelper(client, localizer, modalValidator);
 		}
 
 
@@ -75,7 +82,7 @@ namespace DidiFrame.Clients.DSharp
 			}
 			else if (e.Interaction.Type == InteractionType.AutoComplete)
 			{
-				var server = (Server)client.Servers.Single(s => s.Id == e.Interaction.GuildId);
+				var server = (Server)client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
 				await behaviorModel.ProcessAutoComplite(convertedCommands, e.Interaction, server);
 			}
 		}
@@ -86,9 +93,7 @@ namespace DidiFrame.Clients.DSharp
 			var state = (StateObject)stateObject;
 			if (state.Responded == false)
 			{
-				var builder = new DiscordWebhookBuilder();
-				builder.WithContent(localizer["CommandComplited"]);
-				state.Interaction.EditOriginalResponseAsync(builder).Wait();
+				state.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(localizer["CommandComplited"])).Wait();
 			}
 		}
 
@@ -101,15 +106,14 @@ namespace DidiFrame.Clients.DSharp
 
 			if (result.ResultType == UserCommandResult.Type.Message)
 			{
-				var builder = new DiscordWebhookBuilder();
 				var msg = MessageConverter.ConvertUp(result.GetRespondMessage());
-				builder.AddComponents(msg.Components);
-				builder.AddFiles(msg.Files.ToDictionary(s => s.FileName, s => s.Stream));
-				builder.AddEmbeds(msg.Embeds);
-				builder.WithContent(msg.Content);
-				builder.WithTTS(msg.IsTTS);
+				await state.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(msg).AsEphemeral());
 
-				await state.Interaction.EditOriginalResponseAsync(builder);
+				state.Responded = true;
+			}
+			else if (result.ResultType == UserCommandResult.Type.Modal)
+			{
+				await modalHelper.CreateModalAsync(state.Interaction, result.GetModal());
 
 				state.Responded = true;
 			}
@@ -126,11 +130,17 @@ namespace DidiFrame.Clients.DSharp
 			this.callback = callback;
 		}
 
+		public void Dispose()
+		{
+			modalHelper.Dispose();
+		}
+
 
 		private record StateObject(DiscordInteraction Interaction)
 		{
 			public bool Responded { get; set; }
 		}
+
 
 		/// <summary>
 		/// Represents a pair of user command object and converted discord application command with addititional raw arguments info
@@ -304,7 +314,6 @@ namespace DidiFrame.Clients.DSharp
 					return null;
 				}
 
-				await interaction.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral());
 				return new UserCommandPreContext(new(member, channel), cmd.DidiFrameCommand, list);
 			}
 

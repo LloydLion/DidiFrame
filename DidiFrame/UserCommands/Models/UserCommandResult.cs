@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Models
+﻿using DidiFrame.UserCommands.Modals;
+
+namespace DidiFrame.UserCommands.Models
 {
 	/// <summary>
 	/// Model that contains final user command pipeline execution result
@@ -23,6 +25,9 @@
 		public static UserCommandResult CreateWithMessage(UserCommandCode code, MessageSendModel sendModel, string? debugMessage = null, Exception? exception = null) =>
 			new(code, Type.Message, sendModel) { DebugMessage = debugMessage, Exception = exception };
 
+		public static UserCommandResult CreateWithModal(UserCommandCode code, IModalForm modal, string? debugMessage = null, Exception? exception = null) =>
+			new(code, Type.Modal, modal) { DebugMessage = debugMessage, Exception = exception };
+
 
 		/// <summary>
 		/// Gets send model of messages that will be sent as respond to command if result contains it
@@ -30,6 +35,9 @@
 		/// <exception cref="InvalidOperationException">If result doesn't contain message</exception>
 		public MessageSendModel GetRespondMessage() =>
 			type == Type.Message ? (MessageSendModel)(parameter ?? throw new ImpossibleVariantException()) : throw new InvalidOperationException("Result doesn't contain message");
+
+		public IModalForm GetModal() =>
+			type == Type.Modal ? (IModalForm)(parameter ?? throw new ImpossibleVariantException()) : throw new InvalidOperationException("Result doesn't contain modal");
 
 		/// <summary>
 		/// Debug message that will be sent to console
@@ -52,7 +60,8 @@
 		public enum Type
 		{
 			None,
-			Message
+			Message,
+			Modal
 		}
 	}
 }

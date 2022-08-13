@@ -51,7 +51,7 @@ namespace DidiFrame.Application
 
 		private Task AwaitForExitTaskCreator()
 		{
-			if (phase == ApplicationPhase.Ready)
+			if (phase != ApplicationPhase.Ready)
 				throw new InvalidOperationException("Please connect and prepare application before await for exit");
 
 			return client.AwaitForExit().ContinueWith((_) =>
@@ -65,7 +65,7 @@ namespace DidiFrame.Application
 
 		public async Task ConnectAsync()
 		{
-			if (phase == ApplicationPhase.NoConnection)
+			if (phase != ApplicationPhase.NoConnection)
 				throw new InvalidOperationException("Enable to connect twice");
 
 			await client.ConnectAsync();
@@ -76,7 +76,7 @@ namespace DidiFrame.Application
 
 		public async Task PrepareAsync()
 		{
-			if (phase == ApplicationPhase.Connected)
+			if (phase != ApplicationPhase.Connected)
 				throw new InvalidOperationException("Please connect application before prepare it");
 
 			logger.Log(LogLevel.Trace, LoadingStartID, "Commands loading is begining");

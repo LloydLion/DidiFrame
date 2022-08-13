@@ -1,6 +1,8 @@
 ﻿using DidiFrame.Entities.Message;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Loader.Reflection;
+using DidiFrame.UserCommands.Modals;
+using DidiFrame.UserCommands.Modals.Components;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using TestBot.Systems.Test.ClientExtensions;
@@ -26,9 +28,12 @@ namespace TestBot.Systems.Test
 			return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new(localizer["Greeting", to])));
 		}
 
-		[Command("shello", "SimpleGreeting")]
+		[Command("shello")]
 		[SuppressMessage("Performance", "CA1822")]
-		public void SimpleHello(UserCommandContext _) { }
+		public UserCommandResult SimpleHello(UserCommandContext _)
+		{
+			return UserCommandResult.CreateWithModal(UserCommandCode.Sucssesful, new Modal());
+		}
 
 		[Command("display", "DisplayComplite")]
 		public async Task Display(UserCommandContext ctx)
@@ -78,6 +83,33 @@ namespace TestBot.Systems.Test
 			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You entered: {time.Ticks} - {time.TotalSeconds}"));
 		}
 
+		[Command("modal")]
+		[SuppressMessage("Performance", "CA1822")]
+		public UserCommandResult ShowModal(UserCommandContext _)
+		{
+			return UserCommandResult.CreateWithModal(UserCommandCode.Sucssesful, new Modal());
+		}
+
+
+		private class Modal : IModalForm
+		{
+			public void Build(ModalBuilder modalBuilder)
+			{
+				modalBuilder.WithTitle("Demo modal");
+				modalBuilder.AddComponent(new ModalTextBox("demo", TextBoxStyle.Paragraph, "Test text box", "No data", "Initial data", false, 10, 25));
+			}
+
+
+			public Task<ModalSubmitResult> SubmitModalAsync(ModalSubmitContext context)
+			{
+				var value = context.Arguments.GetValueFor("demo").As<string>();
+				Console.WriteLine("Modal interaction result: " + value);
+
+				if (value != "Test string")
+					return Task.FromResult(ModalSubmitResult.CreateValidationError(new("Invalid string input", context.Arguments.GetComponent("demo"))));
+				else return Task.FromResult(ModalSubmitResult.CreateSuccessful(new("All ok")));
+			}
+		}
 
 		public class MyProv : IUserCommandArgumentValuesProvider
 		{
