@@ -100,6 +100,8 @@ dotnet_diagnostic.S3626.severity = silent
 dotnet_diagnostic.S3011.severity = silent
 dotnet_diagnostic.S2326.severity = silent
 dotnet_diagnostic.S4070.severity = silent
+dotnet_diagnostic.S3925.severity = silent
+dotnet_diagnostic.S2372.severity = silent
 
 [*.vb]
 #### Стили именования ####

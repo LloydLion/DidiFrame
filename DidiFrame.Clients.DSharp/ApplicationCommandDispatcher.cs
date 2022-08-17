@@ -23,7 +23,7 @@ namespace DidiFrame.Clients.DSharp
 	/// <summary>
 	/// User command pipeline dispatcher that using discord's application commands
 	/// </summary>
-	public class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>, IDisposable
+	public sealed class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>, IDisposable
 	{
 		private DispatcherCallback<UserCommandPreContext>? callback;
 		private readonly Dictionary<string, ApplicationCommandPair> convertedCommands;
@@ -136,7 +136,7 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
-		private record StateObject(DiscordInteraction Interaction)
+		private sealed record StateObject(DiscordInteraction Interaction)
 		{
 			public bool Responded { get; set; }
 		}
@@ -216,7 +216,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Options for DidiFrame.Clients.DSharp.ApplicationCommandDispatcher
 		/// </summary>
-		public class Options
+		public sealed class Options
 		{
 			
 		}
@@ -335,7 +335,6 @@ namespace DidiFrame.Clients.DSharp
 
 				var objIndex = argInfo.PutIndex;
 				var arg = argInfo.Argument;
-				var type = argInfo.Type;
 
 				var sendData = new UserCommandSendData(member, channel);
 
@@ -662,7 +661,7 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Represents error while argument value convertation
 		/// </summary>
-		public class ArgumentConvertationException : Exception
+		public sealed class ArgumentConvertationException : Exception
 		{
 			/// <summary>
 			/// Creates new instance of DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ArgumentConvertationException

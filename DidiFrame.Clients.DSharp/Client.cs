@@ -17,7 +17,7 @@ namespace DidiFrame.Clients.DSharp
 	/// <summary>
 	/// Discord client based on DSharpPlus library
 	/// </summary>
-	public class Client : IClient
+	public sealed class Client : IClient
 	{
 		internal const string ChannelName = "Channel";
 		internal const string MemberName = "Member";
@@ -248,26 +248,26 @@ namespace DidiFrame.Clients.DSharp
 				var temp = servers.ToDictionary(s => s.Key, s => s.Value);
 				servers.Clear();
 
-				foreach (var server in client.Guilds)
+				foreach (var server in client.Guilds.Select(s => s.Value))
 				{
-					if (temp.TryGetValue(server.Value.Id, out var maybe))
+					if (temp.TryGetValue(server.Id, out var maybe))
 					{
 						servers.Add(maybe.Id, maybe);
 						temp.Remove(maybe.Id);
 					}
 					else
 					{
-						var cache = messagesCacheFactory.Create(server.Value, this);
-						var serverObj = await Server.CreateServerAsync(server.Value, this, options.ServerOptions, cache);
+						var cache = messagesCacheFactory.Create(server, this);
+						var serverObj = await Server.CreateServerAsync(server, this, options.ServerOptions, cache);
 						servers.Add(serverObj.Id, serverObj);
 						OnServerCreated(serverObj);
 					}
 				}
 
-				foreach (var item in temp)
+				foreach (var item in temp.Select(s => s.Value))
 				{
-					item.Value.Dispose();
-					OnServerRemoved(item.Value);
+					item.Dispose();
+					OnServerRemoved(item);
 				}
 			}
 		}
@@ -317,6 +317,7 @@ namespace DidiFrame.Clients.DSharp
 			client.Dispose();
 		}
 
+#pragma warning disable S907 //goto statement use
 		/// <summary>
 		/// Checks connection to discord server and if fail awaits it
 		/// </summary>
@@ -334,8 +335,8 @@ namespace DidiFrame.Clients.DSharp
 			}
 			catch (Exception)
 			{
-				logger.Log(LogLevel.Warning, NoServerConnectionID, "No connection to discord server! Waiting 450ms");
-				await Task.Delay(450);
+				logger.Log(LogLevel.Warning, NoServerConnectionID, "No connection to discord server! Waiting 1000ms");
+				await Task.Delay(1000);
 				goto reset;
 			}
 		}
@@ -492,6 +493,7 @@ namespace DidiFrame.Clients.DSharp
 				}
 			}
 		}
+#pragma warning restore S907 //goto statement use
 
 
 		/// <summary>

@@ -69,33 +69,34 @@ namespace DidiFrame.Data.Mongo
 
 		public void Delete(ulong id)
 		{
-			lock (this)
+			lock (states)
 			{
-				dispatcher.QueueTask(new DatabaseWriteDispatcher.DeleteTask(id));
+				lock (initialData)
+				{
+					states.Remove(id);
+					initialData.Remove(id);
+
+					dispatcher.QueueTask(new DatabaseWriteDispatcher.DeleteTask(id));
+				}
 			}
-		}
-
-		private async Task PutDirectAsync<TModel>(ulong serverId, string key, TModel value, JsonSerializer serializer) where TModel : class
-		{
-			if (states.ContainsKey(serverId) == false) states.Add(serverId, new());
-			var file = states[serverId];
-			if (file.ContainsKey(key)) file.Remove(key);
-			file.Add(key, value);
-
-			await SaveAsync(serverId, key, serializer);
 		}
 
 		public Task PutAsync<TModel>(ulong serverId, string key, TModel value, JsonSerializer serializer) where TModel : class
 		{
-			lock (this)
+			lock (states)
 			{
-				return PutDirectAsync(serverId, key, value, serializer);
+				if (states.ContainsKey(serverId) == false) states.Add(serverId, new());
+				var file = states[serverId];
+				if (file.ContainsKey(key)) file.Remove(key);
+				file.Add(key, value);
+
+				return SaveAsync(serverId, key, serializer);
 			}
 		}
 
 		public TModel Get<TModel>(ulong serverId, string key, JsonSerializer serializer, out Task? putTask) where TModel : class
 		{
-			lock (this)
+			lock (states)
 			{
 				if (states.ContainsKey(serverId) && states[serverId].ContainsKey(key))
 				{
@@ -104,35 +105,40 @@ namespace DidiFrame.Data.Mongo
 				}
 				else
 				{
-					var final = initialData[serverId][key].ToObject<TModel>(serializer)
-						?? throw new NullReferenceException("Key present in json, but contains null");
-					putTask = PutDirectAsync(serverId, key, final, serializer);
-					return final;
+					lock (initialData)
+					{
+						var final = initialData[serverId][key].ToObject<TModel>(serializer)
+							?? throw new NullReferenceException("Key present in json, but contains null");
+						putTask = PutAsync(serverId, key, final, serializer);
+						return final;
+					}
 				}
 			}
 		}
 
 		public bool Has(ulong serverId, string key)
 		{
-			lock (this)
+			lock (states)
 			{
-				return (states.ContainsKey(serverId) && states[serverId].ContainsKey(key)) ||
-					(initialData.ContainsKey(serverId) && initialData[serverId].ContainsKey(key));
+				lock (initialData)
+				{
+					return (states.ContainsKey(serverId) && states[serverId].ContainsKey(key)) ||
+						(initialData.ContainsKey(serverId) && initialData[serverId].ContainsKey(key));
+				}
 			}
 		}
 
 		public Task SaveAsync(ulong serverId, string key, JsonSerializer serializer)
 		{
-			lock (this)
-			{
-				return dispatcher.QueueTask(new DatabaseWriteDispatcher.WriteTask(serverId, key, getJson));
+			var toSave = states[serverId][key];
 
-				JContainer getJson() => (JContainer)JToken.FromObject(states[serverId][key], serializer);
-			}
+			return dispatcher.QueueTask(new DatabaseWriteDispatcher.WriteTask(serverId, key, getJson));
+
+			JContainer getJson() => (JContainer)JToken.FromObject(toSave, serializer);
 		}
 
 
-		private class DatabaseWriteDispatcher
+		private sealed class DatabaseWriteDispatcher
 		{
 			private readonly Queue<ScheduleItem> tasks = new();
 			private readonly Thread thread;
@@ -231,9 +237,9 @@ namespace DidiFrame.Data.Mongo
 
 			public record CollectionTask();
 
-			private record ScheduleItem(CollectionTask Task, TaskCompletionSource TaskCompletionSource);
+			private sealed record ScheduleItem(CollectionTask Task, TaskCompletionSource TaskCompletionSource);
 
-			private record MongoItem(string Key, JContainer Container);
+			private sealed record MongoItem(string Key, JContainer Container);
 		}
 	}
 }

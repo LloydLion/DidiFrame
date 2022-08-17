@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DidiFrame.Data.Json
 {
-	internal class JsonCache
+	internal sealed class JsonCache
 	{
 		private static readonly EventId FileSaveErrorID = new(21, "FileSaveError");
 
@@ -45,37 +45,32 @@ namespace DidiFrame.Data.Json
 			static async Task<(string, Dictionary<string, JContainer>)> load(string file)
 			{
 				var content = await File.ReadAllTextAsync(file);
-				var obj = JsonConvert.DeserializeObject<Dictionary<string, JContainer?>>(content)
+				var obj = JsonConvert.DeserializeObject<Dictionary<string, JContainer>>(content)
 					?? throw new NullReferenceException("Json value was null");
 
 				foreach (var item in obj.ToDictionary(s => s.Key, s => s.Value))
 					if (item.Value is null) obj.Remove(item.Key);
 
-				return (file.Split(Path.DirectorySeparatorChar).Last(), obj as Dictionary<string, JContainer>);
+				return (file.Split(Path.DirectorySeparatorChar).Last(), obj);
 			}
-		}
-
-		private Task PutDirectAsync<TModel>(string path, string key, TModel value, JsonSerializer serializer) where TModel : class
-		{
-			if (states.ContainsKey(path) == false) states.Add(path, new());
-			var file = states[path];
-			if (file.ContainsKey(key)) file.Remove(key);
-			file.Add(key, value);
-
-			return SaveAsync(path, serializer);
 		}
 
 		public Task PutAsync<TModel>(string path, string key, TModel value, JsonSerializer serializer) where TModel : class
 		{
-			lock (this)
+			lock (states)
 			{
-				return PutDirectAsync(path, key, value, serializer);
+				if (states.ContainsKey(path) == false) states.Add(path, new());
+				var file = states[path];
+				if (file.ContainsKey(key)) file.Remove(key);
+				file.Add(key, value);
+
+				return SaveAsync(path, serializer);
 			}
 		}
 
 		public TModel Get<TModel>(string path, string key, JsonSerializer serializer, out Task? putTask) where TModel : class
 		{
-			lock (this)
+			lock (states)
 			{
 				if (states.ContainsKey(path) && states[path].ContainsKey(key))
 				{
@@ -84,64 +79,77 @@ namespace DidiFrame.Data.Json
 				}
 				else
 				{
-					var final = initialData[path][key].ToObject<TModel>(serializer)
-						?? throw new NullReferenceException("Key present in json, but contains null");
-					putTask = PutDirectAsync(path, key, final, serializer);
-					return final;
+					lock (initialData)
+					{
+
+						var final = initialData[path][key].ToObject<TModel>(serializer)
+							?? throw new NullReferenceException("Key present in json, but contains null");
+						putTask = PutAsync(path, key, final, serializer);
+						return final;
+					}
 				}
 			}
 		}
 
 		public bool Has(string path, string key)
 		{
-			lock (this)
+			lock (states)
 			{
-				return (states.ContainsKey(path) && states[path].ContainsKey(key)) ||
-					(initialData.ContainsKey(path) && initialData[path].ContainsKey(key));
+				lock (initialData)
+				{
+					return (states.ContainsKey(path) && states[path].ContainsKey(key)) ||
+						(initialData.ContainsKey(path) && initialData[path].ContainsKey(key));
+				}
 			}
 		}
 
 		public Task SaveAsync(string path, JsonSerializer serializer)
 		{
-			lock (this)
+			lock (states)
 			{
-				var baseDic = initialData.ContainsKey(path) ? initialData[path].ToDictionary(s => s.Key, s => s.Value) : new();
-				var currentState = states[path].ToDictionary(s => s.Key, s => s.Value);
-
-				var file = Path.Combine(basePath, path);
-
-				return dispatcher.QueueTask(new(file, bytesSource));
-
-
-				byte[] bytesSource()
+				lock (initialData)
 				{
-					foreach (var l in currentState)
+					var baseDic = initialData.ContainsKey(path) ? initialData[path].ToDictionary(s => s.Key, s => s.Value) : new();
+					var currentState = states[path].ToDictionary(s => s.Key, s => s.Value);
+
+					var file = Path.Combine(basePath, path);
+
+					return dispatcher.QueueTask(new(file, bytesSource));
+
+
+					byte[] bytesSource()
 					{
-						var jobj = (JContainer)JToken.FromObject(l.Value, serializer);
-						if (baseDic.ContainsKey(l.Key)) baseDic.Remove(l.Key);
-						baseDic.Add(l.Key, jobj);
+						foreach (var l in currentState)
+						{
+							var jobj = (JContainer)JToken.FromObject(l.Value, serializer);
+							if (baseDic.ContainsKey(l.Key)) baseDic.Remove(l.Key);
+							baseDic.Add(l.Key, jobj);
+						}
+
+						var str = JsonConvert.SerializeObject(baseDic, Formatting.Indented);
+
+						return Encoding.Default.GetBytes(str);
 					}
-
-					var str = JsonConvert.SerializeObject(baseDic, Formatting.Indented);
-
-					return Encoding.Default.GetBytes(str);
 				}
 			}
 		}
 
 		public void Delete(string path)
 		{
-			lock (this)
+			lock (states)
 			{
-				initialData.Remove(path);
-				states.Remove(path);
+				lock (initialData)
+				{
+					initialData.Remove(path);
+					states.Remove(path);
 
-				dispatcher.QueueTask(new(path, () => null));
+					dispatcher.QueueTask(new(path, () => null));
+				}
 			}
 		}
 
 
-		private class FileWriteDispatcher
+		private sealed class FileWriteDispatcher
 		{
 			private readonly Queue<ScheduleItem> tasks = new();
 			private readonly Thread thread;
@@ -213,9 +221,9 @@ namespace DidiFrame.Data.Json
 			/// <summary>
 			/// Contract: if BytesSource returns null file will be deleted else data will be writen into file
 			/// </summary>
-			public record FileTask(string Path, Func<byte[]?> BytesSource);
+			public sealed record FileTask(string Path, Func<byte[]?> BytesSource);
 
-			private record ScheduleItem(FileTask Task, TaskCompletionSource TaskCompletionSource);
+			private sealed record ScheduleItem(FileTask Task, TaskCompletionSource TaskCompletionSource);
 		}
 	}
 }

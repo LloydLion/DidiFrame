@@ -12,7 +12,6 @@ namespace DidiFrame.Data.Mongo
 	/// </summary>
 	public class MongoDBContext : IDataContext
 	{
-		private readonly IMongoDatabase db;
 		private readonly ILogger logger;
 		private readonly MongoCache cache;
 
@@ -32,7 +31,7 @@ namespace DidiFrame.Data.Mongo
 			if (option is null) throw new ArgumentNullException(nameof(options));
 
 			var dbClient = new MongoClient(option.ConnectionString);
-			db = dbClient.GetDatabase(option.DatabaseName);
+			var db = dbClient.GetDatabase(option.DatabaseName);
 			this.logger = logger;
 
 			//Context and notifier is global objects, we can don't ubsubcribe

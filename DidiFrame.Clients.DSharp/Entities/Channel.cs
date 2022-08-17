@@ -2,6 +2,7 @@
 using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp.Entities
@@ -9,6 +10,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IChannel
 	/// </summary>
+	[SuppressMessage("Major Code Smell", "S4035")]
 	public class Channel : IChannel
 	{
 		private readonly ObjectSourceDelegate<DiscordChannel> channel;
@@ -83,7 +85,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 		public bool Equals(IServerEntity? other) => Equals(other as Channel);
 
 		/// <inheritdoc/>
-		public bool Equals(IChannel? other) => other is Channel channel && channel.IsExist && IsExist && channel.Id == Id;
+		public bool Equals(IChannel? other) => other is Channel otherChannel && otherChannel.IsExist && IsExist && otherChannel.Id == Id;
 
 
 		/// <inheritdoc/>
@@ -100,11 +102,8 @@ namespace DidiFrame.Clients.DSharp.Entities
 		/// <inheritdoc/>
 		public Task DeleteAsync()
 		{
-			lock (this)
-			{
-				var obj = AccessBase();
-				return server.SourceClient.DoSafeOperationAsync(() => obj.DeleteAsync(), new(Client.ChannelName, Id, Name));
-			}
+			var obj = AccessBase();
+			return server.SourceClient.DoSafeOperationAsync(() => obj.DeleteAsync(), new(Client.ChannelName, Id, Name));
 		}
 
 		/// <summary>
