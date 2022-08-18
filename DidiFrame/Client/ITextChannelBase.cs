@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Interfaces
+﻿namespace DidiFrame.Client
 {
 	/// <summary>
 	/// Represents some text-like channel (thread, voice, text)

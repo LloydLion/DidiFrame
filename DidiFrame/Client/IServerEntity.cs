@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Interfaces
+﻿namespace DidiFrame.Client
 {
 	/// <summary>
 	/// Represents any server's entity

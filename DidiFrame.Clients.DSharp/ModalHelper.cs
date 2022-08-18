@@ -6,7 +6,7 @@ using DSharpPlus.EventArgs;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Client.DSharp
 {
 	internal sealed class ModalHelper : IDisposable
 	{

@@ -1,10 +1,10 @@
 ﻿using DidiFrame.Entities.Message;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using DSharpPlus.Entities;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DidiFrame.Clients.DSharp.Entities
+namespace DidiFrame.Client.DSharp.Entities
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.ITextChannelBase

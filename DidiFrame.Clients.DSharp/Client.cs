@@ -1,9 +1,9 @@
-﻿using DidiFrame.Clients.DSharp.Entities;
-using DidiFrame.Clients.DSharp.DiscordServer;
+﻿using DidiFrame.Client.DSharp.Entities;
+using DidiFrame.Client.DSharp.DiscordServer;
 using DidiFrame.Culture;
 using DidiFrame.Entities.Message;
 using DidiFrame.Exceptions;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Globalization;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Client.DSharp
 {
 	/// <summary>
 	/// Discord client based on DSharpPlus library

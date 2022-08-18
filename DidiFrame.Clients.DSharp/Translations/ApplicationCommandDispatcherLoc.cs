@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Localization;
 
-namespace DidiFrame.Clients.DSharp.Translations
+namespace DidiFrame.Client.DSharp.Translations
 {
 	internal class ApplicationCommandDispatcherLoc : SmartDidiFrameLocalizationProvider<ApplicationCommandDispatcher>
 	{

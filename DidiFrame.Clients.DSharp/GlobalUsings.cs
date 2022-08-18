@@ -1,2 +1,2 @@
-﻿global using DidiFrame.Clients.DSharp.DiscordServer;
-global using DidiFrame.Clients.DSharp.Entities;
+﻿global using DidiFrame.Client.DSharp.DiscordServer;
+global using DidiFrame.Client.DSharp.Entities;

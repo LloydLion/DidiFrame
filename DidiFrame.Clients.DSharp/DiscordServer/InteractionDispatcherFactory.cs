@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Entities.Message.Components;
 using DidiFrame.Exceptions;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using DSharpPlus.EventArgs;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Emzi0767.Utilities;
 using DidiFrame.Culture;
 
-namespace DidiFrame.Clients.DSharp.DiscordServer
+namespace DidiFrame.Client.DSharp.DiscordServer
 {
 	internal sealed class InteractionDispatcherFactory
 	{

@@ -1,7 +1,7 @@
-﻿using DidiFrame.Interfaces;
+﻿using DidiFrame.Client;
 using DSharpPlus.Entities;
 
-namespace DidiFrame.Clients.DSharp.DiscordServer
+namespace DidiFrame.Client.DSharp.DiscordServer
 {
 	internal delegate void DiscordChannelCreatedEventHandler(DiscordChannel discordChannel, bool isModified);
 

@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Entities;
 using DidiFrame.Exceptions;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 

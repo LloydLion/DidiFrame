@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Culture;
 using DidiFrame.Exceptions;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using DidiFrame.Utils;
 using DidiFrame.Utils.Collections;
 using DSharpPlus;
@@ -13,7 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DChannelType = DidiFrame.Entities.ChannelType;
 
-namespace DidiFrame.Clients.DSharp.DiscordServer
+namespace DidiFrame.Client.DSharp.DiscordServer
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IServer

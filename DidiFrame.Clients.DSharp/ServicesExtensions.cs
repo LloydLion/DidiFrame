@@ -1,4 +1,4 @@
-﻿using DidiFrame.Interfaces;
+﻿using DidiFrame.Client;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.ContextValidation;
 using DidiFrame.UserCommands.Executing;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Client.DSharp
 {
 	/// <summary>
 	/// Extensions for DidiFrame.DSharpAdapter namespace for service collection

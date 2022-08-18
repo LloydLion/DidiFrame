@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Entities.Message;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 
 namespace DidiFrame.Testing.Client
 {

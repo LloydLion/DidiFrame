@@ -1,6 +1,6 @@
 ﻿global using DidiFrame.Entities;
 global using DidiFrame.Exceptions;
-global using DidiFrame.Interfaces;
+global using DidiFrame.Client;
 global using DidiFrame.Data;
 global using FluentValidation;
 global using Microsoft.Extensions.Logging;
@@ -21,7 +21,7 @@ using DidiFrame.Data.Json;
 using DidiFrame.Culture;
 using DidiFrame.GlobalEvents;
 using DidiFrame.UserCommands.Loader.Reflection;
-using DidiFrame.Clients.DSharp;
+using DidiFrame.Client.DSharp;
 using DidiFrame.Application;
 using DidiFrame.Data.AutoKeys;
 using DidiFrame.UserCommands.Loader.EmbededCommands.Help;

@@ -1,11 +1,11 @@
 ﻿using DidiFrame.Entities;
 using DidiFrame.Entities.Message;
 using DidiFrame.Exceptions;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using DSharpPlus.Entities;
 using System.Runtime.CompilerServices;
 
-namespace DidiFrame.Clients.DSharp.Entities
+namespace DidiFrame.Client.DSharp.Entities
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IMember

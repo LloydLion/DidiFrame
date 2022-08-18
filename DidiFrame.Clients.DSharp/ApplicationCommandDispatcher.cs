@@ -1,7 +1,7 @@
-﻿using DidiFrame.Clients.DSharp.Entities;
+﻿using DidiFrame.Client.DSharp.Entities;
 using DidiFrame.Entities;
 using DidiFrame.Exceptions;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using DidiFrame.UserCommands.ContextValidation.Arguments;
 using DidiFrame.UserCommands.Modals;
 using DidiFrame.UserCommands.Modals.Components;
@@ -18,7 +18,7 @@ using FluentValidation;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Client.DSharp
 {
 	/// <summary>
 	/// User command pipeline dispatcher that using discord's application commands

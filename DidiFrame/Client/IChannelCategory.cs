@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Interfaces
+﻿namespace DidiFrame.Client
 {
 	/// <summary>
 	/// Represents a discord category - container for channels

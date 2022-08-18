@@ -1,6 +1,6 @@
 ﻿using DSharpPlus.Entities;
 
-namespace DidiFrame.Clients.DSharp.DiscordServer
+namespace DidiFrame.Client.DSharp.DiscordServer
 {
 	/// <summary>
 	/// Cache of message for dsharp server

@@ -1,4 +1,4 @@
-﻿using DidiFrame.Interfaces;
+﻿using DidiFrame.Client;
 using System;
 using System.Threading.Tasks;
 

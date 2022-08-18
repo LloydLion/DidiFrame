@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Culture;
 
-namespace DidiFrame.Interfaces
+namespace DidiFrame.Client
 {
 	/// <summary>
 	/// Global class of discord api, single way to interact with discord

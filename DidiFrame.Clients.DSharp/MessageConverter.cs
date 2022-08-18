@@ -5,7 +5,7 @@ using DidiFrame.Entities.Message.Embed;
 using DSharpPlus.Entities;
 using System.Text;
 
-namespace DidiFrame.Clients.DSharp
+namespace DidiFrame.Client.DSharp
 {
 	/// <summary>
 	/// Utilites to convert message from DSharp model to DidiFrame model

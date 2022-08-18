@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Exceptions;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Testing.Client

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DSharpClient = DidiFrame.Clients.DSharp.Client;
-using DSharpMessage = DidiFrame.Clients.DSharp.Entities.Message;
+using DSharpClient = DidiFrame.Client.DSharp.Client;
+using DSharpMessage = DidiFrame.Client.DSharp.Entities.Message;
 using DSharpPlus.Entities;
 
 namespace TestBot.Systems.Test.ClientExtensions

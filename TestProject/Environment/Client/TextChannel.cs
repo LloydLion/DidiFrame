@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Entities;
 using DidiFrame.Entities.Message;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

@@ -1,7 +1,7 @@
-﻿using DidiFrame.Interfaces;
+﻿using DidiFrame.Client;
 using DSharpPlus.Entities;
 
-namespace DidiFrame.Clients.DSharp.Entities
+namespace DidiFrame.Client.DSharp.Entities
 {
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IVoiceChannel

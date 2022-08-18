@@ -3,7 +3,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DidiFrame.Clients.DSharp.DiscordServer
+namespace DidiFrame.Client.DSharp.DiscordServer
 {
 	/// <summary>
 	/// Represents default implementation of messages cache for dsharp server

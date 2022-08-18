@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Entities;
-using DidiFrame.Interfaces;
+using DidiFrame.Client;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
