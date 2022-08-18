@@ -10,7 +10,7 @@ using DidiFrame.Culture;
 
 namespace DidiFrame.Clients.DSharp.DiscordServer
 {
-	internal class InteractionDispatcherFactory
+	internal sealed class InteractionDispatcherFactory
 	{
 		private static readonly EventId InteractionHandlerErrorID = new(10, "InteractionHandlerError");
 
@@ -18,6 +18,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		private readonly Dictionary<MessageIdentitify, List<EventHolder>> subs = new();
 		private readonly ILogger<Client> logger;
 		private readonly Server server;
+		private readonly object syncRoot = new();
 
 
 		public InteractionDispatcherFactory(Server server)
@@ -30,7 +31,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 		public void DisposeInstance(ulong msgId, DiscordChannel channel)
 		{
-			lock (this)
+			lock (syncRoot)
 			{
 				subs.Remove(new(msgId, channel.Id));
 			}
@@ -38,7 +39,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 		public void ResetInstance(ulong msgId, DiscordChannel channel)
 		{
-			lock (this)
+			lock (syncRoot)
 			{
 				var id = new MessageIdentitify(msgId, channel.Id);
 				if (subs.ContainsKey(id)) subs[id].Clear();
@@ -47,7 +48,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 		public void ClearSubscribers(DiscordChannel channel)
 		{
-			lock (this)
+			lock (syncRoot)
 			{
 				var toRemove = subs.Where(s => s.Key.ChannelId == channel.Id).ToArray();
 				foreach (var item in toRemove) subs.Remove(item.Key);
@@ -56,7 +57,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 		public IInteractionDispatcher CreateInstance(Message message)
 		{
-			lock (this)
+			lock (syncRoot)
 			{
 				var id = new MessageIdentitify(message.Id, message.BaseChannel.Id);
 
@@ -70,7 +71,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		{
 			EventHolder[] holders;
 
-			lock (this)
+			lock (syncRoot)
 			{
 				var id = new MessageIdentitify(args.Message.Id, args.Channel.Id);
 
@@ -108,7 +109,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		}
 
 
-		private class Instance : IInteractionDispatcher
+		private sealed class Instance : IInteractionDispatcher
 		{
 			private readonly object syncRoot;
 			private readonly Message message;
@@ -140,7 +141,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			}
 		}
 
-		private class EventHolder<TComponent> : EventHolder where TComponent : IInteractionComponent
+		private sealed class EventHolder<TComponent> : EventHolder where TComponent : IInteractionComponent
 		{
 			private readonly Message message;
 			private readonly string id;

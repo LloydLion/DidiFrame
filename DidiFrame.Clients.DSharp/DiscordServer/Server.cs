@@ -9,6 +9,7 @@ using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Logging;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DChannelType = DidiFrame.Entities.ChannelType;
 
@@ -17,7 +18,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IServer
 	/// </summary>
-	public class Server : IServer, IDisposable
+	public sealed class Server : IServer, IDisposable
 	{
 		private readonly DiscordGuild guild;
 		private readonly Client client;
@@ -166,6 +167,12 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		/// <inheritdoc/>
 		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
 
+		/// <inheritdoc/>
+		public override bool Equals(object? obj) => Equals(obj as Server);
+
+		/// <inheritdoc/>
+		public override int GetHashCode() => Id.GetHashCode();
+
 		private DiscordGuild AccessBase([CallerMemberName] string nameOfCaller = "") =>
 			IsClosed ? throw new ObjectDoesNotExistException(nameOfCaller) : guild;
 
@@ -175,11 +182,11 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			else return getter();
 		}
 
-		/// <inheritdoc/>
-		public override bool Equals(object? obj) => Equals(obj as Server);
-
-		/// <inheritdoc/>
-		public override int GetHashCode() => Id.GetHashCode();
+		private void ThrowIfClosed([CallerMemberName] string nameOfCaller = "")
+		{
+			if (IsClosed)
+				throw new ObjectDoesNotExistException(nameOfCaller);
+		}
 
 		/// <inheritdoc/>
 		public void Dispose()
@@ -205,11 +212,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 			cts.Cancel();
 
-			try
-			{
-				globalCacheUpdateTask.Wait();
-			}
-			catch (Exception) { }
+			globalCacheUpdateTask.Wait();
 
 			IsClosed = true;
 
@@ -243,7 +246,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				else events.GetRegistry<IChannel>().InvokeCreated(channels.GetChannel(channel.Id), isModified);
 
 				var type = channel.Type.GetAbstract();
-				var isTextType = type == DChannelType.TextCompatible || type == DChannelType.TextCompatible;
+				var isTextType = type == DChannelType.TextCompatible || type == DChannelType.Voice;
 				if (!isModified && !channel.IsCategory && isTextType) messages.InitChannelAsync(channel).Wait();
 			};
 
@@ -254,11 +257,12 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				else events.GetRegistry<IChannel>().InvokeDeleted(channel.Id);
 
 				var type = channel.Type.GetAbstract();
-				var isTextType = type == DChannelType.TextCompatible || type == DChannelType.TextCompatible;
+				var isTextType = type == DChannelType.TextCompatible || type == DChannelType.Voice;
 				if (!channel.IsCategory && isTextType)
 				{
 					messages.DeleteChannelCache(channel);
 					dispatcherFactory.ClearSubscribers(channel);
+					messagesEvents.OnChannelDeleted(channel);
 				}
 			};
 
@@ -294,17 +298,19 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			return server;
 		}
 
+		[SuppressMessage("Major Code Smell", "S1172")]
 		private Task OnThreadUpdatedForCacheActiveMode(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 
-			if (e.ThreadAfter.ThreadMetadata.IsArchived != e.ThreadBefore.ThreadMetadata.IsArchived)
-				channels.DeleteChannel(e.ThreadAfter.Id); //Archived case (Non resumed case, I don't know because discord works as)
+			if (e.ThreadAfter.ThreadMetadata.IsArchived)
+				channels.DeleteChannel(e.ThreadAfter.Id); //Archived case
 			else channels.UpdateChannel(e.ThreadAfter); //Other change case or resumed case
 
 			return Task.CompletedTask;
 		}
 
+		[SuppressMessage("Major Code Smell", "S1172")]
 		private Task OnThreadUpdatedForCacheAllMode(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
@@ -415,7 +421,6 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 			lock (messages.Lock(e.Channel))
 			{
-				var channel = (TextChannelBase)GetChannel(e.Message.ChannelId);
 				messages.DeleteMessage(e.Message.Id, e.Channel);
 				dispatcherFactory.DisposeInstance(e.Message.Id, e.Channel);
 				messagesEvents.InvokeDeletedEvent((ITextChannelBase)GetChannel(e.Channel.Id), e.Message.Id);
@@ -467,7 +472,6 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				var channel = (TextChannelBase)GetChannel(e.Channel.Id);
 				messages.AddMessage(e.Message);
 				var id = e.Message.Id;
-				var messageModel = new Message(id, () => messages.GetMessage(id, channel.BaseChannel), channel);
 				messagesEvents.InvokeSentEvent(new Message(e.Message.Id, () => messages.GetNullableMessage(id, dchannel), channel), false);
 			}
 
@@ -479,7 +483,15 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			while (!token.IsCancellationRequested)
 			{
 				await Task.Delay(new TimeSpan(0, 5, 0), token);
-				await UpdateServerCache();
+
+				try
+				{
+					await UpdateServerCache();
+				}
+				catch (Exception)
+				{
+					//Cache update can throw exception
+				}
 			}
 		}
 
@@ -487,12 +499,12 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		{
 			client.DoSafeOperation(() =>
 			{
-				var guild = AccessBase(nameof(CreateServerCacheUpdateTask));
+				var currentGuild = AccessBase(nameof(UpdateServerCache));
 
 				var membersFrame = serverCache.GetFrame<DiscordMember>();
 				lock (membersFrame)
 				{
-					var from = guild.GetAllMembersAsync().Result.ToDictionary(s => s.Id);
+					var from = currentGuild.GetAllMembersAsync().Result.ToDictionary(s => s.Id);
 					var difference = new CollectionDifference<DiscordMember, DiscordMember, ulong>(from.Values, membersFrame.GetObjects(), s => s.Id, s => s.Id);
 					foreach (var item in difference.CalculateDifference())
 						if (item.Type == CollectionDifference.OperationType.Add)
@@ -511,7 +523,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				var rolesFrame = serverCache.GetFrame<DiscordRole>();
 				lock (rolesFrame)
 				{
-					var from = guild.Roles;
+					var from = currentGuild.Roles;
 					var difference = new CollectionDifference<DiscordRole, DiscordRole, ulong>(from.Values.ToArray(), rolesFrame.GetObjects(), s => s.Id, s => s.Id);
 					foreach (var item in difference.CalculateDifference())
 						if (item.Type == CollectionDifference.OperationType.Add)
@@ -545,7 +557,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		});
 
 
-		private class MessagesEventsManager
+		private sealed class MessagesEventsManager
 		{
 			private static readonly EventId SentEventHandlerErrorID = new(11, "SentEventHandlerError");
 			private static readonly EventId DeletedEventHandlerErrorID = new(12, "DeletedEventHandlerError");
@@ -567,28 +579,28 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 
 			public void AddHandler(DiscordChannel channel, MessageDeletedEventHandler? handler)
-			{ lock (this) { messageDeletedHandlers.GetOrAdd(channel.Id, _ => new()).Add(handler ?? throw new NullReferenceException()); } }
+			{ lock (messageDeletedHandlers) { messageDeletedHandlers.GetOrAdd(channel.Id, _ => new()).Add(handler ?? throw new NullReferenceException()); } }
 
 			public void AddHandler(DiscordChannel channel, MessageSentEventHandler? handler)
-			{ lock (this) { messageSentHandlers.GetOrAdd(channel.Id, _ => new()).Add(handler ?? throw new NullReferenceException()); } }
+			{ lock (messageSentHandlers) { messageSentHandlers.GetOrAdd(channel.Id, _ => new()).Add(handler ?? throw new NullReferenceException()); } }
 
 			public void AddHandler(MessageDeletedEventHandler? handler)
-			{ lock (this) { messageDeletedGHandlers.Add(handler ?? throw new NullReferenceException()); } }
+			{ lock (messageDeletedGHandlers) { messageDeletedGHandlers.Add(handler ?? throw new NullReferenceException()); } }
 
 			public void AddHandler(MessageSentEventHandler? handler)
-			{ lock (this) { messageSentGHandlers.Add(handler ?? throw new NullReferenceException()); } }
+			{ lock (messageSentGHandlers) { messageSentGHandlers.Add(handler ?? throw new NullReferenceException()); } }
 
 			public void RemoveHandler(DiscordChannel channel, MessageDeletedEventHandler? handler)
-			{ lock (this) { messageDeletedHandlers.GetOrAdd(channel.Id, _ => new()).Remove(handler ?? throw new NullReferenceException()); } }
+			{ lock (messageDeletedHandlers) { messageDeletedHandlers.GetOrAdd(channel.Id, _ => new()).Remove(handler ?? throw new NullReferenceException()); } }
 
 			public void RemoveHandler(DiscordChannel channel, MessageSentEventHandler? handler)
-			{ lock (this) { messageSentHandlers.GetOrAdd(channel.Id, _ => new()).Remove(handler ?? throw new NullReferenceException()); } }
+			{ lock (messageSentHandlers) { messageSentHandlers.GetOrAdd(channel.Id, _ => new()).Remove(handler ?? throw new NullReferenceException()); } }
 
 			public void RemoveHandler(MessageDeletedEventHandler? handler)
-			{ lock (this) { messageDeletedGHandlers.Remove(handler ?? throw new NullReferenceException()); } }
+			{ lock (messageDeletedGHandlers) { messageDeletedGHandlers.Remove(handler ?? throw new NullReferenceException()); } }
 
 			public void RemoveHandler(MessageSentEventHandler? handler)
-			{ lock (this) { messageSentGHandlers.Remove(handler ?? throw new NullReferenceException()); } }
+			{ lock (messageSentGHandlers) { messageSentGHandlers.Remove(handler ?? throw new NullReferenceException()); } }
 
 
 			public void InvokeSentEvent(IMessage message, bool isModified)
@@ -628,10 +640,13 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 			public void OnChannelDeleted(DiscordChannel channel)
 			{
-				lock (this)
+				lock (messageDeletedHandlers)
 				{
-					messageDeletedHandlers.TryRemove(channel.Id, out _);
-					messageSentHandlers.TryRemove(channel.Id, out _);
+					lock (messageSentHandlers)
+					{
+						messageDeletedHandlers.TryRemove(channel.Id, out _);
+						messageSentHandlers.TryRemove(channel.Id, out _);
+					}
 				}
 			}
 		}

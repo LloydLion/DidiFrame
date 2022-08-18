@@ -26,6 +26,31 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 		/// <summary>
+		/// Converts DSharp button style to DidiFrame button style
+		/// </summary>
+		/// <param name="style">DSharp button style</param>
+		/// <returns>DidiFrame button style</returns>
+		public static AbsButtonStyle GetAbstract(this DButtonStyle style)
+		{
+			return (AbsButtonStyle)(int)style;
+		}
+
+		/// <summary>
+		/// Converts DSharp channel type to DidiFrame channel type
+		/// </summary>
+		/// <param name="dChannelType">DSharp channel type</param>
+		/// <returns>DidiFrame channel type</returns>
+		public static AbsChannelType? GetAbstract(this DChannelType dChannelType)
+		{
+			return dChannelType switch
+			{
+				DChannelType.Text or DChannelType.Group or DChannelType.News or DChannelType.Private => AbsChannelType.TextCompatible,
+				DChannelType.Voice => AbsChannelType.Voice,
+				_ => null
+			};
+		}
+
+		/// <summary>
 		/// Converts DidiFrame permissions enum to DSharo permissions enum
 		/// </summary>
 		/// <param name="absPermissions">DiDiFrame permissions enum</param>
@@ -52,21 +77,6 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 		/// <summary>
-		/// Converts DSharp channel type to DidiFrame channel type
-		/// </summary>
-		/// <param name="dChannelType">DSharp channel type</param>
-		/// <returns>DidiFrame channel type</returns>
-		public static AbsChannelType? GetAbstract(this DChannelType dChannelType)
-		{
-			return dChannelType switch
-			{
-				DChannelType.Text or DChannelType.Group or DChannelType.News or	DChannelType.Private => AbsChannelType.TextCompatible,
-				DChannelType.Voice => AbsChannelType.Voice,
-				_ => null
-			};
-		}
-
-		/// <summary>
 		/// Converts DidiFrame color to DSharp color
 		/// </summary>
 		/// <param name="color">DidiFrame color</param>
@@ -84,16 +94,6 @@ namespace DidiFrame.Clients.DSharp
 		public static DButtonStyle GetDSharp(this AbsButtonStyle style)
 		{
 			return (DButtonStyle)(int)style;
-		}
-
-		/// <summary>
-		/// Converts DSharp button style to DidiFrame button style
-		/// </summary>
-		/// <param name="style">DSharp button style</param>
-		/// <returns>DidiFrame button style</returns>
-		public static AbsButtonStyle GetAbstract(this DButtonStyle style)
-		{
-			return (AbsButtonStyle)(int)style;
 		}
 	}
 }

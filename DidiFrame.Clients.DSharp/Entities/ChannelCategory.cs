@@ -9,7 +9,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IChannelCategory
 	/// </summary>
-	public class ChannelCategory : IChannelCategory
+	public sealed class ChannelCategory : IChannelCategory
 	{
 		private readonly ObjectSourceDelegate<DiscordChannel>? category;
 		private readonly Server server;
@@ -61,7 +61,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 		public bool Equals(IServerEntity? other) => Equals(other as ChannelCategory);
 
 		/// <inheritdoc/>
-		public bool Equals(IChannelCategory? other) => other is ChannelCategory category && category.Id == Id;
+		public bool Equals(IChannelCategory? other) => other is ChannelCategory otherCategory && otherCategory.Id == Id;
 
 		/// <inheritdoc/>
 		public async Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel)

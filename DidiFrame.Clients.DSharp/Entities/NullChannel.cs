@@ -4,7 +4,7 @@ using DidiFrame.Interfaces;
 
 namespace DidiFrame.Clients.DSharp.Entities
 {
-	internal class NullChannel : IChannel, ITextChannel, ITextThread, IVoiceChannel, ITextChannelBase
+	internal class NullChannel : ITextChannel, ITextThread, IVoiceChannel
 	{
 		public NullChannel(ulong id)
 		{
@@ -28,10 +28,10 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 
 		public event MessageSentEventHandler? MessageSent
-		{ add { throw new ObjectDoesNotExistException(nameof(MessageSent)); } remove { throw new ObjectDoesNotExistException(nameof(MessageSent)); } }
+		{ add => throw new ObjectDoesNotExistException(nameof(MessageSent)); remove => throw new ObjectDoesNotExistException(nameof(MessageSent)); }
 
 		public event MessageDeletedEventHandler? MessageDeleted
-		{ add { throw new ObjectDoesNotExistException(nameof(MessageDeleted)); } remove { throw new ObjectDoesNotExistException(nameof(MessageDeleted)); } }
+		{ add => throw new ObjectDoesNotExistException(nameof(MessageDeleted)); remove => throw new ObjectDoesNotExistException(nameof(MessageDeleted)); }
 
 
 		public Task DeleteAsync()

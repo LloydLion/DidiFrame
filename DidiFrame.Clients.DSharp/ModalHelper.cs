@@ -146,7 +146,7 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
-		private record RunningModal(DateTime CreationDate, ModalModel Model, IModalForm Modal, Guid Id)
+		private sealed record RunningModal(DateTime CreationDate, ModalModel Model, IModalForm Modal, Guid Id)
 		{
 			private ModalRetryData? retryData;
 
@@ -158,6 +158,6 @@ namespace DidiFrame.Clients.DSharp
 			public void ResetRetryData() => retryData = null;
 		}
 
-		private record ModalRetryData(DiscordMessage Message, IReadOnlyDictionary<IModalComponent, object> OldValues);
+		private sealed record ModalRetryData(DiscordMessage Message, IReadOnlyDictionary<IModalComponent, object> OldValues);
 	}
 }

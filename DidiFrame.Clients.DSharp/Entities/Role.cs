@@ -9,7 +9,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IRole
 	/// </summary>
-	public class Role : IRole
+	public sealed class Role : IRole
 	{
 		private readonly ObjectSourceDelegate<DiscordRole> role;
 		private readonly Server server;
@@ -57,7 +57,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 		public bool Equals(IServerEntity? other) => Equals(other as Role);
 
 		/// <inheritdoc/>
-		public bool Equals(IRole? other) => other is Role role && role.IsExist && IsExist && role.Id == Id && role.Server == Server;
+		public bool Equals(IRole? other) => other is Role otherRole && otherRole.IsExist && IsExist && otherRole.Id == Id && otherRole.Server == Server;
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Role);

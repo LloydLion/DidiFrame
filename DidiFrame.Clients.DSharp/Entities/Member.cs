@@ -10,7 +10,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IMember
 	/// </summary>
-	public class Member : User, IMember
+	public sealed class Member : User, IMember
 	{
 		private readonly ObjectSourceDelegate<DiscordMember> member;
 		private readonly Server baseServer;
@@ -53,7 +53,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 		public bool Equals(IServerEntity? other) => Equals(other as Member);
 
 		/// <inheritdoc/>
-		public bool Equals(IMember? other) => other is Member member && member.IsExist && IsExist && base.Equals(member) && member.Server == Server;
+		public bool Equals(IMember? other) => other is Member otherMember && otherMember.IsExist && IsExist && base.Equals(otherMember) && otherMember.Server == Server;
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Member);
@@ -86,14 +86,11 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		internal Task SendDirectMessageAsyncInternal(MessageSendModel model)
 		{
-			lock (this)
+			return BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
-				return BaseServer.SourceClient.DoSafeOperationAsync(async () =>
-				{
-					var channel = await AccessBase().CreateDmChannelAsync();
-					await channel.SendMessageAsync(MessageConverter.ConvertUp(model));
-				}, new(DSharp.Client.UserName, Id, base.UserName));
-			}
+				var channel = await AccessBase().CreateDmChannelAsync();
+				await channel.SendMessageAsync(MessageConverter.ConvertUp(model));
+			}, new(DSharp.Client.UserName, Id, base.UserName));
 		}
 
 		private DiscordMember AccessBase([CallerMemberName] string nameOfCaller = "")

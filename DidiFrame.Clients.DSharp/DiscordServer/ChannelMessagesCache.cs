@@ -30,9 +30,9 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			if (preloadingPolicy == MessagesPreloadingPolicy.FixedCount)
 			{
 				if (options.MessagesPreloadCount <= 0)
-					throw new ArgumentOutOfRangeException(nameof(messagesToPreload), "Preload messages count must be setted and positive if FixedCount messages preloading policy used");
+					throw new ArgumentOutOfRangeException(nameof(options), "Preload messages count must be setted and positive if FixedCount messages preloading policy used");
 				if (options.MessagesPreloadCount > options.CacheSize)
-					throw new ArgumentOutOfRangeException(nameof(messagesToPreload), "Cannot preload more messages then cache size");
+					throw new ArgumentOutOfRangeException(nameof(options), "Cannot preload more messages then cache size");
 			}
 
 			this.client = client;
@@ -86,7 +86,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				{
 					case CachePolicy.Disable:
 						{
-
+							//Do nothing
 						}
 						break;
 					case CachePolicy.CacheAll or CachePolicy.CacheChannelByRequest or CachePolicy.CacheAllWithoutREST or CachePolicy.CacheChannelByRequestWithoutREST:
@@ -217,7 +217,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 					lock (Lock(textChannel))
 					{
 						//Lock will automaticly add cache
-						//if (messages.ContainsKey(textChannel) == false) messages.Add(textChannel, new());
+						if (messages.ContainsKey(textChannel) == false) messages.Add(textChannel, new());
 					}
 					return Task.CompletedTask;
 				default:
@@ -440,7 +440,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			}
 		}
 
-		private class MessagesCache : IReadOnlyDictionary<ulong, DiscordMessage>, IList<DiscordMessage>
+		private sealed class MessagesCache : IReadOnlyDictionary<ulong, DiscordMessage>, IList<DiscordMessage>
 		{
 			private readonly List<DiscordMessage> orderedMessages = new();
 			private readonly Dictionary<ulong, DiscordMessage> keyPairs = new();

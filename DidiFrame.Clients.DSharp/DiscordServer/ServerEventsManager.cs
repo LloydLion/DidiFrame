@@ -7,6 +7,11 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 {
 	internal class ServerEventsManager
 	{
+		private static readonly EventId EventHandlerErrorID = new(55, "EventHandlerError");
+		private static readonly EventId ServerObjectCreatedID = new(23, "ServerObjectCreated");
+		private static readonly EventId ServerObjectDeletedID = new(24, "ServerObjectCreated");
+
+
 		private readonly ConcurrentDictionary<Type, Registry> registries = new();
 		private readonly ILogger logger;
 		private readonly Server server;
@@ -23,17 +28,13 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			(Registry<TEntity>)registries.GetOrAdd(typeof(TEntity), _ => new Registry<TEntity>(logger, server));
 
 
-		public class Registry<TEntity> : Registry where TEntity : IServerEntity
+		public sealed class Registry<TEntity> : Registry where TEntity : IServerEntity
 		{
-			private static readonly EventId EventHandlerErrorID = new(55, "EventHandlerError");
-			private static readonly EventId ServerObjectCreatedID = new(23, "ServerObjectCreated");
-			private static readonly EventId ServerObjectDeletedID = new(24, "ServerObjectCreated");
-
-
 			private readonly HashSet<ServerObjectCreatedEventHandler<TEntity>> createdHandlers = new();
 			private readonly HashSet<ServerObjectDeletedEventHandler> deletedHandlers = new();
 			private readonly ILogger logger;
 			private readonly Server server;
+			private readonly object syncRoot = new();
 
 
 			public Registry(ILogger logger, Server server)
@@ -48,7 +49,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				if (handler is null)
 					throw new ArgumentNullException(nameof(handler));
 
-				lock (this)
+				lock (syncRoot)
 				{
 					deletedHandlers.Add(handler);
 				}
@@ -59,7 +60,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				if (handler is null)
 					throw new ArgumentNullException(nameof(handler));
 
-				lock (this)
+				lock (syncRoot)
 				{
 					createdHandlers.Add(handler);
 				}
@@ -70,7 +71,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				if (handler is null)
 					throw new ArgumentNullException(nameof(handler));
 
-				lock (this)
+				lock (syncRoot)
 				{
 					deletedHandlers.Remove(handler);
 				}
@@ -81,7 +82,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				if (handler is null)
 					throw new ArgumentNullException(nameof(handler));
 
-				lock (this)
+				lock (syncRoot)
 				{
 					createdHandlers.Remove(handler);
 				}
@@ -89,7 +90,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 			public void InvokeCreated(TEntity entity, bool isModified)
 			{
-				lock (this)
+				lock (syncRoot)
 				{
 					server.SourceClient.CultureProvider?.SetupCulture(server);
 
@@ -113,7 +114,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 			public void InvokeDeleted(ulong id)
 			{
-				lock (this)
+				lock (syncRoot)
 				{
 					server.SourceClient.CultureProvider?.SetupCulture(server);
 

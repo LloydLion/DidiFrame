@@ -52,7 +52,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 
 		/// <inheritdoc/>
-		public bool Equals(IUser? other) => other is User user && user.Id == Id;
+		public bool Equals(IUser? other) => other is User otherUser && otherUser.Id == Id;
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as User);

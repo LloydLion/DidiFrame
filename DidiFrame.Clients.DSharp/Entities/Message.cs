@@ -3,7 +3,6 @@ using DidiFrame.Exceptions;
 using DidiFrame.Interfaces;
 using DSharpPlus.Entities;
 using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp.Entities
@@ -11,7 +10,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IMessage
 	/// </summary>
-	public class Message : IMessage
+	public sealed class Message : IMessage
 	{
 		private readonly ObjectSourceDelegate<DiscordMessage> message;
 		private readonly TextChannelBase owner;
@@ -80,8 +79,8 @@ namespace DidiFrame.Clients.DSharp.Entities
 			return owner.BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
 				if (resetDispatcher) ResetInteractionDispatcher();
-				var message = await AccessBase().ModifyAsync(MessageConverter.ConvertUp(sendModel));
-				((Server)TextChannel.Server).CacheMessage(message);
+				var currentMessage = await AccessBase().ModifyAsync(MessageConverter.ConvertUp(sendModel));
+				((Server)TextChannel.Server).CacheMessage(currentMessage);
 			}, new(Client.MessageName, Id));
 		}
 

@@ -56,14 +56,16 @@ namespace DidiFrame.Clients.DSharp.Entities
 		/// <inheritdoc/>
 		public IMessage GetMessage(ulong id)
 		{
-			var obj = AccessBase();
+			AccessBase();
 
 			return new Message(id, () => server.GetMessagesCache().GetNullableMessage(id, AccessBase()), this);
 		}
 
 		/// <inheritdoc/>
-		public IReadOnlyList<IMessage> GetMessages(int count = 25)
+		public IReadOnlyList<IMessage> GetMessages(int count = -1)
 		{
+			if (count == -1) count = 25;
+
 			var obj = AccessBase();
 
 			return castCollection(server.GetMessagesCache().GetMessages(obj, count));
