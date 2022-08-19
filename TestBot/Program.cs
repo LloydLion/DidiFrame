@@ -30,6 +30,7 @@ using DidiFrame.Localization;
 using DidiFrame.Data.Mongo;
 using DidiFrame.UserCommands.Pipeline.ClassicPipeline;
 using DidiFrame.UserCommands.Repository;
+using DidiFrame.Clients.DSharp.ApplicationCommands;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 

@@ -73,9 +73,9 @@ namespace TestBot.Systems.Streaming
 						if (ctx.Invoker.Equals((IUser)parameter.Owner))
 						{
 							waitForStartButton.Callback();
-							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["StartOk"])));
+							return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["StartOk"])));
 						}
-						else return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["StartFail"])));
+						else return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["StartFail"])));
 					});
 					break;
 				case StreamState.Running:
@@ -85,9 +85,9 @@ namespace TestBot.Systems.Streaming
 						if (ctx.Invoker.Equals((IUser)parameter.Owner))
 						{
 							waitForFinishButton.Callback();
-							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["FinishOk"])));
+							return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishOk"])));
 						}
-						else return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["FinishFail"])));
+						else return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishFail"])));
 					});
 					break;
 				default:

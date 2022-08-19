@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using DSharpClient = DidiFrame.Client.DSharp.Client;
+using DSharpClient = DidiFrame.Client.DSharp.DSharpClient;
 using DSharpMessage = DidiFrame.Client.DSharp.Entities.Message;
 using DSharpPlus.Entities;
 

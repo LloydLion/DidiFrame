@@ -66,7 +66,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		public bool Equals(IMessage? other) => other is Message msg && msg.Id == Id && msg.TextChannel == TextChannel;
 
 		/// <inheritdoc/>
-		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().DeleteAsync(), new(Client.MessageName, Id));
+		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().DeleteAsync(), new(DSharpClient.MessageName, Id));
 
 		/// <inheritdoc/>
 		public IInteractionDispatcher GetInteractionDispatcher() => ((Server)owner.Server).GetInteractionDispatcherFor(this);
@@ -81,7 +81,7 @@ namespace DidiFrame.Client.DSharp.Entities
 				if (resetDispatcher) ResetInteractionDispatcher();
 				var currentMessage = await AccessBase().ModifyAsync(MessageConverter.ConvertUp(sendModel));
 				((Server)TextChannel.Server).CacheMessage(currentMessage);
-			}, new(Client.MessageName, Id));
+			}, new(DSharpClient.MessageName, Id));
 		}
 
 		/// <inheritdoc/>

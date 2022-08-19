@@ -72,7 +72,7 @@ namespace TestBot.Systems.Votes
 				holder.Object.Options[select]++;
 				await Message.UpdateAsync(holder.Object);
 
-				return new(new("Ok! You vote " + select));
+				return ComponentInteractionResult.CreateWithMessage(new("Ok! You vote " + select));
 			});
 
 			id.Attach<MessageButton>("closeBnt", async (ctx) =>
@@ -81,7 +81,7 @@ namespace TestBot.Systems.Votes
 				{
 					using var holder = Context.AccessBase().Open();
 					if (ctx.Invoker.Equals((IUser)holder.Object.Creator) == false)
-						return new(new("You aren't invoker"));
+						return ComponentInteractionResult.CreateWithMessage(new("You aren't invoker"));
 					await Message.FinalizeAsync(holder.Object);
 				}
 				catch (Exception ex)
@@ -90,7 +90,7 @@ namespace TestBot.Systems.Votes
 				}
 
 				Context.FinalizeLifetime();
-				return new(new("Vote finished"));
+				return ComponentInteractionResult.CreateWithMessage(new("Vote finished"));
 			});
 		}
 	}

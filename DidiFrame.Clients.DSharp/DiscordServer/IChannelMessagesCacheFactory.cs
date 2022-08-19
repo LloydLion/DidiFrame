@@ -13,6 +13,6 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		/// <param name="server">Base server where need to create instance</param>
 		/// <param name="client">Global dsharp client</param>
 		/// <returns>Ready to use cache</returns>
-		public IChannelMessagesCache Create(DiscordGuild server, Client client);
+		public IChannelMessagesCache Create(DiscordGuild server, DSharpClient client);
 	}
 }

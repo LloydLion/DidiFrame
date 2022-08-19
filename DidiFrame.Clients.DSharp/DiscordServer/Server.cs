@@ -21,7 +21,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 	public sealed class Server : IServer, IDisposable
 	{
 		private readonly DiscordGuild guild;
-		private readonly Client client;
+		private readonly DSharpClient client;
 		private readonly Options options;
 		private readonly Task globalCacheUpdateTask;
 		private readonly CancellationTokenSource cts = new();
@@ -84,7 +84,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		/// <summary>
 		/// Owner client object
 		/// </summary>
-		public Client SourceClient => client;
+		public DSharpClient SourceClient => client;
 
 		/// <inheritdoc/>
 		public ulong Id => guild.Id;
@@ -93,6 +93,8 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		/// Base DiscordGuild from DSharp
 		/// </summary>
 		public DiscordGuild Guild => AccessBase();
+
+		public InteractionDispatcherFactory InteractionDispatcherFactory => dispatcherFactory;
 
 		/// <inheritdoc/>
 		public bool IsClosed { get; private set; }
@@ -227,7 +229,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		/// <param name="client">Owner client object</param>
 		/// <param name="options">Options for server</param>
 		/// <param name="messagesCache">channel message cache instance</param>
-		private Server(DiscordGuild guild, Client client, Options options, IChannelMessagesCache messagesCache)
+		private Server(DiscordGuild guild, DSharpClient client, Options options, IChannelMessagesCache messagesCache)
 		{
 			this.guild = guild;
 			this.client = client;
@@ -289,7 +291,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		}
 
 
-		internal static async Task<Server> CreateServerAsync(DiscordGuild guild, Client client, Options options, IChannelMessagesCache messagesCache)
+		internal static async Task<Server> CreateServerAsync(DiscordGuild guild, DSharpClient client, Options options, IChannelMessagesCache messagesCache)
 		{
 			var server = new Server(guild, client, options, messagesCache);
 
@@ -431,12 +433,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		private Task OnChannelCreated(DiscordClient sender, ChannelCreateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
-
-			serverCache.AddObject(e.Channel.Id, e.Channel);
-			if (e.Channel.IsCategory)
-				events.GetRegistry<IChannelCategory>().InvokeCreated(GetCategory(e.Channel.Id), false);
-			else events.GetRegistry<IChannel>().InvokeCreated(GetChannel(e.Channel.Id), false);
-
+			channels.UpdateChannel(e.Channel);
 			return Task.CompletedTask;
 		}
 

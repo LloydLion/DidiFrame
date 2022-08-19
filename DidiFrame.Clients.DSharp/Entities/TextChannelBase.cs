@@ -102,7 +102,7 @@ namespace DidiFrame.Client.DSharp.Entities
 				var msg = await obj.SendMessageAsync(builder);
 				server.CacheMessage(msg);
 				return msg.Id;
-			}, new(Client.ChannelName, Id, Name));
+			}, new(DSharpClient.ChannelName, Id, Name));
 
 			return new Message(id, () => server.GetMessagesCache().GetNullableMessage(id, AccessBase()), this);
 		}

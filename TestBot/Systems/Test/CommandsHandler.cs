@@ -90,6 +90,36 @@ namespace TestBot.Systems.Test
 			return UserCommandResult.CreateWithModal(UserCommandCode.Sucssesful, new Modal());
 		}
 
+		[Command("button")]
+		[SuppressMessage("Performance", "CA1822")]
+		public UserCommandResult RespondWithModal(UserCommandContext _)
+		{
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Button message")
+			{
+				ComponentsRows = new[]
+				{
+					new MessageComponentsRow(new[] { new MessageButton("btn", "Label", ButtonStyle.Danger) })
+				}
+			},
+
+			subscriber: dispatcher =>
+			{
+				dispatcher.Attach<MessageButton>("btn", cctx => Task.FromResult(ComponentInteractionResult.CreateWithMessage(new("Button message x2")
+				{
+					ComponentsRows = new[]
+					{
+						new MessageComponentsRow(new[] { new MessageButton("btn2", "Label", ButtonStyle.Danger) })
+					}
+				},
+
+				subscriber: dispatcher =>
+				{
+					dispatcher.Attach<MessageButton>("btn2", cctx => Task.FromResult(ComponentInteractionResult.CreateWithMessage(new("Super!"))));
+				}
+				)));
+			});
+		}
+
 
 		private class Modal : IModalForm
 		{

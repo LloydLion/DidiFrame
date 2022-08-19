@@ -32,10 +32,10 @@ namespace TestBot.Systems.Discussion
 		{
 			var id = initialBase.AskMessage.GetInteractionDispatcher();
 
-			var closeSuccess = new ComponentInteractionResult(new MessageSendModel(localizer["CloseSuccess"]));
-			var confirmSuccess = new ComponentInteractionResult(new MessageSendModel(localizer["ConfirmSuccess"]));
-			var closeFail = new ComponentInteractionResult(new MessageSendModel(localizer["CloseFail"]));
-			var confirmFail = new ComponentInteractionResult(new MessageSendModel(localizer["ConfirmFail"]));
+			var closeSuccess = ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["CloseSuccess"]));
+			var confirmSuccess = ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["ConfirmSuccess"]));
+			var closeFail = ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["CloseFail"]));
+			var confirmFail = ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["ConfirmFail"]));
 
 			id.Attach<MessageButton>(ConfirmButtonId, (ctx) => { waitForConfirm.Callback(); return Task.FromResult(confirmSuccess); });
 			id.Attach<MessageButton>(CloseButtonId, (ctx) => { waitForClose.Callback(); return Task.FromResult(closeSuccess); });

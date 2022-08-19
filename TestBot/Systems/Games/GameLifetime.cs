@@ -134,12 +134,12 @@ namespace TestBot.Systems.Games
 				if (b.InGame.Contains(ctx.Invoker))
 				{
 					holder.Dispose();
-					return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyInGame"]));
+					return ComponentInteractionResult.CreateWithMessage(new(localizer["AlreadyInGame"]));
 				}
 				else if (b.Creator.Equals((IUser)ctx.Invoker))
 				{
 					holder.Dispose();
-					return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorAlreadyInGame"]));
+					return ComponentInteractionResult.CreateWithMessage(new(localizer["CreatorAlreadyInGame"]));
 				}
 				else
 				{
@@ -148,7 +148,7 @@ namespace TestBot.Systems.Games
 					holder.Dispose();
 					using var writableHolder = GetBase();
 					writableHolder.Object.InGame.Add(ctx.Invoker);
-					return new ComponentInteractionResult(new MessageSendModel(localizer["JoinOk"]));
+					return ComponentInteractionResult.CreateWithMessage(new(localizer["JoinOk"]));
 				}
 			}
 
@@ -159,12 +159,12 @@ namespace TestBot.Systems.Games
 				if (holder.Object.Creator == ctx.Invoker)
 				{
 					holder.Dispose();
-					return new ComponentInteractionResult(new MessageSendModel(localizer["CreatorMustBeInGame"]));
+					return ComponentInteractionResult.CreateWithMessage(new(localizer["CreatorMustBeInGame"]));
 				}
 				else if (!holder.Object.InGame.Contains(ctx.Invoker))
 				{
 					holder.Dispose();
-					return new ComponentInteractionResult(new MessageSendModel(localizer["AlreadyOutGame"]));
+					return ComponentInteractionResult.CreateWithMessage(new(localizer["AlreadyOutGame"]));
 				}
 				else
 				{
@@ -172,7 +172,7 @@ namespace TestBot.Systems.Games
 					holder.Dispose();
 					using var writableHolder = GetBase();
 					writableHolder.Object.InGame.Remove(ctx.Invoker);
-					return new ComponentInteractionResult(new MessageSendModel(localizer["ExitOk"]));
+					return ComponentInteractionResult.CreateWithMessage(new(localizer["ExitOk"]));
 				}
 			}
 
@@ -184,9 +184,9 @@ namespace TestBot.Systems.Games
 				if (ctx.Invoker.Equals((IUser)b.Creator))
 				{
 					waitForStartButton.Callback();
-					return new ComponentInteractionResult(new MessageSendModel(localizer["StartOk"]));
+					return ComponentInteractionResult.CreateWithMessage(new(localizer["StartOk"]));
 				}
-				else return new ComponentInteractionResult(new MessageSendModel(localizer["StartFail"]));
+				else return ComponentInteractionResult.CreateWithMessage(new(localizer["StartFail"]));
 			}
 
 			ComponentInteractionResult finishHandler(ComponentInteractionContext<MessageButton> ctx)
@@ -197,9 +197,9 @@ namespace TestBot.Systems.Games
 				if (ctx.Invoker.Equals((IUser)b.Creator))
 				{
 					waitForFinishButton.Callback();
-					return new ComponentInteractionResult(new MessageSendModel(localizer["FinishOk"]));
+					return ComponentInteractionResult.CreateWithMessage(new(localizer["FinishOk"]));
 				}
-				else return new ComponentInteractionResult(new MessageSendModel(localizer["FinishFail"]));
+				else return ComponentInteractionResult.CreateWithMessage(new(localizer["FinishFail"]));
 			}
 
 			AsyncInteractionCallback<MessageButton> adaptate(Func<ComponentInteractionContext<MessageButton>, ComponentInteractionResult> func) => (ctx) => Task.FromResult(func(ctx));

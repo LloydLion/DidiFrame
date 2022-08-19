@@ -90,7 +90,7 @@ namespace DidiFrame.Client.DSharp.Entities
 			{
 				var channel = await AccessBase().CreateDmChannelAsync();
 				await channel.SendMessageAsync(MessageConverter.ConvertUp(model));
-			}, new(DSharp.Client.UserName, Id, base.UserName));
+			}, new(DSharp.DSharpClient.UserName, Id, base.UserName));
 		}
 
 		private DiscordMember AccessBase([CallerMemberName] string nameOfCaller = "")

@@ -1,4 +1,5 @@
 ﻿using DidiFrame.Client;
+using DidiFrame.Clients.DSharp.ApplicationCommands;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.ContextValidation;
 using DidiFrame.UserCommands.Executing;
@@ -27,9 +28,9 @@ namespace DidiFrame.Client.DSharp
 		/// <returns>Given collection to be chained</returns>
 		public static IServiceCollection AddDSharpClient(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.Configure<Client.Options>(configuration);
+			services.Configure<DSharpClient.Options>(configuration);
 			services.Configure<LoggerFilterOptions>(options => options.AddFilter("DSharpPlus.", LogLevel.Information));
-			services.AddSingleton<IClient, Client>();
+			services.AddSingleton<IClient, DSharpClient>();
 			services.AddSingleton<IServersNotify>(sp => sp.GetRequiredService<IClient>());
 			return services;
 		}

@@ -1,39 +1,56 @@
 ﻿using DidiFrame.Entities.Message.Components;
 using DidiFrame.Exceptions;
-using DidiFrame.Client;
 using DSharpPlus.EventArgs;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
-using Emzi0767.Utilities;
 using DidiFrame.Culture;
 
 namespace DidiFrame.Client.DSharp.DiscordServer
 {
-	internal sealed class InteractionDispatcherFactory
+	public sealed class InteractionDispatcherFactory : IDisposable
 	{
+		private const int TemporalModeDeleteTimeoutInMinutes = 20;
 		private static readonly EventId InteractionHandlerErrorID = new(10, "InteractionHandlerError");
 
 
-		private readonly Dictionary<MessageIdentitify, List<EventHolder>> subs = new();
-		private readonly ILogger<Client> logger;
+		private readonly Dictionary<MessageIdentitify, MessageSubscribers> subscribers = new();
+		private readonly ILogger<DSharpClient> logger;
 		private readonly Server server;
 		private readonly object syncRoot = new();
+		private readonly ModalHelper modalHelper;
 
-
+		
 		public InteractionDispatcherFactory(Server server)
 		{
 			server.SourceClient.BaseClient.ComponentInteractionCreated += InteractionCreated;
 			logger = server.SourceClient.Logger;
 			this.server = server;
+			modalHelper = new ModalHelper(server.SourceClient, server.SourceClient.Localizer, server.SourceClient.ModalValidator);
 		}
 
+
+		private void ClearTemporalSubsribers()
+		{
+			lock (syncRoot)
+			{
+				var markedToDelete = new List<MessageIdentitify>();
+
+				foreach (var item in subscribers)
+					if (item.Value.IsTemporal && DateTime.UtcNow - item.Value.CreationTimespamp >= TimeSpan.FromMinutes(TemporalModeDeleteTimeoutInMinutes))
+						markedToDelete.Add(item.Key);
+
+				foreach (var toDelete in markedToDelete)
+					subscribers.Remove(toDelete);
+			}
+		}
 
 		public void DisposeInstance(ulong msgId, DiscordChannel channel)
 		{
 			lock (syncRoot)
 			{
-				subs.Remove(new(msgId, channel.Id));
+				ClearTemporalSubsribers();
+				subscribers.Remove(new(msgId, channel.Id));
 			}
 		}
 
@@ -41,8 +58,9 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		{
 			lock (syncRoot)
 			{
+				ClearTemporalSubsribers();
 				var id = new MessageIdentitify(msgId, channel.Id);
-				if (subs.ContainsKey(id)) subs[id].Clear();
+				if (subscribers.ContainsKey(id)) subscribers.Remove(id);
 			}
 		}
 
@@ -50,8 +68,9 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		{
 			lock (syncRoot)
 			{
-				var toRemove = subs.Where(s => s.Key.ChannelId == channel.Id).ToArray();
-				foreach (var item in toRemove) subs.Remove(item.Key);
+				ClearTemporalSubsribers();
+				var toRemove = subscribers.Where(s => s.Key.ChannelId == channel.Id).ToArray();
+				foreach (var item in toRemove) subscribers.Remove(item.Key);
 			}
 		}
 
@@ -59,25 +78,67 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		{
 			lock (syncRoot)
 			{
-				var id = new MessageIdentitify(message.Id, message.BaseChannel.Id);
+				ClearTemporalSubsribers();
 
-				if (!subs.ContainsKey(id)) subs.Add(id, new());
-				var list = subs[id];
-				return new Instance(this, message, list);
+				var id = new MessageIdentitify(message.Id, message.BaseChannel.Id);
+				MessageSubscribers msgSubs;
+
+				if (subscribers.ContainsKey(id))
+				{
+					msgSubs = subscribers[id];
+					if (msgSubs.IsTemporal)
+						throw new InvalidOperationException($"Interaction dispatcher for message {message.Id} in {message.BaseChannel.Id} cannot be getted " +
+							"in non-temporal mode because it already created in temporal mode");
+				}
+				else
+				{
+					msgSubs = new MessageSubscribers(isTemporal: false);
+					subscribers.Add(id, msgSubs);
+				}
+
+				return new Instance(this, message, msgSubs.Handlers);
+			}
+		}
+
+		public IInteractionDispatcher CreateInstanceInTemporalMode(Message message)
+		{
+			lock (syncRoot)
+			{
+				ClearTemporalSubsribers();
+
+				var id = new MessageIdentitify(message.Id, message.BaseChannel.Id);
+				MessageSubscribers msgSubs;
+
+				if (subscribers.ContainsKey(id))
+				{
+					msgSubs = subscribers[id];
+					if (msgSubs.IsTemporal)
+						throw new InvalidOperationException($"Interaction dispatcher for message {message.Id} in {message.BaseChannel.Id} cannot be getted " +
+							"in temporal mode because it already created in non-temporal mode");
+				}
+				else
+				{
+					msgSubs = new MessageSubscribers(isTemporal: true);
+					subscribers.Add(id, msgSubs);
+				}
+
+				return new Instance(this, message, msgSubs.Handlers);
 			}
 		}
 
 		private Task InteractionCreated(DiscordClient client, ComponentInteractionCreateEventArgs args)
 		{
+			ClearTemporalSubsribers();
+
 			EventHolder[] holders;
 
 			lock (syncRoot)
 			{
 				var id = new MessageIdentitify(args.Message.Id, args.Channel.Id);
 
-				if (!subs.ContainsKey(id))
+				if (!subscribers.ContainsKey(id))
 					return Task.CompletedTask;
-				holders = subs[id].ToArray();
+				holders = subscribers[id].Handlers.ToArray();
 			}
 
 			Task.Run(() =>
@@ -92,8 +153,31 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 						if (result is null) continue;
 						else
 						{
-							args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-								new DiscordInteractionResponseBuilder(MessageConverter.ConvertUp(result.Result.Respond)).AsEphemeral()).Wait();
+							var interactionResult = result.Result;
+
+							switch (interactionResult.ResultType)
+							{
+								case ComponentInteractionResult.Type.None:
+									args.Interaction.CreateResponseAsync(InteractionResponseType.Pong).Wait();
+									break;
+								case ComponentInteractionResult.Type.Message:
+									args.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+										new DiscordInteractionResponseBuilder(MessageConverter.ConvertUp(result.Result.GetRespondMessage())).AsEphemeral()).Wait();
+
+									var subscriber = interactionResult.GetInteractionDispatcherSubcriber();
+									if (subscriber is not null)
+									{
+										var responce = args.Interaction.GetOriginalResponseAsync().Result;
+										var interactionDispatcher = CreateInstanceInTemporalMode(new Message(responce.Id, () => responce, (TextChannelBase)server.GetChannel(responce.ChannelId)));
+										subscriber(interactionDispatcher);
+									}
+									break;
+								case ComponentInteractionResult.Type.Modal:
+									modalHelper.CreateModalAsync(args.Interaction, interactionResult.GetModal()).Wait();
+									break;
+								default:
+									throw new NotSupportedException();
+							}
 
 							break;
 						}
@@ -106,6 +190,11 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			});
 
 			return Task.CompletedTask;
+		}
+
+		public void Dispose()
+		{
+			modalHelper.Dispose();
 		}
 
 
@@ -206,6 +295,30 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			public ulong MessageId { get; }
 
 			public ulong ChannelId { get; }
+		}
+
+		private struct MessageSubscribers
+		{
+			public MessageSubscribers()
+			{
+				Handlers = new();
+				CreationTimespamp = DateTime.UtcNow;
+				IsTemporal = false;
+			}
+
+			public MessageSubscribers(bool isTemporal)
+			{
+				Handlers = new();
+				CreationTimespamp = DateTime.UtcNow;
+				IsTemporal = isTemporal;
+			}
+
+
+			public List<EventHolder> Handlers { get; }
+
+			public DateTime CreationTimespamp { get; }
+
+			public bool IsTemporal { get; }
 		}
 	}
 }

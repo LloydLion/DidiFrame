@@ -17,8 +17,9 @@ using DSharpPlus.EventArgs;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
+using DidiFrame.Client.DSharp;
 
-namespace DidiFrame.Client.DSharp
+namespace DidiFrame.Clients.DSharp.ApplicationCommands
 {
 	/// <summary>
 	/// User command pipeline dispatcher that using discord's application commands
@@ -27,7 +28,7 @@ namespace DidiFrame.Client.DSharp
 	{
 		private DispatcherCallback<UserCommandPreContext>? callback;
 		private readonly Dictionary<string, ApplicationCommandPair> convertedCommands;
-		private readonly Client client;
+		private readonly DSharpClient client;
 		private readonly BehaviorModel behaviorModel;
 		private readonly IStringLocalizer<ApplicationCommandDispatcher> localizer;
 		private readonly IValidator<UserCommandResult> resultValidator;
@@ -44,11 +45,11 @@ namespace DidiFrame.Client.DSharp
 		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult type</param>
 		/// <param name="services">Services for values providers</param>
 		/// <param name="behaviorModel">Behavoir model that can override behavior of component</param>
-		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands, 
+		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands,
 			IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter,
 			IValidator<UserCommandResult> resultValidator, IServiceProvider services, IValidator<ModalModel> modalValidator, BehaviorModel? behaviorModel = null)
 		{
-			client = (Client)dsharp;
+			client = (DSharpClient)dsharp;
 			client.BaseClient.InteractionCreated += BaseClient_InteractionCreated;
 
 			behaviorModel = this.behaviorModel = behaviorModel ?? new BehaviorModel();
@@ -104,24 +105,33 @@ namespace DidiFrame.Client.DSharp
 
 			var state = (StateObject)stateObject;
 
-			if (result.ResultType == UserCommandResult.Type.Message)
+			switch (result.ResultType)
 			{
-				var msg = MessageConverter.ConvertUp(result.GetRespondMessage());
-				await state.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(msg).AsEphemeral());
+				case UserCommandResult.Type.Message:
+					var server = (Server)client.GetServer(state.Interaction.GuildId ?? throw new ImpossibleVariantException());
 
-				state.Responded = true;
-			}
-			else if (result.ResultType == UserCommandResult.Type.Modal)
-			{
-				await modalHelper.CreateModalAsync(state.Interaction, result.GetModal());
+					var msg = MessageConverter.ConvertUp(result.GetRespondMessage());
+					await state.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(msg).AsEphemeral());
 
-				state.Responded = true;
+					var subscriber = result.GetInteractionDispatcherSubcriber();
+					if (subscriber is not null)
+					{
+						var responce = await state.Interaction.GetOriginalResponseAsync();
+						var dispatcher = server.InteractionDispatcherFactory.CreateInstanceInTemporalMode(new Message(responce.Id, () => responce, (TextChannelBase)server.GetChannel(responce.ChannelId)));
+						subscriber(dispatcher);
+					}
+
+					break;
+				case UserCommandResult.Type.Modal:
+					await modalHelper.CreateModalAsync(state.Interaction, result.GetModal());
+					break;
+				case UserCommandResult.Type.None:
+					break;
+				default:
+					throw new NotSupportedException("Target type of user command result is not supported by dispatcher");
 			}
-			else if (result.ResultType == UserCommandResult.Type.None)
-			{
-				//Do nothing
-			}
-			else throw new NotSupportedException("Target type of user command result is not supported by dispatcher");
+
+			state.Responded = true;
 		}
 
 		/// <inheritdoc/>
@@ -218,7 +228,7 @@ namespace DidiFrame.Client.DSharp
 		/// </summary>
 		public sealed class Options
 		{
-			
+
 		}
 
 		/// <summary>
@@ -226,7 +236,7 @@ namespace DidiFrame.Client.DSharp
 		/// </summary>
 		public class BehaviorModel
 		{
-			private Client? dsharp;
+			private DSharpClient? dsharp;
 			private IUserCommandsRepository? commands;
 			private IStringLocalizer<ApplicationCommandDispatcher>? localizer;
 			private IUserCommandContextConverter? converter;
@@ -251,7 +261,7 @@ namespace DidiFrame.Client.DSharp
 			/// <summary>
 			/// DSharp client (only DidiFrame.Clients.DSharp.Client)
 			/// </summary>
-			protected Client Client => dsharp ?? throw new InvalidOperationException("Enable to get this property in ctor");
+			protected DSharpClient Client => dsharp ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
 			/// <summary>
 			/// Services for values providers
@@ -259,7 +269,7 @@ namespace DidiFrame.Client.DSharp
 			protected IServiceProvider Services => services ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
 
-			internal void Init(Client dsharp, IUserCommandsRepository commands, IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter, IServiceProvider services)
+			internal void Init(DSharpClient dsharp, IUserCommandsRepository commands, IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter, IServiceProvider services)
 			{
 				this.dsharp = dsharp;
 				this.commands = commands;

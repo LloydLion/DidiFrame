@@ -11,13 +11,15 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using DidiFrame.UserCommands.Modals;
+using Microsoft.Extensions.Localization;
 
 namespace DidiFrame.Client.DSharp
 {
 	/// <summary>
 	/// Discord client based on DSharpPlus library
 	/// </summary>
-	public sealed class Client : IClient
+	public sealed class DSharpClient : IClient
 	{
 		internal const string ChannelName = "Channel";
 		internal const string MemberName = "Member";
@@ -37,7 +39,7 @@ namespace DidiFrame.Client.DSharp
 		private readonly Dictionary<ulong, Server> servers = new();
 		private readonly AutoResetEvent serversSyncRoot = new(true);
 		private readonly CancellationTokenSource cts = new();
-		private readonly ILogger<Client> logger;
+		private readonly ILogger<DSharpClient> logger;
 		private readonly Lazy<IUser> selfAccount;
 		private readonly Options options;
 		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
@@ -95,9 +97,13 @@ namespace DidiFrame.Client.DSharp
 			}
 		}
 
-		internal ILogger<Client> Logger => logger;
+		internal ILogger<DSharpClient> Logger => logger;
 
 		internal IValidator<MessageSendModel> MessageSendModelValidator { get; }
+
+		internal IValidator<ModalModel> ModalValidator { get; private set; }
+
+		internal IStringLocalizer Localizer { get; }
 
 
 		/// <summary>
@@ -108,14 +114,16 @@ namespace DidiFrame.Client.DSharp
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="messageSendModelValidator">Validator for DidiFrame.Entities.Message.MessageSendModel</param>
 		/// <param name="messagesCacheFactory">Optional custom factory for server's channel messages caches</param>
-		public Client(IServiceProvider servicesForExtensions,
+		public DSharpClient(IServiceProvider servicesForExtensions,
 			IOptions<Options> options,
 			ILoggerFactory factory,
+			IStringLocalizer<DSharpClient> localizer,
 			IValidator<MessageSendModel> messageSendModelValidator,
+			IValidator<ModalModel> modalValidator,
 			IChannelMessagesCacheFactory? messagesCacheFactory = null)
 		{
 			this.options = options.Value;
-			logger = factory.CreateLogger<Client>();
+			logger = factory.CreateLogger<DSharpClient>();
 
 			client = new DiscordClient(new DiscordConfiguration
 			{
@@ -129,7 +137,9 @@ namespace DidiFrame.Client.DSharp
 
 			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
 			services = servicesForExtensions;
+			Localizer = localizer;
 			MessageSendModelValidator = messageSendModelValidator;
+			ModalValidator = modalValidator;
 			this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
 				?? throw new ArgumentException("Cache options can't be null if no custom messages cache factory provided", nameof(options)));
 		}

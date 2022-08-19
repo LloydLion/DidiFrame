@@ -32,6 +32,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 			foreach (var server in client.Servers) server.MessageSent += Client_MessageSent;
 		}
 
+
 		/// <inheritdoc/>
 		public void Dispose()
 		{
@@ -72,16 +73,40 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 
 			IMessage? message = null;
 
-			if (result.ResultType == UserCommandResult.Type.Message)
-				message = await ss.Message.TextChannel.SendMessageAsync(result.GetRespondMessage());
-			else if (result.ResultType == UserCommandResult.Type.None)
+			switch (result.ResultType)
 			{
-				if (result.Code != UserCommandCode.Sucssesful)
-				{
-					message = ss.Message.TextChannel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code)).Result;
-				}
+				case UserCommandResult.Type.Message:
+						message = await ss.Message.TextChannel.SendMessageAsync(result.GetRespondMessage());
+
+						var subscriber = result.GetInteractionDispatcherSubcriber();
+						if (subscriber is not null)
+						{
+							var dispatcher = message.GetInteractionDispatcher();
+							subscriber(dispatcher);
+						}
+
+						break;
+				case UserCommandResult.Type.None:
+					if (result.Code != UserCommandCode.Sucssesful)
+						message = ss.Message.TextChannel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code)).Result;
+					break;
+				case UserCommandResult.Type.Modal:
+					var demoMessage = await ss.Message.TextChannel.SendMessageAsync(new MessageSendModel("Command finished with modal\nPress button to open modal window")
+					{
+						ComponentsRows = new MessageComponentsRow[]
+						{
+							new(new[] { new MessageButton("open_modal", "Open modal", ButtonStyle.Primary) })
+						}
+					});
+
+					demoMessage.GetInteractionDispatcher().Attach<MessageButton>("open_modal", ctx =>
+					{
+						return Task.FromResult(ComponentInteractionResult.CreateWithModal(result.GetModal()));
+					});
+					break;
+				default:
+					throw new NotSupportedException("Target type of user command result is not supported by dispatcher");
 			}
-			else throw new NotSupportedException("Target type of user command result is not supported by dispatcher");
 
 			if (message is not null) ss.Responses.Add(message);
 		}

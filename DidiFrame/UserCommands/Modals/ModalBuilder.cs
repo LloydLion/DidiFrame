@@ -4,7 +4,7 @@ namespace DidiFrame.UserCommands.Modals
 {
 	public class ModalBuilder
 	{
-		private readonly IValidator<ModalModel> modalValidator;
+		private readonly IValidator<ModalModel>? modalValidator;
 		private readonly List<IModalComponent> components = new();
 		private string? title;
 
@@ -12,6 +12,11 @@ namespace DidiFrame.UserCommands.Modals
 		public ModalBuilder(IValidator<ModalModel> modalValidator)
 		{
 			this.modalValidator = modalValidator;
+		}
+
+		public ModalBuilder()
+		{
+
 		}
 
 
@@ -26,7 +31,7 @@ namespace DidiFrame.UserCommands.Modals
 
 			var modal = new ModalModel(components, title);
 
-			modalValidator.ValidateAndThrow(modal);
+			modalValidator?.ValidateAndThrow(modal);
 
 			return modal;
 		}

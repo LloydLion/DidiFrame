@@ -22,8 +22,9 @@ namespace DidiFrame.UserCommands.Models
 		public static UserCommandResult CreateEmpty(UserCommandCode code, string? debugMessage = null, Exception? exception = null) =>
 			new(code, Type.None, null) { DebugMessage = debugMessage, Exception = exception };
 
-		public static UserCommandResult CreateWithMessage(UserCommandCode code, MessageSendModel sendModel, string? debugMessage = null, Exception? exception = null) =>
-			new(code, Type.Message, sendModel) { DebugMessage = debugMessage, Exception = exception };
+		public static UserCommandResult CreateWithMessage(UserCommandCode code, MessageSendModel sendModel, InteractionDispatcherSubscriber? subscriber = null,
+			string? debugMessage = null, Exception? exception = null) =>
+			new(code, Type.Message, new MessageHelpClass(sendModel, subscriber)) { DebugMessage = debugMessage, Exception = exception };
 
 		public static UserCommandResult CreateWithModal(UserCommandCode code, IModalForm modal, string? debugMessage = null, Exception? exception = null) =>
 			new(code, Type.Modal, modal) { DebugMessage = debugMessage, Exception = exception };
@@ -33,11 +34,15 @@ namespace DidiFrame.UserCommands.Models
 		/// Gets send model of messages that will be sent as respond to command if result contains it
 		/// </summary>
 		/// <exception cref="InvalidOperationException">If result doesn't contain message</exception>
-		public MessageSendModel GetRespondMessage() =>
-			type == Type.Message ? (MessageSendModel)(parameter ?? throw new ImpossibleVariantException()) : throw new InvalidOperationException("Result doesn't contain message");
+		public MessageSendModel GetRespondMessage() => GetMessageHelpClass().SendModel;
+
+		public InteractionDispatcherSubscriber? GetInteractionDispatcherSubcriber() => GetMessageHelpClass().Subscriber;
 
 		public IModalForm GetModal() =>
 			type == Type.Modal ? (IModalForm)(parameter ?? throw new ImpossibleVariantException()) : throw new InvalidOperationException("Result doesn't contain modal");
+
+		private MessageHelpClass GetMessageHelpClass() =>
+			type == Type.Message ? (MessageHelpClass)(parameter ?? throw new ImpossibleVariantException()) : throw new InvalidOperationException("Result doesn't contain message");
 
 		/// <summary>
 		/// Debug message that will be sent to console
@@ -63,5 +68,8 @@ namespace DidiFrame.UserCommands.Models
 			Message,
 			Modal
 		}
+
+
+		private sealed record MessageHelpClass(MessageSendModel SendModel, InteractionDispatcherSubscriber? Subscriber);
 	}
 }

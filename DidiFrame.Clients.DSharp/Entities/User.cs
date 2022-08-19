@@ -13,7 +13,7 @@ namespace DidiFrame.Client.DSharp.Entities
 	public class User : IUser
 	{
 		private readonly ObjectSourceDelegate<DiscordUser> user;
-		private readonly Client client;
+		private readonly DSharpClient client;
 
 
 		/// <inheritdoc/>
@@ -43,7 +43,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="id">Id of user</param>
 		/// <param name="user">Base DiscordUser from DSharp source</param>
 		/// <param name="client">Owner client</param>
-		public User(ulong id, ObjectSourceDelegate<DiscordUser> user, Client client)
+		public User(ulong id, ObjectSourceDelegate<DiscordUser> user, DSharpClient client)
 		{
 			Id = id;
 			this.user = user;

@@ -13,13 +13,13 @@ namespace DidiFrame.Client.DSharp
 		private const int ModalTimeoutInMinutes = 2; 
 
 
-		private readonly Client client;
+		private readonly DSharpClient client;
 		private readonly IStringLocalizer localizer;
-		private readonly IValidator<ModalModel> modalValidator;
+		private readonly IValidator<ModalModel>? modalValidator;
 		private readonly Dictionary<string, RunningModal> runningModals = new();
 
 
-		public ModalHelper(Client client, IStringLocalizer localizer, IValidator<ModalModel> modalValidator)
+		public ModalHelper(DSharpClient client, IStringLocalizer localizer, IValidator<ModalModel>? modalValidator)
 		{
 			client.BaseClient.ModalSubmitted += OnModalSubmitted;
 			client.BaseClient.ComponentInteractionCreated += OnComponentInteractionCreated;
@@ -107,7 +107,7 @@ namespace DidiFrame.Client.DSharp
 
 			var id = guid.ToString();
 
-			var builder = new ModalBuilder(modalValidator);
+			var builder = modalValidator is null ? new ModalBuilder() : new ModalBuilder(modalValidator);
 
 			form.Build(builder);
 

@@ -12,7 +12,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 	{
 		private readonly Dictionary<DiscordChannel, CacheItem> messages = new();
 		private readonly List<DiscordChannel>? cacheEnabled;
-		private readonly Client client;
+		private readonly DSharpClient client;
 		private readonly CachePolicy policy;
 		private readonly int cacheSize;
 		private readonly MessagesPreloadingPolicy preloadingPolicy;
@@ -25,7 +25,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		/// <param name="client">DSharp client instance</param>
 		/// <param name="options">Option to create cache object</param>
 		/// <exception cref="ArgumentOutOfRangeException">If options contains invalid sizes</exception>
-		public ChannelMessagesCache(Client client, Options options)
+		public ChannelMessagesCache(DSharpClient client, Options options)
 		{
 			if (preloadingPolicy == MessagesPreloadingPolicy.FixedCount)
 			{
@@ -288,7 +288,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 
 			DiscordMessage sendRESTRequest()
 			{
-				return client.DoSafeOperation(() => textChannel.GetMessageAsync(id, true).Result, new(Client.MessageName, id));
+				return client.DoSafeOperation(() => textChannel.GetMessageAsync(id, true).Result, new(DSharpClient.MessageName, id));
 			}
 		}
 
@@ -434,7 +434,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 
 
 			/// <inheritdoc/>
-			public IChannelMessagesCache Create(DiscordGuild server, Client client)
+			public IChannelMessagesCache Create(DiscordGuild server, DSharpClient client)
 			{
 				return new ChannelMessagesCache(client, options);
 			}
