@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DidiFrame.ClientExtensions.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.ClientExtensions
 {
@@ -13,11 +14,11 @@ namespace DidiFrame.ClientExtensions
 		/// <typeparam name="TExtension">Type of extension interface</typeparam>
 		/// <typeparam name="TImplementation">Type of extension implementation</typeparam>
 		/// <param name="services">Service collection</param>
-		/// <param name="asSingleton">If need create only one instance of extension</param>
 		/// <returns>Given collection to be chained</returns>
-		public static IServiceCollection AddClientExtension<TExtension, TImplementation>(this IServiceCollection services, bool asSingleton = true) where TExtension : class where TImplementation : TExtension
+		public static IServiceCollection AddClientExtension<TExtension, TImplementation>(this IServiceCollection services) where TExtension : class where TImplementation : TExtension
 		{
-			services.AddTransient<IClientExtensionFactory<TExtension>, ReflectionClientExtensionFactory<TExtension, TImplementation>>((s) => new(asSingleton));
+			services.AddSingleton<IClientExtensionFactory<TExtension>, ReflectionClientExtensionFactory<TExtension, TImplementation>>();
+			services.AddSingleton<IClientExtensionFactory>(sp => sp.GetRequiredService<IClientExtensionFactory<TExtension>>());
 			return services;
 		}
 
@@ -27,11 +28,11 @@ namespace DidiFrame.ClientExtensions
 		/// <typeparam name="TExtension">Type of extension interface</typeparam>
 		/// <typeparam name="TImplementation">Type of extension implementation</typeparam>
 		/// <param name="services">Service collection</param>
-		/// <param name="asSingleton">If need create only one instance of extension</param>
 		/// <returns>Given collection to be chained</returns>
-		public static IServiceCollection AddServerExtension<TExtension, TImplementation>(this IServiceCollection services, bool asSingleton = true) where TExtension : class where TImplementation : TExtension
+		public static IServiceCollection AddServerExtension<TExtension, TImplementation>(this IServiceCollection services) where TExtension : class where TImplementation : TExtension
 		{
-			services.AddTransient<IServerExtensionFactory<TExtension>, ReflectionServerExtensionFactory<TExtension, TImplementation>>((s) => new(asSingleton));
+			services.AddSingleton<IServerExtensionFactory<TExtension>, ReflectionServerExtensionFactory<TExtension, TImplementation>>();
+			services.AddSingleton<IServerExtensionFactory>(sp => sp.GetRequiredService<IServerExtensionFactory<TExtension>>());
 			return services;
 		}
 	}

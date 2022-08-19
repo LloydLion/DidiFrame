@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DChannelType = DidiFrame.Entities.ChannelType;
+using DidiFrame.ClientExtensions;
 
 namespace DidiFrame.Client.DSharp.DiscordServer
 {
@@ -32,6 +33,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		private readonly InteractionDispatcherFactory dispatcherFactory;
 		private readonly ServerEventsManager events;
 		private readonly MessagesEventsManager messagesEvents;
+		private readonly ExtensionContextFactory extensionContextFactory = new();
 
 
 		/// <inheritdoc/>
@@ -174,6 +176,12 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 
 		/// <inheritdoc/>
 		public override int GetHashCode() => Id.GetHashCode();
+
+		public TExtension CreateExtension<TExtension>() where TExtension : class
+		{
+			var factory = (IServerExtensionFactory<TExtension>)client.ServerExtensions.Single(s => s is IServerExtensionFactory<TExtension> factory && factory.TargetServerType.IsInstanceOfType(this));
+			return factory.Create(this, extensionContextFactory.CreateInstance<TExtension>());
+		}
 
 		private DiscordGuild AccessBase([CallerMemberName] string nameOfCaller = "") =>
 			IsClosed ? throw new ObjectDoesNotExistException(nameOfCaller) : guild;
@@ -644,6 +652,56 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 						messageDeletedHandlers.TryRemove(channel.Id, out _);
 						messageSentHandlers.TryRemove(channel.Id, out _);
 					}
+				}
+			}
+		}
+
+		private sealed class ExtensionContextFactory : IDisposable
+		{
+			private readonly Dictionary<Type, object> dataStore = new();
+			private readonly List<IDisposable> toDispose = new();
+
+
+			public IServerExtensionContext<TExtension> CreateInstance<TExtension>() where TExtension : class
+			{
+				return new Instance<TExtension>(dataStore);
+			}
+
+			public void Dispose()
+			{
+				foreach (var item in toDispose)
+					item.Dispose();
+			}
+
+			private sealed class Instance<TExtension> : IServerExtensionContext<TExtension>, IDisposable where TExtension : class
+			{
+				private readonly Dictionary<Type, object> dataStore;
+				private Action? callback;
+
+
+				public Instance(Dictionary<Type, object> dataStore)
+				{
+					this.dataStore = dataStore;
+				}
+
+
+				public void Dispose()
+				{
+					callback?.Invoke();
+				}
+
+				public object? GetExtensionData() => dataStore.ContainsKey(typeof(TExtension)) ? dataStore[typeof(TExtension)] : null;
+
+				public void SetExtensionData(object data)
+				{
+					if (dataStore.ContainsKey(typeof(TExtension)))
+						dataStore[typeof(TExtension)] = data;
+					else dataStore.Add(typeof(TExtension), data);
+				}
+
+				public void SetReleaseCallback(Action callback)
+				{
+					this.callback = callback;
 				}
 			}
 		}

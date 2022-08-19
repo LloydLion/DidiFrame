@@ -1,4 +1,5 @@
-﻿using DidiFrame.Culture;
+﻿using DidiFrame.ClientExtensions;
+using DidiFrame.Culture;
 
 namespace DidiFrame.Client
 {
@@ -16,11 +17,6 @@ namespace DidiFrame.Client
 		/// Bot's account in discord
 		/// </summary>
 		public IUser SelfAccount { get; }
-
-		/// <summary>
-		/// Services that will be used for extensions
-		/// </summary>
-		public IServiceProvider Services { get; }
 
 
 		/// <summary>
@@ -42,5 +38,7 @@ namespace DidiFrame.Client
 		public IServer GetServer(ulong id);
 
 		public void SetupCultureProvider(IServerCultureProvider? cultureProvider);
+
+		public TExtension CreateExtension<TExtension>() where TExtension : class;
 	}
 }

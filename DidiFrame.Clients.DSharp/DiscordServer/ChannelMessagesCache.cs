@@ -121,7 +121,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 					case CachePolicy.CacheAll or CachePolicy.CacheAllWithoutREST:
 						return messages[textChannel].Messages.AsEnumerable().Take(quantity).ToArray();
 					case CachePolicy.CacheChannelByRequest or CachePolicy.CacheChannelByRequestWithoutREST:
-						if (CacheEnabled.Contains(textChannel)) return messages[textChannel].Messages.AsEnumerable().Take(quantity).ToArray();
+						if (CacheEnabled.Contains(textChannel)) return messages[textChannel].Messages.AsEnumerable().Reverse().Take(quantity).ToArray();
 						else
 						{
 							CacheEnabled.Add(textChannel);

@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using DidiFrame.ClientExtensions;
+using DidiFrame.ClientExtensions.Reflection;
+using DSharpPlus.Entities;
 using DSharpClient = DidiFrame.Client.DSharp.DSharpClient;
 using DSharpMessage = DidiFrame.Client.DSharp.Entities.Message;
-using DSharpPlus.Entities;
 
-namespace TestBot.Systems.Test.ClientExtensions
+namespace TestBot.Systems.Test.ClientExtensions.ReactionExtension
 {
+	[TargetExtensionType(typeof(DSharpClient))]
 	internal class DSharpReactionsExtension : IReactionsExtension
 	{
 		private readonly DSharpClient client;
 
 
-		public DSharpReactionsExtension(DSharpClient client, IServiceProvider _2)
+		public DSharpReactionsExtension(DSharpClient client, IClientExtensionContext<IReactionsExtension> context)
 		{
 			this.client = client;
 		}

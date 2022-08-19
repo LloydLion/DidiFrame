@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using System.Globalization;
 using DidiFrame.UserCommands.Modals;
 using Microsoft.Extensions.Localization;
+using DidiFrame.ClientExtensions;
 
 namespace DidiFrame.Client.DSharp
 {
@@ -43,7 +44,8 @@ namespace DidiFrame.Client.DSharp
 		private readonly Lazy<IUser> selfAccount;
 		private readonly Options options;
 		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
-		private readonly IServiceProvider services;
+		private readonly IReadOnlyCollection<IClientExtensionFactory> clientExtensions;
+		private readonly ExtensionContextFactory extensionContextFactory = new();
 		private Task? serverListUpdateTask;
 		private ConnectStatus connectStatus = ConnectStatus.NoConnection;
 		private IServerCultureProvider? cultureProvider;
@@ -84,18 +86,7 @@ namespace DidiFrame.Client.DSharp
 		/// <summary>
 		/// Culture info provider that using in event to setup culture
 		/// </summary>
-		public IServerCultureProvider? CultureProvider
-			{ get => cultureProvider; private set => cultureProvider = value; }
-
-		/// <inheritdoc/>
-		public IServiceProvider Services
-		{
-			get
-			{
-				ThrowUnlessConnected();
-				return services;
-			}
-		}
+		public IServerCultureProvider? CultureProvider { get => cultureProvider; private set => cultureProvider = value; }
 
 		internal ILogger<DSharpClient> Logger => logger;
 
@@ -104,6 +95,8 @@ namespace DidiFrame.Client.DSharp
 		internal IValidator<ModalModel> ModalValidator { get; private set; }
 
 		internal IStringLocalizer Localizer { get; }
+
+		public IReadOnlyCollection<IServerExtensionFactory> ServerExtensions { get; }
 
 
 		/// <summary>
@@ -114,10 +107,11 @@ namespace DidiFrame.Client.DSharp
 		/// <param name="factory">Loggers for DSharp client</param>
 		/// <param name="messageSendModelValidator">Validator for DidiFrame.Entities.Message.MessageSendModel</param>
 		/// <param name="messagesCacheFactory">Optional custom factory for server's channel messages caches</param>
-		public DSharpClient(IServiceProvider servicesForExtensions,
-			IOptions<Options> options,
+		public DSharpClient(IOptions<Options> options,
 			ILoggerFactory factory,
 			IStringLocalizer<DSharpClient> localizer,
+			IEnumerable<IClientExtensionFactory> clientExtensions,
+			IEnumerable<IServerExtensionFactory> serverExtensions,
 			IValidator<MessageSendModel> messageSendModelValidator,
 			IValidator<ModalModel> modalValidator,
 			IChannelMessagesCacheFactory? messagesCacheFactory = null)
@@ -136,8 +130,9 @@ namespace DidiFrame.Client.DSharp
 			});
 
 			selfAccount = new(() => new User(client.CurrentUser.Id, () => client.CurrentUser, this));
-			services = servicesForExtensions;
 			Localizer = localizer;
+			this.clientExtensions = clientExtensions.ToArray();
+			ServerExtensions = serverExtensions.ToArray();
 			MessageSendModelValidator = messageSendModelValidator;
 			ModalValidator = modalValidator;
 			this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
@@ -316,6 +311,12 @@ namespace DidiFrame.Client.DSharp
 			{
 				throw new InvalidOperationException("Enable to do this operation if client hasn't connected");
 			}
+		}
+
+		public TExtension CreateExtension<TExtension>() where TExtension : class
+		{
+			var extensionFactory = (IClientExtensionFactory<TExtension>)clientExtensions.Single(s => s is IClientExtensionFactory<TExtension> factory && factory.TargetClientType.IsInstanceOfType(this));
+			return extensionFactory.Create(this, extensionContextFactory.CreateInstance<TExtension>());
 		}
 
 		/// <inheritdoc/>
@@ -543,6 +544,39 @@ namespace DidiFrame.Client.DSharp
 			public string? ObjectName { get; }
 
 			public ulong ObjectId { get; }
+		}
+
+		private sealed class ExtensionContextFactory
+		{
+			private readonly Dictionary<Type, object> dataStore = new();
+
+
+			public IClientExtensionContext<TExtension> CreateInstance<TExtension>() where TExtension : class
+			{
+				return new Instance<TExtension>(dataStore);
+			}
+
+
+			private sealed class Instance<TExtension> : IClientExtensionContext<TExtension> where TExtension : class
+			{
+				private readonly Dictionary<Type, object> dataStore;
+
+
+				public Instance(Dictionary<Type, object> dataStore)
+				{
+					this.dataStore = dataStore;
+				}
+
+
+				public object? GetExtensionData() => dataStore.ContainsKey(typeof(TExtension)) ? dataStore[typeof(TExtension)] : null;
+
+				public void SetExtensionData(object data)
+				{
+					if (dataStore.ContainsKey(typeof(TExtension)))
+						dataStore[typeof(TExtension)] = data;
+					else dataStore.Add(typeof(TExtension), data);
+				}
+			}
 		}
 
 		private enum ConnectStatus

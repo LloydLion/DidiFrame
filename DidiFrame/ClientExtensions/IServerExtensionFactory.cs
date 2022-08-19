@@ -1,17 +1,15 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace DidiFrame.ClientExtensions
+﻿namespace DidiFrame.ClientExtensions
 {
 	/// <summary>
 	/// Factory that creates extensions for server
 	/// </summary>
 	/// <typeparam name="TExtension"></typeparam>
-	public interface IServerExtensionFactory<out TExtension> where TExtension : class
+	public interface IServerExtensionFactory<TExtension> : IServerExtensionFactory where TExtension : class
 	{
 		/// <summary>
 		/// Target type of server
 		/// </summary>
-		public Type? TargetServerType { get; }
+		public Type TargetServerType { get; }
 
 
 		/// <summary>
@@ -20,6 +18,11 @@ namespace DidiFrame.ClientExtensions
 		/// <param name="services">Services to create extension</param>
 		/// <param name="server">Server of target type</param>
 		/// <returns>Instance of extension</returns>
-		public TExtension Create(IServiceProvider services, IServer server);
+		public TExtension Create(IServer server, IServerExtensionContext<TExtension> extensionContext);
+	}
+
+	public interface IServerExtensionFactory
+	{
+		
 	}
 }

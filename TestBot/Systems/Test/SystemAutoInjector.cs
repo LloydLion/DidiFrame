@@ -2,7 +2,8 @@
 using DidiFrame.UserCommands.Loader.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using DidiFrame.ClientExtensions;
-using TestBot.Systems.Test.ClientExtensions;
+using TestBot.Systems.Test.ClientExtensions.ReactionExtension;
+using TestBot.Systems.Test.ClientExtensions.NewsChannels;
 
 namespace TestBot.Systems.Test
 {
@@ -12,7 +13,8 @@ namespace TestBot.Systems.Test
 		{
 			services.AddSingleton<ICommandsModule, CommandsHandler>();
 			services.AddTransient<IReflectionCommandAdditionalInfoLoader, LazyAdditionalLoader>();
-			services.AddClientExtension<IReactionsExtension, DSharpReactionsExtension>(false);
+			services.AddClientExtension<IReactionsExtension, DSharpReactionsExtension>();
+			services.AddServerExtension<INewsChannelExtension, DSharpNewsChannelExtension>();
 			services.AddSingleton<SystemCore>();
 		}
 	}

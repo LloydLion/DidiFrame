@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.Client
+﻿using DidiFrame.ClientExtensions;
+
+namespace DidiFrame.Client
 {
 	/// <summary>
 	/// Represents a discord server
@@ -107,6 +109,8 @@
 		/// <param name="id">Id of role</param>
 		/// <returns>Role with given id</returns>
 		public IRole GetRole(ulong id);
+
+		public TExtension CreateExtension<TExtension>() where TExtension : class;
 
 
 		/// <summary>

@@ -5,7 +5,8 @@ using DidiFrame.UserCommands.Modals;
 using DidiFrame.UserCommands.Modals.Components;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using TestBot.Systems.Test.ClientExtensions;
+using TestBot.Systems.Test.ClientExtensions.NewsChannels;
+using TestBot.Systems.Test.ClientExtensions.ReactionExtension;
 
 namespace TestBot.Systems.Test
 {
@@ -118,6 +119,20 @@ namespace TestBot.Systems.Test
 				}
 				)));
 			});
+		}
+
+		[Command("post last")]
+		[SuppressMessage("Performance", "CA1822")]
+		public async Task<UserCommandResult> PostLastMessage(UserCommandContext ctx)
+		{
+			if (ctx.SendData.Channel is ITextChannel textChannel && textChannel.CheckIfIsNewsChannel())
+			{
+				var newsChannel = textChannel.AsNewsChannel();
+				var prevMessage = textChannel.GetMessages(1).Single();
+				await newsChannel.PostMessageAsync(prevMessage);
+				return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Post OK!"));
+			}
+			else return UserCommandResult.CreateWithMessage(UserCommandCode.InvalidInput, new("Enable to post message in non-news channel"));
 		}
 
 

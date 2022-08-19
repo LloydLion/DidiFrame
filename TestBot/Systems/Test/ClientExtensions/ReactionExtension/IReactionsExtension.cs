@@ -1,4 +1,4 @@
-﻿namespace TestBot.Systems.Test.ClientExtensions
+﻿namespace TestBot.Systems.Test.ClientExtensions.ReactionExtension
 {
 	internal interface IReactionsExtension
 	{
