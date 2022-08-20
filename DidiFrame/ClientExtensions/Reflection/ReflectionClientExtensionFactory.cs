@@ -29,10 +29,10 @@ namespace DidiFrame.ClientExtensions.Reflection
 				throw new InvalidOperationException("Invalid implementation type! TargetExtensionType attribute contains invalid type that doesn't inherit IClient");
 
 			if (targetType == typeof(IClient))
-				throw new InvalidOperationException("Invalid implementation type! TargetExtensionType attribute contains invalid type that equals to IClient, enable to create for interface");
+				throw new InvalidOperationException("Invalid implementation type! TargetExtensionType attribute contains invalid type that equals to IClient, enable to create factory for interface");
 
 			if (targetType.IsInterface)
-				throw new InvalidOperationException("Invalid implementation type! TargetExtensionType attribute contains invalid type that is interface, enable to create for interface");
+				throw new InvalidOperationException("Invalid implementation type! TargetExtensionType attribute contains invalid type that is interface, enable to create factory for interface");
 
 			TargetClientType = targetType;
 			this.services = services;

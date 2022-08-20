@@ -8,15 +8,8 @@ namespace TestBot.Systems.Test.ClientExtensions.NewsChannels
 	[TargetExtensionType(typeof(Server))]
 	internal class DSharpNewsChannelExtension : INewsChannelExtension, IDisposable
 	{
-		private readonly Server server;
-		private readonly IServerExtensionContext<INewsChannelExtension> context;
-
-
-		public DSharpNewsChannelExtension(Server server, IServerExtensionContext<INewsChannelExtension> context)
+		public DSharpNewsChannelExtension(Server _, IServerExtensionContext<INewsChannelExtension> context)
 		{
-			this.server = server;
-			this.context = context;
-
 			context.SetReleaseCallback(Dispose);
 		}
 

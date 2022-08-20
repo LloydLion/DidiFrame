@@ -13,7 +13,7 @@ namespace TestBot.Systems.Test
 		{
 			services.AddSingleton<ICommandsModule, CommandsHandler>();
 			services.AddTransient<IReflectionCommandAdditionalInfoLoader, LazyAdditionalLoader>();
-			services.AddClientExtension<IReactionsExtension, DSharpReactionsExtension>();
+			services.AddClientExtensionCustom<IReactionsExtension, DSharpReactionsExtension.Factory>();
 			services.AddServerExtension<INewsChannelExtension, DSharpNewsChannelExtension>();
 			services.AddSingleton<SystemCore>();
 		}
