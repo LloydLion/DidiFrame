@@ -103,7 +103,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		public Task DeleteAsync()
 		{
 			var obj = AccessBase();
-			return server.SourceClient.DoSafeOperationAsync(() => obj.DeleteAsync(), new(DSharpClient.ChannelName, Id, Name));
+			return server.SourceClient.DoSafeOperationAsync(() => obj.DeleteAsync(), new(SafeOperationsExtensions.NotFoundInfo.Type.Channel, Id, Name));
 		}
 
 		/// <summary>

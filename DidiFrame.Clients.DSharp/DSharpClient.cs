@@ -27,8 +27,7 @@ namespace DidiFrame.Client.DSharp
 
 
 		private readonly DiscordClient client;
-		private readonly User selfAccount;
-		private readonly Options options;
+		private User? selfAccount;
 		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
 		private readonly IReadOnlyCollection<IClientExtensionFactory> clientExtensions;
 		private readonly ExtensionContextFactory extensionContextFactory = new();
@@ -36,10 +35,12 @@ namespace DidiFrame.Client.DSharp
 
 
 		/// <inheritdoc/>
-		public event ServerCreatedEventHandler? ServerCreated;
+		public event ServerCreatedEventHandler? ServerCreated
+		{ add => servers.ServerCreated += value; remove => servers.ServerCreated -= value; }
 
 		/// <inheritdoc/>
-		public event ServerRemovedEventHandler? ServerRemoved;
+		public event ServerRemovedEventHandler? ServerRemoved
+		{ add => servers.ServerRemoved += value; remove => servers.ServerRemoved -= value; }
 
 
 		/// <inheritdoc/>
@@ -58,7 +59,7 @@ namespace DidiFrame.Client.DSharp
 			get
 			{
 				ThrowUnlessConnected();
-				return selfAccount;
+				return selfAccount ?? throw new ImpossibleVariantException();
 			}
 		}
 
@@ -94,7 +95,6 @@ namespace DidiFrame.Client.DSharp
 			IValidator<ModalModel> modalValidator,
 			IChannelMessagesCacheFactory? messagesCacheFactory = null)
 		{
-			this.options = options.Value;
 			Logger = factory.CreateLogger<DSharpClient>();
 			Localizer = localizer;
 			this.clientExtensions = clientExtensions.ToArray();
@@ -113,8 +113,6 @@ namespace DidiFrame.Client.DSharp
 				Intents = DiscordIntents.All
 			});
 
-
-			selfAccount = new User(client.CurrentUser.Id, () => client.CurrentUser, this);
 
 			this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
 				?? throw new ArgumentException("Cache options can't be null if no custom messages cache factory provided", nameof(options)));
@@ -178,6 +176,8 @@ namespace DidiFrame.Client.DSharp
 
 			servers.SubscribeEventsHandlers();
 			servers.StartObserveTask();
+
+			selfAccount = new User(client.CurrentUser.Id, () => client.CurrentUser, this);
 
 			CurrentConnectStatus = ConnectStatus.Connected;
 		}

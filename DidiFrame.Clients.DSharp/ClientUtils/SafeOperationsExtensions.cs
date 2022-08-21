@@ -2,16 +2,13 @@
 using DidiFrame.Exceptions;
 using DSharpPlus.Exceptions;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DidiFrame.Clients.DSharp.ClientUtils
 {
 	public static class SafeOperationsExtensions
 	{
+		private const int RatelimitTimeoutInMilliseconds = 250;
+		private const int SafeExceptionTimeoutInMilliseconds = 250;
 		private readonly static EventId SafeOperationErrorID = new(23, "SafeOperationError");
 		private readonly static EventId SafeOperationCriticalErrorID = new(22, "SafeOperationCriticalError");
 
@@ -32,25 +29,8 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			}
 			catch (Exception ex)
 			{
-				var pex = ex;
-				if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
-
-				if (pex is ServerErrorException || pex is RateLimitException)
-				{
-					client.Logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
-					if (pex is RateLimitException) Thread.Sleep(250);
-					else Thread.Sleep(1000);
-					goto reset;
-				}
-				else
-				{
-					client.Logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
-
-					if (nfi.HasValue && pex is NotFoundException)
-						throw new DiscordObjectNotFoundException(nfi.Value.ObjectType.ToString(), nfi.Value.ObjectId, nfi.Value.ObjectName);
-					else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
-					else throw new InternalDiscordException(pex.Message, pex);
-				}
+				client.ProcessOperationException(ex, nfi);
+				goto reset;
 			}
 		}
 
@@ -71,25 +51,8 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			}
 			catch (Exception ex)
 			{
-				var pex = ex;
-				if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
-
-				if (pex is ServerErrorException || pex is RateLimitException)
-				{
-					client.Logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
-					if (pex is RateLimitException) Thread.Sleep(250);
-					else Thread.Sleep(1000);
-					goto reset;
-				}
-				else
-				{
-					client.Logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
-
-					if (nfi.HasValue && pex is NotFoundException)
-						throw new DiscordObjectNotFoundException(nfi.Value.ObjectType.ToString(), nfi.Value.ObjectId, nfi.Value.ObjectName);
-					else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
-					else throw new InternalDiscordException(pex.Message, pex);
-				}
+				client.ProcessOperationException(ex, nfi);
+				goto reset;
 			}
 		}
 
@@ -109,25 +72,8 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			}
 			catch (Exception ex)
 			{
-				var pex = ex;
-				if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
-
-				if (pex is ServerErrorException || pex is RateLimitException)
-				{
-					client.Logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
-					if (pex is RateLimitException) Thread.Sleep(250);
-					else Thread.Sleep(1000);
-					goto reset;
-				}
-				else
-				{
-					client.Logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
-
-					if (nfi.HasValue && pex is NotFoundException)
-						throw new DiscordObjectNotFoundException(nfi.Value.ObjectType.ToString(), nfi.Value.ObjectId, nfi.Value.ObjectName);
-					else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
-					else throw new InternalDiscordException(pex.Message, pex);
-				}
+				client.ProcessOperationException(ex, nfi);
+				goto reset;
 			}
 		}
 
@@ -148,28 +94,41 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			}
 			catch (Exception ex)
 			{
-				var pex = ex;
-				if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
-
-				if (pex is ServerErrorException || pex is RateLimitException)
-				{
-					client.Logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
-					if (pex is RateLimitException) Thread.Sleep(250);
-					else Thread.Sleep(1000);
-					goto reset;
-				}
-				else
-				{
-					client.Logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
-
-					if (nfi.HasValue && pex is NotFoundException)
-						throw new DiscordObjectNotFoundException(nfi.Value.ObjectType.ToString(), nfi.Value.ObjectId, nfi.Value.ObjectName);
-					else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
-					else throw new InternalDiscordException(pex.Message, pex);
-				}
+				client.ProcessOperationException(ex, nfi);
+				goto reset;
 			}
 		}
 #pragma warning restore S907 //goto statement use
+
+		/* 
+		 * Contract:
+		 * AggregateException in @ex will be unpacked automaticlly
+		 * 
+		 * If @ex is safe exception - method will do nothing, you should restart operation
+		 * If @ex is critical exception - method will throw wrapped exception (using @nfi if NotFoundException)
+		 * | If @nfi is null: NotFoundException will be processed as any other exception
+		 */
+		private static void ProcessOperationException(this DSharpClient client, Exception ex, NotFoundInfo? nfi = null)
+		{
+			var pex = ex;
+			if (ex is AggregateException ar && ar.InnerException is not null) pex = ar.InnerException;
+
+			if (pex is ServerErrorException || pex is RateLimitException) //Safe exception: restart operation
+			{
+				client.Logger.Log(LogLevel.Warning, SafeOperationErrorID, ex, "Safe exception in safe operation. All OK!");
+				if (pex is RateLimitException) Thread.Sleep(RatelimitTimeoutInMilliseconds);
+				else Thread.Sleep(SafeExceptionTimeoutInMilliseconds);
+			}
+			else //Critical exception: drop operation and throw error
+			{
+				client.Logger.Log(LogLevel.Error, SafeOperationCriticalErrorID, ex, "Critical exception in safe operation");
+
+				if (nfi.HasValue && pex is NotFoundException)
+					throw new DiscordObjectNotFoundException(nfi.Value.ObjectType.ToString(), nfi.Value.ObjectId, nfi.Value.ObjectName);
+				else if (pex is UnauthorizedException) throw new NotEnoughPermissionsException(pex.Message);
+				else throw new InternalDiscordException(pex.Message, pex);
+			}
+		}
 
 
 		public struct NotFoundInfo

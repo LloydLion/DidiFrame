@@ -1,4 +1,5 @@
-﻿using DidiFrame.Exceptions;
+﻿using DidiFrame.Clients.DSharp.ClientUtils;
+using DidiFrame.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using System.Diagnostics.CodeAnalysis;
@@ -288,7 +289,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 
 			DiscordMessage sendRESTRequest()
 			{
-				return client.DoSafeOperation(() => textChannel.GetMessageAsync(id, true).Result, new(DSharpClient.MessageName, id));
+				return client.DoSafeOperation(() => textChannel.GetMessageAsync(id, true).Result, new(SafeOperationsExtensions.NotFoundInfo.Type.Message, id));
 			}
 		}
 
