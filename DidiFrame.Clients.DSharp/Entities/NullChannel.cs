@@ -1,8 +1,8 @@
 ﻿using DidiFrame.Entities.Message;
 using DidiFrame.Exceptions;
-using DidiFrame.Client;
+using DidiFrame.Clients;
 
-namespace DidiFrame.Client.DSharp.Entities
+namespace DidiFrame.Clients.DSharp.Entities
 {
 	internal class NullChannel : ITextChannel, ITextThread, IVoiceChannel
 	{

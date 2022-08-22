@@ -12,7 +12,7 @@ using DidiFrame.ClientExtensions;
 using DidiFrame.Clients.DSharp.ClientUtils;
 using DidiFrame.Utils.Collections;
 
-namespace DidiFrame.Client.DSharp
+namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
 	/// Discord client based on DSharpPlus library

@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Client
+﻿namespace DidiFrame.Clients
 {
 	public interface IServersNotify
 	{

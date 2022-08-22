@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Data;
-using DidiFrame.Client;
+using DidiFrame.Clients;
 using DidiFrame.Utils;
 
 namespace DidiFrame.Testing.Data

@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Client
+﻿namespace DidiFrame.Clients
 {
 	/// <summary>
 	/// Represents a discord member - user on server

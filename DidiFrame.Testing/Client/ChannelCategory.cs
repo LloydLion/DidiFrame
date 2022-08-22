@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Entities;
 using DidiFrame.Exceptions;
-using DidiFrame.Client;
+using DidiFrame.Clients;
 using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Testing.Client

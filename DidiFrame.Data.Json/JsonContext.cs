@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Data.ContextBased;
-using DidiFrame.Client;
+using DidiFrame.Clients;
 using DidiFrame.Utils;
 using DidiFrame.Utils.Json;
 using Microsoft.Extensions.DependencyInjection;

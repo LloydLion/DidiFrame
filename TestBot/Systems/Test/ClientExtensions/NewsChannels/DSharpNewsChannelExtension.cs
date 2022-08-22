@@ -1,5 +1,5 @@
-﻿using DidiFrame.Client.DSharp.DiscordServer;
-using DidiFrame.Client.DSharp.Entities;
+﻿using DidiFrame.Clients.DSharp.DiscordServer;
+using DidiFrame.Clients.DSharp.Entities;
 using DidiFrame.ClientExtensions;
 using DidiFrame.ClientExtensions.Reflection;
 

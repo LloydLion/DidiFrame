@@ -1,6 +1,6 @@
 ﻿using DSharpPlus.Entities;
 
-namespace DidiFrame.Client.DSharp.DiscordServer
+namespace DidiFrame.Clients.DSharp.DiscordServer
 {
 	/// <summary>
 	/// Factory for DidiFrame.Clients.DSharp.IChannelMessagesCache implemetations

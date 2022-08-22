@@ -1,9 +1,9 @@
-﻿using DidiFrame.Client.DSharp;
+﻿using DidiFrame.Clients.DSharp;
 using DidiFrame.ClientExtensions;
 using DidiFrame.ClientExtensions.Abstract;
 using DidiFrame.ClientExtensions.Reflection;
 using DSharpPlus.Entities;
-using DSharpMessage = DidiFrame.Client.DSharp.Entities.Message;
+using DSharpMessage = DidiFrame.Clients.DSharp.Entities.Message;
 
 namespace TestBot.Systems.Test.ClientExtensions.ReactionExtension
 {

@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Client.DSharp
+﻿namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
 	/// Represents source of some object

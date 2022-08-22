@@ -1,6 +1,6 @@
 ﻿global using DidiFrame.Entities;
 global using DidiFrame.Exceptions;
-global using DidiFrame.Client;
+global using DidiFrame.Clients;
 global using DidiFrame.Data;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;

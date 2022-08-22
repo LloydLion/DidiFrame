@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Entities;
 using DidiFrame.Entities.Message;
-using DidiFrame.Client;
+using DidiFrame.Clients;
 using System;
 using System.Threading.Tasks;
 

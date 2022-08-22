@@ -1,5 +1,5 @@
 ﻿using DidiFrame.Entities;
-using DidiFrame.Client;
+using DidiFrame.Clients;
 
 namespace TestProject.Environment.Client
 {

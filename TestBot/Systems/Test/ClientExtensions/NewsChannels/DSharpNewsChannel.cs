@@ -1,4 +1,4 @@
-﻿using DidiFrame.Client.DSharp.Entities;
+﻿using DidiFrame.Clients.DSharp.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

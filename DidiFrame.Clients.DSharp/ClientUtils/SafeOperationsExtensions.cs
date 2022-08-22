@@ -1,4 +1,4 @@
-﻿using DidiFrame.Client.DSharp;
+﻿using DidiFrame.Clients.DSharp;
 using DidiFrame.Exceptions;
 using DSharpPlus.Exceptions;
 using Microsoft.Extensions.Logging;

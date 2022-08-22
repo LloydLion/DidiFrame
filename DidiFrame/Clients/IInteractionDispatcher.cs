@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Client
+﻿namespace DidiFrame.Clients
 {
 	/// <summary>
 	/// Middle layer between you and discord message's components

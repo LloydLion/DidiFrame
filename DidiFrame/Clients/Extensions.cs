@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.Client
+﻿namespace DidiFrame.Clients
 {
 	/// <summary>
 	/// Extensions for DidiFrame.Interfaces namespace

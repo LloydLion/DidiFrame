@@ -1,9 +1,9 @@
 ﻿using DidiFrame.Culture;
-using DidiFrame.Client;
+using DidiFrame.Clients;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace DidiFrame.Client.DSharp.DiscordServer
+namespace DidiFrame.Clients.DSharp.DiscordServer
 {
 	internal class ServerEventsManager
 	{

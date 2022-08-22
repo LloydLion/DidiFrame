@@ -1,4 +1,4 @@
-﻿using DidiFrame.Client;
+﻿using DidiFrame.Clients;
 using Microsoft.Extensions.Logging;
 
 namespace DidiFrame.Testing.Client

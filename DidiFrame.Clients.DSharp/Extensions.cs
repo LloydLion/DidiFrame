@@ -8,7 +8,7 @@ using DSharpPlus.Entities;
 using DidiFrame.Exceptions;
 using DidiFrame.Entities;
 
-namespace DidiFrame.Client.DSharp
+namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
 	/// Extensions to work with DSharp's objects

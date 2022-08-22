@@ -6,7 +6,7 @@ using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 using DidiFrame.Culture;
 
-namespace DidiFrame.Client.DSharp.DiscordServer
+namespace DidiFrame.Clients.DSharp.DiscordServer
 {
 	public sealed class InteractionDispatcherFactory : IDisposable
 	{

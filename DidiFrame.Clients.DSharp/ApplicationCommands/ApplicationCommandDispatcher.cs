@@ -1,7 +1,7 @@
-﻿using DidiFrame.Client.DSharp.Entities;
+﻿using DidiFrame.Clients.DSharp.Entities;
 using DidiFrame.Entities;
 using DidiFrame.Exceptions;
-using DidiFrame.Client;
+using DidiFrame.Clients;
 using DidiFrame.UserCommands.ContextValidation.Arguments;
 using DidiFrame.UserCommands.Modals;
 using DidiFrame.UserCommands.Modals.Components;
@@ -17,7 +17,7 @@ using DSharpPlus.EventArgs;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
-using DidiFrame.Client.DSharp;
+using DidiFrame.Clients.DSharp;
 
 namespace DidiFrame.Clients.DSharp.ApplicationCommands
 {

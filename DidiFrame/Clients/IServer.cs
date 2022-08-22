@@ -1,6 +1,6 @@
 ﻿using DidiFrame.ClientExtensions;
 
-namespace DidiFrame.Client
+namespace DidiFrame.Clients
 {
 	/// <summary>
 	/// Represents a discord server

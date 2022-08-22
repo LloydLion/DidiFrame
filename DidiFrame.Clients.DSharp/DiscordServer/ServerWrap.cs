@@ -1,9 +1,9 @@
-﻿using DidiFrame.Client.DSharp;
+﻿using DidiFrame.Clients.DSharp;
 using DidiFrame.Exceptions;
 using DSharpPlus.Entities;
 using System.Runtime.CompilerServices;
 
-namespace DidiFrame.Client.DSharp.DiscordServer
+namespace DidiFrame.Clients.DSharp.DiscordServer
 {
 	public class ServerWrap : IServer
 	{

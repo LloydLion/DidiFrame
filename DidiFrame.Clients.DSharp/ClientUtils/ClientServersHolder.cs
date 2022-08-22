@@ -1,5 +1,5 @@
-﻿using DidiFrame.Client;
-using DidiFrame.Client.DSharp;
+﻿using DidiFrame.Clients;
+using DidiFrame.Clients.DSharp;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;

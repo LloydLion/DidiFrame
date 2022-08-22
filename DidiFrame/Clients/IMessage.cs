@@ -1,6 +1,6 @@
 ﻿using DidiFrame.Entities.Message;
 
-namespace DidiFrame.Client
+namespace DidiFrame.Clients
 {
 	/// <summary>
 	/// Represents a discord message

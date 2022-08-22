@@ -6,7 +6,7 @@ using DidiFrame.Exceptions;
 using DSharpPlus.Entities;
 using System.Text;
 
-namespace DidiFrame.Client.DSharp
+namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
 	/// Utilites to convert message from DSharp model to DidiFrame model
