@@ -14,7 +14,7 @@ namespace DidiFrame.Client.DSharp.Entities
 	public class Channel : IChannel
 	{
 		private readonly ObjectSourceDelegate<DiscordChannel> channel;
-		private readonly Server server;
+		private readonly ServerWrap server;
 		private readonly ObjectSourceDelegate<ChannelCategory> targetCategory;
 
 
@@ -42,10 +42,11 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <inheritdoc/>
 		public DiscordChannel BaseChannel => AccessBase();
 
+		//TODO: Server -> ServerWrap in desc
 		/// <summary>
 		/// Base server for channel, casted to DidiFrame.Clients.DSharp.Server Server property
 		/// </summary>
-		public Server BaseServer => server;
+		public ServerWrap BaseServer => server;
 
 		/// <inheritdoc/>
 		public bool IsExist => channel() is not null;
@@ -57,7 +58,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="id">Id of channel</param>
 		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
-		public Channel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : this(id, channel, server, () =>
+		public Channel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, ServerWrap server) : this(id, channel, server, () =>
 		{
 			var obj = channel();
 			if (obj is null) return null;
@@ -72,7 +73,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
 		/// <param name="targetCategory">Custom category source</param>
-		public Channel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server, ObjectSourceDelegate<ChannelCategory> targetCategory)
+		public Channel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, ServerWrap server, ObjectSourceDelegate<ChannelCategory> targetCategory)
 		{
 			Id = id;
 			this.channel = channel;
@@ -89,7 +90,7 @@ namespace DidiFrame.Client.DSharp.Entities
 
 
 		/// <inheritdoc/>
-		public static Channel Construct(ulong id, ChannelType? type, ObjectSourceDelegate<DiscordChannel> channel, Server server)
+		public static Channel Construct(ulong id, ChannelType? type, ObjectSourceDelegate<DiscordChannel> channel, ServerWrap server)
 		{
 			return type switch
 			{

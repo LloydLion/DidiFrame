@@ -11,7 +11,7 @@ namespace DidiFrame.Client.DSharp.Entities
 	/// </summary>
 	public class TextChannelBase : Channel, ITextChannelBase
 	{
-		private readonly Server server;
+		private readonly ServerWrap server;
 
 
 		/// <inheritdoc/>
@@ -35,7 +35,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="id">Id of channel</param>
 		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server object wrap</param>
-		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : base(id, channel, server)
+		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, ServerWrap server) : base(id, channel, server)
 		{
 			this.server = server;
 		}
@@ -47,7 +47,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server object wrap</param>
 		/// <param name="targetCategory">Custom category source</param>
-		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server, ObjectSourceDelegate<ChannelCategory> targetCategory) : base(id, channel, server, targetCategory)
+		public TextChannelBase(ulong id, ObjectSourceDelegate<DiscordChannel> channel, ServerWrap server, ObjectSourceDelegate<ChannelCategory> targetCategory) : base(id, channel, server, targetCategory)
 		{
 			this.server = server;
 		}

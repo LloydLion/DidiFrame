@@ -12,7 +12,7 @@ namespace DidiFrame.Client.DSharp.Entities
 	public sealed class Role : IRole
 	{
 		private readonly ObjectSourceDelegate<DiscordRole> role;
-		private readonly Server server;
+		private readonly ServerWrap server;
 
 
 		/// <summary>
@@ -21,7 +21,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="id">Id of role</param>
 		/// <param name="role">Base DiscordRole from DSharp source</param>
 		/// <param name="server">Base server object wrap</param>
-		public Role(ulong id, ObjectSourceDelegate<DiscordRole> role, Server server)
+		public Role(ulong id, ObjectSourceDelegate<DiscordRole> role, ServerWrap server)
 		{
 			Id = id;
 			this.role = role;
@@ -40,6 +40,8 @@ namespace DidiFrame.Client.DSharp.Entities
 
 		/// <inheritdoc/>
 		public IServer Server => server;
+
+		public ServerWrap BaseServer => server;
 
 		/// <summary>
 		/// Base discord role from DSharp

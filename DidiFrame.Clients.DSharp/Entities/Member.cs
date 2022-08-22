@@ -13,7 +13,7 @@ namespace DidiFrame.Client.DSharp.Entities
 	public sealed class Member : User, IMember
 	{
 		private readonly ObjectSourceDelegate<DiscordMember> member;
-		private readonly Server baseServer;
+		private readonly ServerWrap baseServer;
 
 
 		/// <inheritdoc/>
@@ -22,7 +22,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <summary>
 		/// DSharp server where member present. Casted to DidiFrame.Clients.DSharp.Server Server property
 		/// </summary>
-		public Server BaseServer => baseServer;
+		public ServerWrap BaseServer => baseServer;
 
 		/// <inheritdoc/>
 		public override string UserName => AccessBase().Username;
@@ -42,7 +42,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="id">Id of user and member</param>
 		/// <param name="member">Base DiscordMember from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
-		public Member(ulong id, ObjectSourceDelegate<DiscordMember> member, Server server) : base(id, member, server.SourceClient)
+		public Member(ulong id, ObjectSourceDelegate<DiscordMember> member, ServerWrap server) : base(id, member, server.SourceClient)
 		{
 			baseServer = server;
 			this.member = member;
@@ -53,7 +53,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		public bool Equals(IServerEntity? other) => Equals(other as Member);
 
 		/// <inheritdoc/>
-		public bool Equals(IMember? other) => other is Member otherMember && otherMember.IsExist && IsExist && base.Equals(otherMember) && otherMember.Server == Server;
+		public bool Equals(IMember? other) => other is Member otherMember && otherMember.IsExist && IsExist && base.Equals(otherMember) && otherMember.Server.Equals(Server);
 
 		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as Member);

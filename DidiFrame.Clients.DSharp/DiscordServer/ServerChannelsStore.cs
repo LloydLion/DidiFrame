@@ -27,7 +27,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		public ServerChannelsStore(Server server)
 		{
 			this.server = server;
-			globalCategory = new(server);
+			globalCategory = new(server.CreateWrap());
 		}
 
 
@@ -113,7 +113,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			{
 				return channels.Values
 					.Where(s => s.IsCategory == false)
-					.Select(s => Channel.Construct(s.Id, s.Type.GetAbstract(), GetChannelSource(s.Id, false), server))
+					.Select(s => Channel.Construct(s.Id, s.Type.GetAbstract(), GetChannelSource(s.Id, false), server.CreateWrap()))
 					.ToArray();
 			}
 		}
@@ -132,7 +132,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			lock (syncRoot)
 			{
 				if (id is null) return globalCategory;
-				else return new ChannelCategory(id.Value, GetChannelSource(id.Value, true), server);
+				else return new ChannelCategory(id.Value, GetChannelSource(id.Value, true), server.CreateWrap());
 			}
 		}
 
@@ -142,7 +142,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			{
 				return channels.Values
 					.Where(s => s.IsCategory)
-					.Select(s => new ChannelCategory(s.Id, GetChannelSource(s.Id, true), server))
+					.Select(s => new ChannelCategory(s.Id, GetChannelSource(s.Id, true), server.CreateWrap()))
 					.Append(globalCategory)
 					.ToArray();
 			}
@@ -206,9 +206,9 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 						else return GetCategory(dchannel.ParentId);
 					});
 
-					return new TextThread(id, parent, source, server, category);
+					return new TextThread(id, parent, source, server.CreateWrap(), category);
 				}
-				else return Channel.Construct(id, discordChannel.Type.GetAbstract(), GetChannelSource(id, false), server);
+				else return Channel.Construct(id, discordChannel.Type.GetAbstract(), GetChannelSource(id, false), server.CreateWrap());
 			}
 		}
 	}

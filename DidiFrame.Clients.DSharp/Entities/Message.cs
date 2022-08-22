@@ -69,7 +69,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		public Task DeleteAsync() => owner.BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().DeleteAsync(), new(SafeOperationsExtensions.NotFoundInfo.Type.Message, Id));
 
 		/// <inheritdoc/>
-		public IInteractionDispatcher GetInteractionDispatcher() => ((Server)owner.Server).GetInteractionDispatcherFor(this);
+		public IInteractionDispatcher GetInteractionDispatcher() => owner.BaseServer.GetInteractionDispatcherFor(this);
 
 		/// <inheritdoc/>
 		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
@@ -82,7 +82,7 @@ namespace DidiFrame.Client.DSharp.Entities
 			else return owner.BaseServer.SourceClient.DoSafeOperationAsync(async () =>
 			{
 				var currentMessage = await AccessBase().ModifyAsync(MessageConverter.ConvertUp(sendModel));
-				((Server)TextChannel.Server).CacheMessage(currentMessage);
+				owner.BaseServer.CacheMessage(currentMessage);
 			}, new(SafeOperationsExtensions.NotFoundInfo.Type.Message, Id));
 		}
 

@@ -76,14 +76,14 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 		{
 			if (e.Interaction.Type == InteractionType.ApplicationCommand)
 			{
-				var server = (Server)client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
+				var server = client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
 				var result = await behaviorModel.ProcessInteraction(convertedCommands, e.Interaction, server);
 				if (result is null) return;
 				else callback?.Invoke(this, result, new(result.SendData.Invoker, result.SendData.Channel), new StateObject(e.Interaction));
 			}
 			else if (e.Interaction.Type == InteractionType.AutoComplete)
 			{
-				var server = (Server)client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
+				var server = client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
 				await behaviorModel.ProcessAutoComplite(convertedCommands, e.Interaction, server);
 			}
 		}
@@ -108,7 +108,7 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			switch (result.ResultType)
 			{
 				case UserCommandResult.Type.Message:
-					var server = (Server)client.GetServer(state.Interaction.GuildId ?? throw new ImpossibleVariantException());
+					var server = client.GetServer(state.Interaction.GuildId ?? throw new ImpossibleVariantException());
 
 					var msg = MessageConverter.ConvertUp(result.GetRespondMessage());
 					await state.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(msg).AsEphemeral());
@@ -117,7 +117,7 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 					if (subscriber is not null)
 					{
 						var responce = await state.Interaction.GetOriginalResponseAsync();
-						var dispatcher = server.InteractionDispatcherFactory.CreateInstanceInTemporalMode(new Message(responce.Id, () => responce, (TextChannelBase)server.GetChannel(responce.ChannelId)));
+						var dispatcher = server.CreateTemporalDispatcherForUnregistedMessage(responce);
 						subscriber(dispatcher);
 					}
 
@@ -286,7 +286,7 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			/// <param name="interaction">Interaction dsharp wrap</param>
 			/// <param name="server">Server where interaction has benn called</param>
 			/// <returns>Task with pre user command context that contains info about raw arguments</returns>
-			public virtual async Task<UserCommandPreContext?> ProcessInteraction(IReadOnlyDictionary<string, ApplicationCommandPair> convertedCommands, DiscordInteraction interaction, Server server)
+			public virtual async Task<UserCommandPreContext?> ProcessInteraction(IReadOnlyDictionary<string, ApplicationCommandPair> convertedCommands, DiscordInteraction interaction, ServerWrap server)
 			{
 				var channel = server.GetChannel(interaction.ChannelId).AsText();              //Get channel where interaction was created
 				var member = server.GetMember(interaction.User.Id);                           //Get member who created interaction
@@ -334,7 +334,7 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			/// <param name="interaction">Interaction dsharp wrap</param>
 			/// <param name="server">Server where interaction has benn called</param>
 			/// <returns>Operation wait task</returns>
-			public virtual async Task ProcessAutoComplite(IReadOnlyDictionary<string, ApplicationCommandPair> convertedCommands, DiscordInteraction interaction, Server server)
+			public virtual async Task ProcessAutoComplite(IReadOnlyDictionary<string, ApplicationCommandPair> convertedCommands, DiscordInteraction interaction, ServerWrap server)
 			{
 				var channel = server.GetChannel(interaction.ChannelId).AsText();                      //Get channel where interaction was created
 				var member = server.GetMember(interaction.User.Id);                                   //Get member who created interaction
@@ -394,7 +394,7 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			/// <exception cref="NotSupportedException">If target convertation type is not supported</exception>
 			/// <exception cref="ArgumentConvertationException">If input has invalid foramt for some types</exception>
 			/// <exception cref="InvalidCastException">If input has invalid type</exception>
-			protected virtual object ConvertValueUp(Server server, object raw, UserCommandArgument.Type type)
+			protected virtual object ConvertValueUp(ServerWrap server, object raw, UserCommandArgument.Type type)
 			{
 				return type switch
 				{

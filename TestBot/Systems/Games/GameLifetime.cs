@@ -223,14 +223,14 @@ namespace TestBot.Systems.Games
 		private static void Validate(GameModel baseObj)
 		{
 			foreach (var member in baseObj.Invited)
-				if (member.Server != baseObj.Server)
+				if (member.Server.Equals(baseObj.Server) == false)
 					throw new ArgumentException("Some invited member was from other server", nameof(baseObj));
-				else if (member == baseObj.Creator)
+				else if (member.Equals(baseObj.Creator))
 					throw new ArgumentException("Some invited member was creator", nameof(baseObj));
 			foreach (var member in baseObj.InGame)
-				if (member.Server != baseObj.Server)
+				if (member.Server.Equals(baseObj.Server) == false)
 					throw new ArgumentException("Some in-game member from other server", nameof(baseObj));
-				else if (member == baseObj.Creator)
+				else if (member.Equals(baseObj.Creator))
 					throw new ArgumentException("Some in-game member was creator", nameof(baseObj));
 			if (string.IsNullOrWhiteSpace(baseObj.Name))
 				throw new ArgumentException("Name was whitespace", nameof(baseObj));

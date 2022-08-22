@@ -145,7 +145,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			{
 				try
 				{
-					server.SourceClient.CultureProvider?.SetupCulture(server);
+					server.SourceClient.CultureProvider?.SetupCulture(server.CreateWrap());
 
 					foreach (var item in holders)
 					{

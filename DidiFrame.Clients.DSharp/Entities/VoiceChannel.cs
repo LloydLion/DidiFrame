@@ -8,7 +8,7 @@ namespace DidiFrame.Client.DSharp.Entities
 	/// </summary>
 	public class VoiceChannel : TextChannelBase, IVoiceChannel
 	{
-		private readonly Server server;
+		private readonly ServerWrap server;
 
 
 		/// <summary>
@@ -17,7 +17,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="id">Id of channel</param>
 		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server wrap object</param>
-		public VoiceChannel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, Server server) : base(id, channel, server)
+		public VoiceChannel(ulong id, ObjectSourceDelegate<DiscordChannel> channel, ServerWrap server) : base(id, channel, server)
 		{
 			this.server = server;
 		}

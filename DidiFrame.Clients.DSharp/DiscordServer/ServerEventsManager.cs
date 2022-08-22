@@ -92,7 +92,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			{
 				lock (syncRoot)
 				{
-					server.SourceClient.CultureProvider?.SetupCulture(server);
+					server.SourceClient.CultureProvider?.SetupCulture(server.CreateWrap());
 
 					logger.Log(LogLevel.Trace, ServerObjectCreatedID, "{EnityName} was created ({ModifyStatus}) in {ServerId}",
 						typeof(TEntity).Name, isModified ? "Modified" : "Created", server.Id);
@@ -116,7 +116,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			{
 				lock (syncRoot)
 				{
-					server.SourceClient.CultureProvider?.SetupCulture(server);
+					server.SourceClient.CultureProvider?.SetupCulture(server.CreateWrap());
 
 					logger.Log(LogLevel.Trace, ServerObjectDeletedID, "{EnityName} with id {Id} was deleted from {ServerId}", typeof(TEntity).Name, id, server.Id);
 
@@ -124,7 +124,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 					{
 						try
 						{
-							handler.Invoke(server, id);
+							handler.Invoke(server.CreateWrap(), id);
 						}
 						catch (Exception ex)
 						{

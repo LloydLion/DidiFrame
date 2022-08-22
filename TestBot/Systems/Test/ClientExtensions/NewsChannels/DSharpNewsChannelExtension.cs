@@ -5,10 +5,10 @@ using DidiFrame.ClientExtensions.Reflection;
 
 namespace TestBot.Systems.Test.ClientExtensions.NewsChannels
 {
-	[TargetExtensionType(typeof(Server))]
+	[TargetExtensionType(typeof(ServerWrap))]
 	internal class DSharpNewsChannelExtension : INewsChannelExtension, IDisposable
 	{
-		public DSharpNewsChannelExtension(Server _, IServerExtensionContext<INewsChannelExtension> context)
+		public DSharpNewsChannelExtension(ServerWrap _, IServerExtensionContext<INewsChannelExtension> context)
 		{
 			context.SetReleaseCallback(Dispose);
 		}

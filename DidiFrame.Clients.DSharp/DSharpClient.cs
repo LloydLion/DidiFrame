@@ -10,6 +10,7 @@ using DidiFrame.UserCommands.Modals;
 using Microsoft.Extensions.Localization;
 using DidiFrame.ClientExtensions;
 using DidiFrame.Clients.DSharp.ClientUtils;
+using DidiFrame.Utils.Collections;
 
 namespace DidiFrame.Client.DSharp
 {
@@ -49,7 +50,7 @@ namespace DidiFrame.Client.DSharp
 			get
 			{
 				ThrowUnlessConnected();
-				return (IReadOnlyCollection<IServer>)servers.Servers.Values;
+				return SelectCollection<ServerWrap>.Create(servers.ServerCollection, s => s.CreateWrap());
 			}
 		}
 
@@ -122,10 +123,18 @@ namespace DidiFrame.Client.DSharp
 
 
 		/// <inheritdoc/>
-		public IServer GetServer(ulong id)
+		IServer IClient.GetServer(ulong id) => GetServer(id);
+		
+		public ServerWrap GetServer(ulong id)
 		{
 			ThrowUnlessConnected();
-			return servers.Servers[id];
+			return servers.Servers[id].CreateWrap();
+		}
+
+		internal Server? GetRawServer(ulong id)
+		{
+			ThrowUnlessConnected();
+			return servers.Servers.ContainsKey(id) ? servers.Servers[id] : null;
 		}
 
 		/// <inheritdoc/>

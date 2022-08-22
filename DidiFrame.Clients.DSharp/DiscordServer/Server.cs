@@ -19,7 +19,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IServer
 	/// </summary>
-	public sealed class Server : IServer, IDisposable
+	public sealed class Server : IDisposable
 	{
 		private readonly DiscordGuild guild;
 		private readonly DSharpClient client;
@@ -94,12 +94,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		/// <summary>
 		/// Base DiscordGuild from DSharp
 		/// </summary>
-		public DiscordGuild Guild => AccessBase();
-
-		public InteractionDispatcherFactory InteractionDispatcherFactory => dispatcherFactory;
-
-		/// <inheritdoc/>
-		public bool IsClosed { get; private set; }
+		public DiscordGuild Guild => guild;
 
 
 		/// <summary>
@@ -128,6 +123,9 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 			}
 		}
 
+		public IInteractionDispatcher CreateTemporalDispatcherForUnregistedMessage(DiscordMessage message) =>
+			dispatcherFactory.CreateInstanceInTemporalMode(new Message(message.Id, () => message, (TextChannelBase)GetChannel(message.ChannelId)));
+
 		internal void AddMessageSentEventHandler(DiscordChannel channel, MessageSentEventHandler? handler) => messagesEvents.AddHandler(channel, handler);
 
 		internal void AddMessageDeletedEventHandler(DiscordChannel channel, MessageDeletedEventHandler? handler) => messagesEvents.AddHandler(channel, handler);
@@ -145,7 +143,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		internal void ResetInteractionDispatcherFor(ulong messageId, DiscordChannel channel) => dispatcherFactory.ResetInstance(messageId, channel);
 
 		/// <inheritdoc/>
-		public IMember GetMember(ulong id) => new Member(id, () => serverCache.GetFrame<DiscordMember>().GetNullableObject(id), this);
+		public IMember GetMember(ulong id) => new Member(id, () => serverCache.GetFrame<DiscordMember>().GetNullableObject(id), CreateWrap());
 
 		/// <inheritdoc/>
 		public IReadOnlyCollection<IMember> GetMembers() => serverCache.GetFrame<DiscordMember>().GetObjects().Select(s => GetMember(s.Id)).ToArray();
@@ -163,40 +161,18 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		public IReadOnlyCollection<IChannel> GetChannels() => channels.GetChannels();
 
 		/// <inheritdoc/>
-		public IRole GetRole(ulong id) => new Role(id, () => serverCache.GetFrame<DiscordRole>().GetNullableObject(id), this);
+		public IRole GetRole(ulong id) => new Role(id, () => serverCache.GetFrame<DiscordRole>().GetNullableObject(id), CreateWrap());
 
 		/// <inheritdoc/>
 		public IReadOnlyCollection<IRole> GetRoles() => serverCache.GetFrame<DiscordRole>().GetObjects().Select(s => GetRole(s.Id)).ToArray();
 
-		/// <inheritdoc/>
-		public bool Equals(IServer? other) => other is Server server && server.Id == Id;
-
-		/// <inheritdoc/>
-		public override bool Equals(object? obj) => Equals(obj as Server);
-
-		/// <inheritdoc/>
-		public override int GetHashCode() => Id.GetHashCode();
-
 		public TExtension CreateExtension<TExtension>() where TExtension : class
 		{
-			var factory = (IServerExtensionFactory<TExtension>)client.ServerExtensions.Single(s => s is IServerExtensionFactory<TExtension> factory && factory.TargetServerType.IsInstanceOfType(this));
-			return factory.Create(this, extensionContextFactory.CreateInstance<TExtension>());
+			var wrap = CreateWrap();
+			var factory = (IServerExtensionFactory<TExtension>)client.ServerExtensions.Single(s => s is IServerExtensionFactory<TExtension> factory && factory.TargetServerType.IsInstanceOfType(wrap));
+			return factory.Create(wrap, extensionContextFactory.CreateInstance<TExtension>());
 		}
 
-		private DiscordGuild AccessBase([CallerMemberName] string nameOfCaller = "") =>
-			IsClosed ? throw new ObjectDoesNotExistException(nameOfCaller) : guild;
-
-		private T ThrowIfClosed<T>(Func<T> getter, [CallerMemberName] string nameOfCaller = "")
-		{
-			if (IsClosed) throw new ObjectDoesNotExistException(nameOfCaller);
-			else return getter();
-		}
-
-		private void ThrowIfClosed([CallerMemberName] string nameOfCaller = "")
-		{
-			if (IsClosed)
-				throw new ObjectDoesNotExistException(nameOfCaller);
-		}
 
 		/// <inheritdoc/>
 		public void Dispose()
@@ -224,10 +200,10 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 
 			globalCacheUpdateTask.Wait();
 
-			IsClosed = true;
-
 			GC.SuppressFinalize(this);
 		}
+
+		public ServerWrap CreateWrap() => new(this);
 
 
 		/// <summary>
@@ -504,12 +480,10 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 		{
 			client.DoSafeOperation(() =>
 			{
-				var currentGuild = AccessBase(nameof(UpdateServerCache));
-
 				var membersFrame = serverCache.GetFrame<DiscordMember>();
 				lock (membersFrame)
 				{
-					var from = currentGuild.GetAllMembersAsync().Result.ToDictionary(s => s.Id);
+					var from = guild.GetAllMembersAsync().Result.ToDictionary(s => s.Id);
 					var difference = new CollectionDifference<DiscordMember, DiscordMember, ulong>(from.Values, membersFrame.GetObjects(), s => s.Id, s => s.Id);
 					foreach (var item in difference.CalculateDifference())
 						if (item.Type == CollectionDifference.OperationType.Add)
@@ -528,7 +502,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 				var rolesFrame = serverCache.GetFrame<DiscordRole>();
 				lock (rolesFrame)
 				{
-					var from = currentGuild.Roles;
+					var from = guild.Roles;
 					var difference = new CollectionDifference<DiscordRole, DiscordRole, ulong>(from.Values.ToArray(), rolesFrame.GetObjects(), s => s.Id, s => s.Id);
 					foreach (var item in difference.CalculateDifference())
 						if (item.Type == CollectionDifference.OperationType.Add)
@@ -546,10 +520,10 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 
 				lock (channels.SyncRoot)
 				{
-					var newData = guild.GetChannelsAsync().Result;
+					var newData = this.guild.GetChannelsAsync().Result;
 
 					var archivedThreads = newData.SelectMany(s => s.ListPublicArchivedThreadsAsync().Result.Threads.Concat(s.ListPrivateArchivedThreadsAsync().Result.Threads));
-					var activeThreads = guild.ListActiveThreadsAsync().Result.Threads;
+					var activeThreads = this.guild.ListActiveThreadsAsync().Result.Threads;
 					var from = newData.Concat(options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? activeThreads.Concat(archivedThreads) : activeThreads).ToDictionary(s => s.Id);
 
 					var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channels.GetRawChannels(categoriesFilter: null), s => s.Id, s => s.Id);
@@ -610,7 +584,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 
 			public void InvokeSentEvent(IMessage message, bool isModified)
 			{
-				owner.SourceClient.CultureProvider?.SetupCulture(owner);
+				owner.SourceClient.CultureProvider?.SetupCulture(owner.CreateWrap());
 
 				foreach (var handler in messageSentGHandlers.Concat(messageSentHandlers.GetOrAdd(message.TextChannel.Id, _ => new())))
 				{
@@ -628,7 +602,7 @@ namespace DidiFrame.Client.DSharp.DiscordServer
 
 			public void InvokeDeletedEvent(ITextChannelBase textChannel, ulong messageId)
 			{
-				owner.SourceClient.CultureProvider?.SetupCulture(owner);
+				owner.SourceClient.CultureProvider?.SetupCulture(owner.CreateWrap());
 
 				foreach (var handler in messageDeletedGHandlers.Concat(messageDeletedHandlers.GetOrAdd(textChannel.Id, _ => new())))
 				{

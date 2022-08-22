@@ -48,6 +48,8 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 
 		public IReadOnlyDictionary<ulong, Server> Servers => servers;
 
+		public IReadOnlyCollection<Server> ServerCollection => servers.Values;
+
 
 		public void StartObserveTask()
 		{
@@ -142,7 +144,7 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			{
 				try
 				{
-					sub.Invoke(newServer);
+					sub.Invoke(newServer.CreateWrap());
 				}
 				catch (Exception ex)
 				{
@@ -162,7 +164,7 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			{
 				try
 				{
-					sub.Invoke(server);
+					sub.Invoke(server.CreateWrap());
 				}
 				catch (Exception ex)
 				{

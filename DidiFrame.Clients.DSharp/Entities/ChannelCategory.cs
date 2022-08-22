@@ -12,7 +12,7 @@ namespace DidiFrame.Client.DSharp.Entities
 	public sealed class ChannelCategory : IChannelCategory
 	{
 		private readonly ObjectSourceDelegate<DiscordChannel>? category;
-		private readonly Server server;
+		private readonly ServerWrap server;
 
 
 		/// <inheritdoc/>
@@ -38,7 +38,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// <param name="category">Base DiscordChannel that will be used as category</param>
 		/// <param name="server">Owner server wrap object</param>
 		/// <exception cref="ArgumentException">If base channel's server and transmited server wrap are different</exception>
-		public ChannelCategory(ulong id, ObjectSourceDelegate<DiscordChannel> category, Server server)
+		public ChannelCategory(ulong id, ObjectSourceDelegate<DiscordChannel> category, ServerWrap server)
 		{
 			Id = id;
 			this.category = category;
@@ -49,7 +49,7 @@ namespace DidiFrame.Client.DSharp.Entities
 		/// Create new instance of DidiFrame.Clients.DSharp.ChannelCategory that will be used as global category
 		/// </summary>
 		/// <param name="server">Owner server wrap object</param>
-		public ChannelCategory(Server server)
+		public ChannelCategory(ServerWrap server)
 		{
 			Id = null;
 			category = null;

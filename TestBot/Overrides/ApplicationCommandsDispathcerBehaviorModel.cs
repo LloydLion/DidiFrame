@@ -5,7 +5,7 @@ namespace TestBot.Overrides
 {
 	internal class ApplicationCommandsDispathcerBehaviorModel : ApplicationCommandDispatcher.BehaviorModel
 	{
-		protected override object ConvertValueUp(Server server, object raw, UserCommandArgument.Type type)
+		protected override object ConvertValueUp(ServerWrap server, object raw, UserCommandArgument.Type type)
 		{
 			switch (type)
 			{
