@@ -19,11 +19,11 @@ namespace TestBot.Systems.Voice
 		}
 
 
-		protected async override void OnDisposeInternal()
+		public async override void Dispose()
 		{
 			using var baseObj = GetReadOnlyBase();
 
-			try { await baseObj.Object.BaseChannel.DeleteAsync(); }
+			try { await baseObj.Object.BaseChannel.DeleteAsync().ConfigureAwait(continueOnCapturedContext: false); }
 			catch (Exception ex) { logger.Log(LogLevel.Warning, ChannelDeleteErrorID, ex, "Enbale to delete created voice channel"); }
 		}
 
@@ -43,9 +43,9 @@ namespace TestBot.Systems.Voice
 
 		public string GetName() => GetBaseProperty(s => s.Name);
 
-		protected override void OnBuild(CreatedVoiceChannel initialBase)
-{
-			AddReport(new MessageAliveHolder<CreatedVoiceChannel>(s => s.ReportMessage, CreateReport, (_1, _2, _3) => { }));
+		protected override void PrepareStateMachine(CreatedVoiceChannel initialBase, InitialDataBuilder builder)
+		{
+			AddReport(new MessageAliveHolder<CreatedVoiceChannel>(s => s.ReportMessage, CreateReport, (_1, _2, _3) => { }), builder);
 
 			AddTransit(VoiceChannelState.Timeout, VoiceChannelState.Alive, 10000);
 			AddTransit(VoiceChannelState.Alive, null, AliveDisposingTransit);

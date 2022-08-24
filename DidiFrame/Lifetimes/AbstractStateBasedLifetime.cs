@@ -8,288 +8,88 @@ namespace DidiFrame.Lifetimes
 	/// </summary>
 	/// <typeparam name="TState">Internal statemachine state type</typeparam>
 	/// <typeparam name="TBase">Type of base object of that lifetime </typeparam>
-	public abstract class AbstractStateBasedLifetime<TState, TBase> : ILifetime<TBase>
+	public abstract class AbstractStateBasedLifetime<TState, TBase> : AbstractLifetime<TBase>
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
-		private ILifetimeContext<TBase>? context;
+		private const string StateMachineField = "stateMachine";
 		private readonly StateMachineBuilder<TState> smBuilder;
-		private IStateMachine<TState>? machine;
-		private bool hasBuilt = false;
-		private Guid? guid;
-		private IServer? server;
-		private readonly Dictionary<TState, List<Action>> startupHandlers = new();
-		private readonly List<Action<TState>> stateHandlers = new();
-		private readonly WaitFor waitForCrash = new();
-		private readonly object syncRoot = new();
-
-
-		/// <summary>
-		/// If lifetime is newly created else restored from saved base
-		/// </summary>
-		protected bool IsNewlyCreated => GetContext().IsNewlyCreated;
-
-		/// <summary>
-		/// If lifetime is finalized
-		/// </summary>
-		protected bool IsFinalized { get; private set; }
-
-		/// <summary>
-		/// Lifetime id
-		/// </summary>
-		public Guid Guid => guid ?? throw new InvalidOperationException("Enable to get GUID before starting");
-
-		/// <summary>
-		/// Server that contains this lifetime
-		/// </summary>
-		public IServer Server => server ?? throw new InvalidOperationException("Enable to get Server before starting");
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Lifetimes.AbstractStateBasedLifetime`2
 		/// </summary>
 		/// <param name="logger">Logger for lifetime</param>
-		protected AbstractStateBasedLifetime(ILogger logger)
+		protected AbstractStateBasedLifetime(ILogger logger) : base(logger)
 		{
 			smBuilder = new StateMachineBuilder<TState>(logger);
-			smBuilder.AddStateTransitWorker(new ResetTransitWorker<TState>(null, waitForCrash.Await));
+
+			LifetimeRan += OnRun;
+			LifetimeUpdated += OnUpdate;
 		}
 
 
-		/// <summary>
-		/// Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed
-		/// </summary>
-		/// <param name="smFreeze">Statemachine freeze information, it will be automaticly disposed</param>
-		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
-		protected virtual ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
-		{
-			var smFreezeIn = GetStateMachine().Freeze();
-			smFreeze = smFreezeIn;
+		protected event StateChangedEventHandler<TState>? StateChanged;
 
-			var baseObject = GetContext().AccessBase().Open();
-			var startState = baseObject.Object.State;
 
-			return new ObjectHolder<TBase>(baseObject.Object, (holder) =>
-			{
-				Exception? ex = null;
-
-				if (!startState.Equals(baseObject.Object.State))
-				{
-					ex = new InvalidOperationException("Enable to change state in base object of lifetime. State reverted and object saved");
-					baseObject.Object.State = startState;
-				}
-
-				baseObject.Dispose();
-				smFreezeIn.Dispose();
-
-				if (ex is not null) throw ex;
-			});
-		}
-
-		/// <summary>
-		/// Provides change-safe and thread-safe access to base object through context, automaticly freeze state machine util return disposed
-		/// </summary>
-		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after writings</returns>
-		protected ObjectHolder<TBase> GetBase() => GetBase(out _);
-
-		/// <summary>
-		/// Provides fast method to get base's property
-		/// </summary>
-		/// <typeparam name="TTarget">Target value type</typeparam>
-		/// <param name="selector">Readonly selector from base to TTarget</param>
-		/// <returns>selector execution result</returns>
-		protected TTarget GetBaseProperty<TTarget>(Func<TBase, TTarget> selector)
-		{
-			var baseObj = GetReadOnlyBase();
-			var value = selector(baseObj.Object);
-			baseObj.Dispose();
-			return value;
-		}
-
-		/// <summary>
-		/// PProvides change-safe and thread-safe readonly access to base object through context, if changes will be detected lifetime will crash
-		/// </summary>
-		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after readings</returns>
-		protected virtual ObjectHolder<TBase> GetReadOnlyBase()
-		{
-			var objectHolder = GetContext().AccessBase().Open();
-			var baseObject = objectHolder.Object;
-			var prevHashCode = baseObject.GetHashCode();
-
-			return new ObjectHolder<TBase>(baseObject, _ =>
-			{
-				objectHolder.Dispose();
-				if (prevHashCode != baseObject.GetHashCode())
-				{
-					var ex = new InvalidOperationException("Error, base was changed in readonly base accessor. Lifetime is collapsing");
-					GetContext().CrashPipeline(ex, false);
-					throw ex;
-				}
-			});
-		}
-
-		/// <summary>
-		/// Get object controller for base obj
-		/// </summary>
-		/// <param name="asReadOnly">If need get readonly controller</param>
-		/// <returns>Object controller</returns>
-		protected IObjectController<TBase> GetBaseController(bool asReadOnly = true)
-		{
-			return new BaseWrapController(this, asReadOnly);
-		}
+		protected IStateMachine<TState> StateMachine => Data.Get<IStateMachine<TState>>(StateMachineField);
+		
 
 		/// <inheritdoc/>
-		public void Run(TBase initialBase, ILifetimeContext<TBase> context)
+		private void OnRun(TBase initialBase, ILifetimeContext<TBase> context, InitialDataBuilder builder)
 		{
-			this.context = context;
-			server = initialBase.Server;
-			guid = initialBase.Guid;
+			PrepareStateMachine(initialBase, builder);
 
-			OnBuild(initialBase);
+			var machine = smBuilder.Build();
+			machine.StateChanged += OnStateChanged;
 
-			machine = smBuilder.Build();
-			machine.StateChanged += Machine_StateChanged;
-			hasBuilt = true;
-
-			OnRun(initialBase.State, initialBase);
-
-			foreach (var item in startupHandlers)
-				foreach (var handler in item.Value) handler();
+			builder.AddData(StateMachineField, machine);
 
 			machine.Start(initialBase.State);
 		}
 
-		private void Machine_StateChanged(IStateMachine<TState> stateMahcine, TState oldState)
+		private void OnUpdate()
 		{
-			if (IsFinalized) return;
+			StateMachine.UpdateState();
+		}
 
-			var cs = stateMahcine.CurrentState;
-			if (cs.HasValue == false)
-			{
+		private void OnStateChanged(IStateMachine<TState> stateMahcine, TState oldState)
+		{
+			var newState = stateMahcine.CurrentState;
+
+			if (newState is null)
 				FinalizeLifetime();
-			}
 			else
 			{
-				using (var b = GetContext().AccessBase().Open()) //It is not bug
+				using var b = base.GetBase(); //It is not bug
+				b.Object.State = newState.Value;
+			}
+
+			StateChanged?.Invoke(stateMahcine, oldState);
+		}
+
+		protected sealed override ObjectHolder<TBase> GetBase() => GetBaseAndControlState().AsHolder();
+
+		protected virtual StateControlledObjectHolder GetBaseAndControlState()
+		{
+			StateControlledObjectHolder? buffer = null;
+
+			SynchronizationContext.Send(s =>
+			{
+				var baseBase = base.GetBase();
+				buffer = new StateControlledObjectHolder(baseBase.Object, _ =>
 				{
-					b.Object.State = cs.Value;
-				}
+					baseBase.Dispose();
+					return StateMachine.UpdateState();
+				});
+			}, null);
 
-				foreach (var handler in stateHandlers) handler(oldState);
-			}
+			return buffer ?? throw new ImpossibleVariantException();
 		}
 
-		/// <summary>
-		/// Gets a cached lifetime updater instance. No manual updates required
-		/// </summary>
-		/// <returns>The cached updater</returns>
-		/// <exception cref="InvalidOperationException">If invoked before Run() call (example in ctor)</exception>
-		private ILifetimeContext<TBase> GetContext()
-		{
-			lock (syncRoot)
-			{
-				if (!hasBuilt)
-					throw new InvalidOperationException("Enable to get context before starting");
-				return context ?? throw new ImpossibleVariantException();
-			}
-		}
+		protected abstract void PrepareStateMachine(TBase initialBase, InitialDataBuilder builder);
 
-		/// <summary>
-		/// Throws exception if lifetime is finalized
-		/// </summary>
-		/// <exception cref="InvalidOperationException"></exception>
-		protected void ThrowIfFinalized()
-		{
-			lock (syncRoot)
-			{
-				if (IsFinalized)
-					throw new InvalidOperationException("Lifetime is finalized");
-			}
-		}
-
-		/// <summary>
-		/// Builds lifetime's statemachine and prepares it to work
-		/// </summary>
-		/// <param name="initialBase"></param>
-		protected abstract void OnBuild(TBase initialBase);
-
-		private void FinalizeLifetime()
-		{
-			lock (syncRoot)
-			{
-				if (IsFinalized == false)
-				{
-					IsFinalized = true;
-					OnFinalize();
-					OnDispose();
-					GetContext().FinalizeLifetime();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Craches lifetime with error
-		/// </summary>
-		/// <param name="exception">Exception that crashed lifetime</param>
-		/// <param name="isInvalidBase">If base object was invalid</param>
-		protected void CrashLifetime(Exception exception, bool isInvalidBase)
-		{
-			lock (syncRoot)
-			{
-				if (IsFinalized == false)
-				{
-					IsFinalized = true;
-					OnDispose();
-					GetContext().CrashPipeline(exception, isInvalidBase);
-					waitForCrash.Callback();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets internal statemahcine
-		/// </summary>
-		/// <returns>Statemachine</returns>
-		/// <exception cref="InvalidOperationException">If invoked before Run() call (example in ctor)</exception>
-		protected IStateMachine<TState> GetStateMachine()
-		{
-			if (!hasBuilt)
-				throw new InvalidOperationException("Enable to get state machine before starting");
-			return machine ?? throw new ImpossibleVariantException();
-		}
-
-		/// <summary>
-		/// Event handler. Calls on start. You mustn't call base.OnRun(TState)
-		/// </summary>
-		/// <param name="state">Initial statemachine state</param>
-		/// <param name="initialBase">Initial value of base, cannot be saved in lifetime</param>
-		protected virtual void OnRun(TState state, TBase initialBase)
-		{
-
-		}
-
-		/// <summary>
-		/// Event handler. Calls on dispose (crash or finalize)
-		/// </summary>
-		protected virtual void OnDispose()
-		{
-
-		}
-
-		/// <summary>
-		/// Event handler. Calls on finalize
-		/// </summary>
-		protected virtual void OnFinalize()
-		{
-
-		}
-
-		private void ThrowIfBuilt()
-		{
-			if (hasBuilt)
-				throw new InvalidOperationException("State machine done, please don't invoke any constructing methods");
-		}
-
+		#region SM transit creators
 		private static Func<CancellationToken, Task> AwaitCycleTask(Func<CancellationToken, Task<bool>> taskCreator)
 		{
 			return async (token) =>
@@ -299,7 +99,6 @@ namespace DidiFrame.Lifetimes
 			};
 		}
 
-		//Constructing methods
 		/// <summary>
 		/// Must be invoked only in ctor! Directly adds transit worker into building statemachine
 		/// </summary>
@@ -307,7 +106,7 @@ namespace DidiFrame.Lifetimes
 		/// <exception cref="InvalidOperationException">If invoked outside ctor (after Run() calling)</exception>
 		protected void AddTransit(IStateTransitWorker<TState> worker)
 		{
-			ThrowIfBuilt();
+			ThrowIfBuilden();
 			smBuilder.AddStateTransitWorker(worker);
 		}
 
@@ -347,49 +146,40 @@ namespace DidiFrame.Lifetimes
 		/// <param name="taskCreator">Delegate that will create tasks using CancellationToken</param>
 		protected void AddTransit(TState from, TState? to, Func<CancellationToken, Task> taskCreator) =>
 			AddTransit(new TaskTransitWorker<TState>(from, to, taskCreator));
+		#endregion
 
-		/// <summary>
-		/// Registers handler for event that fired on startup and call handler if initial state equals given
-		/// </summary>
-		/// <param name="state">Target initial state</param>
-		/// <param name="handler">Handler to register</param>
-		protected void AddStartup(TState state, Action handler)
+
+		protected sealed class StateControlledObjectHolder : IDisposable
 		{
-			ThrowIfBuilt();
-			if (startupHandlers.ContainsKey(state) == false) startupHandlers.Add(state, new());
-			startupHandlers[state].Add(handler);
-		}
-
-		/// <summary>
-		/// Register handler for event that fired on statemachine state changing and call handler if state equals given. It don't work with inital state on startup
-		/// </summary>
-		/// <param name="state">Target state</param>
-		/// <param name="handler">Handler to register</param>
-		protected void AddHandler(TState state, Action<TState> handler)
-		{
-			ThrowIfBuilt();
-			stateHandlers.Add((old) =>
-				{ if (GetStateMachine().CurrentState.Equals(state)) handler.Invoke(old); });
-		}
+			private readonly ObjectHolder<TBase> holder;
+			private StateUpdateResult<TState>? updateResult;
+			private bool isDisposed;
 
 
-		private sealed class BaseWrapController : IObjectController<TBase>
-		{
-			private readonly AbstractStateBasedLifetime<TState, TBase> lifetime;
-			private readonly bool asReadOnly;
-
-
-			public BaseWrapController(AbstractStateBasedLifetime<TState, TBase> lifetime, bool asReadOnly)
+			public StateControlledObjectHolder(TBase obj, Func<StateControlledObjectHolder, StateUpdateResult<TState>?> finalizer)
 			{
-				this.lifetime = lifetime;
-				this.asReadOnly = asReadOnly;
+				holder = new ObjectHolder<TBase>(obj, _ =>
+				{
+					updateResult = finalizer(this);
+					isDisposed = true;
+				});
 			}
 
 
-			public ObjectHolder<TBase> Open()
+			public TBase Object => holder.Object;
+
+
+			public StateUpdateResult<TState>? GetUpdateResult()
 			{
-				return asReadOnly ? lifetime.GetReadOnlyBase() : lifetime.GetBase();
+				if (isDisposed == false)
+					throw new InvalidOperationException("Enable to get update result before object hodler is disposed");
+
+				return updateResult;
 			}
+
+			public ObjectHolder<TBase> AsHolder() => holder;
+
+			public void Dispose() => holder.Dispose();
 		}
 	}
 }

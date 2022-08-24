@@ -36,7 +36,7 @@
 		/// Check all conditions and updates state if it need
 		/// </summary>
 		/// <returns></returns>
-		public StateUpdateResult<TState> UpdateState();
+		public StateUpdateResult<TState>? UpdateState();
 
 		/// <summary>
 		/// Starts state machine with given initial state
@@ -50,11 +50,5 @@
 		/// <param name="state">Target state</param>
 		/// <returns>Wait task</returns>
 		public Task AwaitForState(TState? state);
-
-		/// <summary>
-		/// Freezes all statemachine threads and processes
-		/// </summary>
-		/// <returns>Freeze control object</returns>
-		public FreezeModel<TState> Freeze();
 	}
 }

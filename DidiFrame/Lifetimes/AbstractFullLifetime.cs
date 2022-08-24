@@ -13,11 +13,11 @@ namespace DidiFrame.Lifetimes
 		where TState : struct
 		where TBase : class, IStateBasedLifetimeBase<TState>
 	{
+		private const string ReportField = "report";
 		private readonly WaitFor waitForClose = new();
-		private readonly ILogger logger;
-		private MessageAliveHolder<TBase>? optionalReport = null;
-		private bool hasReport = false;
-		private bool hasBuilt = false;
+
+
+		protected bool HasReport => Data.AddititionalData.ContainsKey(ReportField);
 
 
 		/// <summary>
@@ -26,7 +26,7 @@ namespace DidiFrame.Lifetimes
 		protected AbstractFullLifetime(ILogger logger) : base(logger)
 		{
 			AddTransit(new ResetTransitWorker<TState>(null, waitForClose.Await));
-			this.logger = logger;
+			LifetimePostRan += OnPostRun;
 		}
 
 
@@ -36,55 +36,41 @@ namespace DidiFrame.Lifetimes
 		public Task CloseAsync()
 		{
 			waitForClose.Callback();
-			return GetStateMachine().AwaitForState(null);
+			return StateMachine.AwaitForState(null);
 		}
 
-		/// <summary>
-		/// Terminates lifetime with redefined reason and exception
-		/// </summary>
-		/// <param name="reason">Reason beacouse lifetime terminating</param>
-		/// <param name="exception">Optional exception</param>
-		protected void Terminate(string reason = "Manual termination", Exception? exception = null)
+		protected override StateControlledObjectHolder GetBaseAndControlState()
 		{
-			CrashLifetime(new LifetimeTerminatedException(GetType(), Guid, reason, exception), false);
-		}
-
-		/// <summary>
-		/// Provides change-safe and thread-safe access to base object, automaticly notify state updater and freeze state machine util return disposed.
-		/// This method is overrided by DidiFrame.Lifetimes.AbstractFullLifetime`2
-		/// </summary>
-		/// <param name="smFreeze">Statemachine freeze information, it will be automaticly disposed</param>
-		/// <returns>DidiFrame.Utils.ObjectHolder`1 objects that must be disposed after wrtings</returns>
-		protected override ObjectHolder<TBase> GetBase(out FreezeModel<TState> smFreeze)
-		{
-			var bo = base.GetBase(out var internalFreeze);
-			smFreeze = internalFreeze;
-
-			return new ObjectHolder<TBase>(bo.Object, async (_) =>
+			StateControlledObjectHolder? buffer = null;
+			SynchronizationContext.Send(s =>
 			{
-				bo.Dispose();
-
-				if (hasReport && internalFreeze.GetResult().HasStateUpdated == false)
+				var bo = base.GetBaseAndControlState();
+				buffer = new StateControlledObjectHolder(bo.Object, _ =>
 				{
-					try
-					{
-						using var baseObj = GetReadOnlyBase();
-						await GetReport().UpdateAsync(baseObj.Object);
-					}
-					catch (Exception ex)
-					{
-						logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime with id {LifetimeId}", Guid);
-					}
-				}
-			});
-		}
+					bo.Dispose();
 
-		private ObjectHolder<TBase> GetBaseForReport() => base.GetBase(out _);
+					//If bo.GetUpdateResult() is not null report already updated in state machine state changed event handler
+					if (HasReport && bo.GetUpdateResult() is null)
+					{
+						Task.Run(() =>
+						{
+							try
+							{
+								using var baseObj = GetReadOnlyBase();
+								GetReport().UpdateAsync(baseObj.Object).Wait();
+							}
+							catch (Exception ex)
+							{
+								Logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime with id {LifetimeId}", Id);
+							}
+						});
+					}
 
-		/// <inheritdoc/>
-		protected override ObjectHolder<TBase> GetReadOnlyBase()
-		{
-			return base.GetReadOnlyBase();
+					return bo.GetUpdateResult();
+				});
+			}, null);
+
+			return buffer ?? throw new ImpossibleVariantException();
 		}
 
 		/// <summary>
@@ -92,20 +78,13 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		/// <param name="state">Initial statemachine state</param>
 		/// <param name="initialBase">Initial value of base, cannot be saved in lifetime</param>
-		protected override void OnRun(TState state, TBase initialBase)
+		protected void OnPostRun(TBase initialBase, InitialData initialData)
 		{
-			hasBuilt = true;
-
-			if (Server.IsClosed)
-			{
-				throw new ArgumentException("Target server has been closed");
-			}
-
-			if (hasReport)
+			if (HasReport)
 			{
 				var report = GetReport();
 
-				GetStateMachine().StateChanged += OnStateChanged;
+				StateMachine.StateChanged += OnStateChanged;
 
 				var channel = report.GetChannel(initialBase);
 
@@ -114,52 +93,27 @@ namespace DidiFrame.Lifetimes
 					throw new ArgumentException($"Target channel ({channel.Id}) for report has been closed");
 				}
 
-				channel.MessageDeleted += AbstractFullLifetime_MessageDeleted;
-				channel.Server.ChannelDeleted += Server_ChannelDeleted;
+				channel.MessageDeleted += OnMessageDeleted;
+				channel.Server.ChannelDeleted += OnChannelDeleted;
 
 				report.StartupAsync(initialBase).Wait();
 			}
-
-			Server.Client.ServerRemoved += Client_ServerRemoved;
-
-			OnRunInternal(state);
 		}
 
 		//Will only subscribed if has report
-		private void Server_ChannelDeleted(IServer server, ulong objectId)
+		private void OnChannelDeleted(IServer server, ulong objectId)
 		{
-			bool ok;
+			bool isDeleted;
 
 			using (var baseObj = GetReadOnlyBase())
 			{
 				var report = GetReport();
-				ok = report.GetChannel(baseObj.Object).Id == objectId;
+				isDeleted = report.GetChannel(baseObj.Object).Id == objectId;
 			}
 
-			if (ok)
+			if (isDeleted)
 			{
-				Terminate("Report channel closed");
-			}
-		}
-
-		private void Client_ServerRemoved(IServer server)
-		{
-			if (Server.Equals(server))
-			{
-				Terminate("Server closed");
-			}
-		}
-
-		private async void AbstractFullLifetime_MessageDeleted(IClient sender, ITextChannelBase textChannel, ulong messageId)
-		{
-			try
-			{
-				using var baseObj = GetBaseForReport();
-				await GetReport().OnMessageDeleted(baseObj.Object, textChannel, messageId);
-			}
-			catch (Exception ex)
-			{
-				logger.Log(LogLevel.Error, FailedToRestoreReportID, ex, "Enable to restore report message for lifetime with id {LifetimeId}", Guid);
+				TerminateLifetime("Report channel closed");
 			}
 		}
 
@@ -175,20 +129,27 @@ namespace DidiFrame.Lifetimes
 			}
 			catch (Exception ex)
 			{
-				logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime with id {LifetimeId}", Guid);
+				Logger.Log(LogLevel.Error, FailedToUpdateReportID, ex, "Enable to update report message for lifetime with id {LifetimeId}", Id);
 			}
 		}
 
-		/// <summary>
-		/// Overrided by DidiFrame.Lifetimes.AbstractFullLifetime`2. Use OnDisposeInternal.
-		/// </summary>
-		protected async override void OnDispose()
+		//Will be subscribed only if has report
+		private async void OnMessageDeleted(IClient sender, ITextChannelBase textChannel, ulong messageId)
 		{
-			Server.Client.ServerRemoved -= Client_ServerRemoved;
+			try
+			{
+				using var baseObj = base.GetBase();
+				await GetReport().OnMessageDeleted(baseObj.Object, textChannel, messageId);
+			}
+			catch (Exception ex)
+			{
+				Logger.Log(LogLevel.Error, FailedToRestoreReportID, ex, "Enable to restore report message for lifetime with id {LifetimeId}", Id);
+			}
+		}
 
-			Task? reportFinalizeTask = null;
-
-			if (hasReport)
+		public override async void Dispose()
+		{
+			if (HasReport)
 			{
 				try
 				{
@@ -196,50 +157,27 @@ namespace DidiFrame.Lifetimes
 					var report = GetReport();
 
 					var channel = report.GetChannel(holder.Object);
-					channel.MessageDeleted -= AbstractFullLifetime_MessageDeleted;
-					channel.Server.ChannelDeleted -= Server_ChannelDeleted;
-					reportFinalizeTask = report.FinalizeAsync(holder.Object);
+					channel.MessageDeleted -= OnMessageDeleted;
+					channel.Server.ChannelDeleted -= OnChannelDeleted;
+					await report.FinalizeAsync(holder.Object);
 				}
 				catch (Exception ex)
 				{
-					logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message for lifetime with id {Guid}", Guid);
+					Logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message for lifetime with id {Guid}", Id);
 				}
 			}
-
-			OnDisposeInternal();
-
-			try
-			{
-				if (reportFinalizeTask is not null) await reportFinalizeTask;
-			}
-			catch (Exception ex)
-			{
-				logger.Log(LogLevel.Error, FailedToDeleteReportID, ex, "Enable to delete report message for lifetime with id {Guid}", Guid);
-			}
 		}
-
-		/// <summary>
-		/// Event handler. Calls on start. You mustn't call base.OnRun(TState)
-		/// </summary>
-		/// <param name="state">Initial statemachine state</param>
-		protected virtual void OnRunInternal(TState state) { }
-
-		/// <summary>
-		/// Event handler. Calls on dispose (crash or finalize)
-		/// </summary>
-		protected virtual void OnDisposeInternal() { }
 
 		/// <summary>
 		/// Adds automaticly maintaining report message for lifetime. It can be added only one time
 		/// </summary>
 		/// <param name="holder">Holder that was extracted from base object and contains all message info</param>
 		/// <exception cref="InvalidOperationException">If called outside ctor (after Run() calling)</exception>
-		protected void AddReport(MessageAliveHolder<TBase> holder)
+		protected void AddReport(MessageAliveHolder<TBase> holder, InitialDataBuilder builder)
 		{
-			if (hasBuilt) throw new InvalidOperationException("Object done, please don't invoke any constructing methods");
+			ThrowIfBuilden();
 
-			optionalReport = holder;
-			hasReport = true;
+			builder.AddData(ReportField, holder);
 		}
 
 		/// <summary>
@@ -249,13 +187,10 @@ namespace DidiFrame.Lifetimes
 		/// <exception cref="InvalidOperationException">If no report has added or if called in ctor (before Run() calling)</exception>
 		protected MessageAliveHolder<TBase> GetReport()
 		{
-			if (hasBuilt == false)
-				throw new InvalidOperationException("Enable get report in ctor");
-
-			if (optionalReport is null)
+			if (HasReport == false)
 				throw new InvalidOperationException("No report has added");
 
-			return optionalReport;
+			return Data.Get<MessageAliveHolder<TBase>>(ReportField);
 		}
 	}
 

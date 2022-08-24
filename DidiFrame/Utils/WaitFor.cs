@@ -5,33 +5,30 @@
 	/// </summary>
 	public class WaitFor
 	{
-		private bool waitDone = false;
+		private TaskCompletionSource tcs = new();
 
 
 		/// <summary>
 		/// If wait complited
 		/// </summary>
-		public bool WaitDone => waitDone;
+		public bool WaitDone => tcs.Task.IsCompleted;
 
 
 		/// <summary>
 		/// Complites wait task
 		/// </summary>
-		public void Callback() => waitDone = true;
+		public void Callback() => tcs.SetResult();
 
 		/// <summary>
 		/// Provides wait task
 		/// </summary>
 		/// <param name="token"></param>
 		/// <returns></returns>
-		public async Task Await(CancellationToken token = default)
-		{
-			while (!waitDone && !token.IsCancellationRequested) await Task.Delay(50, token);
-		}
+		public Task Await(CancellationToken token = default) => tcs.Task.WaitAsync(token);
 
 		/// <summary>
 		/// Resets object and wait task
 		/// </summary>
-		public void Reset() => waitDone = false;
+		public void Reset() => tcs = new();
 	}
 }

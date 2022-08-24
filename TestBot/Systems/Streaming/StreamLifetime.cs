@@ -24,7 +24,7 @@ namespace TestBot.Systems.Streaming
 
 		public void Replan(DateTime newStartDate)
 		{
-			if (GetStateMachine().CurrentState == StreamState.Running)
+			if (StateMachine.CurrentState == StreamState.Running)
 				throw new InvalidOperationException("Stream already has started");
 
 			using var baseObj = GetBase();
@@ -106,9 +106,9 @@ namespace TestBot.Systems.Streaming
 			};
 		}
 
-		protected override void OnBuild(StreamModel initialBase)
+		protected override void PrepareStateMachine(StreamModel initialBase, InitialDataBuilder builder)
 		{
-			AddReport(new MessageAliveHolder<StreamModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents));
+			AddReport(new MessageAliveHolder<StreamModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents), builder);
 
 			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseProperty(s => s.PlanedStartTime));
 			AddTransit(StreamState.WaitingForStreamer, StreamState.Announced, () => DateTime.UtcNow < GetBaseProperty(s => s.PlanedStartTime));

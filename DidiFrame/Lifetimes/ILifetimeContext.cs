@@ -24,11 +24,6 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		public void FinalizeLifetime();
 
-		/// <summary>
-		/// Crashes lifetime with given error and clears all resources and records
-		/// </summary>
-		/// <param name="ex">Exception that crashed lifetime</param>
-		/// <param name="isInvalidBase">If base has been invalid</param>
-		public void CrashPipeline(Exception ex, bool isInvalidBase);
+		public LifetimeSynchronizationContext GetSynchronizationContext();
 	}
 }

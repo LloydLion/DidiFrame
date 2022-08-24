@@ -61,14 +61,19 @@ namespace TestBot.Systems.Discussion
 					{
 						baseObject.Object.AskMessage.DeleteAsync().Wait();
 					}
-
-					context.FinalizeLifetime();
 				}
-				catch (Exception ex)
+				catch (Exception) { }
+				finally
 				{
-					context.CrashPipeline(ex, false);
+					context.FinalizeLifetime();
 				}
 			}, token);
 		}
+
+		public void Update() { }
+
+		public void Destroy() { }
+
+		public void Dispose() { }
 	}
 }

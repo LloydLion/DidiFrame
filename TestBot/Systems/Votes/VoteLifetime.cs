@@ -29,9 +29,9 @@ namespace TestBot.Systems.Votes
 
 				message.StartupAsync(initialBase).Wait();
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				context.CrashPipeline(ex, true);
+				context.FinalizeLifetime();
 			}
 		}
 
@@ -84,14 +84,17 @@ namespace TestBot.Systems.Votes
 						return ComponentInteractionResult.CreateWithMessage(new("You aren't invoker"));
 					await Message.FinalizeAsync(holder.Object);
 				}
-				catch (Exception ex)
-				{
-					Context.CrashPipeline(ex, false);
-				}
+				catch (Exception) { }
 
 				Context.FinalizeLifetime();
 				return ComponentInteractionResult.CreateWithMessage(new("Vote finished"));
 			});
 		}
+
+		public void Update() { }
+
+		public void Destroy() { }
+
+		public void Dispose() { }
 	}
 }

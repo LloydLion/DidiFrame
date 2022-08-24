@@ -5,37 +5,32 @@ namespace DidiFrame.Lifetimes
 	internal class DefaultLifetimeContext<TBase> : ILifetimeContext<TBase> where TBase : class, ILifetimeBase
 	{
 		private readonly IObjectController<TBase> controller;
-		private readonly Action finalizer;
-		private readonly Action<Exception, bool> loggingAction;
+		private readonly LifetimeSynchronizationContext synchronizationContext;
 
 
-		public DefaultLifetimeContext(bool isNewlyCreated, IObjectController<TBase> controller, Action finalizer, Action<Exception, bool> loggingAction)
+		public DefaultLifetimeContext(bool isNewlyCreated, IObjectController<TBase> controller, LifetimeSynchronizationContext synchronizationContext)
 		{
 			IsNewlyCreated = isNewlyCreated;
 			this.controller = controller;
-			this.finalizer = finalizer;
-			this.loggingAction = loggingAction;
+			this.synchronizationContext = synchronizationContext;
 		}
 
 
 		/// <inheritdoc/>
 		public bool IsNewlyCreated { get; }
 
+		public bool IsFinalized { get; private set; } = false;
+
 
 		/// <inheritdoc/>
 		public IObjectController<TBase> AccessBase() => controller;
 
 		/// <inheritdoc/>
-		public void CrashPipeline(Exception ex, bool isInvalidBase)
-		{
-			FinalizeLifetime();
-			loggingAction(ex, isInvalidBase);
-		}
-
-		/// <inheritdoc/>
 		public void FinalizeLifetime()
 		{
-			finalizer();
+			synchronizationContext.Send(_ => IsFinalized = true, null);
 		}
+
+		public LifetimeSynchronizationContext GetSynchronizationContext() => synchronizationContext;
 	}
 }

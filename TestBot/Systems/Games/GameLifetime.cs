@@ -44,11 +44,11 @@ namespace TestBot.Systems.Games
 				baseObj.Object.Invited.Remove(baseObj.Object.Creator);
 		}
 
-		protected override void OnBuild(GameModel initialBase)
+		protected override void PrepareStateMachine(GameModel initialBase, InitialDataBuilder builder)
 		{
 			Validate(initialBase);
 
-			AddReport(new MessageAliveHolder<GameModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents));
+			AddReport(new MessageAliveHolder<GameModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents), builder);
 
 			AddTransit(GameState.WaitingPlayers, GameState.WaitingCreator, WaitingPlayersWaitingCreatorTransit);
 			AddTransit(GameState.WaitingCreator, GameState.WaitingPlayers, () => !WaitingPlayersWaitingCreatorTransit());

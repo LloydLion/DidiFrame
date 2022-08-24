@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DidiFrame.Dependencies;
 
 namespace DidiFrame.Lifetimes
 {
@@ -7,7 +7,7 @@ namespace DidiFrame.Lifetimes
 	/// </summary>
 	/// <typeparam name="TLifetime">Type of target lifetime</typeparam>
 	/// <typeparam name="TBase">Type of base object of that lifetime</typeparam>
-	public class ReflectionLifetimeFactory<TLifetime, TBase> : ILifetimeFactory<TLifetime, TBase>
+	public class ReflectionLifetimeInstanceCreator<TLifetime, TBase> : ILifetimeInstanceCreator<TLifetime, TBase>
 		where TLifetime : ILifetime<TBase>
 		where TBase : class, ILifetimeBase
 	{
@@ -18,7 +18,7 @@ namespace DidiFrame.Lifetimes
 		/// Creates new instance of DidiFrame.Lifetimes.DefaultLTFactory`2
 		/// </summary>
 		/// <param name="provider"></param>
-		public ReflectionLifetimeFactory(IServiceProvider provider)
+		public ReflectionLifetimeInstanceCreator(IServiceProvider provider)
 		{
 			this.provider = provider;
 		}
@@ -27,19 +27,7 @@ namespace DidiFrame.Lifetimes
 		/// <inheritdoc/>
 		public TLifetime Create()
 		{
-			var ctor = typeof(TLifetime).GetConstructors().Single();
-			var parameters = ctor.GetParameters();
-
-			var args = new object[parameters.Length];
-
-			for (int i = 0; i < parameters.Length; i++)
-			{
-				var param = parameters[i];
-				var service = provider.GetRequiredService(param.ParameterType);
-				args[i] = service;
-			}
-
-			return (TLifetime)ctor.Invoke(args);
+			return provider.ResolveDependencyObject<TLifetime>();
 		}
 	}
 }

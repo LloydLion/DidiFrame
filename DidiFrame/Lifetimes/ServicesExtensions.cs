@@ -17,7 +17,7 @@ namespace DidiFrame.Lifetimes
 		/// <param name="stateKey">State key associated with base objects for lifetimes</param>
 		/// <returns>Given collection to be chained</returns>
 		public static IServiceCollection AddLifetime<TFactory, TLifetime, TBase>(this IServiceCollection services, string stateKey)
-			where TFactory : class, ILifetimeFactory<TLifetime, TBase>
+			where TFactory : class, ILifetimeInstanceCreator<TLifetime, TBase>
 			where TLifetime : ILifetime<TBase>
 			where TBase : class, ILifetimeBase
 		{
@@ -25,12 +25,13 @@ namespace DidiFrame.Lifetimes
 				new LifetimeRegistry<TLifetime, TBase>
 				(
 					provider.GetRequiredService<IServersStatesRepositoryFactory>().Create<ICollection<TBase>>(stateKey),
-					provider.GetRequiredService<ILifetimeFactory<TLifetime, TBase>>(),
-					provider.GetRequiredService<ILogger<LifetimeRegistry<TLifetime, TBase>>>()
+					provider.GetRequiredService<ILifetimeInstanceCreator<TLifetime, TBase>>(),
+					provider.GetRequiredService<ILogger<LifetimeRegistry<TLifetime, TBase>>>(),
+					provider.GetRequiredService<IServersNotify>()
 				));
 
 			services.AddSingleton<ILifetimesLoader>(sp => sp.GetRequiredService<ILifetimesRegistry<TLifetime, TBase>>());
-			services.AddTransient<ILifetimeFactory<TLifetime, TBase>, TFactory>();
+			services.AddTransient<ILifetimeInstanceCreator<TLifetime, TBase>, TFactory>();
 			return services;
 		}
 
@@ -45,6 +46,6 @@ namespace DidiFrame.Lifetimes
 		public static IServiceCollection AddLifetime<TLifetime, TBase>(this IServiceCollection services, string stateKey)
 			where TLifetime : ILifetime<TBase>
 			where TBase : class, ILifetimeBase =>
-			AddLifetime<ReflectionLifetimeFactory<TLifetime, TBase>, TLifetime, TBase>(services, stateKey);
+			AddLifetime<ReflectionLifetimeInstanceCreator<TLifetime, TBase>, TLifetime, TBase>(services, stateKey);
 	}
 }
