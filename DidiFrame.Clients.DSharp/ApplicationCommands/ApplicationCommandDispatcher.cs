@@ -1,10 +1,9 @@
-﻿using DidiFrame.Clients.DSharp.Entities;
-using DidiFrame.Entities;
+﻿using DidiFrame.Entities;
+using DidiFrame.Entities.Message;
+using DidiFrame.Entities.Message.Components;
 using DidiFrame.Exceptions;
-using DidiFrame.Clients;
 using DidiFrame.UserCommands.ContextValidation.Arguments;
 using DidiFrame.UserCommands.Modals;
-using DidiFrame.UserCommands.Modals.Components;
 using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.PreProcessing;
@@ -17,7 +16,6 @@ using DSharpPlus.EventArgs;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
-using DidiFrame.Clients.DSharp;
 
 namespace DidiFrame.Clients.DSharp.ApplicationCommands
 {
@@ -43,17 +41,20 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 		/// <param name="localizer">Localizer to send error messages and write cmds' descriptions</param>
 		/// <param name="converter">Converter to provide subconverters for autocomplite</param>
 		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult type</param>
-		/// <param name="services">Services for values providers</param>
 		/// <param name="behaviorModel">Behavoir model that can override behavior of component</param>
-		public ApplicationCommandDispatcher(IClient dsharp, IUserCommandsRepository commands,
-			IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter,
-			IValidator<UserCommandResult> resultValidator, IServiceProvider services, IValidator<ModalModel> modalValidator, BehaviorModel? behaviorModel = null)
+		public ApplicationCommandDispatcher(IClient dsharp,
+			IUserCommandsRepository commands,
+			IStringLocalizer<ApplicationCommandDispatcher> localizer,
+			IUserCommandContextConverter converter,
+			IValidator<UserCommandResult> resultValidator,
+			IValidator<ModalModel> modalValidator,
+			BehaviorModel? behaviorModel = null)
 		{
 			client = (DSharpClient)dsharp;
 			client.BaseClient.InteractionCreated += BaseClient_InteractionCreated;
 
 			behaviorModel = this.behaviorModel = behaviorModel ?? new BehaviorModel();
-			behaviorModel.Init(client, commands, localizer, converter, services);
+			behaviorModel.Init(client, commands, localizer, converter);
 
 			this.localizer = localizer;
 			this.resultValidator = resultValidator;
@@ -104,14 +105,13 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			resultValidator.ValidateAndThrow(result);
 
 			var state = (StateObject)stateObject;
+			var server = client.GetServer(state.Interaction.GuildId ?? throw new ImpossibleVariantException());
 
 			switch (result.ResultType)
 			{
 				case UserCommandResult.Type.Message:
-					var server = client.GetServer(state.Interaction.GuildId ?? throw new ImpossibleVariantException());
-
 					var msg = MessageConverter.ConvertUp(result.GetRespondMessage());
-					await state.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(msg).AsEphemeral());
+					await state.Interaction.EditOriginalResponseAsync(createEditModel(msg));
 
 					var subscriber = result.GetInteractionDispatcherSubcriber();
 					if (subscriber is not null)
@@ -123,7 +123,26 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 
 					break;
 				case UserCommandResult.Type.Modal:
-					await modalHelper.CreateModalAsync(state.Interaction, result.GetModal());
+					//TODO: localize
+					var sendModel = new MessageSendModel("Command finished with modal\nPress button to open modal window")
+					{
+						ComponentsRows = new MessageComponentsRow[]
+						{
+							new(new[] { new MessageButton("open_modal", "Open modal", DidiFrame.Entities.Message.Components.ButtonStyle.Primary) })
+						}
+					};
+
+					var demoMessage = await state.Interaction.EditOriginalResponseAsync(createEditModel(MessageConverter.ConvertUp(sendModel)));
+
+					var interactionDispatcher = server.CreateTemporalDispatcherForUnregistedMessage(demoMessage);
+					interactionDispatcher.Attach<MessageButton>("open_modal", handler);
+
+
+					Task<ComponentInteractionResult> handler(ComponentInteractionContext<MessageButton> _)
+					{
+						interactionDispatcher.Detach<MessageButton>("open_modal", handler);
+						return Task.FromResult(ComponentInteractionResult.CreateWithModal(result.GetModal()));
+					}
 					break;
 				case UserCommandResult.Type.None:
 					break;
@@ -132,6 +151,18 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			}
 
 			state.Responded = true;
+
+
+
+			DiscordWebhookBuilder createEditModel(DiscordMessageBuilder builder)
+			{
+				var webhook = new DiscordWebhookBuilder();
+				webhook.AddComponents(builder.Components);
+				webhook.AddFiles(builder.Files.ToDictionary(s => s.FileName, s => s.Stream));
+				webhook.AddEmbeds(builder.Embeds);
+				webhook.WithContent(builder.Content);
+				return webhook;
+			}
 		}
 
 		/// <inheritdoc/>
@@ -240,7 +271,6 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			private IUserCommandsRepository? commands;
 			private IStringLocalizer<ApplicationCommandDispatcher>? localizer;
 			private IUserCommandContextConverter? converter;
-			private IServiceProvider? services;
 
 
 			/// <summary>
@@ -263,19 +293,13 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			/// </summary>
 			protected DSharpClient Client => dsharp ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-			/// <summary>
-			/// Services for values providers
-			/// </summary>
-			protected IServiceProvider Services => services ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
-
-			internal void Init(DSharpClient dsharp, IUserCommandsRepository commands, IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter, IServiceProvider services)
+			internal void Init(DSharpClient dsharp, IUserCommandsRepository commands, IStringLocalizer<ApplicationCommandDispatcher> localizer, IUserCommandContextConverter converter)
 			{
 				this.dsharp = dsharp;
 				this.commands = commands;
 				this.localizer = localizer;
 				this.converter = converter;
-				this.services = services;
 			}
 
 
@@ -317,6 +341,8 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 							list.Add(arg, preObjs);
 						}
 					}
+
+					await interaction.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource, new DiscordInteractionResponseBuilder().AsEphemeral());
 				}
 				catch (ArgumentConvertationException ex)
 				{

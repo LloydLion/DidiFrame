@@ -91,6 +91,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 						message = ss.Message.TextChannel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code)).Result;
 					break;
 				case UserCommandResult.Type.Modal:
+					//TODO: localize
 					var demoMessage = await ss.Message.TextChannel.SendMessageAsync(new MessageSendModel("Command finished with modal\nPress button to open modal window")
 					{
 						ComponentsRows = new MessageComponentsRow[]
@@ -99,10 +100,14 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 						}
 					});
 
-					demoMessage.GetInteractionDispatcher().Attach<MessageButton>("open_modal", ctx =>
+					demoMessage.GetInteractionDispatcher().Attach<MessageButton>("open_modal", handler);
+
+
+					Task<ComponentInteractionResult> handler(ComponentInteractionContext<MessageButton> _)
 					{
+						demoMessage.GetInteractionDispatcher().Detach<MessageButton>("open_modal", handler);
 						return Task.FromResult(ComponentInteractionResult.CreateWithModal(result.GetModal()));
-					});
+					}
 					break;
 				default:
 					throw new NotSupportedException("Target type of user command result is not supported by dispatcher");
