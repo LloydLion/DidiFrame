@@ -1,7 +1,4 @@
-﻿using DidiFrame.Data.Model;
-using DidiFrame.Dependencies;
-
-namespace DidiFrame.Data.ContextBased
+﻿namespace DidiFrame.Data.ContextBased
 {
 	/// <summary>
 	/// Represents a context-based settings repository factory in context-based approach
@@ -19,14 +16,14 @@ namespace DidiFrame.Data.ContextBased
 		/// <param name="options">Options for context</param>
 		/// <param name="logger">Logger for this type</param>
 		/// <param name="provider">Services that will transmited into context</param>
-		public ContextBasedSettingsRepositoryFactory(IOptions<TOptions> options, ILogger<ContextBasedSettingsRepositoryFactory<TContext, TOptions>> logger, IServiceProvider services)
+		public ContextBasedSettingsRepositoryFactory(IOptions<TOptions> options, ILogger<ContextBasedSettingsRepositoryFactory<TContext, TOptions>> logger, IServiceProvider provider)
 		{
-			ctx = services.ResolveObjectWithDependencies<TContext>(new object[] { options.Value, ContextType.Settings, logger });
+			ctx = (TContext)(Activator.CreateInstance(typeof(TContext), options.Value, ContextType.Settings, logger, provider) ?? throw new ImpossibleVariantException());
 		}
 
 
 		/// <inheritdoc/>
-		public IServersSettingsRepository<TModel> Create<TModel>(string key) where TModel : class, IDataEntity
+		public IServersSettingsRepository<TModel> Create<TModel>(string key) where TModel : class
 		{
 			return new ContextBasedSettingsRepository<TModel>(ctx, key);
 		}

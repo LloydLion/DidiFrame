@@ -1,5 +1,4 @@
-﻿using DidiFrame.Data.Model;
-using DidiFrame.Utils;
+﻿using DidiFrame.Utils;
 using DidiFrame.Utils.Collections;
 using System.Collections.Concurrent;
 using static DidiFrame.Lifetimes.LifetimeRegistryStatic;
@@ -13,7 +12,7 @@ namespace DidiFrame.Lifetimes
 	/// <typeparam name="TBase">Type of base object of that lifetime</typeparam>
 	public sealed class LifetimeRegistry<TLifetime, TBase> : ILifetimesRegistry<TLifetime, TBase>, IDisposable where TLifetime : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
-		private readonly IServersStatesRepository<ModelList<TBase>> states;
+		private readonly IServersStatesRepository<ICollection<TBase>> states;
 		private readonly ILifetimeInstanceCreator<TLifetime, TBase> lifetimeInstanceCreator;
 		private readonly ILogger<LifetimeRegistry<TLifetime, TBase>> logger;
 		private readonly IServersNotify serverNotify;
@@ -26,7 +25,7 @@ namespace DidiFrame.Lifetimes
 		/// <param name="states">Repository with states</param>
 		/// <param name="lifetimeInstanceCreator">Factory for target lifetime</param>
 		/// <param name="logger">Logger for registry</param>
-		public LifetimeRegistry(IServersStatesRepository<ModelList<TBase>> states,
+		public LifetimeRegistry(IServersStatesRepository<ICollection<TBase>> states,
 			ILifetimeInstanceCreator<TLifetime, TBase> lifetimeInstanceCreator,
 			ILogger<LifetimeRegistry<TLifetime, TBase>> logger,
 			IServersNotify serverNotify)
@@ -54,12 +53,12 @@ namespace DidiFrame.Lifetimes
 				var lifetime = lifetimeInstanceCreator.Create();
 
 				var sych = sls.UpdateDispatcher.GetSynchronizationContext();
-				var holder = new BaseObjectController(state, item.Id, sych);
+				var holder = new BaseObjectController(state, item.Guid, sych);
 				var context = new DefaultLifetimeContext<TBase>(isNewlyCreated: false, holder, sych);
 
 				lock (sls.Lifetimes)
 				{
-					sls.Lifetimes.Add(item.Id, new(lifetime, context, holder));
+					sls.Lifetimes.Add(item.Guid, new(lifetime, context, holder));
 
 					try
 					{
@@ -67,9 +66,9 @@ namespace DidiFrame.Lifetimes
 					}
 					catch (Exception ex)
 					{
-						logger.Log(LogLevel.Error, LifetimeRestoreFailID, ex, "Failed to restore lifetime ({LifetimeType}) {LifetimeId} in {ServerId}", lifetime.GetType(), item.Id, item.Server.Id);
+						logger.Log(LogLevel.Error, LifetimeRestoreFailID, ex, "Failed to restore lifetime ({LifetimeType}) {LifetimeId} in {ServerId}", lifetime.GetType(), item.Guid, item.Server.Id);
 						failed.Add(item);
-						sls.Lifetimes.Remove(item.Id);
+						sls.Lifetimes.Remove(item.Guid);
 						lifetime.Dispose();
 					}
 				}
@@ -96,10 +95,10 @@ namespace DidiFrame.Lifetimes
 				collection.Object.Add(baseObject);
 
 				var sych = sls.UpdateDispatcher.GetSynchronizationContext();
-				var holder = new BaseObjectController(state, baseObject.Id, sych);
+				var holder = new BaseObjectController(state, baseObject.Guid, sych);
 				var context = new DefaultLifetimeContext<TBase>(isNewlyCreated: true, holder, sych);
 
-				sls.Lifetimes.Add(baseObject.Id, new(lifetime, context, holder));
+				sls.Lifetimes.Add(baseObject.Guid, new(lifetime, context, holder));
 
 				try
 				{
@@ -108,9 +107,9 @@ namespace DidiFrame.Lifetimes
 				}
 				catch (Exception ex)
 				{
-					logger.Log(LogLevel.Error, LifetimeRegistryFailID, ex, "Failed to registry lifetime ({LifetimeType}) {LifetimeId} in {ServerId}", lifetime.GetType(), baseObject.Id, baseObject.Server.Id);
+					logger.Log(LogLevel.Error, LifetimeRegistryFailID, ex, "Failed to registry lifetime ({LifetimeType}) {LifetimeId} in {ServerId}", lifetime.GetType(), baseObject.Guid, baseObject.Server.Id);
 					collection.Object.Remove(baseObject);
-					sls.Lifetimes.Remove(baseObject.Id);
+					sls.Lifetimes.Remove(baseObject.Guid);
 					lifetime.Dispose();
 					throw;
 				}
@@ -168,7 +167,7 @@ namespace DidiFrame.Lifetimes
 			public void Dispose() => UpdateDispatcher.Dispose();
 		}
 
-		private sealed class LifetimeEntry
+		private class LifetimeEntry
 		{
 			public LifetimeEntry(TLifetime lifetime, DefaultLifetimeContext<TBase> context, BaseObjectController controller)
 			{
@@ -190,12 +189,12 @@ namespace DidiFrame.Lifetimes
 
 		private sealed class BaseObjectController : IObjectController<TBase>
 		{
-			private readonly IObjectController<ModelList<TBase>> state;
+			private readonly IObjectController<ICollection<TBase>> state;
 			private readonly Guid baseId;
 			private readonly LifetimeSynchronizationContext context;
 
 
-			public BaseObjectController(IObjectController<ModelList<TBase>> state, Guid baseId, LifetimeSynchronizationContext context)
+			public BaseObjectController(IObjectController<ICollection<TBase>> state, Guid baseId, LifetimeSynchronizationContext context)
 			{
 				this.state = state;
 				this.baseId = baseId;
@@ -217,7 +216,7 @@ namespace DidiFrame.Lifetimes
 
 				try
 				{
-					var model = holder.Object.Single(s => s.Id == baseId);
+					var model = holder.Object.Single(s => s.Guid == baseId);
 					output[0] = new ObjectHolder<TBase>(model, _ => { holder.Dispose(); });
 				}
 				catch (Exception)
@@ -230,7 +229,7 @@ namespace DidiFrame.Lifetimes
 			public void FinalizeObject()
 			{
 				using var collection = state.Open();
-				collection.Object.Remove(collection.Object.Single(s => s.Id == baseId));
+				collection.Object.Remove(collection.Object.Single(s => s.Guid == baseId));
 			}
 		}
 

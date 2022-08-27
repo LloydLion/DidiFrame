@@ -4,28 +4,55 @@ using DidiFrame.Data.Model;
 namespace TestBot.Systems.Parties
 {
 	[DataKey(StatesKeys.PartiesSystem)]
-	public class PartyModel : AbstractModel
+	public class PartyModel
 	{
-		public PartyModel(string name, IMember creator, ICollection<IMember> members)
+		private static int nextId = 0;
+
+
+		/// <summary>
+		///	Serialization ctor
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="name"></param>
+		/// <param name="creator"></param>
+		/// <param name="members"></param>
+		public PartyModel(int id, string name, IMember creator, ICollection<IMember> members)
 		{
+			Id = id;
 			Name = name;
 			Creator = creator;
-			MembersInternal = new(members);
+			Members = members;
+			nextId = Math.Max(nextId, id);
 		}
 
-#nullable disable
-		public PartyModel(ISerializationModel model) : base(model) { }
-#nullable restore
+		public PartyModel(string name, IMember creator, IReadOnlyCollection<IMember> members) : this(++nextId, name, creator, members.ToList()) { }
 
 
-		public string Name { get => GetDataFromStore<string>(); set => SetDataToStore(value); }
+		[ConstructorAssignableProperty(1, "name")]
+		public string Name { get; set; }
 
-		public ModelPrimitivesList<IMember> MembersInternal { get => GetDataFromStore<ModelPrimitivesList<IMember>>(nameof(Members)); private set => SetDataToStore(value, nameof(Members)); }
+		/// <summary>
+		///	Exclude creator
+		/// </summary>
+		[ConstructorAssignableProperty(3, "members")]
+		public ICollection<IMember> Members { get; }
 
-		public ICollection<IMember> Members => MembersInternal;
+		[ConstructorAssignableProperty(2, "creator")]
+		public IMember Creator { get; }
 
-		public IMember Creator { get => GetDataFromStore<IMember>(); private set => SetDataToStore(value); }
+		[ConstructorAssignableProperty(0, "id")]
+		public int Id { get; }
 
-		public override IServer Server => Creator.Server;
+
+		public override bool Equals(object? obj)
+		{
+			return obj is PartyModel model &&
+				   Id == model.Id;
+		}
+
+		public override int GetHashCode()
+		{
+			return HashCode.Combine(Id);
+		}
 	}
 }

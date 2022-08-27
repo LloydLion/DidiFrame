@@ -1,12 +1,10 @@
-﻿using DidiFrame.Data.Model;
-
-namespace DidiFrame.Data
+﻿namespace DidiFrame.Data
 {
 	/// <summary>
 	/// Repository that provides the servers' settings data
 	/// </summary>
 	/// <typeparam name="TModel">Type of working model</typeparam>
-	public interface IServersSettingsRepository<TModel> where TModel : class, IDataEntity
+	public interface IServersSettingsRepository<TModel> where TModel : class
 	{
 		/// <summary>
 		/// Provides settings of server to read. Access to repository is thread-safe

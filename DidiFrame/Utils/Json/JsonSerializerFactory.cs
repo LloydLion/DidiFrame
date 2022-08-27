@@ -1,5 +1,4 @@
 ﻿using DidiFrame.Utils.Json.Converters;
-using DidiFrame.Utils.Json.Converters.ClientObjects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -27,8 +26,7 @@ namespace DidiFrame.Utils.Json
 				Formatting = Formatting.Indented,
 			};
 
-			ret.Converters.Add(new DataCollectionConverter());
-			ret.Converters.Add(new DataModelConverter());
+			ret.Converters.Add(new AbstractConveter());
 
 			ret.Converters.Add(new CategoryConveter(server));
 			ret.Converters.Add(new ChannelConverter(server));
@@ -37,6 +35,8 @@ namespace DidiFrame.Utils.Json
 			ret.Converters.Add(new MessageConverter(server));
 			ret.Converters.Add(new ServerConveter(server.Client));
 			ret.Converters.Add(new StringEnumConverter());
+
+			ret.Converters.Add(new SafeCollectionConveter(invalidCollectionElementCallback));
 
 			return ret;
 		}
@@ -60,8 +60,7 @@ namespace DidiFrame.Utils.Json
 				Formatting = Formatting.Indented,
 			};
 
-			ret.Converters.Add(new DataCollectionConverter());
-			ret.Converters.Add(new DataModelConverter());
+			ret.Converters.Add(new AbstractConveter());
 
 			ret.Converters.Add(new CategoryConveter(server));
 			ret.Converters.Add(new ChannelConverter(server));
@@ -70,6 +69,8 @@ namespace DidiFrame.Utils.Json
 			ret.Converters.Add(new MessageConverter(server));
 			ret.Converters.Add(new ServerConveter(server.Client));
 			ret.Converters.Add(new StringEnumConverter());
+
+			ret.Converters.Add(new SafeCollectionConveter(callback));
 
 			return ret;
 

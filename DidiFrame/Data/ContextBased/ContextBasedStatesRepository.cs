@@ -1,9 +1,8 @@
-﻿using DidiFrame.Data.Model;
-using DidiFrame.Utils;
+﻿using DidiFrame.Utils;
 
 namespace DidiFrame.Data.ContextBased
 {
-	internal class ContextBasedStatesRepository<TModel> : IServersStatesRepository<TModel> where TModel : class, IDataEntity
+	internal class ContextBasedStatesRepository<TModel> : IServersStatesRepository<TModel> where TModel : class
 	{
 		private readonly ThreadLocker<IServer> perServerLock;
 		private readonly IDataContext ctx;

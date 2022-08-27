@@ -4,24 +4,21 @@ using DidiFrame.Data.Model;
 namespace TestBot.Systems.Reputation
 {
 	[DataKey(StatesKeys.ReputationSystem)]
-	public class MemberReputation : AbstractModel
+	public class MemberReputation
 	{
-		[ModelProperty(PropertyType.Collection)]
-		private ModelPrimitivesList<KeyValuePair<ReputationType, int>> ReputationInternal { get => new(WritableReputation); set => WritableReputation = value.ToDictionary(s => s.Key, s => s.Value); }
+		private readonly Dictionary<ReputationType, int> rp = new();
 
-		public IReadOnlyDictionary<ReputationType, int> Reputation => WritableReputation;
 
-		private Dictionary<ReputationType, int> WritableReputation { get => GetDataFromStore<Dictionary<ReputationType, int>>(nameof(Reputation)); set => SetDataToStore(value, nameof(Reputation)); }
+		[ConstructorAssignableProperty(1, "initialReputation")]
+		public IReadOnlyDictionary<ReputationType, int> Reputation => rp;
 
-		[ModelProperty(PropertyType.Primitive)]
-		public IMember Member { get => GetDataFromStore<IMember>(); set => SetDataToStore(value); }
-
-		public override IServer Server => Member.Server;
+		[ConstructorAssignableProperty(0, "member")]
+		public IMember Member { get; }
 
 
 		public MemberReputation(IMember member, IReadOnlyDictionary<ReputationType, int> initialReputation) : this(member)
 		{
-			foreach (var item in initialReputation) WritableReputation[item.Key] = item.Value;
+			foreach (var item in initialReputation) rp[item.Key] = item.Value;
 		}
 
 		public MemberReputation(IMember member)
@@ -29,22 +26,18 @@ namespace TestBot.Systems.Reputation
 			Member = member;
 
 			foreach (var item in Enum.GetValues(typeof(ReputationType)).Cast<ReputationType>())
-				WritableReputation.Add(item, 0);
+				rp.Add(item, 0);
 		}
-
-#nullable disable
-		public MemberReputation(ISerializationModel model) : base(model) { }
-#nullable restore
 
 
 		public void Increase(ReputationType type, int amount)
 		{
-			WritableReputation[type] += amount;
+			rp[type] += amount;
 		}
 
 		public void Decrease(ReputationType type, int amount)
 		{
-			WritableReputation[type] -= amount;
+			rp[type] -= amount;
 		}
 	}
 }

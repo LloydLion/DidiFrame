@@ -4,7 +4,6 @@ using DidiFrame.Utils;
 using DidiFrame.Utils.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using DidiFrame.Data.Model;
 
 namespace DidiFrame.Data.Json
 {
@@ -38,7 +37,7 @@ namespace DidiFrame.Data.Json
 
 
 		/// <inheritdoc/>
-		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class, IDataEntity
+		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class
 		{
 			if (factory is null) return Load<TModel>(server, key);
 			else
@@ -89,7 +88,7 @@ namespace DidiFrame.Data.Json
 		}
 
 		/// <inheritdoc/>
-		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class, IDataEntity
+		public void Put<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
 			cache.PutAsync(GetFileForServer(server), key, model, JsonSerializerFactory.CreateWithConverters(server, logger));
 		}

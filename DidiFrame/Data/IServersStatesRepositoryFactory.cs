@@ -1,6 +1,4 @@
-﻿using DidiFrame.Data.Model;
-
-namespace DidiFrame.Data
+﻿namespace DidiFrame.Data
 {
 	/// <summary>
 	/// Creates repositories that provide the servers' states data
@@ -13,7 +11,7 @@ namespace DidiFrame.Data
 		/// <typeparam name="TModel">Type of repository</typeparam>
 		/// <param name="key">State key in servers' states</param>
 		/// <returns>New repository</returns>
-		public IServersStatesRepository<TModel> Create<TModel>(string key) where TModel : class, IDataEntity;
+		public IServersStatesRepository<TModel> Create<TModel>(string key) where TModel : class;
 
 		/// <summary>
 		/// Preloads all servers' states data async

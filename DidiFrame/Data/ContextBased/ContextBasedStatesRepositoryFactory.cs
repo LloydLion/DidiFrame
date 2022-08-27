@@ -1,7 +1,5 @@
 ﻿using DidiFrame.Utils;
 using System.Collections.Concurrent;
-using DidiFrame.Dependencies;
-using DidiFrame.Data.Model;
 
 namespace DidiFrame.Data.ContextBased
 {
@@ -26,13 +24,13 @@ namespace DidiFrame.Data.ContextBased
 		/// <param name="services">Services that will transmited into context</param>
 		public ContextBasedStatesRepositoryFactory(IOptions<TOptions> options, IModelFactoryProvider provider, ILogger<ContextBasedStatesRepositoryFactory<TContext, TOptions>> logger, IServiceProvider services)
 		{
-			ctx = services.ResolveObjectWithDependencies<TContext>(new object[] { options.Value, ContextType.States, logger });
+			ctx = (TContext)(Activator.CreateInstance(typeof(TContext), options.Value, ContextType.States, logger, services) ?? throw new ImpossibleVariantException());
 			this.provider = provider;
 		}
 
 
 		/// <inheritdoc/>
-		public IServersStatesRepository<TModel> Create<TModel>(string key) where TModel : class, IDataEntity
+		public IServersStatesRepository<TModel> Create<TModel>(string key) where TModel : class
 		{
 			var perServerLocker = lockers.GetOrAdd(typeof(TModel), _ => new());
 			return new ContextBasedStatesRepository<TModel>(perServerLocker, ctx, provider, key);

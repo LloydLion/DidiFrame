@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DidiFrame.Utils.Json.Converters.ClientObjects
+namespace DidiFrame.Utils.Json.Converters
 {
 	internal class CategoryConveter : JsonConverter<IChannelCategory>
 	{

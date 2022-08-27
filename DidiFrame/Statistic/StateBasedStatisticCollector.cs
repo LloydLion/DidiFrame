@@ -1,6 +1,5 @@
 ﻿using DidiFrame.Data.AutoKeys;
 using DidiFrame.Data.Model;
-using System.ComponentModel;
 
 namespace DidiFrame.Statistic
 {
@@ -9,7 +8,7 @@ namespace DidiFrame.Statistic
 	/// </summary>
 	public class StateBasedStatisticCollector : IStatisticCollector
 	{
-		private readonly IServersStatesRepository<ModelList<StatisticDictionaryItem>> repository;
+		private readonly IServersStatesRepository<ICollection<StatisticDictionaryItem>> repository;
 
 
 		/// <summary>
@@ -18,7 +17,7 @@ namespace DidiFrame.Statistic
 		/// <param name="repository">Base repository to store stats data</param>
 		public StateBasedStatisticCollector(IServersStatesRepositoryFactory repository)
 		{
-			this.repository = repository.Create<ModelList<StatisticDictionaryItem>>("stats");
+			this.repository = repository.Create<ICollection<StatisticDictionaryItem>>("stats");
 		}
 
 
@@ -29,7 +28,7 @@ namespace DidiFrame.Statistic
 			var sod = state.Object.SingleOrDefault(s => s.EntryKey == entry.Key);
 			if (sod is null)
 			{
-				sod = new(server, entry.Key, defaultValue);
+				sod = new(entry.Key, defaultValue);
 				state.Object.Add(sod);
 			}
 
@@ -48,22 +47,19 @@ namespace DidiFrame.Statistic
 		/// <summary>
 		/// State-based statistic entry model
 		/// </summary>
-		public class StatisticDictionaryItem : AbstractModel
+		public class StatisticDictionaryItem
 		{
 			/// <summary>
 			/// Unique entry key
 			/// </summary>
-			[ModelProperty(PropertyType.Primitive)]
-			public string EntryKey { get => GetDataFromStore<string>(); private set => SetDataToStore(value); }
+			[ConstructorAssignableProperty(0, "entryKey")]
+			public string EntryKey { get; }
 
 			/// <summary>
 			/// Current entry value
 			/// </summary>
-			[ModelProperty(PropertyType.Primitive)]
-			public long Value { get => GetDataFromStore<long>(); private set => SetDataToStore(value); }
-
-
-			public override IServer Server { get; }
+			[ConstructorAssignableProperty(1, "value")]
+			public long Value { get; private set; }
 
 
 			/// <summary>
@@ -71,19 +67,11 @@ namespace DidiFrame.Statistic
 			/// </summary>
 			/// <param name="entryKey">Unique entry key</param>
 			/// <param name="value">Initial entry value</param>
-			public StatisticDictionaryItem(IServer server, string entryKey, long value)
+			public StatisticDictionaryItem(string entryKey, long value)
 			{
 				EntryKey = entryKey;
 				Value = value;
-				Server = server;
 			}
-
-#nullable disable
-			public StatisticDictionaryItem(ISerializationModel model) : base(model)
-			{
-				Server = model.ReadPrimitive<IServer>(nameof(Server));
-			}
-#nullable restore
 
 
 			internal void Act(StatisticAction action)
@@ -91,11 +79,6 @@ namespace DidiFrame.Statistic
 				var tmp = Value;
 				action(ref tmp);
 				Value = tmp;
-			}
-
-			protected override void AdditionalSerializeTo(ISerializationModelBuilder builder)
-			{
-				builder.WritePrimitive(nameof(Server), Server);
 			}
 		}
 	}

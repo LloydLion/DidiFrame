@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace DidiFrame.Utils.Json.Converters.ClientObjects
+namespace DidiFrame.Utils.Json.Converters
 {
 	internal class MessageConverter : JsonConverter<IMessage>
 	{

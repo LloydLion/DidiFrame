@@ -4,34 +4,15 @@ using DidiFrame.Data.Model;
 namespace TestBot.Systems.Discussion
 {
 	[DataKey(SettingsKeys.DiscussionSystem)]
-	internal class DiscussionSettings : AbstractModel
+	internal class DiscussionSettings
 	{
-		public DiscussionSettings(IServer server, IReadOnlyCollection<IChannelCategory> disscussionCategories)
+		public DiscussionSettings(IReadOnlyCollection<IChannelCategory> disscussionCategories)
 		{
-			DisscussionCategoriesInternal = new(disscussionCategories);
-			SetDataToStore(server, nameof(Server));
+			DisscussionCategories = disscussionCategories;
 		}
 
-#nullable disable
-		public DiscussionSettings(ISerializationModel model) : base(model)
-		{
-			SetDataToStore(model.ReadPrimitive<IServer>(nameof(Server)), nameof(Server));
-		}
-#nullable restore
 
-
-		[ModelProperty(PropertyType.Collection)]
-		private ModelPrimitivesList<IChannelCategory> DisscussionCategoriesInternal
-		{ get => GetDataFromStore<ModelPrimitivesList<IChannelCategory>>(nameof(DisscussionCategories)); set => SetDataToStore(value, nameof(DisscussionCategories)); }
-
-		public IReadOnlyCollection<IChannelCategory> DisscussionCategories => (IReadOnlyCollection<IChannelCategory>)DisscussionCategoriesInternal;
-
-		public override IServer Server => GetDataFromStore<IServer>();
-
-
-		protected override void AdditionalSerializeTo(ISerializationModelBuilder builder)
-		{
-			builder.WritePrimitive(nameof(Server), Server);
-		}
+		[ConstructorAssignableProperty(0, "disscussionCategories")]
+		public IReadOnlyCollection<IChannelCategory> DisscussionCategories { get; }
 	}
 }

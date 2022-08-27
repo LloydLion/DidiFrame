@@ -6,52 +6,54 @@ using DidiFrame.Utils;
 namespace TestBot.Systems.Games
 {
 	[DataKey(StatesKeys.GamesSystem)]
-	public class GameModel : AbstractModel, IStateBasedLifetimeBase<GameState>
+	public class GameModel : IStateBasedLifetimeBase<GameState>
 	{
-		public GameModel(IMember creator, MessageAliveHolderModel reportMessage, IReadOnlyCollection<IMember> invited,
-			string name, string description, int startAtMembers, bool waitEveryoneInvited)
+		public GameModel(Guid id, IMember creator, MessageAliveHolderModel reportMessage, ICollection<IMember> invited,
+			ICollection<IMember> inGame, string name, string description, int startAtMembers, bool waitEveryoneInvited)
 		{
+			Guid = id;
 			Creator = creator;
 			ReportMessage = reportMessage;
+			Invited = invited;
+			InGame = inGame;
 			Name = name;
 			Description = description;
 			StartAtMembers = startAtMembers;
 			WaitEveryoneInvited = waitEveryoneInvited;
-			InvitedInternal = new(invited);
 		}
 
+		public GameModel(IMember creator, MessageAliveHolderModel reportMessage, IReadOnlyCollection<IMember> invited,
+			string name, string description, int startAtMembers, bool waitEveryoneInvited)
+			: this(Guid.NewGuid(), creator, reportMessage, invited.ToList(), new List<IMember>(), name, description, startAtMembers, waitEveryoneInvited) { }
 
-		[ModelProperty(PropertyType.Primitive)]
-		public GameState State { get => GetDataFromStore<GameState>(); set => SetDataToStore(value); }
 
-		[ModelProperty(PropertyType.Primitive)]
-		public IMember Creator { get => GetDataFromStore<IMember>(); private set => SetDataToStore(value); }
+		public GameState State { get; set; }
 
-		[ModelProperty(PropertyType.Model)]
-		public MessageAliveHolderModel ReportMessage { get => GetDataFromStore<MessageAliveHolderModel>(); private set => SetDataToStore(value); }
+		public IServer Server => Creator.Server;
 
-		[ModelProperty(PropertyType.Collection)]
-		private ModelPrimitivesList<IMember> InvitedInternal { get => GetDataFromStore<ModelPrimitivesList<IMember>>(nameof(Invited)); set => SetDataToStore(value, nameof(Invited)); }
+		[ConstructorAssignableProperty(0, "id")] public Guid Guid { get; }
 
-		public ICollection<IMember> Invited => InvitedInternal;
+		[ConstructorAssignableProperty(1, "creator")] public IMember Creator { get; }
 
-		[ModelProperty(PropertyType.Collection)]
-		private ModelPrimitivesList<IMember> InGameInternal { get => GetDataFromStore<ModelPrimitivesList<IMember>>(nameof(InGame)); set => SetDataToStore(value, nameof(InGame)); }
+		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolderModel ReportMessage { get; }
 
-		public ICollection<IMember> InGame => InGameInternal;
+		[ConstructorAssignableProperty(3, "invited")] public ICollection<IMember> Invited { get; }
 
-		[ModelProperty(PropertyType.Primitive)]
-		public string Name { get => GetDataFromStore<string>(); set => SetDataToStore(value); }
+		[ConstructorAssignableProperty(4, "inGame")] public ICollection<IMember> InGame { get; }
 
-		[ModelProperty(PropertyType.Primitive)]
-		public string Description { get => GetDataFromStore<string>(); set => SetDataToStore(value); }
+		[ConstructorAssignableProperty(5, "name")] public string Name { get; set; }
 
-		[ModelProperty(PropertyType.Primitive)]
-		public int StartAtMembers { get => GetDataFromStore<int>(); set => SetDataToStore(value); }
+		[ConstructorAssignableProperty(6, "description")] public string Description { get; set; }
 
-		[ModelProperty(PropertyType.Primitive)]
-		public bool WaitEveryoneInvited { get => GetDataFromStore<bool>(); set => SetDataToStore(value); }
+		[ConstructorAssignableProperty(7, "startAtMembers")] public int StartAtMembers { get; set; }
 
-		public override IServer Server => Creator.Server;
+		[ConstructorAssignableProperty(8, "waitEveryoneInvited")] public bool WaitEveryoneInvited { get; set; }
+
+
+		public bool Equals(IStateBasedLifetimeBase<GameState>? other) => Equals(other as object);
+
+		public override bool Equals(object? obj) => obj is GameModel gm && gm.Guid == Guid;
+
+		public override int GetHashCode() => Guid.GetHashCode();
 	}
 }

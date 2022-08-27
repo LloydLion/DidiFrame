@@ -1,9 +1,8 @@
-﻿using DidiFrame.Data.Model;
-using DidiFrame.Utils;
+﻿using DidiFrame.Utils;
 
 namespace DidiFrame.Data.AutoKeys
 {
-	internal class AutoKeyStatesRepository<TModel> : IServersStatesRepository<TModel> where TModel : class, IDataEntity
+	internal class AutoKeyStatesRepository<TModel> : IServersStatesRepository<TModel> where TModel : class
 	{
 		private readonly IServersStatesRepository<TModel> repository;
 

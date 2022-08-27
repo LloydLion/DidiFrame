@@ -4,7 +4,6 @@ using DidiFrame.Utils.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using DidiFrame.Data.Model;
 
 namespace DidiFrame.Data.Mongo
 {
@@ -49,7 +48,7 @@ namespace DidiFrame.Data.Mongo
 		}
 
 		/// <inheritdoc/>
-		public async void Put<TModel>(IServer server, string key, TModel model) where TModel : class, IDataEntity
+		public async void Put<TModel>(IServer server, string key, TModel model) where TModel : class
 		{
 			var serializer = JsonSerializerFactory.CreateWithConverters(server, logger);
 
@@ -77,7 +76,7 @@ namespace DidiFrame.Data.Mongo
 		}
 
 		/// <inheritdoc/>
-		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class, IDataEntity
+		public TModel Load<TModel>(IServer server, string key, IModelFactory<TModel>? factory = null) where TModel : class
 		{
 			if (factory is null) return Load<TModel>(server, key);
 			else
