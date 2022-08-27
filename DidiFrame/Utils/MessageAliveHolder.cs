@@ -188,7 +188,7 @@ namespace DidiFrame.Utils
 	/// <summary>
 	/// Serialization model of DidiFrame.Utils.MessageAliveHolder
 	/// </summary>
-	public class MessageAliveHolderModel
+	public class MessageAliveHolderModel : AbstractModel
 	{
 		/// <summary>
 		/// Creates DidiFrame.Utils.MessageAliveHolder.Model using possible id and channel
@@ -210,17 +210,21 @@ namespace DidiFrame.Utils
 			Channel = channel;
 		}
 
+#nullable disable
+		public MessageAliveHolderModel(ISerializationModel model) : base(model) { }
+#nullable restore
+
 
 		/// <summary>
 		/// Id of message that can exist but can dotn't exist
 		/// </summary>
-		[ConstructorAssignableProperty(0, "possibleMessageId")]
-		public ulong PossibleMessageId { get; set; }
+		public ulong PossibleMessageId { get => GetDataFromStore<ulong>(); set => SetDataToStore(value); }
 
 		/// <summary>
 		/// Channel where need to create message
 		/// </summary>
-		[ConstructorAssignableProperty(1, "channel")]
-		public ITextChannelBase Channel { get; }
+		public ITextChannelBase Channel { get => GetDataFromStore<ITextChannelBase>(); private set => SetDataToStore(value); }
+
+		public override IServer Server => Channel.Server;
 	}
 }

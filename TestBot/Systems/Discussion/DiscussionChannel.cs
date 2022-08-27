@@ -5,25 +5,25 @@ using DidiFrame.Data.Model;
 namespace TestBot.Systems.Discussion
 {
 	[DataKey(StatesKeys.DiscussionSystem)]
-	internal class DiscussionChannel : ILifetimeBase
+	internal class DiscussionChannel : AbstractModel, ILifetimeBase
 	{
-		public DiscussionChannel(ITextChannelBase channel, IMessage askMessage, Guid guid)
+		public DiscussionChannel(ITextChannelBase channel, IMessage askMessage)
 		{
 			Channel = channel;
 			AskMessage = askMessage;
-			Guid = guid;
 		}
 
+#nullable disable
+		public DiscussionChannel(ISerializationModel model) : base(model) { }
+#nullable restore
 
-		[ConstructorAssignableProperty(0, "channel")]
-		public ITextChannelBase Channel { get; }
 
-		[ConstructorAssignableProperty(1, "askMessage")]
-		public IMessage AskMessage { get; }
+		[ModelProperty(PropertyType.Primitive)]
+		public ITextChannelBase Channel { get => GetDataFromStore<ITextChannelBase>(); private set => SetDataToStore(value); }
+		
+		[ModelProperty(PropertyType.Primitive)]
+		public IMessage AskMessage { get => GetDataFromStore<IMessage>(); private set => SetDataToStore(value); }
 
-		public IServer Server => Channel.Server;
-
-		[ConstructorAssignableProperty(2, "guid")]
-		public Guid Guid { get; }
+		public override IServer Server => Channel.Server;
 	}
 }

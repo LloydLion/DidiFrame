@@ -6,45 +6,37 @@ using DidiFrame.Utils;
 namespace TestBot.Systems.Voice
 {
 	[DataKey(SettingsKeys.VoiceSystem)]
-	public class CreatedVoiceChannel : IStateBasedLifetimeBase<VoiceChannelState>
+	public class CreatedVoiceChannel : AbstractModel, IStateBasedLifetimeBase<VoiceChannelState>
 	{
-		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, MessageAliveHolderModel report, IMember creator, VoiceChannelState state, Guid id)
+#nullable disable
+		public CreatedVoiceChannel(ISerializationModel model) : base(model) { }
+#nullable restore
+
+		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, ITextChannel reportChannel, IMember creator)
 		{
 			Name = name;
 			BaseChannel = baseChannel;
 			Creator = creator;
-			State = state;
-			ReportMessage = report;
-			Guid = id;
+			State = default;
+			ReportMessage = new(reportChannel);
 		}
 
-		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, ITextChannel reportChannel, IMember creator)
-			: this(name, baseChannel, new(reportChannel), creator, default, Guid.NewGuid()) { }
 
+		[ModelProperty(PropertyType.Primitive)]
+		public string Name { get => GetDataFromStore<string>(); set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(0, "name")] public string Name { get; set; }
+		[ModelProperty(PropertyType.Primitive)]
+		public IVoiceChannel BaseChannel { get => GetDataFromStore<IVoiceChannel>(); set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(1, "baseChannel")] public IVoiceChannel BaseChannel { get; set; }
+		[ModelProperty(PropertyType.Model)]
+		public MessageAliveHolderModel ReportMessage { get => GetDataFromStore<MessageAliveHolderModel>(); set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(2, "report")] public MessageAliveHolderModel ReportMessage { get; set; }
+		[ModelProperty(PropertyType.Primitive)]
+		public IMember Creator { get => GetDataFromStore<IMember>(); private set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(3, "creator")] public IMember Creator { get; }
+		[ModelProperty(PropertyType.Primitive)]
+		public VoiceChannelState State { get => GetDataFromStore<VoiceChannelState>(); set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(4, "state")] public VoiceChannelState State { get; set; }
-
-		[ConstructorAssignableProperty(5, "id")] public Guid Guid { get; }
-
-		public IServer Server => Creator.Server;
-		
-
-		public override bool Equals(object? obj) =>
-			obj is CreatedVoiceChannel channel && channel.Guid == Guid;
-
-		public override int GetHashCode() => Guid.GetHashCode();
-
-		public static bool operator ==(CreatedVoiceChannel? left, CreatedVoiceChannel? right) =>
-			EqualityComparer<CreatedVoiceChannel>.Default.Equals(left, right);
-
-		public static bool operator !=(CreatedVoiceChannel? left, CreatedVoiceChannel? right) => !(left == right);
+		public override IServer Server => Creator.Server;
 	}
 }

@@ -4,55 +4,28 @@ using DidiFrame.Data.Model;
 namespace TestBot.Systems.Parties
 {
 	[DataKey(StatesKeys.PartiesSystem)]
-	public class PartyModel
+	public class PartyModel : AbstractModel
 	{
-		private static int nextId = 0;
-
-
-		/// <summary>
-		///	Serialization ctor
-		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="name"></param>
-		/// <param name="creator"></param>
-		/// <param name="members"></param>
-		public PartyModel(int id, string name, IMember creator, ICollection<IMember> members)
+		public PartyModel(string name, IMember creator, ICollection<IMember> members)
 		{
-			Id = id;
 			Name = name;
 			Creator = creator;
-			Members = members;
-			nextId = Math.Max(nextId, id);
+			MembersInternal = new(members);
 		}
 
-		public PartyModel(string name, IMember creator, IReadOnlyCollection<IMember> members) : this(++nextId, name, creator, members.ToList()) { }
+#nullable disable
+		public PartyModel(ISerializationModel model) : base(model) { }
+#nullable restore
 
 
-		[ConstructorAssignableProperty(1, "name")]
-		public string Name { get; set; }
+		public string Name { get => GetDataFromStore<string>(); set => SetDataToStore(value); }
 
-		/// <summary>
-		///	Exclude creator
-		/// </summary>
-		[ConstructorAssignableProperty(3, "members")]
-		public ICollection<IMember> Members { get; }
+		public ModelPrimitivesList<IMember> MembersInternal { get => GetDataFromStore<ModelPrimitivesList<IMember>>(nameof(Members)); private set => SetDataToStore(value, nameof(Members)); }
 
-		[ConstructorAssignableProperty(2, "creator")]
-		public IMember Creator { get; }
+		public ICollection<IMember> Members => MembersInternal;
 
-		[ConstructorAssignableProperty(0, "id")]
-		public int Id { get; }
+		public IMember Creator { get => GetDataFromStore<IMember>(); private set => SetDataToStore(value); }
 
-
-		public override bool Equals(object? obj)
-		{
-			return obj is PartyModel model &&
-				   Id == model.Id;
-		}
-
-		public override int GetHashCode()
-		{
-			return HashCode.Combine(Id);
-		}
+		public override IServer Server => Creator.Server;
 	}
 }

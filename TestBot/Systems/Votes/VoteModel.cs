@@ -6,7 +6,7 @@ using DidiFrame.Utils;
 namespace TestBot.Systems.Votes
 {
 	[DataKey("vote")]
-	internal class VoteModel : ILifetimeBase
+	internal class VoteModel : AbstractModel, ILifetimeBase
 	{
 		public VoteModel(IMember creator, IReadOnlyList<string> options, string title, ITextChannelBase channel)
 		{
@@ -16,36 +16,25 @@ namespace TestBot.Systems.Votes
 			Message = new(channel);
 		}
 
-		public VoteModel(IMember creator, IDictionary<string, int> options, string title, MessageAliveHolderModel message, Guid id)
-		{
-			Creator = creator;
-			Options = options;
-			Title = title;
-			Message = message;
-			Guid = id;
-		}
+#nullable disable
+		public VoteModel(ISerializationModel model) : base(model) { }
+#nullable restore
 
 
-		[ConstructorAssignableProperty(0, "creator")]
-		public IMember Creator { get; }
+		[ModelProperty(PropertyType.Primitive)]
+		public IMember Creator { get => GetDataFromStore<IMember>(); private set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(1, "options")]
-		public IDictionary<string, int> Options { get; }
+		[ModelProperty(PropertyType.Collection)]
+		public ModelPrimitivesList<KeyValuePair<string, int>> RawOptions { get => new(Options); set => Options = value.ToDictionary(s => s.Key, s => s.Value); }
 
-		[ConstructorAssignableProperty(2, "title")]
-		public string Title { get; }
+		public IDictionary<string, int> Options { get => GetDataFromStore<IDictionary<string, int>>(); private set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(3, "message")]
-		public MessageAliveHolderModel Message { get; }
+		[ModelProperty(PropertyType.Primitive)]
+		public string Title { get => GetDataFromStore<string>(); private set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(4, "id")]
-		public Guid Guid { get; }
+		[ModelProperty(PropertyType.Model)]
+		public MessageAliveHolderModel Message { get => GetDataFromStore<MessageAliveHolderModel>(); private set => SetDataToStore(value); }
 
-		public IServer Server => Message.Channel.Server;
-
-
-		public override bool Equals(object? obj) => obj is VoteModel model && model.Guid == Guid;
-
-		public override int GetHashCode() => Guid.GetHashCode();
+		public override IServer Server => Message.Channel.Server;
 	}
 }

@@ -6,47 +6,40 @@ using DidiFrame.Utils;
 namespace TestBot.Systems.Streaming
 {
 	[DataKey(StatesKeys.StreamingSystem)]
-	public class StreamModel : IStateBasedLifetimeBase<StreamState>
+	public class StreamModel : AbstractModel, IStateBasedLifetimeBase<StreamState>
 	{
-		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, MessageAliveHolderModel reportMessage, Guid id)
+		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, ITextChannel channel)
 		{
 			Name = name;
 			Owner = member;
 			PlanedStartTime = planedStartTime;
 			Place = rawPlace;
-			ReportMessage = reportMessage;
-			Guid = id;
+			ReportMessage = new(channel);
 		}
 
-		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, ITextChannel channel)
-			: this(name, member, planedStartTime, rawPlace, new MessageAliveHolderModel(channel), Guid.NewGuid()) { }
+#nullable disable
+		public StreamModel(ISerializationModel model) : base(model) { }
+#nullable restore
 
 
-		[ConstructorAssignableProperty(0, "name")]
-		public string Name { get; set; }
+		[ModelProperty(PropertyType.Primitive)]
+		public string Name { get => GetDataFromStore<string>(); set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(1, "member")]
-		public IMember Owner { get; }
+		[ModelProperty(PropertyType.Primitive)]
+		public IMember Owner { get => GetDataFromStore<IMember>(); private set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(2, "planedStartTime")]
-		public DateTime PlanedStartTime { get; set; }
+		[ModelProperty(PropertyType.Primitive)]
+		public DateTime PlanedStartTime { get => GetDataFromStore<DateTime>(); set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(3, "rawPlace")]
-		public string Place { get; set; }
+		[ModelProperty(PropertyType.Primitive)]
+		public string Place { get => GetDataFromStore<string>(); set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(4, "reportMessage")]
-		public MessageAliveHolderModel ReportMessage { get; }
+		[ModelProperty(PropertyType.Model)]
+		public MessageAliveHolderModel ReportMessage { get => GetDataFromStore<MessageAliveHolderModel>(); private set => SetDataToStore(value); }
 
-		[ConstructorAssignableProperty(5, "id")]
-		public Guid Guid { get; }
+		[ModelProperty(PropertyType.Primitive)]
+		public StreamState State { get => GetDataFromStore<StreamState>(); set => SetDataToStore(value); }
 
-		public StreamState State { get; set; }
-
-		public IServer Server => Owner.Server;
-
-
-		public override bool Equals(object? obj) => obj is StreamModel stream && stream.Guid == Guid;
-
-		public override int GetHashCode() => Guid.GetHashCode();
+		public override IServer Server => Owner.Server;
 	}
 }

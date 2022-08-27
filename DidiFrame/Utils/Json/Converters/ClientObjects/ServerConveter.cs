@@ -1,20 +1,15 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DidiFrame.Utils.Json.Converters
+namespace DidiFrame.Utils.Json.Converters.ClientObjects
 {
 	internal class ServerConveter : JsonConverter<IServer>
 	{
-		private readonly IClient client;
+		private readonly IServer currentServer;
 
 
-		public ServerConveter(IClient client)
+		public ServerConveter(IServer currentServer)
 		{
-			this.client = client;
+			this.currentServer = currentServer;
 		}
 
 
@@ -22,13 +17,7 @@ namespace DidiFrame.Utils.Json.Converters
 		{
 			if (hasExistingValue) throw new InvalidOperationException("Enable to populate discord server. It is immuttable object");
 
-			if (reader.Value is null) return null;
-			else
-			{
-				var id = (ulong)(long)reader.Value;
-				reader.Read();
-				return client.Servers.Single(s => s.Id == id);
-			}
+			return currentServer;
 		}
 
 		public override void WriteJson(JsonWriter writer, IServer? value, JsonSerializer serializer)

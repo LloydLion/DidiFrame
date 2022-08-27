@@ -58,7 +58,7 @@ namespace DidiFrame.Lifetimes
 		{
 			var builder = new InitialDataBuilder();
 			builder.AddData(ContextField, context);
-			builder.AddData(IdField, initialBase.Guid);
+			builder.AddData(IdField, initialBase.Id);
 			builder.AddData(ServerField, initialBase.Server);
 
 			LifetimeRan?.Invoke(initialBase, context, builder);

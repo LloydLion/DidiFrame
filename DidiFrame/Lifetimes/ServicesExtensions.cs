@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DidiFrame.Data.Model;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.Lifetimes
 {
@@ -24,7 +25,7 @@ namespace DidiFrame.Lifetimes
 			services.AddSingleton<ILifetimesRegistry<TLifetime, TBase>, LifetimeRegistry<TLifetime, TBase>>(provider =>
 				new LifetimeRegistry<TLifetime, TBase>
 				(
-					provider.GetRequiredService<IServersStatesRepositoryFactory>().Create<ICollection<TBase>>(stateKey),
+					provider.GetRequiredService<IServersStatesRepositoryFactory>().Create<ModelList<TBase>>(stateKey),
 					provider.GetRequiredService<ILifetimeInstanceCreator<TLifetime, TBase>>(),
 					provider.GetRequiredService<ILogger<LifetimeRegistry<TLifetime, TBase>>>(),
 					provider.GetRequiredService<IServersNotify>()

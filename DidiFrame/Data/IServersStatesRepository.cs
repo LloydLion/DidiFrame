@@ -1,4 +1,5 @@
-﻿using DidiFrame.Utils;
+﻿using DidiFrame.Data.Model;
+using DidiFrame.Utils;
 
 namespace DidiFrame.Data
 {
@@ -6,7 +7,7 @@ namespace DidiFrame.Data
 	/// Repository that provides the servers' states data
 	/// </summary>
 	/// <typeparam name="TModel">Type of working model</typeparam>
-	public interface IServersStatesRepository<TModel> where TModel : class
+	public interface IServersStatesRepository<TModel> where TModel : class, IDataEntity
 	{
 		/// <summary>
 		/// Provides a state of server to read or write. Access to repository is thread-safe

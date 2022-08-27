@@ -1,6 +1,8 @@
-﻿namespace DidiFrame.Data.ContextBased
+﻿using DidiFrame.Data.Model;
+
+namespace DidiFrame.Data.ContextBased
 {
-	internal class ContextBasedSettingsRepository<TModel> : IServersSettingsRepository<TModel> where TModel : class
+	internal class ContextBasedSettingsRepository<TModel> : IServersSettingsRepository<TModel> where TModel : class, IDataEntity
 	{
 		private readonly IDataContext ctx;
 		private readonly string key;
