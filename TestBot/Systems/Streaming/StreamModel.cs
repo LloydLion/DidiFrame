@@ -8,6 +8,7 @@ namespace TestBot.Systems.Streaming
 	[DataKey(StatesKeys.StreamingSystem)]
 	public class StreamModel : IStateBasedLifetimeBase<StreamState>
 	{
+		[SerializationConstructor]
 		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, MessageAliveHolderModel reportMessage, Guid id)
 		{
 			Name = name;
@@ -15,7 +16,7 @@ namespace TestBot.Systems.Streaming
 			PlanedStartTime = planedStartTime;
 			Place = rawPlace;
 			ReportMessage = reportMessage;
-			Guid = id;
+			Id = id;
 		}
 
 		public StreamModel(string name, IMember member, DateTime planedStartTime, string rawPlace, ITextChannel channel)
@@ -38,15 +39,18 @@ namespace TestBot.Systems.Streaming
 		public MessageAliveHolderModel ReportMessage { get; }
 
 		[ConstructorAssignableProperty(5, "id")]
-		public Guid Guid { get; }
+		public Guid Id { get; }
 
 		public StreamState State { get; set; }
 
 		public IServer Server => Owner.Server;
 
 
-		public override bool Equals(object? obj) => obj is StreamModel stream && stream.Guid == Guid;
+		public bool Equals(IDataModel? other) =>
+			other is StreamModel model && model.Id == Id;
 
-		public override int GetHashCode() => Guid.GetHashCode();
+		public override bool Equals(object? obj) => Equals(obj as IDataModel);
+
+		public override int GetHashCode() => Id.GetHashCode();
 	}
 }

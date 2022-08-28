@@ -1,20 +1,15 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DidiFrame.Utils.Json.Converters
 {
 	internal class ServerConveter : JsonConverter<IServer>
 	{
-		private readonly IClient client;
+		private readonly IServer currentServer;
 
 
-		public ServerConveter(IClient client)
+		public ServerConveter(IServer currentServer)
 		{
-			this.client = client;
+			this.currentServer = currentServer;
 		}
 
 
@@ -26,14 +21,14 @@ namespace DidiFrame.Utils.Json.Converters
 			else
 			{
 				var id = (ulong)(long)reader.Value;
-				reader.Read();
-				return client.Servers.Single(s => s.Id == id);
+				return id == 0 ? currentServer : currentServer.Client.GetServer(id);
 			}
 		}
 
 		public override void WriteJson(JsonWriter writer, IServer? value, JsonSerializer serializer)
 		{
-			writer.WriteValue(value?.Id);
+			if (Equals(currentServer, value)) writer.WriteValue(0);
+			else writer.WriteValue((long?)(value?.Id));
 		}
 	}
 }

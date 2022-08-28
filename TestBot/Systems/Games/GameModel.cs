@@ -8,10 +8,11 @@ namespace TestBot.Systems.Games
 	[DataKey(StatesKeys.GamesSystem)]
 	public class GameModel : IStateBasedLifetimeBase<GameState>
 	{
+		[SerializationConstructor]
 		public GameModel(Guid id, IMember creator, MessageAliveHolderModel reportMessage, ICollection<IMember> invited,
 			ICollection<IMember> inGame, string name, string description, int startAtMembers, bool waitEveryoneInvited)
 		{
-			Guid = id;
+			Id = id;
 			Creator = creator;
 			ReportMessage = reportMessage;
 			Invited = invited;
@@ -31,7 +32,7 @@ namespace TestBot.Systems.Games
 
 		public IServer Server => Creator.Server;
 
-		[ConstructorAssignableProperty(0, "id")] public Guid Guid { get; }
+		[ConstructorAssignableProperty(0, "id")] public Guid Id { get; }
 
 		[ConstructorAssignableProperty(1, "creator")] public IMember Creator { get; }
 
@@ -50,10 +51,11 @@ namespace TestBot.Systems.Games
 		[ConstructorAssignableProperty(8, "waitEveryoneInvited")] public bool WaitEveryoneInvited { get; set; }
 
 
-		public bool Equals(IStateBasedLifetimeBase<GameState>? other) => Equals(other as object);
+		public bool Equals(IDataModel? other) =>
+			other is GameModel model && model.Id == Id;
 
-		public override bool Equals(object? obj) => obj is GameModel gm && gm.Guid == Guid;
+		public override bool Equals(object? obj) => Equals(obj as IDataModel);
 
-		public override int GetHashCode() => Guid.GetHashCode();
+		public override int GetHashCode() => Id.GetHashCode();
 	}
 }

@@ -5,41 +5,28 @@ namespace DidiFrame.Utils.Json.Converters
 {
 	internal class MessageConverter : JsonConverter<IMessage>
 	{
-		private readonly IServer server;
-
-
-		public MessageConverter(IServer server)
-		{
-			this.server = server;
-		}
-
-
 		public override IMessage? ReadJson(JsonReader reader, Type objectType, IMessage? existingValue, bool hasExistingValue, JsonSerializer serializer)
 		{
 			if (hasExistingValue) throw new InvalidOperationException("Enable to populate discord message. It is immuttable object");
 
-			var msg = serializer.Deserialize<Message?>(reader);
+			var msg = JObject.Load(reader).ToObject<Message?>();
 			if (msg is null) return null;
-			else
-			{
-				var channel = server.GetChannel(msg.Value.ChannelId).AsText();
-				return channel.GetMessage(msg.Value.Id);
-			}
+			else return msg.Value.Channel.GetMessage((ulong)msg.Value.Id);
 		}
 
 		public override void WriteJson(JsonWriter writer, IMessage? value, JsonSerializer serializer)
 		{
 			if (value is not null)
-				serializer.Serialize(writer, JObject.FromObject(new Message { Id = value.Id, ChannelId = value.TextChannel.Id }));
+				JObject.FromObject(new Message { Id = (long)value.Id, Channel = value.TextChannel }).WriteTo(writer);
 			else writer.WriteNull();
 		}
 
 
 		private struct Message
 		{
-			public ulong Id { get; set; }
+			public long Id { get; set; }
 
-			public ulong ChannelId { get; set; }
+			public ITextChannelBase Channel { get; set; }
 		}
 	}
 }

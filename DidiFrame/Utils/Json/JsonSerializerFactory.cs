@@ -28,12 +28,13 @@ namespace DidiFrame.Utils.Json
 
 			ret.Converters.Add(new AbstractConveter());
 
-			ret.Converters.Add(new CategoryConveter(server));
-			ret.Converters.Add(new ChannelConverter(server));
-			ret.Converters.Add(new MemberConveter(server));
-			ret.Converters.Add(new RoleConverter(server));
-			ret.Converters.Add(new MessageConverter(server));
-			ret.Converters.Add(new ServerConveter(server.Client));
+			ret.Converters.Add(new ServerEntityConverter<IMember>(server, s => s.Id, (id, server) => server.GetMember(id)));
+			ret.Converters.Add(new ServerEntityConverter<IRole>(server, s => s.Id, (id, server) => server.GetRole(id)));
+			ret.Converters.Add(new ServerEntityConverter<IChannel>(server, s => s.Id, (id, server) => server.GetChannel(id)));
+			ret.Converters.Add(new ServerEntityConverter<IChannelCategory>(server, s => s.Id, (id, server) => server.GetCategory(id)));
+			ret.Converters.Add(new MessageConverter());
+			ret.Converters.Add(new ServerConveter(server));
+
 			ret.Converters.Add(new StringEnumConverter());
 
 			ret.Converters.Add(new SafeCollectionConveter(invalidCollectionElementCallback));
@@ -62,12 +63,13 @@ namespace DidiFrame.Utils.Json
 
 			ret.Converters.Add(new AbstractConveter());
 
-			ret.Converters.Add(new CategoryConveter(server));
-			ret.Converters.Add(new ChannelConverter(server));
-			ret.Converters.Add(new MemberConveter(server));
-			ret.Converters.Add(new RoleConverter(server));
-			ret.Converters.Add(new MessageConverter(server));
-			ret.Converters.Add(new ServerConveter(server.Client));
+			ret.Converters.Add(new ServerEntityConverter<IMember>(server, s => s.Id, (id, server) => server.GetMember(id)));
+			ret.Converters.Add(new ServerEntityConverter<IRole>(server, s => s.Id, (id, server) => server.GetRole(id)));
+			ret.Converters.Add(new ServerEntityConverter<IChannel>(server, s => s.Id, (id, server) => server.GetChannel(id)));
+			ret.Converters.Add(new ServerEntityConverter<IChannelCategory>(server, s => s.Id, (id, server) => server.GetCategory(id)));
+			ret.Converters.Add(new MessageConverter());
+			ret.Converters.Add(new ServerConveter(server));
+
 			ret.Converters.Add(new StringEnumConverter());
 
 			ret.Converters.Add(new SafeCollectionConveter(callback));

@@ -53,12 +53,12 @@ namespace DidiFrame.Lifetimes
 				var lifetime = lifetimeInstanceCreator.Create();
 
 				var sych = sls.UpdateDispatcher.GetSynchronizationContext();
-				var holder = new BaseObjectController(state, item.Guid, sych);
+				var holder = new BaseObjectController(state, item.Id, sych);
 				var context = new DefaultLifetimeContext<TBase>(isNewlyCreated: false, holder, sych);
 
 				lock (sls.Lifetimes)
 				{
-					sls.Lifetimes.Add(item.Guid, new(lifetime, context, holder));
+					sls.Lifetimes.Add(item.Id, new(lifetime, context, holder));
 
 					try
 					{
@@ -66,9 +66,9 @@ namespace DidiFrame.Lifetimes
 					}
 					catch (Exception ex)
 					{
-						logger.Log(LogLevel.Error, LifetimeRestoreFailID, ex, "Failed to restore lifetime ({LifetimeType}) {LifetimeId} in {ServerId}", lifetime.GetType(), item.Guid, item.Server.Id);
+						logger.Log(LogLevel.Error, LifetimeRestoreFailID, ex, "Failed to restore lifetime ({LifetimeType}) {LifetimeId} in {ServerId}", lifetime.GetType(), item.Id, item.Server.Id);
 						failed.Add(item);
-						sls.Lifetimes.Remove(item.Guid);
+						sls.Lifetimes.Remove(item.Id);
 						lifetime.Dispose();
 					}
 				}
@@ -95,10 +95,10 @@ namespace DidiFrame.Lifetimes
 				collection.Object.Add(baseObject);
 
 				var sych = sls.UpdateDispatcher.GetSynchronizationContext();
-				var holder = new BaseObjectController(state, baseObject.Guid, sych);
+				var holder = new BaseObjectController(state, baseObject.Id, sych);
 				var context = new DefaultLifetimeContext<TBase>(isNewlyCreated: true, holder, sych);
 
-				sls.Lifetimes.Add(baseObject.Guid, new(lifetime, context, holder));
+				sls.Lifetimes.Add(baseObject.Id, new(lifetime, context, holder));
 
 				try
 				{
@@ -107,9 +107,9 @@ namespace DidiFrame.Lifetimes
 				}
 				catch (Exception ex)
 				{
-					logger.Log(LogLevel.Error, LifetimeRegistryFailID, ex, "Failed to registry lifetime ({LifetimeType}) {LifetimeId} in {ServerId}", lifetime.GetType(), baseObject.Guid, baseObject.Server.Id);
+					logger.Log(LogLevel.Error, LifetimeRegistryFailID, ex, "Failed to registry lifetime ({LifetimeType}) {LifetimeId} in {ServerId}", lifetime.GetType(), baseObject.Id, baseObject.Server.Id);
 					collection.Object.Remove(baseObject);
-					sls.Lifetimes.Remove(baseObject.Guid);
+					sls.Lifetimes.Remove(baseObject.Id);
 					lifetime.Dispose();
 					throw;
 				}
@@ -216,7 +216,7 @@ namespace DidiFrame.Lifetimes
 
 				try
 				{
-					var model = holder.Object.Single(s => s.Guid == baseId);
+					var model = holder.Object.Single(s => s.Id == baseId);
 					output[0] = new ObjectHolder<TBase>(model, _ => { holder.Dispose(); });
 				}
 				catch (Exception)
@@ -229,7 +229,7 @@ namespace DidiFrame.Lifetimes
 			public void FinalizeObject()
 			{
 				using var collection = state.Open();
-				collection.Object.Remove(collection.Object.Single(s => s.Guid == baseId));
+				collection.Object.Remove(collection.Object.Single(s => s.Id == baseId));
 			}
 		}
 

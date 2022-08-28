@@ -4,8 +4,9 @@ using DidiFrame.Data.Model;
 namespace TestBot.Systems.Reputation
 {
 	[DataKey(SettingsKeys.ReputationSystem)]
-	public class ReputationSettings
+	public class ReputationSettings : IDataModel
 	{
+		[SerializationConstructor]
 		public ReputationSettings(IReadOnlyCollection<GrantRole> grants, Source sources, int banThreshold = -50, int globalLegalLevelIncrease = 2, int globalServerActivityDecrease = 2)
 		{
 			Grants = grants;
@@ -31,9 +32,15 @@ namespace TestBot.Systems.Reputation
 		[ConstructorAssignableProperty(4, "globalServerActivityDecrease")]
 		public int GlobalServerActivityDecrease { get; }
 
+		public Guid Id { get; } = Guid.NewGuid();
 
-		public class GrantRole
+
+		public bool Equals(IDataModel? other) => Equals(other, this);
+
+
+		public class GrantRole : IDataModel
 		{
+			[SerializationConstructor]
 			public GrantRole(IRole role, int level, ReputationType type)
 			{
 				Role = role;
@@ -50,9 +57,14 @@ namespace TestBot.Systems.Reputation
 
 			[ConstructorAssignableProperty(2, "type")]
 			public ReputationType Type { get; }
+
+			public Guid Id { get; } = Guid.NewGuid();
+
+
+			public bool Equals(IDataModel? other) => Equals(other, this);
 		}
 
-		public class Source
+		public class Source : IDataModel
 		{
 			[ConstructorAssignableProperty(0, "voiceCreation")]
 			public int VoiceCreation { get; }
@@ -60,12 +72,18 @@ namespace TestBot.Systems.Reputation
 			[ConstructorAssignableProperty(1, "messageSending")]
 			public int MessageSending { get; }
 
+			public Guid Id { get; } = Guid.NewGuid();
 
+
+			[SerializationConstructor]
 			public Source(int voiceCreation = 20, int messageSending = 1)
 			{
 				VoiceCreation = voiceCreation;
 				MessageSending = messageSending;
 			}
+
+
+			public bool Equals(IDataModel? other) => Equals(other, this);
 		}
 	}
 }

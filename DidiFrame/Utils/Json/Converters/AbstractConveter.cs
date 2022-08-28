@@ -6,54 +6,9 @@ using System.Reflection;
 
 namespace DidiFrame.Utils.Json.Converters
 {
-	internal class AbstractConveter : JsonConverter
+	internal class AbstractConveter : JsonConverter<IDataModel>
 	{
-		private static readonly Type[] unsupportedTypes = new[] { typeof(IChannel), typeof(IMember), typeof(IServer), typeof(IChannelCategory), typeof(IRole), typeof(IMessage), typeof(MessageSendModel) };
-
-
-		public override bool CanConvert(Type objectType)
-		{
-			var result = !((objectType.Assembly != (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()) &&
-				objectType.Assembly != Assembly.GetExecutingAssembly()) ||
-				objectType.IsValueType ||
-				typeof(IEnumerable).IsAssignableFrom(objectType) ||
-				unsupportedTypes.Any(s => s.IsAssignableFrom(objectType)));
-			return result;
-		}
-
-		public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-		{
-			var jobj = JToken.ReadFrom(reader);
-
-			var (settable, ctor) = GetProperties(objectType, out var ctorInfo);
-
-
-			if (existingValue is null)
-			{
-				var octor = ctor.OrderBy(s => (s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() ?? throw new ImpossibleVariantException()).ParameterPosition).ToArray();
-				var ctorArgs = new object?[octor.Length];
-
-				for (int i = 0; i < octor.Length; i++)
-				{
-					var maybe = jobj[octor[i].Name];
-					if (maybe is null) continue;
-					ctorArgs[i] = maybe.ToObject(octor[i].PropertyType, serializer);
-				}
-
-				existingValue = ctorInfo.Invoke(ctorArgs);
-			}
-
-			foreach (var item in settable)
-			{
-				var maybe = jobj[item.Name];
-				if (maybe is null) continue;
-				item.SetValue(existingValue, maybe.ToObject(item.PropertyType));
-			}
-
-			return existingValue;
-		}
-
-		public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+		public override void WriteJson(JsonWriter writer, IDataModel? value, JsonSerializer serializer)
 		{
 			if (value is null)
 			{
@@ -62,11 +17,11 @@ namespace DidiFrame.Utils.Json.Converters
 			else
 			{
 				var type = value.GetType();
-				var (settable, ctor) = GetProperties(type, out _);
+				var properties = IDataModel.EnumerateProperties(type);
 
 				var jobj = new JObject();
 
-				foreach (var item in settable.Concat(ctor))
+				foreach (var item in properties.Select(s => s.Property))
 				{
 					var val = item.GetValue(value);
 					jobj.Add(item.Name, val is null ? null : JToken.FromObject(val, serializer));
@@ -76,13 +31,41 @@ namespace DidiFrame.Utils.Json.Converters
 			}
 		}
 
-		private static (PropertyInfo[] settable, PropertyInfo[] ctor) GetProperties(Type type, out ConstructorInfo ctorInfo)
+		public override IDataModel? ReadJson(JsonReader reader, Type objectType, IDataModel? existingValue, bool hasExistingValue, JsonSerializer serializer)
 		{
-			var settable = type.GetProperties().Where(s => s.CanRead && s.CanWrite && s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() == null).ToArray();
-			var ctor = type.GetProperties().Where(s => s.CanRead && s.GetCustomAttribute<ConstructorAssignablePropertyAttribute>() != null).ToArray();
-			ctorInfo = type.GetConstructor(ctor.Select(s => s.PropertyType).ToArray()) ?? throw new ArgumentNullException(nameof(type), "No constructor with given constructor assignable properties was found");
+			var jobj = JToken.ReadFrom(reader);
 
-			return (settable, ctor);
+			var properties = IDataModel.EnumerateProperties(objectType);
+
+
+			if (existingValue is null)
+			{
+				var ctorInfo = objectType.GetConstructors().SingleOrDefault(s => s.GetCustomAttribute<SerializationConstructorAttribute>() is not null);
+				if (ctorInfo is null) ctorInfo = objectType.GetConstructors().Single();
+
+				var octor = properties.Where(s => s.AssignationTarget.TargetType == PropertyAssignationTarget.Type.Constructor).ToArray();
+				Array.Sort(octor, (a, b) => a.AssignationTarget.GetConstructorParameterPosition() - b.AssignationTarget.GetConstructorParameterPosition());
+
+				var ctorArgs = new object?[octor.Length];
+
+				for (int i = 0; i < octor.Length; i++)
+				{
+					var maybe = jobj[octor[i].Property.Name];
+					if (maybe is null) continue;
+					ctorArgs[i] = maybe.ToObject(octor[i].Property.PropertyType, serializer);
+				}
+
+				existingValue = (IDataModel)ctorInfo.Invoke(ctorArgs);
+			}
+
+			foreach (var item in properties.Where(s => s.AssignationTarget.TargetType == PropertyAssignationTarget.Type.SetAccessor).Select(s => s.Property))
+			{
+				var maybe = jobj[item.Name];
+				if (maybe is null) continue;
+				item.SetValue(existingValue, maybe.ToObject(item.PropertyType, serializer));
+			}
+
+			return existingValue;
 		}
 	}
 }
