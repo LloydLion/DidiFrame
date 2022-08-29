@@ -5,10 +5,11 @@ namespace DidiFrame.Testing.Client
 {
 	public class TextChannelBase : Channel, ITextChannelBase
 	{
-		public TextChannelBase(string name, ChannelCategory category) : base(name, category) { }
+		internal TextChannelBase(string name, ChannelCategory category) : base(name, category) { }
 
 
 		public event MessageSentEventHandler? MessageSent;
+
 		public event MessageDeletedEventHandler? MessageDeleted;
 
 
@@ -17,10 +18,8 @@ namespace DidiFrame.Testing.Client
 
 		public Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
-			var server = BaseCategory.BaseServer;
-			var msg = new Message(messageSendModel, this, server.Members.Single(s => s.Id == server.Client.SelfAccount.Id));
-			AddMessage(msg);
-			return Task.FromResult((IMessage)msg);
+			var message = AddMessage((Member)BaseServer.GetMember(BaseServer.Client.SelfAccount), messageSendModel);
+			return Task.FromResult((IMessage)message);
 		}
 
 		public IReadOnlyList<IMessage> GetMessages(int count = -1)
@@ -39,25 +38,34 @@ namespace DidiFrame.Testing.Client
 		}
 
 
-		public void AddMessage(Message msg)
+		public Message AddMessage(Member sender, MessageSendModel sendModel)
 		{
-			msgs.Add(msg);
-			MessageSent?.Invoke(BaseCategory.BaseServer.BaseClient, msg, false);
-			BaseServer.OnMessageCreated(msg, false);
+			var message = new Message(sendModel, this, sender);
+			msgs.Add(message);
+
+			try { MessageSent?.Invoke(BaseCategory.BaseServer.BaseClient, message, false); }
+			catch (Exception) { /*No logging*/ }
+			BaseServer.OnMessageCreated(message, false);
+
+			return message;
 		}
 
-		public void EditMessage(Message msg)
+		public void EditMessage(Message message, MessageSendModel sendModel)
 		{
-			msgs.Add(msg);
-			MessageSent?.Invoke(BaseCategory.BaseServer.BaseClient, msg, true);
-			BaseServer.OnMessageCreated(msg, true);
+			message.ModifyInternal(sendModel);
+
+			try { MessageSent?.Invoke(BaseCategory.BaseServer.BaseClient, message, true); }
+			catch (Exception) { /*No logging*/ }
+			BaseServer.OnMessageCreated(message, true);
 		}
 
-		public void DeleteMessage(Message msg)
+		public void DeleteMessage(Message message)
 		{
-			msgs.Remove(msg);
-			MessageDeleted?.Invoke(BaseCategory.BaseServer.BaseClient, this, msg.Id);
-			BaseServer.OnMessageDeleted(this, msg.Id);
+			msgs.Remove(message);
+
+			try { MessageDeleted?.Invoke(BaseCategory.BaseServer.BaseClient, this, message.Id); }
+			catch (Exception) { /*No logging*/ }
+			BaseServer.OnMessageDeleted(this, message.Id);
 		}
 	}
 }

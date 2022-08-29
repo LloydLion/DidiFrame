@@ -10,11 +10,11 @@ namespace DidiFrame.Testing.Client
 		private readonly string name;
 
 
-		public Channel(string name, ChannelCategory category)
+		internal Channel(string name, ChannelCategory category)
 		{
 			this.name = name;
 			baseCategory = category;
-			Id = category.BaseServer.BaseClient.GenerateId();
+			Id = category.BaseServer.BaseClient.GenerateNextId();
 		}
 
 
@@ -42,6 +42,10 @@ namespace DidiFrame.Testing.Client
 		public bool Equals(IServerEntity? other) => other is IChannel channel && Equals(channel);
 
 		public bool Equals(IChannel? other) => other is Channel channel && channel.Id == Id;
+
+		public override bool Equals(object? obj) => Equals(obj as IChannel);
+
+		public override int GetHashCode() => Id.GetHashCode();
 
 		void IServerDeletable.DeleteInternal() => IsExist = true;
 

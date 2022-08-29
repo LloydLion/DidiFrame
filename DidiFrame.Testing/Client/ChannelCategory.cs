@@ -11,10 +11,10 @@ namespace DidiFrame.Testing.Client
 		private readonly ICollection<Channel> baseChannels = new List<Channel>();
 
 
-		public ChannelCategory(string? name, Server server)
+		internal ChannelCategory(string? name, Server server)
 		{
 			this.name = name;
-			if (name is not null) Id = server.BaseClient.GenerateId();
+			if (name is not null) Id = server.BaseClient.GenerateNextId();
 			BaseServer = server;
 		}
 
@@ -36,14 +36,7 @@ namespace DidiFrame.Testing.Client
 
 		public Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel)
 		{
-			var channel = creationModel.ChannelType switch
-			{
-				ChannelType.TextCompatible => new TextChannel(creationModel.Name, this),
-				ChannelType.Voice => new VoiceChannel(creationModel.Name, this),
-				_ => new Channel(creationModel.Name, this)
-			};
-
-			GetIfExist(baseChannels).Add(channel);
+			var channel = GetIfExist(BaseServer).AddChannel(this, creationModel);
 
 			return Task.FromResult((IChannel)channel);
 		}
@@ -52,9 +45,13 @@ namespace DidiFrame.Testing.Client
 
 		public bool Equals(IChannelCategory? other) => other is ChannelCategory cat && cat.Id == Id;
 
+		public override bool Equals(object? obj) => Equals(obj as IChannelCategory);
+
+		public override int GetHashCode() => Id.GetHashCode();
+
 		void IServerDeletable.DeleteInternal()
 		{
-			throw new NotImplementedException();
+			IsExist = false;
 		}
 
 		internal void AddChannel(Channel channel)

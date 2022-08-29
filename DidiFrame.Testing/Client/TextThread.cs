@@ -7,7 +7,7 @@ namespace DidiFrame.Testing.Client
 		private readonly TextChannel channel;
 
 
-		public TextThread(string name, TextChannel channel, ChannelCategory category) : base(name, category)
+		internal TextThread(string name, TextChannel channel) : base(name, channel.BaseCategory)
 		{
 			this.channel = channel;
 		}

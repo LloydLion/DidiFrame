@@ -7,7 +7,7 @@ namespace DidiFrame.Testing.Client
 	{
 		public string UserName { get; }
 
-		public ulong Id { get; protected set; }
+		public ulong Id { get; }
 
 		public IClient Client { get; }
 
@@ -18,16 +18,28 @@ namespace DidiFrame.Testing.Client
 		public IList<MessageSendModel> DirectMessages { get; } = new List<MessageSendModel>();
 
 
-		public User(Client client, string userName, bool isBot)
+		internal User(Client client, string userName, bool isBot)
 		{
 			Client = client;
 			UserName = userName;
 			IsBot = isBot;
-			Id = client.GenerateId();
+			Id = client.GenerateNextId();
+		}
+
+		protected User(Client client, string userName, bool isBot, ulong id)
+		{
+			Client = client;
+			UserName = userName;
+			IsBot = isBot;
+			Id = id;
 		}
 
 
 		public bool Equals(IUser? other) => other is User user && user.Id == Id;
+
+		public override bool Equals(object? obj) => Equals(obj as IUser);
+
+		public override int GetHashCode() => Id.GetHashCode();
 
 		public Task SendDirectMessageAsync(MessageSendModel model)
 		{

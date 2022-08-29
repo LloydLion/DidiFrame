@@ -5,7 +5,7 @@ namespace DidiFrame.Testing.UserCommands
 {
 	internal class NullDispatcher<T> : IUserCommandPipelineDispatcher<T> where T : notnull
 	{
-		private DispatcherSyncCallback<T>? callback;
+		private DispatcherCallback<T>? callback;
 		private TaskCompletionSource<ExecutionStatus>? taskSource;
 
 
@@ -16,14 +16,15 @@ namespace DidiFrame.Testing.UserCommands
 			taskSource = null;
 		}
 
-		public void Respond(object stateObject, UserCommandResult result)
+		public Task RespondAsync(object stateObject, UserCommandResult result)
 		{
 			if (taskSource is null) throw new InvalidOperationException("This method was called outside pipeline");
 			var state = (State)stateObject;
 			state.Responces.Add(result);
+			return Task.CompletedTask;
 		}
 
-		public void SetSyncCallback(DispatcherSyncCallback<T> callback)
+		public void SetSyncCallback(DispatcherCallback<T> callback)
 		{
 			this.callback = callback;
 		}

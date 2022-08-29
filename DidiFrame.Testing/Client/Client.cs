@@ -1,11 +1,37 @@
-﻿using DidiFrame.Clients;
-using Microsoft.Extensions.Logging;
+﻿using DidiFrame.ClientExtensions;
+using DidiFrame.Clients;
+using DidiFrame.Culture;
 
 namespace DidiFrame.Testing.Client
 {
-	public class Client : IClient
+	public sealed class Client : IClient
 	{
-		private ulong lastId = 0;
+		private readonly Dictionary<ulong, Server> servers = new();
+		private readonly ExtensionContextFactory extensionContextFactory;
+		private readonly IReadOnlyCollection<IClientExtensionFactory> clientExtensions;
+		private ulong nextId = 0;
+
+
+		public Client(IReadOnlyCollection<IClientExtensionFactory> clientExtensions, IReadOnlyCollection<IServerExtensionFactory> serverExtensions, string userName = "Test bot")
+		{
+			TestSelfAccount = new User(this, userName, true);
+			extensionContextFactory = new();
+			this.clientExtensions = clientExtensions;
+			ServerExtensions = serverExtensions;
+		}
+
+		public Client(string userName = "Test bot") : this(Array.Empty<IClientExtensionFactory>(), Array.Empty<IServerExtensionFactory>(), userName) { }
+
+
+		public IReadOnlyCollection<IServer> Servers => servers.Values;
+
+		public IUser SelfAccount => TestSelfAccount;
+
+		public User TestSelfAccount { get; }
+
+		public IServerCultureProvider? CultureProvider { get; private set; } = null;
+
+		public IReadOnlyCollection<IServerExtensionFactory> ServerExtensions { get; }
 
 
 		public event ServerCreatedEventHandler? ServerCreated;
@@ -13,47 +39,97 @@ namespace DidiFrame.Testing.Client
 		public event ServerRemovedEventHandler? ServerRemoved;
 
 
-		public IReadOnlyCollection<IServer> Servers => (IReadOnlyCollection<IServer>)BaseServers;
-
-		public IUser SelfAccount => BaseSelfAccount;
-
-		public User BaseSelfAccount { get; }
-
-		public IDictionary<ulong, Server> BaseServers { get; } = new Dictionary<ulong, Server>();
-
-		public IServiceProvider Services { get; }
-
-		internal ILogger Logger { get; }
-
-
-		public Client(IServiceProvider services, ILogger logger)
+		public Task AwaitForExit()
 		{
-			BaseSelfAccount = new User(this, "Is's a Me! MARIO!", true);
-			Services = services;
-			Logger = logger;
+			return Task.Delay(-1);
 		}
 
-
-		public Task AwaitForExit()
+		public Task ConnectAsync()
 		{
 			return Task.CompletedTask;
 		}
 
-		public void Connect()
+		public TExtension CreateExtension<TExtension>() where TExtension : class
 		{
-			
-		}
-
-		public ulong GenerateId()
-		{
-			return lastId++;
+			var extensionFactory = (IClientExtensionFactory<TExtension>)clientExtensions.Single(s => s is IClientExtensionFactory<TExtension> factory && factory.TargetClientType.IsInstanceOfType(this));
+			return extensionFactory.Create(this, extensionContextFactory.CreateInstance<TExtension>());
 		}
 
 		public void Dispose()
 		{
-			
+			//No disposing need for this client
 		}
 
-		public IServer GetServer(ulong id) => BaseServers[id];
+		public IServer GetServer(ulong id)
+		{
+			return servers[id];
+		}
+
+		public Server GetTestServer(ulong id)
+		{
+			return servers[id];
+		}
+
+		public void SetupCultureProvider(IServerCultureProvider? cultureProvider)
+		{
+			CultureProvider = cultureProvider;
+		}
+
+		public Server CreateServer(string serverName = "Some server")
+		{
+			var server = new Server(this, serverName);
+			servers.Add(server.Id, server);
+			ServerCreated?.Invoke(server);
+			return server;
+		}
+
+		public void DeleteServer(Server server)
+		{
+			server.DeleteInternal();
+			servers.Remove(server.Id);
+			ServerRemoved?.Invoke(server);
+		}
+
+		public ulong GenerateNextId()
+		{
+			return nextId++;
+		}
+
+
+		private sealed class ExtensionContextFactory
+		{
+			private readonly Dictionary<Type, object> extensionsData = new();
+
+
+			public IClientExtensionContext<TExtension> CreateInstance<TExtension>()
+			{
+				return new ExtensionsContext<TExtension>(extensionsData);
+			}
+
+
+			private sealed class ExtensionsContext<TExtension> : IClientExtensionContext<TExtension>
+			{
+				private readonly Dictionary<Type, object> extensionsData;
+
+
+				public ExtensionsContext(Dictionary<Type, object> extensionsData)
+				{
+					this.extensionsData = extensionsData;
+				}
+
+
+				public object? GetExtensionData()
+				{
+					return extensionsData.ContainsKey(typeof(TExtension)) ? extensionsData[typeof(TExtension)] : null;
+				}
+
+				public void SetExtensionData(object data)
+				{
+					if (extensionsData.ContainsKey(typeof(TExtension)) == false)
+						extensionsData.Add(typeof(TExtension), data);
+					else extensionsData[typeof(TExtension)] = data;
+				}
+			}
+		}
 	}
 }

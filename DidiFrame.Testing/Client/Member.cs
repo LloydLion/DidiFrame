@@ -11,11 +11,10 @@ namespace DidiFrame.Testing.Client
 		private readonly ICollection<Role> roles = new HashSet<Role>();
 
 
-		public Member(Server server, User baseUser, Permissions permissions) : base(server.BaseClient, baseUser.UserName, baseUser.IsBot)
+		public Member(Server server, User baseUser, Permissions permissions) : base(server.BaseClient, baseUser.UserName, baseUser.IsBot, baseUser.Id)
 		{
 			Server = server;
 			this.permissions = permissions;
-			Id = baseUser.Id;
 		}
 
 
@@ -25,8 +24,13 @@ namespace DidiFrame.Testing.Client
 
 		public bool IsExist { get; private set; } = true;
 
-		public bool Equals(IServerEntity? other) => other is Member member && IsExist && member.IsExist && member.Id == Id;
+		public bool Equals(IServerEntity? other) => Equals(other as IMember);
 
+		public bool Equals(IMember? other) => base.Equals(other);
+
+		public override bool Equals(object? obj) => Equals(obj as IMember);
+
+		public override int GetHashCode() => Id.GetHashCode();
 
 		public IReadOnlyCollection<IRole> GetRoles() => (IReadOnlyCollection<IRole>)GetIfExist(roles);
 

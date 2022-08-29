@@ -1,26 +1,24 @@
 ﻿using DidiFrame.Data;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace TestProject.Environment.Data
+namespace DidiFrame.Testing.Data
 {
-	internal class ServersSettingsRepositoryFactory : IServersSettingsRepositoryFactory
+	public class ServersSettingsRepositoryFactory : IServersSettingsRepositoryFactory
 	{
-		private readonly Dictionary<string, List<ServersSettingsRepository>> data = new();
+		private readonly Dictionary<string, ServersSettingsRepository> repositories = new();
 
 
-		public IServersSettingsRepository<TModel> Create<TModel>(string key) where TModel : class
+		public IServersSettingsRepository<TModel> Create<TModel>(string key) where TModel : class => CreateTest<TModel>(key);
+
+		public ServersSettingsRepository<TModel> CreateTest<TModel>(string key) where TModel : class
 		{
-			return (ServersSettingsRepository<TModel>)data[key].Single(s => s is ServersSettingsRepository<TModel>);
+			if (repositories.ContainsKey(key) == false)
+				repositories.Add(key, new ServersSettingsRepository<TModel>());
+			return (ServersSettingsRepository<TModel>)repositories[key];
 		}
 
-		public Task PreloadDataAsync() => Task.CompletedTask;
-
-		public void AddRepository<TModel>(string key, ServersSettingsRepository<TModel> repository) where TModel : class
+		public Task PreloadDataAsync()
 		{
-			if (data.ContainsKey(key) == false) data.Add(key, new());
-			data[key].Add(repository);
+			return Task.CompletedTask;
 		}
 	}
 }

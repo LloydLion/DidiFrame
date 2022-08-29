@@ -10,11 +10,12 @@ namespace DidiFrame.Testing.Client
 		private readonly Permissions permissions;
 		private readonly string name;
 
+
 		public Role(Permissions permissions, string name, Server server)
 		{
 			this.permissions = permissions;
 			this.name = name;
-			Id = server.BaseClient.GenerateId();
+			Id = server.BaseClient.GenerateNextId();
 			Server = server;
 		}
 
@@ -29,10 +30,16 @@ namespace DidiFrame.Testing.Client
 
 		public bool IsExist { get; private set; } = true;
 
+		public string Mention => $"!<{Id}>";
+
 
 		public bool Equals(IServerEntity? other) => other is Role role && IsExist && role.IsExist && role.Id == Id;
 
 		public bool Equals(IRole? other) => Equals((IServerEntity?)other);
+
+		public override bool Equals(object? obj) => Equals(obj as IRole);
+
+		public override int GetHashCode() => Id.GetHashCode();
 
 		void IServerDeletable.DeleteInternal() => IsExist = false;
 

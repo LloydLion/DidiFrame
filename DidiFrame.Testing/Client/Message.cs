@@ -8,11 +8,11 @@ namespace DidiFrame.Testing.Client
 		private Lazy<MessageInteractionDispatcher> mid;
 
 
-		public Message(MessageSendModel sendModel, TextChannelBase baseTextChannel, Member author)
+		internal Message(MessageSendModel sendModel, TextChannelBase baseTextChannel, Member author)
 		{
 			SendModel = sendModel;
 			BaseTextChannel = baseTextChannel;
-			Id = baseTextChannel.BaseServer.BaseClient.GenerateId();
+			Id = baseTextChannel.BaseServer.BaseClient.GenerateNextId();
 			Author = author;
 			mid = new Lazy<MessageInteractionDispatcher>(() => new MessageInteractionDispatcher(this));
 		}
@@ -46,13 +46,18 @@ namespace DidiFrame.Testing.Client
 		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
 		{
 			if (resetDispatcher) ResetInteractionDispatcher();
-			SendModel = sendModel;
+			BaseTextChannel.EditMessage(this, sendModel);
 			return Task.CompletedTask;
 		}
 
 		public void ResetInteractionDispatcher()
 		{
 			if (mid.IsValueCreated) mid = new Lazy<MessageInteractionDispatcher>(() => new MessageInteractionDispatcher(this));
+		}
+
+		internal void ModifyInternal(MessageSendModel sendModel)
+		{
+			SendModel = sendModel;
 		}
 	}
 }

@@ -4,21 +4,21 @@ namespace DidiFrame.Testing.Client
 {
 	public class VoiceChannel : TextChannelBase, IVoiceChannel
 	{
-		private readonly List<IMember> connected = new();
+		private readonly List<Member> connected = new();
 
 
-		public VoiceChannel(string name, ChannelCategory category) : base(name, category) { }
+		internal VoiceChannel(string name, ChannelCategory category) : base(name, category) { }
 
 
 		public IReadOnlyCollection<IMember> ConnectedMembers => connected;
 
 
-		public void Connect(IMember member)
+		public void Connect(Member member)
 		{
 			connected.Add(member);
 		}
 
-		public void Disconnect(IMember member)
+		public void Disconnect(Member member)
 		{
 			connected.Remove(member);
 		}
