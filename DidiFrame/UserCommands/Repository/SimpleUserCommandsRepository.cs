@@ -90,18 +90,23 @@ namespace DidiFrame.UserCommands.Repository
 		private void CheckExistanceAndFixErrors(UserCommandInfo command)
 		{
 			if (globalInfos.ContainsKey(command.Name))
-				throw new InvalidOperationException("Command with given name already present in global commands");
+				throw new ArgumentException("Command with given name already present in global commands", nameof(command));
 
-			foreach (var col in localInfos.Where(col => col.Value.ContainsKey(command.Name)).Select(s => s.Value))
+			var containsIn = new List<IServer>();
+			foreach (var col in localInfos.Where(col => col.Value.ContainsKey(command.Name)))
 			{
-				col.Remove(col[command.Name]);
+				col.Value.Remove(col.Value[command.Name]);
+				containsIn.Add(col.Key);
 			}
+
+			if (containsIn.Any())
+				throw new ArgumentException($"Command with given name already present in some servers commands: {string.Join(", ", containsIn)}", nameof(command));
 		}
 
 		private void CheckExistanceAndFixErrors(UserCommandInfo command, IServer server)
 		{
 			if (globalInfos.ContainsKey(command.Name))
-				throw new InvalidOperationException("Command with given name already present in global commands");
+				throw new ArgumentException("Command with given name already present in global commands", nameof(command));
 
 			if (localInfos.ContainsKey(server) == false) return;
 			else
@@ -109,7 +114,7 @@ namespace DidiFrame.UserCommands.Repository
 				var collection = localInfos[server];
 
 				if (collection.ContainsKey(command.Name))
-					throw new InvalidOperationException("Command with given name already present in this server commands");
+					throw new ArgumentException("Command with given name already present in this server commands", nameof(command));
 			}
 		}
 
