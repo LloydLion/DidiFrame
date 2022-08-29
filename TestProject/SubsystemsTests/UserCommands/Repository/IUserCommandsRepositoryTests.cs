@@ -165,5 +165,26 @@ namespace TestProject.SubsystemsTests.UserCommands.Repository
 			Assert.Throws<KeyNotFoundException>(() => rep.GetCommandsFor(server3).GetCommad("the cmd-b"));
 			Assert.Throws<KeyNotFoundException>(() => rep.GetCommandsFor(server3).GetCommad("the cmd-c"));
 		}
+
+		[Test]
+		public void TryGetCommand()
+		{
+			var rep = CreateRepository();
+
+			var cmd1 = new UserCommandInfo("the cmd-a", new NoHandler().InstanceHandler, Array.Empty<UserCommandArgument>(), SimpleModelAdditionalInfoProvider.Empty);
+
+			rep.AddCommand(cmd1);
+
+			var collection = rep.GetGlobalCommands();
+
+			//-------------------
+
+			Assert.Throws<KeyNotFoundException>(() => collection.GetCommad("the cmd-b"));
+			Assert.That(collection.TryGetCommad("the cmd-b", out _), Is.False);
+
+			var result = collection.TryGetCommad("the cmd-a", out var existingCommand);
+			Assert.That(result, Is.True);
+			Assert.That(existingCommand, Is.EqualTo(cmd1));
+		}
 	}
 }

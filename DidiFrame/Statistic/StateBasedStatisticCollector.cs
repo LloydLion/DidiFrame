@@ -22,13 +22,13 @@ namespace DidiFrame.Statistic
 
 
 		/// <inheritdoc/>
-		public void Collect(StatisticAction action, StatisticEntry entry, IServer server, long defaultValue = 0)
+		public void Collect(StatisticAction action, StatisticEntry entry, IServer server)
 		{
 			using var state = repository.GetState(server).Open();
 			var sod = state.Object.SingleOrDefault(s => s.EntryKey == entry.Key);
 			if (sod is null)
 			{
-				sod = new(entry.Key, defaultValue);
+				sod = new(entry.Key, entry.DefaultValue);
 				state.Object.Add(sod);
 			}
 
@@ -36,11 +36,11 @@ namespace DidiFrame.Statistic
 		}
 
 		/// <inheritdoc/>
-		public long Get(StatisticEntry entry, IServer server, long defaultValue = 0)
+		public long Get(StatisticEntry entry, IServer server)
 		{
 			using var state = repository.GetState(server).Open();
 			var sod = state.Object.SingleOrDefault(s => s.EntryKey == entry.Key);
-			return sod?.Value ?? defaultValue;
+			return sod?.Value ?? entry.DefaultValue;
 		}
 
 

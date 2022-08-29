@@ -19,7 +19,7 @@
 		/// <param name="entry">Entry itself</param>
 		/// <param name="server">Server where need to do operation</param>
 		/// <param name="defaultValue">Default value of entry if it hasn't created yet</param>
-		public void Collect(StatisticAction action, StatisticEntry entry, IServer server, long defaultValue = 0);
+		public void Collect(StatisticAction action, StatisticEntry entry, IServer server);
 
 		/// <summary>
 		/// Gets stat entry current value
@@ -28,6 +28,6 @@
 		/// <param name="server">Server where need to get value</param>
 		/// <param name="defaultValue">Default value of entry if it hasn't created yet</param>
 		/// <returns>Current value of entry or given default value</returns>
-		public long Get(StatisticEntry entry, IServer server, long defaultValue = 0);
+		public long Get(StatisticEntry entry, IServer server);
 	}
 }

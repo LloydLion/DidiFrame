@@ -2,20 +2,26 @@
 
 namespace DidiFrame.Testing.Data
 {
-	internal class CustomFactoryProvider<TFactory> : IModelFactoryProvider where TFactory : class
+	public class CustomFactoryProvider : IModelFactoryProvider
 	{
-		private readonly IModelFactory<TFactory> factory;
+		private readonly Dictionary<Type, object> factories = new();
 
 
-		public CustomFactoryProvider(IModelFactory<TFactory> factory)
+		public CustomFactoryProvider()
 		{
-			this.factory = factory;
+
+		}
+
+
+		public void AddFactory<TModel>(IModelFactory<TModel> factory) where TModel : class
+		{
+			factories.Add(typeof(TModel), factory);
 		}
 
 
 		public IModelFactory<TModel> GetFactory<TModel>() where TModel : class
 		{
-			return (IModelFactory<TModel>)factory;
+			return (IModelFactory<TModel>)factories[typeof(TModel)];
 		}
 	}
 }
