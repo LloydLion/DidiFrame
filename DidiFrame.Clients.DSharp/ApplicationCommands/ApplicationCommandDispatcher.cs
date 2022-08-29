@@ -22,15 +22,14 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 	/// <summary>
 	/// User command pipeline dispatcher that using discord's application commands
 	/// </summary>
-	public sealed class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>, IDisposable
+	public sealed class ApplicationCommandDispatcher : IUserCommandPipelineDispatcher<UserCommandPreContext>
 	{
 		private DispatcherCallback<UserCommandPreContext>? callback;
 		private readonly Dictionary<string, ApplicationCommandPair> convertedCommands;
 		private readonly DSharpClient client;
 		private readonly BehaviorModel behaviorModel;
 		private readonly IStringLocalizer<ApplicationCommandDispatcher> localizer;
-		private readonly IValidator<UserCommandResult> resultValidator;
-		private readonly ModalHelper modalHelper;
+		private readonly IValidator<UserCommandResult>? resultValidator;
 
 
 		/// <summary>
@@ -46,8 +45,7 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			IUserCommandsRepository commands,
 			IStringLocalizer<ApplicationCommandDispatcher> localizer,
 			IUserCommandContextConverter converter,
-			IValidator<UserCommandResult> resultValidator,
-			IValidator<ModalModel> modalValidator,
+			IValidator<UserCommandResult>? resultValidator = null,
 			BehaviorModel? behaviorModel = null)
 		{
 			client = (DSharpClient)dsharp;
@@ -68,8 +66,6 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			}
 
 			client.BaseClient.BulkOverwriteGlobalApplicationCommandsAsync(convertedCommands.Select(s => s.Value.DSharpCommand)).Wait();
-
-			modalHelper = new ModalHelper(client, localizer, modalValidator);
 		}
 
 
@@ -169,11 +165,6 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 		public void SetSyncCallback(DispatcherCallback<UserCommandPreContext> callback)
 		{
 			this.callback = callback;
-		}
-
-		public void Dispose()
-		{
-			modalHelper.Dispose();
 		}
 
 

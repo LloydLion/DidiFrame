@@ -106,6 +106,7 @@ dotnet_diagnostic.S2365.severity = silent
 dotnet_diagnostic.S3877.severity = silent
 dotnet_diagnostic.S4586.severity = silent
 dotnet_diagnostic.S4035.severity = silent
+dotnet_diagnostic.CS1572.severity = suggestion
 
 [*.vb]
 #### Стили именования ####

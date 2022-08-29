@@ -11,7 +11,7 @@ namespace DidiFrame.UserCommands.Repository
 	{
 		private readonly UserCommandInfoHelpCollection globalInfos = new();
 		private readonly Dictionary<IServer, UserCommandInfoHelpCollection> localInfos = new();
-		private readonly IValidator<UserCommandInfo> cmdValidator;
+		private readonly IValidator<UserCommandInfo>? cmdValidator;
 
 
 		/// <inheritdoc/>
@@ -21,7 +21,7 @@ namespace DidiFrame.UserCommands.Repository
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository
 		/// </summary>
-		public SimpleUserCommandsRepository(IValidator<UserCommandInfo> cmdValidator)
+		public SimpleUserCommandsRepository(IValidator<UserCommandInfo>? cmdValidator = null)
 		{
 			this.cmdValidator = cmdValidator;
 		}
@@ -41,7 +41,7 @@ namespace DidiFrame.UserCommands.Repository
 		{
 			lock (SyncRoot)
 			{
-				cmdValidator.ValidateAndThrow(commandInfo);
+				cmdValidator?.ValidateAndThrow(commandInfo);
 
 				CheckExistanceAndFixErrors(commandInfo);
 
@@ -54,7 +54,7 @@ namespace DidiFrame.UserCommands.Repository
 		{
 			lock (SyncRoot)
 			{
-				cmdValidator.ValidateAndThrow(commandInfo);
+				cmdValidator?.ValidateAndThrow(commandInfo);
 
 				CheckExistanceAndFixErrors(commandInfo, server);
 

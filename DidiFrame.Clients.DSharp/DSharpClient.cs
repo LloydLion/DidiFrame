@@ -76,9 +76,9 @@ namespace DidiFrame.Clients.DSharp
 
 		public ILogger<DSharpClient> Logger { get; }
 
-		public IValidator<MessageSendModel> MessageSendModelValidator { get; }
+		public IValidator<MessageSendModel>? MessageSendModelValidator { get; }
 
-		public IValidator<ModalModel> ModalValidator { get; private set; }
+		public IValidator<ModalModel>? ModalValidator { get; private set; }
 
 		public IStringLocalizer Localizer { get; }
 
@@ -92,8 +92,8 @@ namespace DidiFrame.Clients.DSharp
 			IStringLocalizer<DSharpClient> localizer,
 			IEnumerable<IClientExtensionFactory> clientExtensions,
 			IEnumerable<IServerExtensionFactory> serverExtensions,
-			IValidator<MessageSendModel> messageSendModelValidator,
-			IValidator<ModalModel> modalValidator,
+			IValidator<MessageSendModel>? messageSendModelValidator = null,
+			IValidator<ModalModel>? modalValidator = null,
 			IChannelMessagesCacheFactory? messagesCacheFactory = null)
 		{
 			Logger = factory.CreateLogger<DSharpClient>();

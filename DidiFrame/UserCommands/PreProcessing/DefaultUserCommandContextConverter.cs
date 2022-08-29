@@ -14,7 +14,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 	{
 		private readonly IEnumerable<IUserCommandContextSubConverter> subConverters;
 		private readonly IStringLocalizer<DefaultUserCommandContextConverter> localizer;
-		private readonly IValidator<UserCommandPreContext> preCtxValidator;
+		private readonly IValidator<UserCommandPreContext>? preCtxValidator;
 
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 		public DefaultUserCommandContextConverter(
 			IEnumerable<IContextSubConverterInstanceCreator> subConverters,
 			IStringLocalizer<DefaultUserCommandContextConverter> localizer,
-			IValidator<UserCommandPreContext> preCtxValidator)
+			IValidator<UserCommandPreContext>? preCtxValidator = null)
 		{
 			this.subConverters = subConverters.Select(s => s.Create()).ToArray();
 			this.preCtxValidator = preCtxValidator;
@@ -55,7 +55,7 @@ namespace DidiFrame.UserCommands.PreProcessing
 			// #note: Target type is element type of array (not array type)
 			// array of complex object are DISALLOWED!
 
-			preCtxValidator.ValidateAndThrow(preCtx);
+			preCtxValidator?.ValidateAndThrow(preCtx);
 
 			try
 			{

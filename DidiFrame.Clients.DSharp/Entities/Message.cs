@@ -25,7 +25,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 			get
 			{
 				var sm = MessageConverter.ConvertDown(AccessBase());
-				BaseChannel.BaseServer.SourceClient.MessageSendModelValidator.ValidateAndThrow(sm);
+				BaseChannel.BaseServer.SourceClient.MessageSendModelValidator?.ValidateAndThrow(sm);
 				return sm;
 			}
 		}
@@ -74,7 +74,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 		/// <inheritdoc/>
 		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher)
 		{
-			BaseChannel.BaseServer.SourceClient.MessageSendModelValidator.ValidateAndThrow(sendModel);
+			BaseChannel.BaseServer.SourceClient.MessageSendModelValidator?.ValidateAndThrow(sendModel);
 
 			if (resetDispatcher) ResetInteractionDispatcher();
 

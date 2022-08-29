@@ -12,7 +12,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 
 		private readonly IClient client;
 		private readonly ILogger<MessageUserCommandDispatcher> logger;
-		private readonly IValidator<UserCommandResult> resultValidator;
+		private readonly IValidator<UserCommandResult>? resultValidator;
 		private DispatcherCallback<IMessage>? callback = null;
 
 
@@ -22,7 +22,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 		/// <param name="client">Discord clint to access to discord</param>
 		/// <param name="logger">Logger for dispatcher</param>
 		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
-		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger, IValidator<UserCommandResult> resultValidator)
+		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger, IValidator<UserCommandResult>? resultValidator = null)
 		{
 			this.client = client;
 			this.logger = logger;
@@ -67,7 +67,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 		/// <inheritdoc/>
 		public async Task RespondAsync(object stateObject, UserCommandResult result)
 		{
-			resultValidator.ValidateAndThrow(result);
+			resultValidator?.ValidateAndThrow(result);
 
 			var ss = (StateStruct)stateObject;
 

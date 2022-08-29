@@ -91,7 +91,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 		/// <inheritdoc/>
 		public async Task<IMessage> SendMessageAsync(MessageSendModel messageSendModel)
 		{
-			BaseServer.SourceClient.MessageSendModelValidator.ValidateAndThrow(messageSendModel);
+			BaseServer.SourceClient.MessageSendModelValidator?.ValidateAndThrow(messageSendModel);
 
 			var obj = AccessBase();
 

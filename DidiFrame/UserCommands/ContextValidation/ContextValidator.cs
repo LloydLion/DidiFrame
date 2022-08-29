@@ -15,7 +15,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 		/// </summary>
 		public const string ProviderErrorCode = "NoObjectProvided";
 
-		private readonly IValidator<UserCommandContext> ctxValidator;
+		private readonly IValidator<UserCommandContext>? ctxValidator;
 		private readonly IStringLocalizer<ContextValidator> localizer;
 
 
@@ -24,7 +24,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 		/// </summary>
 		/// <param name="ctxValidator">Validator for DidiFrame.UserCommands.Models.UserCommandContext</param>
 		/// <param name="localizer">Localizer to print error messages</param>
-		public ContextValidator(IValidator<UserCommandContext> ctxValidator, IStringLocalizer<ContextValidator> localizer)
+		public ContextValidator(IStringLocalizer<ContextValidator> localizer, IValidator<UserCommandContext>? ctxValidator = null)
 		{
 			this.ctxValidator = ctxValidator;
 			this.localizer = localizer;
@@ -34,7 +34,7 @@ namespace DidiFrame.UserCommands.ContextValidation
 		/// <inheritdoc/>
 		public override UserCommandMiddlewareExcutionResult<ValidatedUserCommandContext> Process(UserCommandContext input, UserCommandPipelineContext pipelineContext)
 		{
-			ctxValidator.ValidateAndThrow(input);
+			ctxValidator?.ValidateAndThrow(input);
 
 			var cmd = input.Command;
 			ValidationFailResult? failResult;

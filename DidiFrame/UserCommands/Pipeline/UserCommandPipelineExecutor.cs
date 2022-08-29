@@ -16,11 +16,11 @@ namespace DidiFrame.UserCommands.Pipeline
 		private static readonly EventId PipelineExceptionID = new(95, "PipelineException");
 
 
-		private readonly IServiceScopeFactory scopeFactory;
 		private readonly ILogger<UserCommandPipelineExecutor> logger;
-		private readonly IServerCultureProvider cultureProvider;
-		private readonly IValidator<UserCommandSendData> sendDataValidator;
-		private readonly IValidator<UserCommandResult> resultValidator;
+		private readonly IServiceScopeFactory? scopeFactory;
+		private readonly IServerCultureProvider? cultureProvider;
+		private readonly IValidator<UserCommandSendData>? sendDataValidator;
+		private readonly IValidator<UserCommandResult>? resultValidator;
 
 
 		/// <summary>
@@ -30,11 +30,11 @@ namespace DidiFrame.UserCommands.Pipeline
 		/// <param name="sendDataValidator">Validator for DidiFrame.UserCommands.Models.UserCommandSendData</param>
 		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
 		public UserCommandPipelineExecutor(
-			IServiceScopeFactory scopeFactory,
 			ILogger<UserCommandPipelineExecutor> logger,
-			IServerCultureProvider cultureProvider,
-			IValidator<UserCommandSendData> sendDataValidator,
-			IValidator<UserCommandResult> resultValidator)
+			IServerCultureProvider? cultureProvider = null,
+			IServiceScopeFactory? scopeFactory = null,
+			IValidator<UserCommandSendData>? sendDataValidator = null,
+			IValidator<UserCommandResult>? resultValidator = null)
 		{
 			this.scopeFactory = scopeFactory;
 			this.logger = logger;
@@ -47,13 +47,13 @@ namespace DidiFrame.UserCommands.Pipeline
 		/// <inheritdoc/>
 		public async Task<UserCommandResult?> ProcessAsync(UserCommandPipeline pipeline, object input, UserCommandSendData sendData, object dispatcherState)
 		{
-			sendDataValidator.ValidateAndThrow(sendData);
+			sendDataValidator?.ValidateAndThrow(sendData);
 
-			cultureProvider.SetupCulture(sendData.Channel.Server);
+			cultureProvider?.SetupCulture(sendData.Channel.Server);
 
 			var guid = Guid.NewGuid();
 
-			using (var scope = scopeFactory.CreateScope())
+			using (var scope = scopeFactory?.CreateScope())
 			{
 				try
 				{
@@ -62,7 +62,7 @@ namespace DidiFrame.UserCommands.Pipeline
 
 					var result = await wrap(input, pipeline, sendData, dispatcherState, scope);
 
-					resultValidator.ValidateAndThrow(result);
+					resultValidator?.ValidateAndThrow(result);
 
 					logger.Log(LogLevel.Debug, PipelineFinalizedID, "({PipelineExecutionId}) Command pipeline finalized successfully", guid);
 
@@ -82,13 +82,13 @@ namespace DidiFrame.UserCommands.Pipeline
 			}
 
 
-			static async ValueTask<UserCommandResult> wrap(object input, UserCommandPipeline pipeline, UserCommandSendData sendData, object dispatcherState, IServiceScope scope)
+			static async ValueTask<UserCommandResult> wrap(object input, UserCommandPipeline pipeline, UserCommandSendData sendData, object dispatcherState, IServiceScope? scope)
 			{
 				object currentValue = input;
 
 				foreach (var middleware in pipeline.Middlewares)
 				{
-					var context = new UserCommandPipelineContext(scope.ServiceProvider, sendData, (result) => pipeline.Origin.RespondAsync(dispatcherState, result));
+					var context = new UserCommandPipelineContext(scope?.ServiceProvider ?? new EmptyServicesProvider(), sendData, (result) => pipeline.Origin.RespondAsync(dispatcherState, result));
 					var result = await middleware.ProcessAsync(currentValue, context);
 
 					if (result.ResultType == UserCommandMiddlewareExcutionResult.Type.Finalization) return result.GetFinalizationResult();
@@ -97,6 +97,12 @@ namespace DidiFrame.UserCommands.Pipeline
 
 				return (UserCommandResult)currentValue;
 			}
+		}
+
+
+		private sealed class EmptyServicesProvider : IServiceProvider
+		{
+			public object? GetService(Type serviceType) => null;
 		}
 	}
 }
