@@ -5,7 +5,7 @@ namespace TestBot.Systems.Voice
 {
 	public class CommandsHandler : ICommandsModule
 	{
-		private static readonly StatisticEntry ChannelsCreated = new("channels_created");
+		private static readonly StatisticEntry ChannelsCreated = new("channels_created", 0);
 
 		private readonly ISystemCore core;
 		private readonly IStringLocalizer<CommandsHandler> localizer;

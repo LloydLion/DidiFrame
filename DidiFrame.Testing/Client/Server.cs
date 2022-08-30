@@ -58,9 +58,10 @@ namespace DidiFrame.Testing.Client
 		{
 			baseClient = client;
 			Name = name;
-			AddMember(client.TestSelfAccount, Permissions.All);
 			cats.Add(0, new ChannelCategory(null, this));
 			Id = client.GenerateNextId();
+
+			members.Add(client.TestSelfAccount.Id, new Member(this, client.TestSelfAccount, Permissions.All));
 		}
 
 
@@ -70,12 +71,12 @@ namespace DidiFrame.Testing.Client
 
 		public override int GetHashCode() => Id.GetHashCode();
 
-		public Member AddMember(User user, Permissions permissions)
+		public Member AddMember(string userName, bool isBot, Permissions permissions)
 		{
 			ThrowIfClosed();
 
-			var member = new Member(this, user, permissions);
-			members.Add(user.Id, member);
+			var member = new Member(this, userName, isBot, permissions);
+			members.Add(member.Id, member);
 
 			try { MemberCreated?.Invoke(member, false); }
 			catch (Exception) { /*No logging*/ }
@@ -114,6 +115,8 @@ namespace DidiFrame.Testing.Client
 
 			return channel;
 		}
+
+		public Channel AddChannel(ChannelCreationModel creationModel) => AddChannel(cats[0], creationModel);
 
 		public TextThread AddThread(TextChannel textChannel, string threadName)
 		{

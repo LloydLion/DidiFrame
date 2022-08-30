@@ -1,4 +1,7 @@
-﻿namespace DidiFrame.UserCommands.Pipeline
+﻿using DidiFrame.Utils;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace DidiFrame.UserCommands.Pipeline
 {
 	/// <summary>
 	/// Context for item that executing in user command pipeline
@@ -31,6 +34,8 @@
 			SendData = sendData;
 			this.sendResponce = sendResponce;
 		}
+
+		public UserCommandPipelineContext(UserCommandSendData sendData, Func<UserCommandResult, Task> sendResponce) : this(EmptyServiceProvider.Instance, sendData, sendResponce) { }
 
 		/// <summary>
 		/// Send responce to dispatcher

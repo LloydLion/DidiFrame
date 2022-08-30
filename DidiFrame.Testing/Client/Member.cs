@@ -11,7 +11,13 @@ namespace DidiFrame.Testing.Client
 		private readonly ICollection<Role> roles = new HashSet<Role>();
 
 
-		public Member(Server server, User baseUser, Permissions permissions) : base(server.BaseClient, baseUser.UserName, baseUser.IsBot, baseUser.Id)
+		internal Member(Server server, User baseUser, Permissions permissions) : base(server.BaseClient, baseUser.UserName, baseUser.IsBot, baseUser.Id)
+		{
+			Server = server;
+			this.permissions = permissions;
+		}
+
+		internal Member(Server server, string userName, bool isBot, Permissions permissions) : base(server.BaseClient, userName, isBot)
 		{
 			Server = server;
 			this.permissions = permissions;
