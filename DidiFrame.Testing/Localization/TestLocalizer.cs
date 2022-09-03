@@ -2,7 +2,12 @@
 
 namespace DidiFrame.Testing.Localization
 {
-	public class TestLocalizer<TTargetType> : IStringLocalizer<TTargetType>
+	public class TestLocalizer<TTargetType> : TestLocalizer, IStringLocalizer<TTargetType>
+	{
+
+	}
+	
+	public class TestLocalizer : IStringLocalizer
 	{
 		public LocalizedString this[string name]
 		{

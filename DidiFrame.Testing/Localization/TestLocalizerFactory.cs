@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Localization;
-using System;
 
-namespace TestProject.Environment.Locale
+namespace DidiFrame.Testing.Localization
 {
-	internal class TestLocalizerFactory : IStringLocalizerFactory
+	public class TestLocalizerFactory : IStringLocalizerFactory
 	{
 		public IStringLocalizer Create(Type resourceSource)
 		{
@@ -12,7 +11,7 @@ namespace TestProject.Environment.Locale
 
 		public IStringLocalizer Create(string baseName, string location)
 		{
-			return new TestLocalizer();
+			throw new NotSupportedException();
 		}
 	}
 }

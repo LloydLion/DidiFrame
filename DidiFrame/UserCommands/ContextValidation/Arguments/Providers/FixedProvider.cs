@@ -1,12 +1,14 @@
-﻿namespace DidiFrame.UserCommands.ContextValidation.Arguments.Providers
+﻿using DidiFrame.Utils.Collections;
+
+namespace DidiFrame.UserCommands.ContextValidation.Arguments.Providers
 {
 	/// <summary>
 	/// Provider that provides fixed list of values
 	/// </summary>
 	/// <typeparam name="T">Target type</typeparam>
-	public class FixedProvider<T> : IUserCommandArgumentValuesProvider
+	public class FixedProvider<T> : IUserCommandArgumentValuesProvider where T : notnull
 	{
-		private readonly IReadOnlyCollection<T> values;
+		private readonly object[] values;
 
 
 		/// <summary>
@@ -15,7 +17,7 @@
 		/// <param name="values">Fixed list of values</param>
 		public FixedProvider(IReadOnlyCollection<T> values)
 		{
-			this.values = values;
+			this.values = values.Cast<object>().ToArray();
 		}
 
 		/// <summary>
@@ -129,6 +131,9 @@
 
 
 		/// <inheritdoc/>
-		public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData) => (IReadOnlyCollection<object>)values;
+		public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData)
+		{
+			return SelectCollection<object>.Create(values, s => s);
+		}
 	}
 }

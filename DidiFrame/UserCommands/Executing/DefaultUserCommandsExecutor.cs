@@ -14,9 +14,8 @@ namespace DidiFrame.UserCommands.Executing
 
 
 		private readonly Options options;
-		private readonly IValidator<UserCommandContext> ctxValidator;
+		private readonly IValidator<UserCommandContext>? ctxValidator;
 		private readonly ILogger<DefaultUserCommandsExecutor> logger;
-		private readonly IServerCultureProvider cultureProvider;
 
 
 		/// <summary>
@@ -26,19 +25,18 @@ namespace DidiFrame.UserCommands.Executing
 		/// <param name="options">Option for executor (DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options)</param>
 		/// <param name="logger">Logger to log command operations</param>
 		/// <param name="cultureProvider">Culture provider to provide culture into commands' handlers</param>
-		public DefaultUserCommandsExecutor(IValidator<UserCommandContext> ctxValidator, IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IServerCultureProvider cultureProvider)
+		public DefaultUserCommandsExecutor(IOptions<Options> options, ILogger<DefaultUserCommandsExecutor> logger, IValidator<UserCommandContext>? ctxValidator = null)
 		{
 			this.options = options.Value;
 			this.ctxValidator = ctxValidator;
 			this.logger = logger;
-			this.cultureProvider = cultureProvider;
 		}
 
 
 		/// <inheritdoc/>
 		public override UserCommandMiddlewareExcutionResult<UserCommandResult> Process(ValidatedUserCommandContext ctx, UserCommandPipelineContext pipelineContext)
 		{
-			ctxValidator.ValidateAndThrow(ctx);
+			ctxValidator?.ValidateAndThrow(ctx);
 
 			try
 			{
@@ -46,8 +44,6 @@ namespace DidiFrame.UserCommands.Executing
 
 				using (logger.BeginScope("Command: {CommandName}", ctx.Command.Name))
 				{
-					cultureProvider.SetupCulture(ctx.SendData.Invoker.Server);
-
 					logger.Log(LogLevel.Debug, CommandStartID, "Command executing started");
 
 					try
