@@ -8,6 +8,8 @@ namespace TestProject.SubsystemsTests.UserCommands.ContextValidation.Arguments.P
 		[Test]
 		public void ProvideViaDelegate()
 		{
+			HelpClass.Reset();
+
 			var client = new Client();
 			var server = client.CreateServer();
 			var member = server.AddMember("Who?", false, Permissions.All);
@@ -24,21 +26,21 @@ namespace TestProject.SubsystemsTests.UserCommands.ContextValidation.Arguments.P
 			//------------------
 
 			Assert.That(providedValues, Is.EquivalentTo(new[] { 11, 14, 13, 12, 15, 16 }));
-			Assert.That(HelpClass.TestDelegateInvokingCount, Is.EqualTo(1));
+			Assert.That(HelpClass.LastSendData, Is.EqualTo(sendData));
 		}
 
 
 		private static class HelpClass
 		{
-			public static int TestDelegateInvokingCount { get; private set; }
+			public static UserCommandSendData? LastSendData { get; private set; }
 
 
-			public static void Reset() { TestDelegateInvokingCount = 0; }
+			public static void Reset() { LastSendData = null; }
 
 
-			public static object[] TestDelegate()
+			public static object[] TestDelegate(UserCommandSendData sendData)
 			{
-				TestDelegateInvokingCount++;
+				LastSendData = sendData;
 				return new object[] { 11, 14, 13, 12, 15, 16 };
 			}
 		}

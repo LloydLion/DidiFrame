@@ -24,24 +24,24 @@ namespace DidiFrame.Testing.Client
 
 		public IReadOnlyList<IMessage> GetMessages(int count = -1)
 		{
-			return count == -1 ? msgs : msgs.Take(count).ToArray();
+			return count == -1 ? GetIfExist(msgs) : GetIfExist(msgs).Take(count).ToArray();
 		}
 
 		public IMessage GetMessage(ulong id)
 		{
-			return msgs.Single(s => s.Id == id);
+			return GetIfExist(msgs).Single(s => s.Id == id);
 		}
 
 		public bool HasMessage(ulong id)
 		{
-			return msgs.Any(s => s.Id == id);
+			return GetIfExist(msgs).Any(s => s.Id == id);
 		}
 
 
 		public Message AddMessage(Member sender, MessageSendModel sendModel)
 		{
 			var message = new Message(sendModel, this, sender);
-			msgs.Add(message);
+			GetIfExist(msgs).Add(message);
 
 			try { MessageSent?.Invoke(BaseCategory.BaseServer.BaseClient, message, false); }
 			catch (Exception) { /*No logging*/ }
@@ -61,7 +61,7 @@ namespace DidiFrame.Testing.Client
 
 		public void DeleteMessage(Message message)
 		{
-			msgs.Remove(message);
+			GetIfExist(msgs).Remove(message);
 
 			try { MessageDeleted?.Invoke(BaseCategory.BaseServer.BaseClient, this, message.Id); }
 			catch (Exception) { /*No logging*/ }

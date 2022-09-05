@@ -9,7 +9,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 	public class TextCommandParser : AbstractUserCommandPipelineMiddleware<string, UserCommandPreContext>
 	{
 		private readonly BehaviorModel behaviorModel;
-		private readonly IUserCommandsRepository repository;
+		private readonly IUserCommandsReadOnlyRepository repository;
 		private readonly static Dictionary<string, UserCommandArgument.Type> regexes = new()
 		{
 			{ "^(\\d{2}.\\d{2}\\|\\d{2}:\\d{2}:\\d{2}\\b)", UserCommandArgument.Type.DateTime },
@@ -29,7 +29,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 		/// <param name="options">Option for parser (DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.Options)</param> 
 		/// <param name="repository">Command repository to detect commands</param>
 		/// <param name="behaviorModel">Optional behavior model that can override object behavior</param>
-		public TextCommandParser(IOptions<Options> options, IUserCommandsRepository repository, BehaviorModel? behaviorModel = null)
+		public TextCommandParser(IOptions<Options> options, IUserCommandsReadOnlyRepository repository, BehaviorModel? behaviorModel = null)
 		{
 			this.repository = repository;
 			behaviorModel = this.behaviorModel = behaviorModel ?? new BehaviorModel();

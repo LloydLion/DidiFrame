@@ -89,6 +89,11 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 		public void FinalizePipeline(object stateObject)
 		{
 			var state = (StateObject)stateObject;
+
+			if (state.IsFinalized) throw new InvalidOperationException("Given state object already finalized");
+
+			state.IsFinalized = true;
+
 			if (state.Responded == false)
 			{
 				state.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(localizer["CommandComplited"])).Wait();
@@ -101,6 +106,9 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 			resultValidator.ValidateAndThrow(result);
 
 			var state = (StateObject)stateObject;
+
+			if (state.IsFinalized) throw new InvalidOperationException("Given state object already finalized");
+
 			var server = client.GetServer(state.Interaction.GuildId ?? throw new ImpossibleVariantException());
 
 			switch (result.ResultType)
@@ -171,6 +179,8 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 		private sealed record StateObject(DiscordInteraction Interaction)
 		{
 			public bool Responded { get; set; }
+
+			public bool IsFinalized { get; set; }
 		}
 
 

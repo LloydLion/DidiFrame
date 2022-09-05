@@ -12,6 +12,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 
 		private readonly IClient client;
 		private readonly ILogger<MessageUserCommandDispatcher> logger;
+		private readonly Options options;
 		private readonly IValidator<UserCommandResult>? resultValidator;
 		private DispatcherCallback<IMessage>? callback = null;
 
@@ -22,13 +23,15 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 		/// <param name="client">Discord clint to access to discord</param>
 		/// <param name="logger">Logger for dispatcher</param>
 		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
-		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger, IValidator<UserCommandResult>? resultValidator = null)
+		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger, IOptions<Options> options, IValidator<UserCommandResult>? resultValidator = null)
 		{
 			this.client = client;
 			this.logger = logger;
+			this.options = options.Value;
 			this.resultValidator = resultValidator;
 
 			client.ServerCreated += Client_ServerCreated;
+			client.ServerRemoved += Client_ServerRemoved;
 			foreach (var server in client.Servers) server.MessageSent += Client_MessageSent;
 		}
 
@@ -45,7 +48,12 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 		{
 			var ss = (StateStruct)stateObject;
 
-			Thread.Sleep(60000);
+			ss.IsFinalized = true;
+
+			if (ss.IsFinalized)
+				throw new InvalidOperationException("Enable to respond with finalized state");
+
+			if (options.DisableDeleteDelayForDebug == false) Thread.Sleep(60000);
 
 			try { ss.Message.DeleteAsync().Wait(); }
 			catch (Exception ex)
@@ -70,6 +78,9 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 			resultValidator?.ValidateAndThrow(result);
 
 			var ss = (StateStruct)stateObject;
+
+			if (ss.IsFinalized)
+				throw new InvalidOperationException("Enable to respond with finalized state");
 
 			IMessage? message = null;
 
@@ -132,10 +143,22 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 			server.MessageSent += Client_MessageSent;
 		}
 
+		private void Client_ServerRemoved(IServer server)
+		{
+			server.MessageSent -= Client_MessageSent;
+		}
+
 
 		private sealed record StateStruct(IClient Sender, IMessage Message)
 		{
 			public List<IMessage> Responses { get; } = new();
+
+			public bool IsFinalized { get; set; } = false;
+		}
+
+		public class Options
+		{
+			public bool DisableDeleteDelayForDebug { get; set; }
 		}
 	}
 }

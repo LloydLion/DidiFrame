@@ -30,7 +30,7 @@ namespace DidiFrame.Testing.Client
 
 		public ChannelCategory BaseCategory => GetIfExist(baseCategory);
 
-		public bool IsExist { get; private set; }
+		public bool IsExist { get; private set; } = true;
 
 
 		public Task DeleteAsync()

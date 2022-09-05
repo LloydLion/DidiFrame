@@ -22,6 +22,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 		{
 			services.Configure<TextCommandParser.Options>(textCommandParserConfig);
 			services.Configure<DefaultUserCommandsExecutor.Options>(defaultCommandsExecutorConfig);
+			services.Configure<MessageUserCommandDispatcher.Options>(s => { s.DisableDeleteDelayForDebug = false; });
 
 			services.AddTransient<IUserCommandContextConverter, DefaultUserCommandContextConverter>();
 
