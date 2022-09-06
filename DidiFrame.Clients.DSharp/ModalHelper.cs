@@ -1,5 +1,5 @@
-﻿using DidiFrame.UserCommands.Modals;
-using DidiFrame.UserCommands.Modals.Components;
+﻿using DidiFrame.Modals;
+using DidiFrame.Modals.Components;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;

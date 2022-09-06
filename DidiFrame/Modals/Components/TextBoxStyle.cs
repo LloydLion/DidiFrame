@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.UserCommands.Modals.Components
+﻿namespace DidiFrame.Modals.Components
 {
 	public enum TextBoxStyle
 	{

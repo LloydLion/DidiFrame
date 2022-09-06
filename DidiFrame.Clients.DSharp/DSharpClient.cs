@@ -6,11 +6,11 @@ using DSharpPlus.Exceptions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using DidiFrame.UserCommands.Modals;
 using Microsoft.Extensions.Localization;
 using DidiFrame.ClientExtensions;
 using DidiFrame.Clients.DSharp.ClientUtils;
 using DidiFrame.Utils.Collections;
+using DidiFrame.Modals;
 
 namespace DidiFrame.Clients.DSharp
 {

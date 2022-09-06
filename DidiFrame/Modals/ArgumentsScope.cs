@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.UserCommands.Modals
+﻿namespace DidiFrame.Modals
 {
 	public class ModalArgumentsScope
 	{
@@ -25,7 +25,7 @@
 		{
 			return values.Single(s => s.Key.Id == componentId).Key;
 		}
-		
+
 
 		public struct ArgumentValue
 		{

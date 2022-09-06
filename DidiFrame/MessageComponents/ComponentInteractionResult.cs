@@ -1,4 +1,4 @@
-﻿using DidiFrame.UserCommands.Modals;
+﻿using DidiFrame.Modals;
 
 namespace DidiFrame.Entities.Message.Components
 {

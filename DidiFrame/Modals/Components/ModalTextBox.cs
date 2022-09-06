@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.UserCommands.Modals.Components
+﻿using DidiFrame.Modals;
+
+namespace DidiFrame.Modals.Components
 {
 	public class ModalTextBox : IModalComponent
 	{

@@ -1,6 +1,7 @@
-﻿using FluentValidation;
+﻿using DidiFrame.Modals;
+using FluentValidation;
 
-namespace DidiFrame.UserCommands.Modals.FluentValidation
+namespace DidiFrame.Modals.FluentValidation
 {
 	internal class ModalModelValidator : AbstractValidator<ModalModel>
 	{

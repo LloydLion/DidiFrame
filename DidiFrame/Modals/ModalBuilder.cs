@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DidiFrame.UserCommands.Modals
+namespace DidiFrame.Modals
 {
 	public class ModalBuilder
 	{

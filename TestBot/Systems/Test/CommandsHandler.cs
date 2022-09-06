@@ -1,8 +1,8 @@
 ﻿using DidiFrame.Entities.Message;
+using DidiFrame.Modals;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Loader.Reflection;
-using DidiFrame.UserCommands.Modals;
-using DidiFrame.UserCommands.Modals.Components;
+using DidiFrame.Modals.Components;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using TestBot.Systems.Test.ClientExtensions.NewsChannels;

@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>LloydLion.DidiFrame module that contains DShard based discord client</Description>
-    <PackageTags>discord bot framework discord-framework dsharp</PackageTags>
+    <Description>LloydLion.DidiFrame module that contains statistic tools</Description>
+    <PackageTags>discord bot framework discord-framework</PackageTags>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -39,9 +39,7 @@
     <None Include="..\.editorconfig" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01168" />
-	  
+  <ItemGroup>   
     <PackageReference Include="SonarAnalyzer.CSharp" Version="8.43.0.51858">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -49,8 +47,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DidiFrame.UserCommands\DidiFrame.UserCommands.csproj" />
     <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="..\.editorconfig" />
   </ItemGroup>
 
 </Project>

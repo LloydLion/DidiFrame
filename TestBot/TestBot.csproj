@@ -8,9 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DidiFrame.Application\DidiFrame.Application.csproj" />
     <ProjectReference Include="..\DidiFrame.Clients.DSharp\DidiFrame.Clients.DSharp.csproj" />
     <ProjectReference Include="..\DidiFrame.Data.Json\DidiFrame.Data.Json.csproj" />
     <ProjectReference Include="..\DidiFrame.Data.Mongo\DidiFrame.Data.Mongo.csproj" />
+    <ProjectReference Include="..\DidiFrame.Lifetimes\DidiFrame.Lifetimes.csproj" />
+    <ProjectReference Include="..\DidiFrame.Statistic\DidiFrame.Statistic.csproj" />
+    <ProjectReference Include="..\DidiFrame.Testing\DidiFrame.Testing.csproj" />
+    <ProjectReference Include="..\DidiFrame.UserCommands\DidiFrame.UserCommands.csproj" />
+    <ProjectReference Include="..\DidiFrame.Utils.Json\DidiFrame.Utils.Json.csproj" />
     <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
   </ItemGroup>
 

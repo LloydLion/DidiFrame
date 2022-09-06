@@ -77,8 +77,8 @@ namespace TestProject.SubsystemsTests.UserCommands.ContextValidation.Arguments.V
 
 		private class TargetValidator : IUserCommandArgumentValidator
 		{
-			private string? targetErrorCode;
-			private InvokationKey invokationKey;
+			private readonly string? targetErrorCode;
+			private readonly InvokationKey invokationKey;
 
 
 			public TargetValidator(string? targetErrorCode, InvokationKey invokationKey)

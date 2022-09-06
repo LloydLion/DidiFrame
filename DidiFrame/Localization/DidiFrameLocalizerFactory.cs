@@ -9,9 +9,14 @@ namespace DidiFrame.Localization
 	{
 		private readonly static string[] moduleAssemblies = new[]
 		{
+			"DidiFrame.Application",
 			"DidiFrame.Clients.DSharp",
 			"DidiFrame.Data.Json",
 			"DidiFrame.Data.Mongo",
+			"DidiFrame.Lifetimes",
+			"DidiFrame.Statistic",
+			"DidiFrame.UserCommands",
+			"DidiFrame.Utils.Json",
 		};
 
 

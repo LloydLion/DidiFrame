@@ -5,6 +5,7 @@ using DidiFrame.UserCommands.Loader;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.Pipeline.Building;
 using Microsoft.Extensions.DependencyInjection;
+using DidiFrame.UserCommands.Repository;
 
 namespace DidiFrame.Application
 {

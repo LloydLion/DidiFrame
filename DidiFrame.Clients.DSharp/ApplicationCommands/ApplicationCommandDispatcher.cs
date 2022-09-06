@@ -3,7 +3,7 @@ using DidiFrame.Entities.Message;
 using DidiFrame.Entities.Message.Components;
 using DidiFrame.Exceptions;
 using DidiFrame.UserCommands.ContextValidation.Arguments;
-using DidiFrame.UserCommands.Modals;
+using DidiFrame.Modals;
 using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.PreProcessing;

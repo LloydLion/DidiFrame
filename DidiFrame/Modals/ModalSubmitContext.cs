@@ -1,4 +1,4 @@
-﻿namespace DidiFrame.UserCommands.Modals
+﻿namespace DidiFrame.Modals
 {
 	public record ModalSubmitContext(ModalArgumentsScope Arguments);
 }
