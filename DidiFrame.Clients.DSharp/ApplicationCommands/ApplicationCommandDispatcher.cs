@@ -103,7 +103,7 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 		/// <inheritdoc/>
 		public async Task RespondAsync(object stateObject, UserCommandResult result)
 		{
-			resultValidator.ValidateAndThrow(result);
+			resultValidator?.ValidateAndThrow(result);
 
 			var state = (StateObject)stateObject;
 
