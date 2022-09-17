@@ -70,7 +70,7 @@ namespace TestBot.Systems.Streaming
 					var di = message.GetInteractionDispatcher();
 					di.Attach<MessageButton>(StartStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker.Equals((IUser)parameter.Owner))
+						if (ctx.Invoker.Equals(parameter.Owner))
 						{
 							waitForStartButton.Callback();
 							return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["StartOk"])));
@@ -82,10 +82,39 @@ namespace TestBot.Systems.Streaming
 					var di2 = message.GetInteractionDispatcher();
 					di2.Attach<MessageButton>(FinishStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker.Equals((IUser)parameter.Owner))
+						if (ctx.Invoker.Equals(parameter.Owner))
 						{
-							waitForFinishButton.Callback();
-							return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishOk"])));
+							return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["SubmitFinish"])
+							{
+								ComponentsRows = new[]
+								{
+									new MessageComponentsRow(new[]
+									{
+										new MessageButton("submit", "Submit", ButtonStyle.Primary),
+										new MessageButton("close", "Close", ButtonStyle.Secondary)
+									})
+								}
+							},
+							
+							dispatcher =>
+							{
+								dispatcher.Attach<MessageButton>("submit", subSubmit);
+								Task<ComponentInteractionResult> subSubmit(ComponentInteractionContext<MessageButton> _)
+								{
+									waitForFinishButton.Callback();
+									dispatcher.Detach<MessageButton>("submit", subSubmit);
+									dispatcher.Detach<MessageButton>("close", subCancel);
+									return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishOk"])));
+								}
+
+								dispatcher.Attach<MessageButton>("close", subCancel);
+								Task<ComponentInteractionResult> subCancel(ComponentInteractionContext<MessageButton> _)
+								{
+									dispatcher.Detach<MessageButton>("submit", subSubmit);
+									dispatcher.Detach<MessageButton>("close", subCancel);
+									return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishCanceled"])));
+								}
+							}));
 						}
 						else return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishFail"])));
 					});

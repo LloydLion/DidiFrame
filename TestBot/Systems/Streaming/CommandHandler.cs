@@ -58,6 +58,6 @@ namespace TestBot.Systems.Streaming
 		}
 
 
-		private static IComparable GetNow(UserCommandContext _) => DateTime.Now + new TimeSpan(0, 5, 0);
+		private static IComparable GetNow(UserCommandContext _) => DateTime.Now + new TimeSpan(0, 0, 30);
 	}
 }

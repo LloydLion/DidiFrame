@@ -58,10 +58,6 @@ appBuilder.AddServices((services, config) =>
 		.AddStateBasedStatisticTools()
 		.Configure<LoggerFilterOptions>(opt => opt.AddFilter("Microsoft.Extensions.Localization.ResourceManagerStringLocalizer", LogLevel.None))
 		.InjectAutoDependencies(new ReflectionAutoInjector());
-
-	//Add overrides
-	services
-		.AddTransient<ApplicationCommandDispatcher.BehaviorModel, TestBot.Overrides.ApplicationCommandsDispathcerBehaviorModel>();
 });
 
 
