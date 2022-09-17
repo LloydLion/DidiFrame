@@ -7,11 +7,12 @@ namespace DidiFrame.Utils.StateMachine
 	/// Statemachine transit that based on tasks
 	/// </summary>
 	/// <typeparam name="TState">Type of statemachine state</typeparam>
-	public sealed class TaskTransitWorker<TState> : AbstractTransitWorker<TState> where TState : struct
+	public sealed class TaskTransitWorker<TState> : IStateTransitWorker<TState> where TState : struct
 	{
 		private readonly Func<CancellationToken, Task> taskFactory;
 		private CancellationTokenSource source = new();
 		private Task? currentTask;
+		private IStateMachine<TState>? stateMachine;
 
 
 		/// <summary>
@@ -20,25 +21,28 @@ namespace DidiFrame.Utils.StateMachine
 		/// <param name="activation">Activation state (from)</param>
 		/// <param name="destination">Destonation state (to)</param>
 		/// <param name="taskFactory">Factory that will produce tasks for transit</param>
-		public TaskTransitWorker(TState activation, TState? destination, Func<CancellationToken, Task> taskFactory)
-			: base(activation, destination)
+		public TaskTransitWorker(Func<CancellationToken, Task> taskFactory)
 		{
 			this.taskFactory = taskFactory;
 		}
 
 
 		/// <inheritdoc/>
-		public override void Activate() => currentTask = taskFactory(source.Token);
-
-		/// <inheritdoc/>
-		public override bool CanDoTransit() => currentTask?.IsCompleted ?? throw new ImpossibleVariantException();
-
-		/// <inheritdoc/>
-		public override void Disactivate()
+		public void Activate(IStateMachine<TState> stateMachine)
 		{
-			source.Cancel();
+			currentTask = taskFactory(source.Token);
+			this.stateMachine = stateMachine;
+		}
 
+		/// <inheritdoc/>
+		public bool CanDoTransit() => currentTask?.IsCompleted ?? throw new ImpossibleVariantException();
+
+		/// <inheritdoc/>
+		public void Disactivate()
+		{
 			if (currentTask is null) return;
+
+			source.Cancel();
 
 			var sw = new Stopwatch();
 			sw.Start();
@@ -52,16 +56,21 @@ namespace DidiFrame.Utils.StateMachine
 
 			if (currentTask.IsCompleted == false)
 			{
-				StateMachine?.Logger.Log(LogLevel.Warning, TaskErrorID, "Observable task too long execute after cancel. Task released! and will not control by worker");
+				stateMachine?.Logger.Log(LogLevel.Warning, TaskErrorID, "Observable task too long execute after cancel. Task released! and will not control by worker");
 			}
 			else
 			{
 				if (currentTask.Exception is not null)
-					StateMachine?.Logger.Log(LogLevel.Warning, TaskErrorID, currentTask.Exception, "Observable task finished with exception");
+					stateMachine?.Logger.Log(LogLevel.Warning, TaskErrorID, currentTask.Exception, "Observable task finished with exception");
 			}
 
 			currentTask = null;
 			source = new();
+		}
+
+		public void DoTransit()
+		{
+			currentTask = null;
 		}
 	}
 

@@ -100,14 +100,24 @@ namespace DidiFrame.Lifetimes
 		}
 
 		/// <summary>
+		/// Must be invoked only in ctor! Directly adds transit into building statemachine
+		/// </summary>
+		/// <param name="transit">Transit itself</param>
+		/// <exception cref="InvalidOperationException">If invoked outside ctor (after Run() calling)</exception>
+		protected void AddTransit(StateTransit<TState> transit)
+		{
+			ThrowIfBuilden();
+			smBuilder.AddStateTransit(transit);
+		}
+		/// <summary>
 		/// Must be invoked only in ctor! Directly adds transit worker into building statemachine
 		/// </summary>
 		/// <param name="worker">Transit worker itself</param>
 		/// <exception cref="InvalidOperationException">If invoked outside ctor (after Run() calling)</exception>
-		protected void AddTransit(IStateTransitWorker<TState> worker)
+		protected void AddTransit(IStateTransitWorker<TState> worker, IStateTransitRouter<TState> router)
 		{
 			ThrowIfBuilden();
-			smBuilder.AddStateTransitWorker(worker);
+			smBuilder.AddStateTransit(worker, router);
 		}
 
 		/// <summary>
@@ -118,7 +128,7 @@ namespace DidiFrame.Lifetimes
 		/// <param name="delay">Transit timeout</param>
 		/// <exception cref="InvalidOperationException">If invoked outside ctor (after Run() calling)</exception>
 		protected void AddTransit(TState from, TState? to, int delay) =>
-			AddTransit(new TaskTransitWorker<TState>(from, to, (token) => Task.Delay(delay, token)));
+			AddTransit(new TaskTransitWorker<TState>((token) => Task.Delay(delay, token)), new SimpleTranitRouter<TState>(from, to));
 
 		/// <summary>
 		/// Must be invoked only in ctor! Adds transit worker into building statemachine that will do transit when created task returns true
@@ -127,7 +137,7 @@ namespace DidiFrame.Lifetimes
 		/// <param name="to">Target state</param>
 		/// <param name="taskCreator">Delegate that will create tasks using CancellationToken</param>
 		protected void AddTransit(TState from, TState? to, Func<CancellationToken, Task<bool>> taskCreator) =>
-			AddTransit(new TaskTransitWorker<TState>(from, to, AwaitCycleTask(taskCreator)));
+			AddTransit(new TaskTransitWorker<TState>(AwaitCycleTask(taskCreator)), new SimpleTranitRouter<TState>(from, to));
 
 		/// <summary>
 		/// Must be invoked only in ctor! Adds transit worker into building statemachine that will do transit when predicate returns true
@@ -136,7 +146,7 @@ namespace DidiFrame.Lifetimes
 		/// <param name="to">Target state</param>
 		/// <param name="predicate">Predicate itself</param>
 		protected void AddTransit(TState from, TState? to, Func<bool> predicate) =>
-			AddTransit(new PredicateTransitWorker<TState>(from, to, predicate));
+			AddTransit(new PredicateTransitWorker<TState>(predicate), new SimpleTranitRouter<TState>(from, to));
 
 		/// <summary>
 		/// Must be invoked only in ctor! Adds transit worker into building statemachine that will do transit when task will complited
@@ -145,7 +155,7 @@ namespace DidiFrame.Lifetimes
 		/// <param name="to">Target state</param>
 		/// <param name="taskCreator">Delegate that will create tasks using CancellationToken</param>
 		protected void AddTransit(TState from, TState? to, Func<CancellationToken, Task> taskCreator) =>
-			AddTransit(new TaskTransitWorker<TState>(from, to, taskCreator));
+			AddTransit(new TaskTransitWorker<TState>(taskCreator), new SimpleTranitRouter<TState>(from, to));
 		#endregion
 
 

@@ -6,9 +6,10 @@ namespace DidiFrame.Utils.StateMachine
 	/// Statemachine transit that based on predicate
 	/// </summary>
 	/// <typeparam name="TState">Type of statemachine state</typeparam>
-	public sealed class PredicateTransitWorker<TState> : AbstractTransitWorker<TState> where TState : struct
+	public sealed class PredicateTransitWorker<TState> : IStateTransitWorker<TState> where TState : struct
 	{
 		private readonly Func<bool> predicate;
+		private IStateMachine<TState>? stateMachine;
 
 
 		/// <summary>
@@ -17,18 +18,20 @@ namespace DidiFrame.Utils.StateMachine
 		/// <param name="activation">Activation state (from)</param>
 		/// <param name="destination">Destonation state (to)</param>
 		/// <param name="predicate">Predicate that will determine transit behavior</param>
-		public PredicateTransitWorker(TState activation, TState? destination, Func<bool> predicate)
-			: base(activation, destination)
+		public PredicateTransitWorker(Func<bool> predicate)
 		{
 			this.predicate = predicate;
 		}
 
 
 		/// <inheritdoc/>
-		public override void Activate() { }
+		public void Activate(IStateMachine<TState> stateMachine)
+		{
+			this.stateMachine = stateMachine;
+		}
 
 		/// <inheritdoc/>
-		public override bool CanDoTransit()
+		public bool CanDoTransit()
 		{
 			try
 			{
@@ -36,13 +39,21 @@ namespace DidiFrame.Utils.StateMachine
 			}
 			catch (Exception ex)
 			{
-				StateMachine?.Logger.Log(LogLevel.Warning, PredicateErrorID, ex, "Exception while executing predicate. Returned false");
+				stateMachine?.Logger.Log(LogLevel.Warning, PredicateErrorID, ex, "Exception while executing predicate. Returned false");
 				return false;
 			}
 		}
 
 		/// <inheritdoc/>
-		public override void Disactivate() { }
+		public void Disactivate()
+		{
+			//Do nothing on disactivate
+		}
+
+		public void DoTransit()
+		{
+			//Do nothing on transit
+		}
 	}
 
 	internal static class PredicateTransitWorkerStatic

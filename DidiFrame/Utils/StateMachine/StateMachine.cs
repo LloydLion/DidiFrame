@@ -8,15 +8,15 @@ namespace DidiFrame.Utils.StateMachine
 	/// <typeparam name="TState">Struct that represents state of statemahcine</typeparam>
 	public sealed class StateMachine<TState> : IStateMachine<TState> where TState : struct
 	{
-		private readonly IStateTransitWorker<TState>[] workers;
-		private readonly List<IStateTransitWorker<TState>> activeWorkers = new();
+		private readonly StateTransit<TState>[] transits;
+		private readonly List<StateTransit<TState>> activeWorkers = new();
 		private static readonly ThreadLocker<StateMachine<TState>> locker = new();
 
 
 		/// <inheritdoc/>
-		public StateMachine(IReadOnlyList<IStateTransitWorker<TState>> workers, ILogger logger)
+		public StateMachine(IReadOnlyCollection<StateTransit<TState>> workers, ILogger logger)
 		{
-			this.workers = workers.ToArray();
+			this.transits = workers.ToArray();
 			Logger = logger;
 		}
 
@@ -40,14 +40,15 @@ namespace DidiFrame.Utils.StateMachine
 
 		private StateUpdateResult<TState>? UpdateStateNoLock()
 		{
-			var targetWorker = activeWorkers.FirstOrDefault(s => s.CanDoTransit());
-			if (targetWorker == null) return null;
+			var targetWorker = activeWorkers.FirstOrDefault(s => s.Worker.CanDoTransit());
+			if (targetWorker == default) return null;
 
 			Logger.Log(LogLevel.Trace, StateChangingID, "StateTransitWorker which can does transit found. Current state - {CurrentState}", CurrentState);
 
 			var oldState = CurrentState ?? throw new ImpossibleVariantException();
 
-			CurrentState = targetWorker.DoTransit();
+			CurrentState = targetWorker.Router.SwitchState(oldState);
+			targetWorker.Worker.DoTransit();
 
 			try { StateChanged?.Invoke(this, oldState); }
 			catch (Exception ex) { Logger.Log(LogLevel.Warning, StateChangedHandlerErrorID, ex, "Some StateChanged event handler executed with error"); }
@@ -56,7 +57,7 @@ namespace DidiFrame.Utils.StateMachine
 			else activeWorkers.Clear();
 
 			Logger.Log(LogLevel.Trace, StateChangedID, "State changed from {OldState} to {State} by {WorkerType} #{Index}",
-				oldState, CurrentState?.ToString() ?? "[NULL]", targetWorker.GetType().ToString(), Array.FindIndex(workers, s => Equals(s, targetWorker)));
+				oldState, CurrentState?.ToString() ?? "[NULL]", targetWorker.GetType().ToString(), Array.FindIndex(transits, s => Equals(s, targetWorker)));
 
 			return new StateUpdateResult<TState>(CurrentState);
 		}
@@ -73,15 +74,15 @@ namespace DidiFrame.Utils.StateMachine
 		private void UpdateActiveWorkers()
 		{
 			foreach (var worker in activeWorkers)
-				using (Logger.BeginScope("{WorkerType} #{Index}", worker.GetType().ToString(), Array.FindIndex(workers, s => Equals(s, worker))))
-					worker.Disactivate();
+				using (Logger.BeginScope("{WorkerType} #{Index}", worker.GetType().ToString(), Array.FindIndex(transits, s => Equals(s, worker))))
+					worker.Worker.Disactivate();
 
 			activeWorkers.Clear();
-			activeWorkers.AddRange(workers.Where(s => s.CanActivate(CurrentState ?? throw new ImpossibleVariantException())));
+			activeWorkers.AddRange(transits.Where(s => s.Router.CanActivate(CurrentState ?? throw new ImpossibleVariantException())));
 
 			foreach (var worker in activeWorkers)
-				using (Logger.BeginScope("{WorkerType} #{Index}", worker.GetType().ToString(), Array.FindIndex(workers, s => Equals(s, worker))))
-					worker.Activate(this);
+				using (Logger.BeginScope("{WorkerType} #{Index}", worker.GetType().ToString(), Array.FindIndex(transits, s => Equals(s, worker))))
+					worker.Worker.Activate(this);
 
 			Logger.Log(LogLevel.Trace, ActiveWorkersRecalcID, "Machine's old workers disactivated and new workers for {State} state activated", CurrentState);
 		}
@@ -106,6 +107,8 @@ namespace DidiFrame.Utils.StateMachine
 				}
 			}
 		}
+
+
 	}
 
 	internal static class StateMachineStatic

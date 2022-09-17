@@ -25,7 +25,7 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		protected AbstractFullLifetime(ILogger logger) : base(logger)
 		{
-			AddTransit(new ResetTransitWorker<TState>(null, waitForClose.Await));
+			AddTransit(new TaskTransitWorker<TState>(waitForClose.Await), new ResetTransitRouter<TState>());
 			LifetimePostRan += OnPostRun;
 		}
 
