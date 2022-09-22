@@ -22,7 +22,7 @@ namespace DidiFrame.Data.Mongo
 		/// <param name="options">Creation options</param>
 		/// <param name="contextType">Type of context: state or settings</param>
 		/// <param name="logger">Logger</param>
-		/// <param name="_">Service provider to provide addititional data</param>
+		/// <param name="services">Service provider to provide server notify</param>
 		/// <exception cref="ArgumentNullException">If required option is null</exception>
 		public MongoDBContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider services)
 		{

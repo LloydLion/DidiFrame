@@ -14,7 +14,7 @@ namespace TestBot.Systems.Voice
 		}
 
 
-		public MessageSendModel CreateReport(string name, IMember owner)
+		public MessageSendModel CreateReport(string name, IMember _)
 		{
 			return new MessageSendModel(localizer["ReportContent"])
 			{

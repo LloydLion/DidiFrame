@@ -22,7 +22,7 @@ namespace DidiFrame.Data.Json
 		/// <param name="options">Creation options</param>
 		/// <param name="contextType">Type of context: state or settings</param>
 		/// <param name="logger">Logger</param>
-		/// <param name="_">Won't be used, is here only because that context based factories require</param>
+		/// <param name="services">Services with server notify</param>
 		/// <exception cref="ArgumentNullException">If required option is null</exception>
 		public JsonContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider services)
 		{

@@ -110,6 +110,9 @@
 			}
 
 
+			/// <summary>
+			/// Sync root of frame object
+			/// </summary>
 			public object SyncRoot { get; } = new();
 
 

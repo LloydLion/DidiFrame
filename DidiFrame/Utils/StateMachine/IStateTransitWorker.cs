@@ -1,7 +1,7 @@
 ﻿namespace DidiFrame.Utils.StateMachine
 {
 	/// <summary>
-	/// Represents a statemachine inter-state transit
+	/// Represents a statemachine inter-state transit worker that determines when need to do transit
 	/// </summary>
 	/// <typeparam name="TState">Type of statemachine state</typeparam>
 	public interface IStateTransitWorker<TState> where TState : struct

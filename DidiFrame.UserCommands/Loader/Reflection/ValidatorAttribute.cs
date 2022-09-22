@@ -24,6 +24,11 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		}
 
 
+		/// <summary>
+		/// Creates argument validator instance using dependencies from services
+		/// </summary>
+		/// <param name="services">Services to provide dependencies for instance</param>
+		/// <returns>New argument validator</returns>
 		public IUserCommandArgumentValidator CreateFilter(IServiceProvider services) =>
 			(IUserCommandArgumentValidator)services.ResolveObjectWithDependencies(validatorType, ctorArgs);
 	}

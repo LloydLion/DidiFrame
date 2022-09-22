@@ -22,6 +22,13 @@ namespace DidiFrame.ClientExtensions
 			return services;
 		}
 
+		/// <summary>
+		/// Adds client extension to di container using custom factory
+		/// </summary>
+		/// <typeparam name="TExtension">Type of extension interface</typeparam>
+		/// <typeparam name="TFactory">Type of extension factory</typeparam>
+		/// <param name="services">Service collection</param>
+		/// <returns>Given collection to be chained</returns>
 		public static IServiceCollection AddClientExtensionCustom<TExtension, TFactory>(this IServiceCollection services) where TExtension : class where TFactory : class, IClientExtensionFactory<TExtension>
 		{
 			services.AddSingleton<IClientExtensionFactory<TExtension>, TFactory>();
@@ -42,6 +49,14 @@ namespace DidiFrame.ClientExtensions
 			services.AddSingleton<IServerExtensionFactory>(sp => sp.GetRequiredService<IServerExtensionFactory<TExtension>>());
 			return services;
 		}
+
+		/// <summary>
+		/// Adds server extension to di container using custom factory
+		/// </summary>
+		/// <typeparam name="TExtension">Type of extension interface</typeparam>
+		/// <typeparam name="TFactory">Type of extension factory</typeparam>
+		/// <param name="services">Service collection</param>
+		/// <returns>Given collection to be chained</returns>
 		public static IServiceCollection AddServerExtensionCustom<TExtension, TFactory>(this IServiceCollection services) where TExtension : class where TFactory : class, IServerExtensionFactory<TExtension>
 		{
 			services.AddSingleton<IServerExtensionFactory<TExtension>, TFactory>();

@@ -1,7 +1,9 @@
 ﻿using DidiFrame.Utils;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DidiFrame.Lifetimes
 {
+	[SuppressMessage("Major Code Smell", "S3881")]
 	public abstract class AbstractLifetime<TBase> : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
 		protected delegate void LifetimeUpdatedHandler();
@@ -15,7 +17,6 @@ namespace DidiFrame.Lifetimes
 		private const string ServerField = "server";
 		private const string IdField = "id";
 		private InitialData? data;
-		private bool disposedValue;
 
 
 		protected AbstractLifetime(ILogger logger)

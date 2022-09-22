@@ -42,9 +42,8 @@ namespace DidiFrame.Clients.DSharp.Entities
 		/// <inheritdoc/>
 		public DiscordChannel BaseChannel => AccessBase();
 
-		//TODO: Server -> ServerWrap in desc
 		/// <summary>
-		/// Base server for channel, casted to DidiFrame.Clients.DSharp.Server Server property
+		/// Base server for channel, casted to DidiFrame.Clients.DSharp.DiscordServer.ServerWrap Server property
 		/// </summary>
 		public ServerWrap BaseServer => server;
 

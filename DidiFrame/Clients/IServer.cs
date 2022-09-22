@@ -110,6 +110,11 @@ namespace DidiFrame.Clients
 		/// <returns>Role with given id</returns>
 		public IRole GetRole(ulong id);
 
+		/// <summary>
+		/// Creates or gets extension for this server of TExtension type
+		/// </summary>
+		/// <typeparam name="TExtension">Type of extension</typeparam>
+		/// <returns>Instance of extension</returns>
 		public TExtension CreateExtension<TExtension>() where TExtension : class;
 
 

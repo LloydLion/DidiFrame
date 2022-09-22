@@ -8,7 +8,7 @@ using DidiFrame.Culture;
 
 namespace DidiFrame.Clients.DSharp.DiscordServer
 {
-	public sealed class InteractionDispatcherFactory : IDisposable
+	internal sealed class InteractionDispatcherFactory : IDisposable
 	{
 		private const int TemporalModeDeleteTimeoutInMinutes = 20;
 		private static readonly EventId InteractionHandlerErrorID = new(10, "InteractionHandlerError");

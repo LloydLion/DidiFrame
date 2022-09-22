@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 {
+	/// <summary>
+	/// Provides extension methods for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

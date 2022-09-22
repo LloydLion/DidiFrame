@@ -10,13 +10,17 @@
 		/// </summary>
 		public string Key { get; }
 
+		/// <summary>
+		/// Default value for statistic entry
+		/// </summary>
 		public long DefaultValue { get; }
 
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Statistic.StatisticEntry
 		/// </summary>
-		/// <param name="key">unique statistic key</param>
+		/// <param name="key">Unique statistic key</param>
+		/// <param name="defaultValue">Default value for statistic entry</param>
 		public StatisticEntry(string key, long defaultValue)
 		{
 			Key = key;

@@ -21,8 +21,17 @@
 		}
 
 
+		/// <summary>
+		/// Adds statemachine transit
+		/// </summary>
+		/// <param name="transit">Transit itself</param>
 		public void AddStateTransit(StateTransit<TState> transit) => transits.Add(transit);
 
+		/// <summary>
+		/// Adds statemachine transit
+		/// </summary>
+		/// <param name="worker">Worker of new transit</param>
+		/// <param name="router">Router of new transit</param>
 		public void AddStateTransit(IStateTransitWorker<TState> worker, IStateTransitRouter<TState> router) => AddStateTransit(new StateTransit<TState>(router, worker));
 
 		/// <summary>

@@ -68,6 +68,7 @@ namespace DidiFrame.Utils.StateMachine
 			source = new();
 		}
 
+		/// <inheritdoc/>
 		public void DoTransit()
 		{
 			currentTask = null;

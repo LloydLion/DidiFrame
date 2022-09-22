@@ -9,13 +9,13 @@
 		/// Target type of argument
 		/// </summary>
 		public Type TargetType { get; }
-		
+
 
 		/// <summary>
 		/// Provides values for argumnet
 		/// </summary>
-		/// <param name="server">Server where need to provide values</param>
-		/// <returns></returns>
+		/// <param name="sendData">Target command send data</param>
+		/// <returns>Collection of provided objects</returns>
 		public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData);
 	}
 }

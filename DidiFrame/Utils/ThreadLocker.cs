@@ -72,12 +72,20 @@
 		}
 
 
+		/// <summary>
+		/// Agent for thread locker that bakes object to lock
+		/// </summary>
 		public sealed class Agent
 		{
 			private readonly ThreadLocker<TLock> locker;
 			private readonly TLock objectToLock;
 
 
+			/// <summary>
+			/// Creates new instance of DidiFrame.Utils.ThreadLocker`1.Agent
+			/// </summary>
+			/// <param name="locker">Base locker object</param>
+			/// <param name="objectToLock">Object that will be locked</param>
 			public Agent(ThreadLocker<TLock> locker, TLock objectToLock)
 			{
 				this.locker = locker;
@@ -85,6 +93,10 @@
 			}
 
 
+			/// <summary>
+			/// Locks agent
+			/// </summary>
+			/// <returns>Disposable object that should dispose when need to release object</returns>
 			public IDisposable Lock() => locker.Lock(objectToLock);
 		}
 

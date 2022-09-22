@@ -27,8 +27,10 @@ namespace DidiFrame.UserCommands.Pipeline
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor with local services
 		/// </summary>
 		/// <param name="logger">Logger for executor</param>
-		/// <param name="sendDataValidator">Validator for DidiFrame.UserCommands.Models.UserCommandSendData</param>
-		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
+		/// <param name="cultureProvider">Optional culture provider</param>
+		/// <param name="scopeFactory">Optional scope factory to create scopes per command invoke</param>
+		/// <param name="sendDataValidator">Optional validator for DidiFrame.UserCommands.Models.UserCommandSendData</param>
+		/// <param name="resultValidator">Optional validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
 		public UserCommandPipelineExecutor(
 			ILogger<UserCommandPipelineExecutor> logger,
 			IServerCultureProvider? cultureProvider = null,

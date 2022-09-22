@@ -6,6 +6,7 @@ using DidiFrame.ClientExtensions;
 
 namespace DidiFrame.Testing.Client
 {
+	/// <inheritdoc/>
 	public class Server : IServer
 	{
 		private readonly Dictionary<ulong, Role> roles = new();
@@ -15,42 +16,62 @@ namespace DidiFrame.Testing.Client
 		private readonly ExtensionContextFactory extensionContextFactory = new();
 
 
+		/// <inheritdoc/>
 		public event MessageSentEventHandler? MessageSent;
 
+		/// <inheritdoc/>
 		public event MessageDeletedEventHandler? MessageDeleted;
 
+		/// <inheritdoc/>
 		public event ServerObjectDeletedEventHandler? ChannelDeleted;
 
+		/// <inheritdoc/>
 		public event ServerObjectDeletedEventHandler? MemberDeleted;
 
+		/// <inheritdoc/>
 		public event ServerObjectDeletedEventHandler? RoleDeleted;
 
+		/// <inheritdoc/>
 		public event ServerObjectDeletedEventHandler? CategoryDeleted;
 
+		/// <inheritdoc/>
 		public event ServerObjectCreatedEventHandler<IChannel>? ChannelCreated;
 
+		/// <inheritdoc/>
 		public event ServerObjectCreatedEventHandler<IMember>? MemberCreated;
 
+		/// <inheritdoc/>
 		public event ServerObjectCreatedEventHandler<IRole>? RoleCreated;
 
+		/// <inheritdoc/>
 		public event ServerObjectCreatedEventHandler<IChannelCategory>? CategoryCreated;
 
 
+		/// <inheritdoc/>
 		public IClient Client { get { ThrowIfClosed(); return baseClient; } }
 
+		/// <summary>
+		/// Base client that contains this server
+		/// </summary>
 		public Client BaseClient { get { ThrowIfClosed(); return baseClient; } }
 
+		/// <inheritdoc/>
 		public string Name { get; }
 
+		/// <inheritdoc/>
 		public ulong Id { get; }
 
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<Role> Roles => roles.Values;
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<Member> Members => members.Values;
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<ChannelCategory> Categories => cats.Values;
 
+		/// <inheritdoc/>
 		public bool IsClosed { get; private set; } = false;
 
 
@@ -65,12 +86,22 @@ namespace DidiFrame.Testing.Client
 		}
 
 
+		/// <inheritdoc/>
 		public bool Equals(IServer? other) => other is Server server && !IsClosed && !server.IsClosed && server.Id == Id;
 
+		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as IServer);
 
+		/// <inheritdoc/>
 		public override int GetHashCode() => Id.GetHashCode();
 
+		/// <summary>
+		/// Creates and adds member to server
+		/// </summary>
+		/// <param name="userName">User name</param>
+		/// <param name="isBot">If new member is bot</param>
+		/// <param name="permissions">Permission of new member</param>
+		/// <returns>New member instance</returns>
 		public Member AddMember(string userName, bool isBot, Permissions permissions)
 		{
 			ThrowIfClosed();
@@ -84,6 +115,12 @@ namespace DidiFrame.Testing.Client
 			return member;
 		}
 
+		/// <summary>
+		/// Creates and adds role to server
+		/// </summary>
+		/// <param name="permissions">Permissions that role grants</param>
+		/// <param name="name">Role name</param>
+		/// <returns>New role instance</returns>
 		public Role AddRole(Permissions permissions, string name)
 		{
 			ThrowIfClosed();
@@ -97,6 +134,12 @@ namespace DidiFrame.Testing.Client
 			return role;
 		}
 
+		/// <summary>
+		/// Creates and adds channel to server
+		/// </summary>
+		/// <param name="category">Target category</param>
+		/// <param name="creationModel">Model to create channel</param>
+		/// <returns>New channel instance</returns>
 		public Channel AddChannel(ChannelCategory category, ChannelCreationModel creationModel)
 		{
 			ThrowIfClosed();
@@ -116,8 +159,19 @@ namespace DidiFrame.Testing.Client
 			return channel;
 		}
 
+		/// <summary>
+		/// Creates and adds channel to server to global category
+		/// </summary>
+		/// <param name="creationModel">Model to create channel</param>
+		/// <returns>New channel instance</returns>
 		public Channel AddChannel(ChannelCreationModel creationModel) => AddChannel(cats[0], creationModel);
 
+		/// <summary>
+		/// Creates and adds thread to server to some channel
+		/// </summary>
+		/// <param name="textChannel">Target text channel</param>
+		/// <param name="threadName">Thread name</param>
+		/// <returns>New thread instance</returns>
 		public TextThread AddThread(TextChannel textChannel, string threadName)
 		{
 			ThrowIfClosed();
@@ -131,6 +185,11 @@ namespace DidiFrame.Testing.Client
 			return thread;
 		}
 
+		/// <summary>
+		/// Creates and adds category to server
+		/// </summary>
+		/// <param name="categoryName">Category name</param>
+		/// <returns>New category instance</returns>
 		public ChannelCategory AddCategory(string categoryName)
 		{
 			ThrowIfClosed();
@@ -144,6 +203,10 @@ namespace DidiFrame.Testing.Client
 			return category;
 		}
 
+		/// <summary>
+		/// Removes member from server
+		/// </summary>
+		/// <param name="member">Member to remove</param>
 		public void DeleteMember(Member member)
 		{
 			ThrowIfClosed();
@@ -155,6 +218,10 @@ namespace DidiFrame.Testing.Client
 			catch (Exception) { /*No logging*/ }
 		}
 
+		/// <summary>
+		/// Removes role from server
+		/// </summary>
+		/// <param name="role">Role to remove</param>
 		public void DeleteRole(Role role)
 		{
 			ThrowIfClosed();
@@ -162,10 +229,14 @@ namespace DidiFrame.Testing.Client
 			roles.Remove(role.Id);
 			DeleteObject(role);
 
-			try { RoleCreated?.Invoke(role, false); }
+			try { RoleDeleted?.Invoke(this, role.Id); }
 			catch (Exception) { /*No logging*/ }
 		}
 
+		/// <summary>
+		/// Removes channel from server
+		/// </summary>
+		/// <param name="channel">Channel to remove</param>
 		public void DeleteChannel(Channel channel)
 		{
 			ThrowIfClosed();
@@ -180,6 +251,10 @@ namespace DidiFrame.Testing.Client
 			catch (Exception) { /*No logging*/ }
 		}
 
+		/// <summary>
+		/// Removes category from server
+		/// </summary>
+		/// <param name="category">Category to remove</param>
 		public void DeleteCategory(ChannelCategory category)
 		{
 			var id = category.Id ?? throw new ArgumentException("Enable to delete global category");
@@ -195,48 +270,56 @@ namespace DidiFrame.Testing.Client
 
 		private static void DeleteObject(IServerDeletable serverDeletable) => serverDeletable.DeleteInternal();
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IMember> GetMembers()
 		{
 			ThrowIfClosed();
 			return members.Values;
 		}
 
+		/// <inheritdoc/>
 		public IMember GetMember(ulong id)
 		{
 			ThrowIfClosed();
 			return members[id];
 		}
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IChannelCategory> GetCategories()
 		{
 			ThrowIfClosed();
 			return cats.Values;
 		}
 
+		/// <inheritdoc/>
 		public IChannelCategory GetCategory(ulong? id)
 		{
 			ThrowIfClosed();
 			return cats[id ?? 0];
 		}
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IChannel> GetChannels()
 		{
 			ThrowIfClosed();
 			return cats.Values.SelectMany(s => s.Channels).ToArray();
 		}
 
+		/// <inheritdoc/>
 		public IChannel GetChannel(ulong id)
 		{
 			ThrowIfClosed();
 			return cats.Values.Single(s => s.Channels.Any(s => s.Id == id)).Channels.Single(s => s.Id == id);
 		}
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IRole> GetRoles()
 		{
 			ThrowIfClosed();
 			return roles.Values;
 		}
 
+		/// <inheritdoc/>
 		public IRole GetRole(ulong id)
 		{
 			ThrowIfClosed();
@@ -255,6 +338,7 @@ namespace DidiFrame.Testing.Client
 				throw new ObjectDoesNotExistException(nameOfCaller);
 		}
 
+		/// <inheritdoc/>
 		public TExtension CreateExtension<TExtension>() where TExtension : class
 		{
 			var factory = (IServerExtensionFactory<TExtension>)baseClient.ServerExtensions.Single(s => s is IServerExtensionFactory<TExtension> factory && factory.TargetServerType.IsInstanceOfType(this));

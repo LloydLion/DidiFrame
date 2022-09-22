@@ -2,6 +2,9 @@
 
 namespace DidiFrame.UserCommands.Repository
 {
+	/// <summary>
+	/// Provides extension methods for service collection
+	/// </summary>
 	public static class ServicesExtensions
 	{
 		/// <summary>

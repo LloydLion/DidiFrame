@@ -5,6 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace DidiFrame.Clients.DSharp.ClientUtils
 {
+	/// <summary>
+	/// Extensions for safe client operations
+	/// </summary>
 	public static class SafeOperationsExtensions
 	{
 		private const int RatelimitTimeoutInMilliseconds = 250;
@@ -14,10 +17,12 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 
 
 #pragma warning disable S907 //goto statement use
-		///// <summary>
-		///// Do safe opration under discord client
-		///// </summary>
-		///// <param name="operation">Operation delegate</param>
+		/// <summary>
+		/// Do safe opration under discord client
+		/// </summary>
+		/// <param name="client">Target client</param>
+		/// <param name="operation">Operation delegate</param>
+		/// <param name="nfi">Not found info for object not found case</param>
 		public static void DoSafeOperation(this DSharpClient client, Action operation, NotFoundInfo? nfi = null)
 		{
 		reset:
@@ -34,12 +39,14 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			}
 		}
 
-		///// <summary>
-		///// Do safe opration under discord client with result
-		///// </summary>
-		///// <typeparam name="TReturn">Type of result</typeparam>
-		///// <param name="operation">Operation delegate</param>
-		///// <returns>Operation result</returns>
+		/// <summary>
+		/// Do safe opration under discord client with result
+		/// </summary>
+		/// <typeparam name="TReturn">Type of result</typeparam>
+		/// <param name="client">Target client</param>
+		/// <param name="operation">Operation delegate</param>
+		/// <param name="nfi">Not found info for object not found case</param>
+		/// <returns>Operation result</returns>
 		public static TReturn DoSafeOperation<TReturn>(this DSharpClient client, Func<TReturn> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
@@ -56,11 +63,13 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			}
 		}
 
-		///// <summary>
-		///// Do safe async opration under discord client
-		///// </summary>
-		///// <param name="operation">Async operation delegate</param>
-		///// <returns>Wait task</returns>
+		/// <summary>
+		/// Do safe async opration under discord client
+		/// </summary>
+		/// <param name="client">Target client</param>
+		/// <param name="operation">Async operation delegate</param>
+		/// <param name="nfi">Not found info for object not found case</param>
+		/// <returns>Wait task</returns>
 		public static async Task DoSafeOperationAsync(this DSharpClient client, Func<Task> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
@@ -77,12 +86,14 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			}
 		}
 
-		///// <summary>
-		///// Do safe async opration under discord client with result
-		///// </summary>
-		///// <typeparam name="TReturn">Type of result</typeparam>
-		///// <param name="operation">Async operation delegate</param>
-		///// <returns>Async operation result</returns>
+		/// <summary>
+		/// Do safe async opration under discord client with result
+		/// </summary>
+		/// <typeparam name="TReturn">Type of result</typeparam>
+		/// <param name="client">Target client</param>
+		/// <param name="operation">Async operation delegate</param>
+		/// <param name="nfi">Not found info for object not found case</param>
+		/// <returns>Async operation result</returns>
 		public static async Task<TReturn> DoSafeOperationAsync<TReturn>(this DSharpClient client, Func<Task<TReturn>> operation, NotFoundInfo? nfi = null)
 		{
 		reset:
@@ -131,8 +142,17 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 		}
 
 
+		/// <summary>
+		/// Error info if some object is not found
+		/// </summary>
 		public struct NotFoundInfo
 		{
+			/// <summary>
+			/// Creates new instance of NFI
+			/// </summary>
+			/// <param name="objectType">Type of finding object</param>
+			/// <param name="objectId">Id of object</param>
+			/// <param name="objectName">Optional object name</param>
 			public NotFoundInfo(Type objectType, ulong objectId, string? objectName = null)
 			{
 				ObjectType = objectType;
@@ -141,20 +161,50 @@ namespace DidiFrame.Clients.DSharp.ClientUtils
 			}
 
 
+			/// <summary>
+			/// Type of finding object
+			/// </summary>
 			public Type ObjectType { get; }
 
+			/// <summary>
+			/// Optional object name
+			/// </summary>
 			public string? ObjectName { get; }
 
+			/// <summary>
+			/// Id of object
+			/// </summary>
 			public ulong ObjectId { get; }
 
 
+			/// <summary>
+			/// Type of finding object
+			/// </summary>
 			public enum Type
 			{
+				/// <summary>
+				/// Channel type
+				/// </summary>
 				Channel,
+				/// <summary>
+				/// Member type
+				/// </summary>
 				Member,
+				/// <summary>
+				/// Message type
+				/// </summary>
 				Message,
+				/// <summary>
+				/// User type
+				/// </summary>
 				User,
+				/// <summary>
+				/// Server type
+				/// </summary>
 				Server,
+				/// <summary>
+				/// Role type
+				/// </summary>
 				Role
 			}
 		}

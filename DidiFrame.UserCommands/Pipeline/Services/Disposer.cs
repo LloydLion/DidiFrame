@@ -15,7 +15,7 @@
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Services.Disposer
 		/// </summary>
-		/// <param name="services">Service provider with logger</param>
+		/// <param name="logger">Logger to log errors</param>
 		public Disposer(ILogger<Disposer> logger)
 		{
 			this.logger = logger;

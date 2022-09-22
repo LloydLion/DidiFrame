@@ -11,6 +11,7 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 
 
 		private readonly IClient client;
+		private readonly IStringLocalizer<MessageUserCommandDispatcher> localizer;
 		private readonly ILogger<MessageUserCommandDispatcher> logger;
 		private readonly Options options;
 		private readonly IValidator<UserCommandResult>? resultValidator;
@@ -21,11 +22,18 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 		/// Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher
 		/// </summary>
 		/// <param name="client">Discord clint to access to discord</param>
+		/// <param name="localizer">Localizer for dispatcher</param>
 		/// <param name="logger">Logger for dispatcher</param>
+		/// <param name="options">Options for DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher</param>
 		/// <param name="resultValidator">Validator for DidiFrame.UserCommands.Models.UserCommandResult</param>
-		public MessageUserCommandDispatcher(IClient client, ILogger<MessageUserCommandDispatcher> logger, IOptions<Options> options, IValidator<UserCommandResult>? resultValidator = null)
+		public MessageUserCommandDispatcher(IClient client,
+			IStringLocalizer<MessageUserCommandDispatcher> localizer,
+			ILogger<MessageUserCommandDispatcher> logger,
+			IOptions<Options> options,
+			IValidator<UserCommandResult>? resultValidator = null)
 		{
 			this.client = client;
+			this.localizer = localizer;
 			this.logger = logger;
 			this.options = options.Value;
 			this.resultValidator = resultValidator;
@@ -99,15 +107,14 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 						break;
 				case UserCommandResult.Type.None:
 					if (result.Code != UserCommandCode.Sucssesful)
-						message = ss.Message.TextChannel.SendMessageAsync(new MessageSendModel("Error, command finished with code: " + result.Code)).Result;
+						message = ss.Message.TextChannel.SendMessageAsync(new MessageSendModel(localizer["CommandErrorMessageContent", result.Code])).Result;
 					break;
 				case UserCommandResult.Type.Modal:
-					//TODO: localize
-					var demoMessage = await ss.Message.TextChannel.SendMessageAsync(new MessageSendModel("Command finished with modal\nPress button to open modal window")
+					var demoMessage = await ss.Message.TextChannel.SendMessageAsync(new MessageSendModel(localizer["ModelMessageContent"])
 					{
 						ComponentsRows = new MessageComponentsRow[]
 						{
-							new(new[] { new MessageButton("open_modal", "Open modal", ButtonStyle.Primary) })
+							new(new[] { new MessageButton("open_modal", localizer["OpenModalButtonText"], ButtonStyle.Primary) })
 						}
 					});
 
@@ -156,8 +163,15 @@ namespace DidiFrame.UserCommands.Pipeline.ClassicPipeline
 			public bool IsFinalized { get; set; } = false;
 		}
 
+
+		/// <summary>
+		/// Options for DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher
+		/// </summary>
 		public class Options
 		{
+			/// <summary>
+			/// Disables delete delay after responce sending
+			/// </summary>
 			public bool DisableDeleteDelayForDebug { get; set; }
 		}
 	}

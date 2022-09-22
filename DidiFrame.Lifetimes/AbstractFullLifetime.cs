@@ -76,8 +76,8 @@ namespace DidiFrame.Lifetimes
 		/// <summary>
 		/// Don't override, it used by DidiFrame.Lifetimes.AbstractFullLifetime`2. If overriding is important use OnRunInternal(TState)
 		/// </summary>
-		/// <param name="state">Initial statemachine state</param>
 		/// <param name="initialBase">Initial value of base, cannot be saved in lifetime</param>
+		/// <param name="initialData">Initial lifetime parameters</param>
 		protected void OnPostRun(TBase initialBase, InitialData initialData)
 		{
 			if (HasReport)

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DidiFrame.Utils.StateMachine
+﻿namespace DidiFrame.Utils.StateMachine
 {
+	/// <summary>
+	/// Represents a statemachine inter-state transit router that determines where need to do transit
+	/// </summary>
+	/// <typeparam name="TState">Type of statemachine state</typeparam>
 	public interface IStateTransitRouter<TState> where TState : struct
 	{
 		/// <summary>

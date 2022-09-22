@@ -15,6 +15,11 @@ namespace DidiFrame.ClientExtensions.Reflection
 		private readonly object syncRoot = new();
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.ClientExtensions.Reflection.ReflectionClientExtensionFactory`2
+		/// </summary>
+		/// <param name="services">Services to create extension instance</param>
+		/// <exception cref="InvalidOperationException">If TImplementation doesn't have valid TargetExtensionTypeAttribute</exception>
 		public ReflectionClientExtensionFactory(IServiceProvider services)
 		{
 			var implementationType = typeof(TImplementation);
@@ -43,6 +48,7 @@ namespace DidiFrame.ClientExtensions.Reflection
 		public Type TargetClientType { get; }
 
 
+		/// <inheritdoc/>
 		public TExtension Create(IClient client, IClientExtensionContext<TExtension> extensionContext)
 		{
 			if (TargetClientType.IsInstanceOfType(client) == false)

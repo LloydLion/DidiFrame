@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Represents a discord user
 	/// </summary>
-	public interface IUser : IEquatable<IUser>, IMetionable
+	public interface IUser : IEquatable<IUser>, IMentionable
 	{
 		/// <summary>
 		/// Nickname of the user

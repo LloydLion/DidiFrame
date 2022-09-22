@@ -1,7 +1,13 @@
 ﻿namespace DidiFrame.UserCommands.Repository
 {
+	/// <summary>
+	/// Represents collection of user command in read only mode
+	/// </summary>
 	public interface IUserCommandsReadOnlyRepository
 	{
+		/// <summary>
+		/// Sync root of object
+		/// </summary>
 		public object SyncRoot { get; }
 
 

@@ -41,6 +41,9 @@ namespace DidiFrame.Clients.DSharp.Entities
 		/// <inheritdoc/>
 		public IServer Server => server;
 
+		/// <summary>
+		/// Base server wrap
+		/// </summary>
 		public ServerWrap BaseServer => server;
 
 		/// <summary>

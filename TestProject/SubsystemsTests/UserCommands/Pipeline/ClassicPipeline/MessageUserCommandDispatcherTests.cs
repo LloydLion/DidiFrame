@@ -1,4 +1,5 @@
-﻿using DidiFrame.Testing.Logging;
+﻿using DidiFrame.Testing.Localization;
+using DidiFrame.Testing.Logging;
 using DidiFrame.UserCommands.Pipeline;
 using DidiFrame.UserCommands.Pipeline.ClassicPipeline;
 using Microsoft.Extensions.Options;
@@ -31,7 +32,7 @@ namespace TestProject.SubsystemsTests.UserCommands.Pipeline.ClassicPipeline
 
 			public override IUserCommandPipelineDispatcher<IMessage> CreateDispatcher()
 			{
-				return new MessageUserCommandDispatcher(client, new DebugConsoleLogger<MessageUserCommandDispatcher>(),
+				return new MessageUserCommandDispatcher(client, new TestLocalizer<MessageUserCommandDispatcher>(), new DebugConsoleLogger<MessageUserCommandDispatcher>(),
 					Options.Create(new MessageUserCommandDispatcher.Options() { DisableDeleteDelayForDebug = true }));
 			}
 

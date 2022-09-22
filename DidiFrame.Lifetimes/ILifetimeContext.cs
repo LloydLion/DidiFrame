@@ -24,6 +24,10 @@ namespace DidiFrame.Lifetimes
 		/// </summary>
 		public void FinalizeLifetime();
 
+		/// <summary>
+		/// Provides current lifetime sync context
+		/// </summary>
+		/// <returns>Current lifetime context from SynchronizationContext.Current</returns>
 		public LifetimeSynchronizationContext GetSynchronizationContext();
 	}
 }

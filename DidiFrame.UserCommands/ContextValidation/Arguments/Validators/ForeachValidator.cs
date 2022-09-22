@@ -15,6 +15,7 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator
 		/// </summary>
+		/// <param name="servicesForValidator">Services to create validator from type</param>
 		/// <param name="validatorType">"Foreach" validator type</param>
 		/// <param name="creationArgs">Parameters to create the validator</param>
 		public ForeachValidator([Dependency] IServiceProvider servicesForValidator, Type validatorType, object[] creationArgs)
@@ -29,6 +30,15 @@ namespace DidiFrame.UserCommands.ContextValidation.Arguments.Validators
 		public ForeachValidator(Type validatorType)
 		{
 			validator = (IUserCommandArgumentValidator)(Activator.CreateInstance(validatorType) ?? throw new ImpossibleVariantException());
+		}
+
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator
+		/// </summary>
+		/// <param name="validator">"Foreach" validator itself</param>
+		public ForeachValidator(IUserCommandArgumentValidator validator)
+		{
+			this.validator = validator;
 		}
 
 

@@ -35,6 +35,11 @@ namespace DidiFrame.UserCommands.Pipeline
 			this.sendResponce = sendResponce;
 		}
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext
+		/// </summary>
+		/// <param name="sendData">Send data from dispatcher</param>
+		/// <param name="sendResponce">Delegate that sends responce to dispatcher</param>
 		public UserCommandPipelineContext(UserCommandSendData sendData, Func<UserCommandResult, Task> sendResponce) : this(EmptyServiceProvider.Instance, sendData, sendResponce) { }
 
 		/// <summary>

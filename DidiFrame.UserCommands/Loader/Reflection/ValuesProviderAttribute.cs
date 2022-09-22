@@ -24,6 +24,11 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		}
 
 
+		/// <summary>
+		/// Creates values provider instance using dependencies from services
+		/// </summary>
+		/// <param name="services">Services to provide dependencies for instance</param>
+		/// <returns>New values provide</returns>
 		public IUserCommandArgumentValuesProvider CreateProvider(IServiceProvider services) =>
 			(IUserCommandArgumentValuesProvider)services.ResolveObjectWithDependencies(providerType, ctorArgs);
 	}

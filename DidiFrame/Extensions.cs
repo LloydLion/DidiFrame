@@ -43,6 +43,11 @@ namespace DidiFrame
 			return ret;
 		}
 
+		/// <summary>
+		/// Waits and creates disposable for AutoResentEvent that releases event
+		/// </summary>
+		/// <param name="resetEvent">Reset event itself</param>
+		/// <returns>Dispoable that releases event</returns>
 		public static IDisposable WaitAndCreateDisposable(this AutoResetEvent resetEvent)
 		{
 			resetEvent.WaitOne();

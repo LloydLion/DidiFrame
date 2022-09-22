@@ -1,5 +1,8 @@
 ﻿namespace DidiFrame.Clients
 {
+	/// <summary>
+	/// Notifier that provides server created/removed events 
+	/// </summary>
 	public interface IServersNotify
 	{
 		/// <summary>

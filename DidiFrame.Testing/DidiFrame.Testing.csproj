@@ -51,8 +51,4 @@
 	  <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-	  <EditorConfigFiles Remove="..\.editorconfig" />
-  </ItemGroup>
-
 </Project>

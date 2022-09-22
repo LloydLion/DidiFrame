@@ -2,6 +2,9 @@
 
 namespace DidiFrame.UserCommands.Pipeline.Building
 {
+	/// <summary>
+	/// Provides extension methods for service collection
+	/// </summary>
 	public static class ServicesExtenions
 	{
 		/// <summary>

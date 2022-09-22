@@ -13,8 +13,14 @@
 		/// <param name="context">Context where lifetime runs</param>
 		public void Run(TBase initialBase, ILifetimeContext<TBase> context);
 
+		/// <summary>
+		/// Updates lifetime state
+		/// </summary>
 		public void Update();
 
+		/// <summary>
+		/// Destroys lifetime from server
+		/// </summary>
 		public void Destroy();
 	}
 }

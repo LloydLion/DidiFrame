@@ -224,9 +224,11 @@ namespace DidiFrame.Utils
 		[ConstructorAssignableProperty(1, "channel")]
 		public ITextChannelBase Channel { get; }
 
+		/// <inheritdoc/>
 		public Guid Id { get; } = Guid.NewGuid();
 
 
+		/// <inheritdoc/>
 		public bool Equals(IDataModel? other) => false;
 	}
 }

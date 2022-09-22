@@ -15,12 +15,15 @@
 		/// <summary>
 		/// Creates new instance of extension using services and client of target type
 		/// </summary>
-		/// <param name="services">Services to create extension</param>
 		/// <param name="client">Client of target type</param>
+		/// <param name="extensionContext">Target extension context</param>
 		/// <returns>Instance of extension</returns>
 		public TExtension Create(IClient client, IClientExtensionContext<TExtension> extensionContext);
 	}
 
+	/// <summary>
+	/// Factory that creates extensions for client
+	/// </summary>
 	public interface IClientExtensionFactory
 	{
 

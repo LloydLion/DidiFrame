@@ -50,6 +50,7 @@ namespace DidiFrame.Utils.StateMachine
 			//Do nothing on disactivate
 		}
 
+		/// <inheritdoc/>
 		public void DoTransit()
 		{
 			//Do nothing on transit

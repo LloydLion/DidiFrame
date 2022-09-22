@@ -24,6 +24,11 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		}
 
 
+		/// <summary>
+		/// Creates invoker filter instance using dependencies from services
+		/// </summary>
+		/// <param name="services">Services to provide dependencies for instance</param>
+		/// <returns>New invoker filter</returns>
 		public IUserCommandInvokerFilter CreateFilter(IServiceProvider services) =>
 			(IUserCommandInvokerFilter)services.ResolveObjectWithDependencies(invokerType, ctorArgs);
 	}

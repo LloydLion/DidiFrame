@@ -29,7 +29,7 @@ namespace TestBot.Systems.Test.ClientExtensions.ReactionExtension
 			public Factory() : base(typeof(DSharpClient)) { }
 
 
-			public override IReactionsExtension CreateInstance(IClient client, IClientExtensionContext<IReactionsExtension> extensionContext) =>
+			protected override IReactionsExtension CreateInstance(IClient client, IClientExtensionContext<IReactionsExtension> extensionContext) =>
 				new DSharpReactionsExtension((DSharpClient)client);
 		}
 	}

@@ -20,6 +20,7 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// <summary>
 		/// Creates new instance of DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader
 		/// </summary>
+		/// <param name="servicesForValidationObjects">Services to create validators, providers and filters</param>
 		/// <param name="modules">Modules that contains commands to load</param>
 		/// <param name="logger">Logger for loader</param>
 		/// <param name="stringLocalizerFactory">Localizer factory to provide localizers for commands</param>
@@ -84,6 +85,9 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 			/// </summary>
 			protected IReadOnlyCollection<IReflectionCommandAdditionalInfoLoader> Subloaders => subloaders ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
+			/// <summary>
+			/// Services for validation (filters, validators, providers) object constructing
+			/// </summary>
 			protected IServiceProvider ServicesForValidationObjects => servicesForValidationObjects ?? throw new InvalidOperationException("Enable to get this property in ctor");
 
 

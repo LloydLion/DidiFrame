@@ -10,9 +10,8 @@ namespace DidiFrame.UserCommands.Loader.Reflection
 		/// <summary>
 		/// Adds DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader as commands loader
 		/// </summary>
-		/// <param name="services"></param>
-		/// <returns></returns>
-		//TODO: rewrite description
+		/// <param name="services">Target services</param>
+		/// <returns>Given service collection to be chained</returns>
 		public static IServiceCollection AddReflectionUserCommandsLoader(this IServiceCollection services)
 		{
 			services.AddTransient<IUserCommandsLoader, ReflectionUserCommandsLoader>();

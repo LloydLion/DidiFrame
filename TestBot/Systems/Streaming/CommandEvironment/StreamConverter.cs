@@ -5,7 +5,7 @@ namespace TestBot.Systems.Streaming.CommandEvironment
 {
 	internal class StreamConverter : IUserCommandContextSubConverter
 	{
-		private ISystemCore core;
+		private readonly ISystemCore core;
 
 
 		public Type WorkType => typeof(StreamLifetime);

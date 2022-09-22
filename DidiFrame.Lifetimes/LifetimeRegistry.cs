@@ -25,6 +25,7 @@ namespace DidiFrame.Lifetimes
 		/// <param name="states">Repository with states</param>
 		/// <param name="lifetimeInstanceCreator">Factory for target lifetime</param>
 		/// <param name="logger">Logger for registry</param>
+		/// <param name="serverNotify">Server delete notifier to delete per server resources</param>
 		public LifetimeRegistry(IServersStatesRepository<ICollection<TBase>> states,
 			ILifetimeInstanceCreator<TLifetime, TBase> lifetimeInstanceCreator,
 			ILogger<LifetimeRegistry<TLifetime, TBase>> logger,
@@ -144,6 +145,7 @@ namespace DidiFrame.Lifetimes
 					sls.UpdateDispatcher.Dispose();
 		}
 
+		/// <inheritdoc/>
 		public void Dispose()
 		{
 			serverNotify.ServerRemoved -= OnServerRemoved;
@@ -167,7 +169,7 @@ namespace DidiFrame.Lifetimes
 			public void Dispose() => UpdateDispatcher.Dispose();
 		}
 
-		private class LifetimeEntry
+		private sealed class LifetimeEntry
 		{
 			public LifetimeEntry(TLifetime lifetime, DefaultLifetimeContext<TBase> context, BaseObjectController controller)
 			{

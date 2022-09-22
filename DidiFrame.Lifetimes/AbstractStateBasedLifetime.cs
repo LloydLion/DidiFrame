@@ -112,7 +112,8 @@ namespace DidiFrame.Lifetimes
 		/// <summary>
 		/// Must be invoked only in ctor! Directly adds transit worker into building statemachine
 		/// </summary>
-		/// <param name="worker">Transit worker itself</param>
+		/// <param name="worker">Transit worker</param>
+		/// <param name="router">Transit router</param>
 		/// <exception cref="InvalidOperationException">If invoked outside ctor (after Run() calling)</exception>
 		protected void AddTransit(IStateTransitWorker<TState> worker, IStateTransitRouter<TState> router)
 		{

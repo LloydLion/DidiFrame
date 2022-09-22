@@ -37,8 +37,17 @@ namespace DidiFrame.Clients
 		/// <returns>Target server</returns>
 		public IServer GetServer(ulong id);
 
+		/// <summary>
+		/// Setups culture provider in client
+		/// </summary>
+		/// <param name="cultureProvider">New culture provider itself</param>
 		public void SetupCultureProvider(IServerCultureProvider? cultureProvider);
 
+		/// <summary>
+		/// Creates instance of extension
+		/// </summary>
+		/// <typeparam name="TExtension">Type of target extension</typeparam>
+		/// <returns>New instance of extension</returns>
 		public TExtension CreateExtension<TExtension>() where TExtension : class;
 	}
 }

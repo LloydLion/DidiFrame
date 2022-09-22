@@ -1,7 +1,4 @@
 ﻿[*.cs]
-dotnet_diagnostic.CS1591.severity = suggestion
-
-[*.cs]
 #### Стили именования ####
 
 # Правила именования

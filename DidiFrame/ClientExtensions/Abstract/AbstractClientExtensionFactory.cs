@@ -1,11 +1,20 @@
 ﻿namespace DidiFrame.ClientExtensions.Abstract
 {
+	/// <summary>
+	/// Abstract class for client extension factories
+	/// </summary>
+	/// <typeparam name="TExtension">Type of extension interface</typeparam>
 	public abstract class AbstractClientExtensionFactory<TExtension> : IClientExtensionFactory<TExtension> where TExtension : class
 	{
 		private readonly Dictionary<IClient, TExtension> instances = new();
 		private readonly object syncRoot = new();
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.ClientExtensions.Abstract.AbstractClientExtensionFactory`1
+		/// </summary>
+		/// <param name="targetClientType">Type of target client</param>
+		/// <exception cref="ArgumentException">If given client type is invalid</exception>
 		protected AbstractClientExtensionFactory(Type targetClientType)
 		{
 			if (targetClientType.IsAssignableTo(typeof(IClient)) == false)
@@ -21,9 +30,11 @@
 		}
 
 
+		/// <inheritdoc/>
 		public Type TargetClientType { get; }
 
 
+		/// <inheritdoc/>
 		public TExtension Create(IClient client, IClientExtensionContext<TExtension> extensionContext)
 		{
 			if (TargetClientType.IsInstanceOfType(client) == false)
@@ -38,6 +49,12 @@
 			}
 		}
 
-		public abstract TExtension CreateInstance(IClient client, IClientExtensionContext<TExtension> extensionContext);
+		/// <summary>
+		/// Creates new instance of extension for given client and context
+		/// </summary>
+		/// <param name="client">Target client of TargetClientType type</param>
+		/// <param name="extensionContext">Extension context</param>
+		/// <returns>New TExtension instance</returns>
+		protected abstract TExtension CreateInstance(IClient client, IClientExtensionContext<TExtension> extensionContext);
 	}
 }
