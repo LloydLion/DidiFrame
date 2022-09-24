@@ -12,7 +12,7 @@
 		/// </summary>
 		/// <param name="input">Input object</param>
 		/// <param name="pipelineContext">Context where middleware executes</param>
-		/// <returns>Ready object or null if pipeline has been dropped or finalized</returns>
+		/// <returns>instance of UserCommandMiddlewareExcutionResult`1</returns>
 		public ValueTask<UserCommandMiddlewareExcutionResult<TOut>> ProcessAsync(TIn input, UserCommandPipelineContext pipelineContext);
 	}
 	
@@ -26,7 +26,7 @@
 		/// </summary>
 		/// <param name="input">Input object</param>
 		/// <param name="pipelineContext">Context where middleware executes</param>
-		/// <returns>Ready object or null if pipeline has been dropped or finalized</returns>
+		/// <returns>instance of UserCommandMiddlewareExcutionResult`1</returns>
 		public ValueTask<UserCommandMiddlewareExcutionResult<object>> ProcessAsync(object input, UserCommandPipelineContext pipelineContext);
 	}
 }

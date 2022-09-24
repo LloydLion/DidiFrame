@@ -127,12 +127,11 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 
 					break;
 				case UserCommandResult.Type.Modal:
-					//TODO: localize
-					var sendModel = new MessageSendModel("Command finished with modal\nPress button to open modal window")
+					var sendModel = new MessageSendModel(localizer["ModalResultMessageContent"])
 					{
 						ComponentsRows = new MessageComponentsRow[]
 						{
-							new(new[] { new MessageButton("open_modal", "Open modal", DidiFrame.Entities.Message.Components.ButtonStyle.Primary) })
+							new(new[] { new MessageButton("open_modal", localizer["OpenModalButtonText"], DidiFrame.Entities.Message.Components.ButtonStyle.Primary) })
 						}
 					};
 

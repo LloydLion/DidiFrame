@@ -13,10 +13,19 @@
 		protected AbstractUserCommandPipelineMiddleware() { }
 
 
+		/// <summary>
+		/// Processes some into other
+		/// </summary>
+		/// <param name="input">Input object</param>
+		/// <param name="pipelineContext">Context where middleware executes</param>
+		/// <returns>instance of UserCommandMiddlewareExcutionResult`1</returns>
 		public abstract UserCommandMiddlewareExcutionResult<TOut> Process(TIn input, UserCommandPipelineContext pipelineContext);
 
+		/// <inheritdoc/>
 		public ValueTask<UserCommandMiddlewareExcutionResult<TOut>> ProcessAsync(TIn input, UserCommandPipelineContext pipelineContext) =>
 			ValueTask.FromResult(Process(input, pipelineContext));
+
+		/// <inheritdoc/>
 		public ValueTask<UserCommandMiddlewareExcutionResult<object>> ProcessAsync(object input, UserCommandPipelineContext pipelineContext) =>
 			ValueTask.FromResult(Process((TIn)input, pipelineContext).UnsafeCast<object>());
 	}

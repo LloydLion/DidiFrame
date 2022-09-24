@@ -72,17 +72,25 @@ namespace DidiFrame.UserCommands.Loader.EmbededCommands.Help
 			}
 		}
 
+		/// <summary>
+		/// Instance creator for DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter
+		/// </summary>
 		public class Creator : IContextSubConverterInstanceCreator
 		{
 			private readonly IUserCommandsReadOnlyRepository repository;
 
 
+			/// <summary>
+			/// Creates new instnace of DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Creator
+			/// </summary>
+			/// <param name="repository">Command repository in read only mode</param>
 			public Creator(IUserCommandsReadOnlyRepository repository)
 			{
 				this.repository = repository;
 			}
 
 
+			/// <inheritdoc/>
 			public IUserCommandContextSubConverter Create() => new CommandConverter(repository);
 		}
 	}

@@ -17,6 +17,9 @@ namespace DidiFrame.Lifetimes
 		private readonly WaitFor waitForClose = new();
 
 
+		/// <summary>
+		/// If lifetime has report message
+		/// </summary>
 		protected bool HasReport => Data.AddititionalData.ContainsKey(ReportField);
 
 
@@ -39,6 +42,7 @@ namespace DidiFrame.Lifetimes
 			return StateMachine.AwaitForState(null);
 		}
 
+		/// <inheritdoc/>
 		protected override StateControlledObjectHolder GetBaseAndControlState()
 		{
 			StateControlledObjectHolder? buffer = null;
@@ -147,8 +151,11 @@ namespace DidiFrame.Lifetimes
 			}
 		}
 
+		/// <inheritdoc/>
 		public override async void Dispose()
 		{
+			GC.SuppressFinalize(this);
+
 			if (HasReport)
 			{
 				try
@@ -172,6 +179,7 @@ namespace DidiFrame.Lifetimes
 		/// Adds automaticly maintaining report message for lifetime. It can be added only one time
 		/// </summary>
 		/// <param name="holder">Holder that was extracted from base object and contains all message info</param>
+		/// <param name="builder">Lifetime's initial data builder to add report</param>
 		/// <exception cref="InvalidOperationException">If called outside ctor (after Run() calling)</exception>
 		protected void AddReport(MessageAliveHolder<TBase> holder, InitialDataBuilder builder)
 		{

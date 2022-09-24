@@ -74,19 +74,49 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		public IServerCultureProvider? CultureProvider { get; private set; }
 
+		/// <summary>
+		/// Client logger
+		/// </summary>
 		public ILogger<DSharpClient> Logger { get; }
 
+		/// <summary>
+		/// Validator for MessageSendModel
+		/// </summary>
 		public IValidator<MessageSendModel>? MessageSendModelValidator { get; }
 
+		/// <summary>
+		/// Validator for ModalModel
+		/// </summary>
 		public IValidator<ModalModel>? ModalValidator { get; private set; }
 
+		/// <summary>
+		/// DSharp client localizer
+		/// </summary>
 		public IStringLocalizer Localizer { get; }
 
+		/// <summary>
+		/// Extension factories for servers
+		/// </summary>
 		public IReadOnlyCollection<IServerExtensionFactory> ServerExtensions { get; }
 
+		/// <summary>
+		/// Connect status of client, current client state
+		/// </summary>
 		public ConnectStatus CurrentConnectStatus { get; private set; } = ConnectStatus.NoConnection;
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Clients.DSharp.DSharpClient
+		/// </summary>
+		/// <param name="options">Options for client</param>
+		/// <param name="factory">Logger factory for DSharpPlus client</param>
+		/// <param name="localizer">Localizer for client</param>
+		/// <param name="clientExtensions">Extension factories for client</param>
+		/// <param name="serverExtensions">Extension factories for server</param>
+		/// <param name="messageSendModelValidator">Optional validator for MessageSendModel</param>
+		/// <param name="modalValidator">Optional validator for ModalModel</param>
+		/// <param name="messagesCacheFactory">Channel messages cache factory</param>
+		/// <exception cref="ArgumentException">If cache options is null and no custom messages cache factory provided</exception>
 		public DSharpClient(IOptions<Options> options,
 			ILoggerFactory factory,
 			IStringLocalizer<DSharpClient> localizer,
@@ -125,6 +155,11 @@ namespace DidiFrame.Clients.DSharp
 		/// <inheritdoc/>
 		IServer IClient.GetServer(ulong id) => GetServer(id);
 		
+		/// <summary>
+		/// Gets server by its id
+		/// </summary>
+		/// <param name="id">If of server to get</param>
+		/// <returns>Target server wrap object</returns>
 		public ServerWrap GetServer(ulong id)
 		{
 			ThrowUnlessConnected();
@@ -191,12 +226,17 @@ namespace DidiFrame.Clients.DSharp
 			CurrentConnectStatus = ConnectStatus.Connected;
 		}
 
+		/// <summary>
+		/// Throws exception if client is not connected
+		/// </summary>
+		/// <exception cref="InvalidOperationException">If client is not connected</exception>
 		public void ThrowUnlessConnected()
 		{
 			if (CurrentConnectStatus != ConnectStatus.Connected)
 				throw new InvalidOperationException("Enable to do this operation if client hasn't connected");
 		}
 
+		/// <inheritdoc/>
 		public TExtension CreateExtension<TExtension>() where TExtension : class
 		{
 			var extensionFactory = (IClientExtensionFactory<TExtension>)clientExtensions.Single(s => s is IClientExtensionFactory<TExtension> factory && factory.TargetClientType.IsInstanceOfType(this));
@@ -291,10 +331,22 @@ namespace DidiFrame.Clients.DSharp
 			}
 		}
 
+		/// <summary>
+		/// Represents client state
+		/// </summary>
 		public enum ConnectStatus
 		{
+			/// <summary>
+			/// New client, no connection to server
+			/// </summary>
 			NoConnection,
+			/// <summary>
+			/// Connected to discord server
+			/// </summary>
 			Connected,
+			/// <summary>
+			/// Session closed, client closed
+			/// </summary>
 			Disconnected,
 		}
 	}

@@ -123,6 +123,11 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			}
 		}
 
+		/// <summary>
+		/// Creates temporal interaction dispatcher for given message
+		/// </summary>
+		/// <param name="message">Unregisted message</param>
+		/// <returns>New temporal interaction dispatcher</returns>
 		public IInteractionDispatcher CreateTemporalDispatcherForUnregistedMessage(DiscordMessage message) =>
 			dispatcherFactory.CreateInstanceInTemporalMode(new Message(message.Id, () => message, (TextChannelBase)GetChannel(message.ChannelId)));
 
@@ -166,6 +171,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		/// <inheritdoc/>
 		public IReadOnlyCollection<IRole> GetRoles() => serverCache.GetFrame<DiscordRole>().GetObjects().Select(s => GetRole(s.Id)).ToArray();
 
+		/// <inheritdoc/>
 		public TExtension CreateExtension<TExtension>() where TExtension : class
 		{
 			var wrap = CreateWrap();
@@ -203,6 +209,10 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			GC.SuppressFinalize(this);
 		}
 
+		/// <summary>
+		/// Creates new wrap for this server
+		/// </summary>
+		/// <returns>New server wrap with this server</returns>
 		public ServerWrap CreateWrap() => new(this);
 
 

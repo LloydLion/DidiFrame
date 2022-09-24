@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DidiFrame.Clients.DSharp.ClientUtils
 {
-	internal class ClientServersHolder : IDisposable
+	internal sealed class ClientServersHolder : IDisposable
 	{
 		public const int ServerListUpdateTimeoutInMinutes = 5;
 		private readonly static EventId ServerListUpdateTaskErrorID = new(10, "ServerListUpdateTaskError");

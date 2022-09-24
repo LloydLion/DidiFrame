@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace TestProject.SubsystemsTests.UserCommands.Loader.Reflection
 {
-	//TODO: Introduce something
 	public class ReflectionUserCommandsLoaderTests
 	{
 		[Test]

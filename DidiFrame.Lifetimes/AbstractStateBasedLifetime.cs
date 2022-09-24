@@ -29,9 +29,15 @@ namespace DidiFrame.Lifetimes
 		}
 
 
+		/// <summary>
+		/// Event that fires state changed
+		/// </summary>
 		protected event StateChangedEventHandler<TState>? StateChanged;
 
 
+		/// <summary>
+		/// Lifetime's state machine
+		/// </summary>
 		protected IStateMachine<TState> StateMachine => Data.Get<IStateMachine<TState>>(StateMachineField);
 		
 
@@ -68,8 +74,13 @@ namespace DidiFrame.Lifetimes
 			StateChanged?.Invoke(stateMahcine, oldState);
 		}
 
+		/// <inheritdoc/>
 		protected sealed override ObjectHolder<TBase> GetBase() => GetBaseAndControlState().AsHolder();
 
+		/// <summary>
+		/// Provides base holder in write mode
+		/// </summary>
+		/// <returns>State controlled object holder with base object</returns>
 		protected virtual StateControlledObjectHolder GetBaseAndControlState()
 		{
 			StateControlledObjectHolder? buffer = null;
@@ -86,7 +97,12 @@ namespace DidiFrame.Lifetimes
 
 			return buffer ?? throw new ImpossibleVariantException();
 		}
-
+		
+		/// <summary>
+		/// Prepares and builds state mahcine
+		/// </summary>
+		/// <param name="initialBase">Initial base in read only mode</param>
+		/// <param name="builder">Initial data builder</param>
 		protected abstract void PrepareStateMachine(TBase initialBase, InitialDataBuilder builder);
 
 		#region SM transit creators
@@ -160,6 +176,9 @@ namespace DidiFrame.Lifetimes
 		#endregion
 
 
+		/// <summary>
+		/// Safe container for state-based lifetime base
+		/// </summary>
 		protected sealed class StateControlledObjectHolder : IDisposable
 		{
 			private readonly ObjectHolder<TBase> holder;
@@ -167,6 +186,11 @@ namespace DidiFrame.Lifetimes
 			private bool isDisposed;
 
 
+			/// <summary>
+			/// Creates new instance of DidiFrame.Lifetimes.AbstractStateBasedLifetime.StateControlledObjectHolder
+			/// </summary>
+			/// <param name="obj">Base object</param>
+			/// <param name="finalizer">Finalization function</param>
 			public StateControlledObjectHolder(TBase obj, Func<StateControlledObjectHolder, StateUpdateResult<TState>?> finalizer)
 			{
 				holder = new ObjectHolder<TBase>(obj, _ =>
@@ -177,9 +201,17 @@ namespace DidiFrame.Lifetimes
 			}
 
 
+			/// <summary>
+			/// Wrapped object
+			/// </summary>
 			public TBase Object => holder.Object;
 
 
+			/// <summary>
+			/// Gets state update result or null when holder is closed
+			/// </summary>
+			/// <returns>State update result struct or null</returns>
+			/// <exception cref="InvalidOperationException">If holder is not closed</exception>
 			public StateUpdateResult<TState>? GetUpdateResult()
 			{
 				if (isDisposed == false)
@@ -188,8 +220,13 @@ namespace DidiFrame.Lifetimes
 				return updateResult;
 			}
 
+			/// <summary>
+			/// Casts StateControlledObjectHolder to object holder
+			/// </summary>
+			/// <returns>In classic object holder representation</returns>
 			public ObjectHolder<TBase> AsHolder() => holder;
 
+			/// <inheritdoc/>
 			public void Dispose() => holder.Dispose();
 		}
 	}

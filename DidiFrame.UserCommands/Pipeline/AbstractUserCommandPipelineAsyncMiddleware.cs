@@ -13,8 +13,10 @@
 		protected AbstractUserCommandPipelineAsyncMiddleware() { }
 
 
+		/// <inheritdoc/>
 		public abstract ValueTask<UserCommandMiddlewareExcutionResult<TOut>> ProcessAsync(TIn input, UserCommandPipelineContext pipelineContext);
 
+		/// <inheritdoc/>
 		public async ValueTask<UserCommandMiddlewareExcutionResult<object>> ProcessAsync(object input, UserCommandPipelineContext pipelineContext) =>
 			(await ProcessAsync((TIn)input, pipelineContext)).UnsafeCast<object>();
 	}
