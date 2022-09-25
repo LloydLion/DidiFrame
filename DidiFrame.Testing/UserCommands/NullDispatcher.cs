@@ -51,7 +51,7 @@ namespace DidiFrame.Testing.UserCommands
 			}
 		}
 
-		private class State
+		private sealed class State
 		{
 			public List<UserCommandResult> Responces { get; } = new();
 		}

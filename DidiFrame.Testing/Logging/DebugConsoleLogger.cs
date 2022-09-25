@@ -2,14 +2,25 @@
 
 namespace DidiFrame.Testing.Logging
 {
+	/// <summary>
+	/// Test ILogger`1 implmentation
+	/// </summary>
+	/// <typeparam name="TType">Target logging type</typeparam>
 	public class DebugConsoleLogger<TType> : DebugConsoleLogger, ILogger<TType>
 	{
+		/// <summary>
+		/// Creates new instance of DidiFrame.Testing.Logging.DebugConsoleLogger`1
+		/// </summary>
+		/// <param name="minLevel">Min logging level</param>
 		public DebugConsoleLogger(LogLevel minLevel = LogLevel.None) : base(typeof(TType).FullName ?? "NONAME", minLevel)
 		{
 
 		}
 	}
 
+	/// <summary>
+	/// Test ILogger implmentation
+	/// </summary>
 	public class DebugConsoleLogger : ILogger
 	{
 		private readonly string categoryName;
@@ -17,6 +28,11 @@ namespace DidiFrame.Testing.Logging
 		private readonly Stack<object?> scopes = new();
 
 
+		/// <summary>
+		/// Creates new instance of DidiFrame.Testing.Logging.DebugConsoleLogger
+		/// </summary>
+		/// <param name="categoryName">Name of category</param>
+		/// <param name="minLevel">Min logging level</param>
 		protected DebugConsoleLogger(string categoryName, LogLevel minLevel)
 		{
 			this.categoryName = categoryName;
@@ -24,16 +40,19 @@ namespace DidiFrame.Testing.Logging
 		}
 
 
+		/// <inheritdoc/>
 		public IDisposable BeginScope<TState>(TState state)
 		{
 			return new ScopeHandler(this, state);
 		}
 
+		/// <inheritdoc/>
 		public bool IsEnabled(LogLevel logLevel)
 		{
 			return minLevel <= logLevel;
 		}
 
+		/// <inheritdoc/>
 		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 		{
 			var text = formatter(state, exception);

@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Testing.Client
 {
+	/// <summary>
+	/// Test IChannelCategory implementation
+	/// </summary>
 	public class ChannelCategory : IChannelCategory, IServerDeletable
 	{
 		private readonly string? name;
@@ -19,21 +22,33 @@ namespace DidiFrame.Testing.Client
 		}
 
 
+		/// <inheritdoc/>
 		public string? Name => GetIfExist(name);
 
+		/// <inheritdoc/>
 		public ulong? Id { get; }
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IChannel> Channels => (IReadOnlyCollection<IChannel>)GetIfExist(baseChannels);
 
+		/// <summary>
+		/// Colleciton of base channel that associated with this category
+		/// </summary>
 		public IReadOnlyCollection<Channel> BaseChannels => (IReadOnlyCollection<Channel>)GetIfExist(baseChannels);
 
+		/// <inheritdoc/>
 		public IServer Server => BaseServer;
 
+		/// <summary>
+		/// Base server that contains it
+		/// </summary>
 		public Server BaseServer { get; }
 
+		/// <inheritdoc/>
 		public bool IsExist { get; private set; } = true;
 
 
+		/// <inheritdoc/>
 		public Task<IChannel> CreateChannelAsync(ChannelCreationModel creationModel)
 		{
 			var channel = GetIfExist(BaseServer).AddChannel(this, creationModel);
@@ -41,12 +56,16 @@ namespace DidiFrame.Testing.Client
 			return Task.FromResult((IChannel)channel);
 		}
 
+		/// <inheritdoc/>
 		public bool Equals(IServerEntity? other) => other is IChannelCategory cat && Equals(cat);
 
+		/// <inheritdoc/>
 		public bool Equals(IChannelCategory? other) => other is ChannelCategory cat && cat.Id == Id;
 
+		/// <inheritdoc/>
 		public override bool Equals(object? obj) => Equals(obj as IChannelCategory);
 
+		/// <inheritdoc/>
 		public override int GetHashCode() => Id.GetHashCode();
 
 		void IServerDeletable.DeleteInternal()

@@ -2,6 +2,9 @@
 
 namespace DidiFrame.Testing.Client
 {
+	/// <summary>
+	/// Test ITextThread implementation
+	/// </summary>
 	public class TextThread : TextChannelBase, ITextThread
 	{
 		private readonly TextChannel channel;
@@ -13,8 +16,12 @@ namespace DidiFrame.Testing.Client
 		}
 
 
+		/// <inheritdoc/>
 		public ITextChannel Parent => GetIfExist(channel);
 
+		/// <summary>
+		/// Base parent channel
+		/// </summary>
 		public TextChannel BaseParent => GetIfExist(channel);
 	}
 }

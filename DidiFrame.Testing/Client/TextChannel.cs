@@ -2,6 +2,9 @@
 
 namespace DidiFrame.Testing.Client
 {
+	/// <summary>
+	/// Test ITextChannel implementation
+	/// </summary>
 	public class TextChannel : TextChannelBase, ITextChannel
 	{
 		private readonly List<TextThread> threads = new();
@@ -13,6 +16,7 @@ namespace DidiFrame.Testing.Client
 		}
 
 
+		/// <inheritdoc/>
 		public IReadOnlyCollection<ITextThread> GetThreads() => GetIfExist(threads);
 
 		internal void AddThreadInternal(TextThread thread) => GetIfExist(threads).Add(thread);
