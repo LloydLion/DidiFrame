@@ -16,6 +16,7 @@ using DSharpPlus.EventArgs;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
+using DidiFrame.Culture;
 
 namespace DidiFrame.Clients.DSharp.ApplicationCommands
 {
@@ -71,16 +72,19 @@ namespace DidiFrame.Clients.DSharp.ApplicationCommands
 
 		private async Task BaseClient_InteractionCreated(DiscordClient sender, InteractionCreateEventArgs e)
 		{
+			var server = client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
+
+			if (client.CultureProvider is not null)
+				client.CultureProvider.SetupCulture(server);
+
 			if (e.Interaction.Type == InteractionType.ApplicationCommand)
 			{
-				var server = client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
 				var result = await behaviorModel.ProcessInteraction(convertedCommands, e.Interaction, server);
 				if (result is null) return;
 				else callback?.Invoke(this, result, new(result.SendData.Invoker, result.SendData.Channel), new StateObject(e.Interaction));
 			}
 			else if (e.Interaction.Type == InteractionType.AutoComplete)
 			{
-				var server = client.GetServer(e.Interaction.GuildId ?? throw new ImpossibleVariantException());
 				await behaviorModel.ProcessAutoComplite(convertedCommands, e.Interaction, server);
 			}
 		}

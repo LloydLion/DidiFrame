@@ -1,4 +1,5 @@
-﻿using DidiFrame.Modals;
+﻿using DidiFrame.Culture;
+using DidiFrame.Modals;
 using DidiFrame.Modals.Components;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -32,6 +33,9 @@ namespace DidiFrame.Clients.DSharp
 
 		private Task OnComponentInteractionCreated(DiscordClient sender, ComponentInteractionCreateEventArgs e)
 		{
+			if (client.CultureProvider is not null)
+				client.CultureProvider.SetupCulture(client.GetServer(e.Guild.Id));
+
 			var runningModal = runningModals.Values.Where(s => s.HasRetryData).SingleOrDefault(s => s.RetryData.Message.Id == e.Message.Id);
 
 			if (runningModal is null) return Task.CompletedTask;
@@ -54,6 +58,9 @@ namespace DidiFrame.Clients.DSharp
 
 		private async Task OnModalSubmitted(DiscordClient sender, ModalSubmitEventArgs e)
 		{
+			if (client.CultureProvider is not null)
+				client.CultureProvider.SetupCulture(client.GetServer(e.Interaction.Guild.Id));
+
 			ClearClosed();
 
 			var targetId = e.Interaction.Data.CustomId;
