@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.DiscordServer
 {
@@ -75,7 +76,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		{
 			lock (syncRoot)
 			{
-				return HasChannel(id) && Enum.IsDefined(channels[id].Type) && (channels[id].IsThread == false || Enum.IsDefined(channels[id].Parent.Type))
+				return HasChannel(id) && CheckChannelType(channels[id].Type) && (channels[id].IsThread == false || CheckChannelType(channels[id].Parent.Type))
 					? ConstructChannel(channels[id]) : new NullChannel(id);
 			}
 		}
@@ -85,7 +86,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			lock (syncRoot)
 			{
 				return channels.Values
-					.Where(s => Enum.IsDefined(s.Type))
+					.Where(s => CheckChannelType(s.Type))
 					.Where(s => s is DiscordThreadChannel thread && thread.ParentId == channelId)
 					.Cast<DiscordThreadChannel>()
 					.ToArray();
@@ -97,7 +98,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			lock (syncRoot)
 			{
 				return channels.Values
-					.Where(s => Enum.IsDefined(s.Type))
+					.Where(s => CheckChannelType(s.Type))
 					.Where(s => s is DiscordThreadChannel thread && thread.ParentId == channelId)
 					.Select(s => (TextThread)ConstructChannel(s))
 					.ToArray();
@@ -109,7 +110,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			lock (syncRoot)
 			{
 				return channels.Values
-					.Where(s => Enum.IsDefined(s.Type))
+					.Where(s => CheckChannelType(s.Type))
 					.Where(s => s is DiscordThreadChannel thread)
 					.Cast<DiscordThreadChannel>()
 					.ToArray();
@@ -131,7 +132,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		{
 			lock (syncRoot)
 			{
-				var actualChannels = channels.Values.Where(s => Enum.IsDefined(s.Type));
+				var actualChannels = channels.Values.Where(s => CheckChannelType(s.Type));
 				if (categoriesFilter is null) return actualChannels.ToArray();
 				else return actualChannels.Where(s => s.IsCategory == categoriesFilter).ToArray();
 			}
@@ -185,7 +186,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 		{
 			foreach (var item in channels)
 			{
-				if (Enum.IsDefined(item.Value.Type) && item.Key == id)
+				if (CheckChannelType(item.Value.Type) && item.Key == id)
 					return filter(item.Value, asCategory);
 			}
 
@@ -207,7 +208,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 				if (discordChannel.IsThread)
 				{
-					var parent = (TextChannel)GetChannel(discordChannel.Parent.Id);
+					var parent = (ITextThreadContainerChannel)GetChannel(discordChannel.Parent.Id);
 					var source = new ObjectSourceDelegate<DiscordThreadChannel>(() => (DiscordThreadChannel?)GetChannelDirect(id, asCategory: false));
 					var category = new ObjectSourceDelegate<ChannelCategory>(() =>
 					{
@@ -220,6 +221,11 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				}
 				else return Channel.Construct(id, discordChannel.Type.GetAbstract(), GetChannelSource(id, false), server.CreateWrap());
 			}
+		}
+
+		private static bool CheckChannelType(ChannelType type)
+		{
+			return Enum.IsDefined(type) || (int)type == 15 /*Forum channel*/;
 		}
 	}
 }

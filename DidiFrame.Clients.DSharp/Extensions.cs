@@ -46,6 +46,7 @@ namespace DidiFrame.Clients.DSharp
 			{
 				DChannelType.Text or DChannelType.Group or DChannelType.News or DChannelType.Private => AbsChannelType.TextCompatible,
 				DChannelType.Voice => AbsChannelType.Voice,
+				(DChannelType)15 => AbsChannelType.Forum,
 				_ => null
 			};
 		}

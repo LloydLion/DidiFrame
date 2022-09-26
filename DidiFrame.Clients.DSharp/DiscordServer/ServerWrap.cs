@@ -143,6 +143,8 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 		internal IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel) => GetServer().GetThreadsFor(channel);
 
+		internal IReadOnlyCollection<ITextThread> GetThreadsFor(ForumChannel channel) => GetServer().GetThreadsFor(channel);
+
 		internal IInteractionDispatcher GetInteractionDispatcherFor(Message message) => GetServer().GetInteractionDispatcherFor(message);
 
 		internal void ResetInteractionDispatcherFor(ulong messageId, DiscordChannel channel) => GetServer().ResetInteractionDispatcherFor(messageId, channel);

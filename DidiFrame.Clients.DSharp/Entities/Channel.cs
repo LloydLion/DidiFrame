@@ -95,6 +95,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 			{
 				ChannelType.TextCompatible => new TextChannel(id, channel, server),
 				ChannelType.Voice => new VoiceChannel(id, channel, server),
+				ChannelType.Forum => new ForumChannel(id, channel, server),
 				_ => new Channel(id, channel, server)
 			};
 		}

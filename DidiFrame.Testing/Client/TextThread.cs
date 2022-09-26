@@ -7,21 +7,27 @@ namespace DidiFrame.Testing.Client
 	/// </summary>
 	public class TextThread : TextChannelBase, ITextThread
 	{
-		private readonly TextChannel channel;
+		private readonly ITextThreadContainerChannel parentChannel;
+		private readonly ThreadsContainer parentContainer;
 
 
-		internal TextThread(string name, TextChannel channel) : base(name, channel.BaseCategory)
+		internal TextThread(string name, ITextThreadContainerChannel parentChannel, ThreadsContainer parentContainer) : base(name, (ChannelCategory)parentChannel.Category)
 		{
-			this.channel = channel;
+			this.parentChannel = parentChannel;
+			this.parentContainer = parentContainer;
 		}
+
+		internal TextThread(string name, TextChannel parentChannel) : this(name, parentChannel, parentChannel.Threads) { }
+
+		internal TextThread(string name, ForumChannel parentChannel) : this(name, parentChannel, parentChannel.Threads) { }
 
 
 		/// <inheritdoc/>
-		public ITextChannel Parent => GetIfExist(channel);
+		public ITextThreadContainerChannel Parent => GetIfExist(parentChannel);
 
 		/// <summary>
-		/// Base parent channel
+		/// Base parent container
 		/// </summary>
-		public TextChannel BaseParent => GetIfExist(channel);
+		public ThreadsContainer BaseContainer => GetIfExist(parentContainer);
 	}
 }

@@ -8,6 +8,6 @@
 		/// <summary>
 		/// Parent channel
 		/// </summary>
-		public ITextChannel Parent { get; }
+		public ITextThreadContainerChannel Parent { get; }
 	}
 }

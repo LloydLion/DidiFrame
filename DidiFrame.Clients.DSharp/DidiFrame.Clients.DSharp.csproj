@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01168" />
+    <PackageReference Include="DSharpPlus" Version="4.3.0-nightly-01171" />
 	  
     <PackageReference Include="SonarAnalyzer.CSharp" Version="8.43.0.51858">
       <PrivateAssets>all</PrivateAssets>

@@ -176,8 +176,8 @@ namespace DidiFrame.Testing.Client
 		{
 			ThrowIfClosed();
 
-			var thread = new TextThread(threadName, textChannel);
-			textChannel.AddThreadInternal(thread);
+			var thread = new TextThread(threadName, textChannel, textChannel.Threads);
+			textChannel.Threads.AddThreadInternal(thread);
 
 			try { ChannelCreated?.Invoke(thread, false); }
 			catch (Exception) { /*No logging*/ }
@@ -242,7 +242,7 @@ namespace DidiFrame.Testing.Client
 			ThrowIfClosed();
 
 			if (channel is TextThread thread)
-				thread.BaseParent.DeleteThreadInternal(thread);
+				thread.BaseContainer.DeleteThreadInternal(thread);
 			else channel.BaseCategory.DeleteChannel(channel);
 
 			DeleteObject(channel);

@@ -16,13 +16,13 @@ namespace DidiFrame.Clients.DSharp.Entities
 		/// <param name="channel">Base DiscordChannel from DSharp source</param>
 		/// <param name="server">Owner server object wrap</param>
 		/// <param name="targetCategoryGetter">Custom category source</param>
-		public TextThread(ulong id, TextChannel parent, ObjectSourceDelegate<DiscordThreadChannel> channel, ServerWrap server, ObjectSourceDelegate<ChannelCategory> targetCategoryGetter) : base(id, channel, server, targetCategoryGetter)
+		public TextThread(ulong id, ITextThreadContainerChannel parent, ObjectSourceDelegate<DiscordThreadChannel> channel, ServerWrap server, ObjectSourceDelegate<ChannelCategory> targetCategoryGetter) : base(id, channel, server, targetCategoryGetter)
 		{
 			Parent = parent;
 		}
 
 
 		/// <inheritdoc/>
-		public ITextChannel Parent { get; }
+		public ITextThreadContainerChannel Parent { get; }
 	}
 }

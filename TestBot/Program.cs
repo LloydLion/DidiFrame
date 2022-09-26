@@ -64,6 +64,7 @@ appBuilder.AddServices((services, config) =>
 var application = appBuilder.Build();
 
 #if !DEBUG
+if (args.Contains("--no-logo") == false)
 	printLogoAnimation(application.Services.GetRequiredService<Colorify.Format>()).Wait();
 #endif
 

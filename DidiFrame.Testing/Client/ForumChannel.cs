@@ -3,14 +3,14 @@
 namespace DidiFrame.Testing.Client
 {
 	/// <summary>
-	/// Test ITextChannel implementation
+	/// Test IForumChannel implementation
 	/// </summary>
-	public class TextChannel : TextChannelBase, ITextChannel
+	public class ForumChannel : Channel, IForumChannel
 	{
 		private readonly ThreadsContainer threads = new();
 
 
-		internal TextChannel(string name, ChannelCategory category) : base(name, category)
+		internal ForumChannel(string name, ChannelCategory category) : base(name, category)
 		{
 
 		}

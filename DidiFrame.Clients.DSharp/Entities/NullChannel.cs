@@ -24,7 +24,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		public IReadOnlyCollection<IMember> ConnectedMembers => throw new ObjectDoesNotExistException(nameof(ConnectedMembers));
 
-		public ITextChannel Parent => throw new ObjectDoesNotExistException(nameof(Parent));
+		public ITextThreadContainerChannel Parent => throw new ObjectDoesNotExistException(nameof(Parent));
 
 
 		public event MessageSentEventHandler? MessageSent

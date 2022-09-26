@@ -94,8 +94,18 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 				{
 					server.SourceClient.CultureProvider?.SetupCulture(server.CreateWrap());
 
-					logger.Log(LogLevel.Trace, ServerObjectCreatedID, "{EnityName} was created ({ModifyStatus}) in {ServerId}",
-						typeof(TEntity).Name, isModified ? "Modified" : "Created", server.Id);
+					var idProp = typeof(TEntity).GetProperty("Id");
+
+					if (idProp is null)
+					{
+						logger.Log(LogLevel.Trace, ServerObjectCreatedID, "{EnityName} was created ({ModifyStatus}) in {ServerId}",
+							typeof(TEntity).Name, isModified ? "Modified" : "Created", server.Id);
+					}
+					else
+					{
+						logger.Log(LogLevel.Trace, ServerObjectCreatedID, "{EnityName} with id {Id} was created ({ModifyStatus}) in {ServerId}",
+							typeof(TEntity).Name, idProp.GetValue(entity), isModified ? "Modified" : "Created", server.Id);
+					}
 
 					foreach (var handler in createdHandlers)
 					{

@@ -143,6 +143,8 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 		internal IReadOnlyCollection<ITextThread> GetThreadsFor(TextChannel channel) => channels.GetThreadsFor(channel.Id);
 
+		internal IReadOnlyCollection<ITextThread> GetThreadsFor(ForumChannel channel) => channels.GetThreadsFor(channel.Id);
+
 		internal IInteractionDispatcher GetInteractionDispatcherFor(Message message) => dispatcherFactory.CreateInstance(message);
 
 		internal void ResetInteractionDispatcherFor(ulong messageId, DiscordChannel channel) => dispatcherFactory.ResetInstance(messageId, channel);
@@ -530,10 +532,10 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 				lock (channels.SyncRoot)
 				{
-					var newData = this.guild.GetChannelsAsync().Result;
+					var newData = guild.GetChannelsAsync().Result;
 
 					var archivedThreads = newData.SelectMany(s => s.ListPublicArchivedThreadsAsync().Result.Threads.Concat(s.ListPrivateArchivedThreadsAsync().Result.Threads));
-					var activeThreads = this.guild.ListActiveThreadsAsync().Result.Threads;
+					var activeThreads = guild.ListActiveThreadsAsync().Result.Threads;
 					var from = newData.Concat(options.ThreadCache == Options.ThreadCacheBehavior.CacheAll ? activeThreads.Concat(archivedThreads) : activeThreads).ToDictionary(s => s.Id);
 
 					var difference = new CollectionDifference<DiscordChannel, DiscordChannel, ulong>(from.Values.ToArray(), channels.GetRawChannels(categoriesFilter: null), s => s.Id, s => s.Id);

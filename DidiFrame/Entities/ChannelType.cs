@@ -10,6 +10,10 @@
 		/// </summary>
 		TextCompatible,
 		/// <summary>
+		/// Discord's forum channel
+		/// </summary>
+		Forum,
+		/// <summary>
 		/// Discord's voice channel
 		/// </summary>
 		Voice

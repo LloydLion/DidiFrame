@@ -33,6 +33,14 @@
 		public static IVoiceChannel AsVoice(this IChannel channel) => (IVoiceChannel)channel;
 
 		/// <summary>
+		/// Tries cast IChannel object to IForumChannel. Can throw exception if fail
+		/// </summary>
+		/// <param name="channel">Uncasted IForumChannel</param>
+		/// <returns>Casted IForumChannel</returns>
+		/// <exception cref="InvalidCastException">If channel can't be casted to IForumChannel</exception>
+		public static IForumChannel AsForum(this IChannel channel) => (IForumChannel)channel;
+
+		/// <summary>
 		/// Gets channel type
 		/// </summary>
 		/// <param name="channel">Target channel</param>
@@ -43,6 +51,7 @@
 			{
 				ITextChannel => ChannelType.TextCompatible,
 				IVoiceChannel => ChannelType.Voice,
+				IForumChannel => ChannelType.Forum,
 				_ => null,
 			};
 		}
