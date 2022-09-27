@@ -5,7 +5,6 @@ namespace DidiFrame.Exceptions
 	/// <summary>
 	/// Plug exception that indicates impossible situation. It is useful in nullable context
 	/// </summary>
-	[SuppressMessage("Major Code Smell", "S3925")]
 	public sealed class ImpossibleVariantException : Exception
 	{
 		/// <summary>

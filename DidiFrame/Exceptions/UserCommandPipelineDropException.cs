@@ -5,7 +5,6 @@ namespace DidiFrame.Exceptions
 	/// <summary>
 	/// Exception that dropes pipeline
 	/// </summary>
-	[SuppressMessage("Major Code Smell", "S3925")]
 	public class UserCommandPipelineDropException : Exception
 	{
 		/// <summary>

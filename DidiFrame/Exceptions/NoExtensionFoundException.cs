@@ -5,7 +5,6 @@ namespace DidiFrame.Exceptions
 	/// <summary>
 	/// Exception that will be thrown when extension for client or server hasn't been found
 	/// </summary>
-	[SuppressMessage("Major Code Smell", "S3925")]
 	public class NoExtensionFoundException : Exception
 	{
 		/// <summary>

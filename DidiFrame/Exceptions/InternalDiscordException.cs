@@ -5,7 +5,6 @@ namespace DidiFrame.Exceptions
 	/// <summary>
 	/// Exception that will be thrown when discord server gives unexcepted error
 	/// </summary>
-	[SuppressMessage("Major Code Smell", "S3925")]
 	public class InternalDiscordException : Exception
 	{
 		/// <summary>

@@ -217,7 +217,7 @@ namespace DidiFrame.Data.Mongo
 							}
 							catch (Exception ex)
 							{
-								logger.Log(LogLevel.Error, FailedToSaveDocumentID, ex, "Enable to delete state/settings from MongoDb for server {ServerId}", dt.Collection);
+								logger.Log(LogLevel.Error, FailedToDeleteCollectionID, ex, "Enable to delete state/settings from MongoDb for server {ServerId}", dt.Collection);
 							}
 						}
 						else

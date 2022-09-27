@@ -21,7 +21,6 @@ namespace DidiFrame.UserCommands.PreProcessing
 		/// Creates new instance of DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter
 		/// </summary>
 		/// <param name="preCtxValidator">Validator for DidiFrame.UserCommands.Models.UserCommandPreContext</param>
-		/// <param name="services">Services that will be provided to sub converters</param>
 		/// <param name="subConverters">Sub converters that converts raw arguments to ready-to-use</param>
 		/// <param name="localizer">Localizer that will be used for print error messages</param>
 		public DefaultUserCommandContextConverter(
@@ -102,7 +101,8 @@ namespace DidiFrame.UserCommands.PreProcessing
 		}
 
 
-		[SuppressMessage("Critical Code Smell", "S3871")] //It is only internal exception, it is never be trown into outside context
+		//It is only internal exception, it is never be trown into outside context
+#pragma warning disable S3871
 		private sealed class ConvertationException : Exception
 		{
 			public UserCommandResult Result { get; }
@@ -113,5 +113,6 @@ namespace DidiFrame.UserCommands.PreProcessing
 				Result = result;
 			}
 		}
+#pragma warning restore S3871
 	}
 }

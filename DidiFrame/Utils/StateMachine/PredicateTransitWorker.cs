@@ -15,8 +15,6 @@ namespace DidiFrame.Utils.StateMachine
 		/// <summary>
 		/// Creates new instance of DidiFrame.Utils.StateMachine.PredicateTransitWorker`1 using predicate
 		/// </summary>
-		/// <param name="activation">Activation state (from)</param>
-		/// <param name="destination">Destonation state (to)</param>
 		/// <param name="predicate">Predicate that will determine transit behavior</param>
 		public PredicateTransitWorker(Func<bool> predicate)
 		{

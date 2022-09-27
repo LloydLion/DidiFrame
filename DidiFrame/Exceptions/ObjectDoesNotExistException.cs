@@ -5,7 +5,6 @@ namespace DidiFrame.Exceptions
 	/// <summary>
 	/// Exception that will be thrown if you tried access to some object that doesn't exist
 	/// </summary>
-	[SuppressMessage("Major Code Smell", "S3925")]
 	public class ObjectDoesNotExistException : Exception
 	{
 		/// <summary>

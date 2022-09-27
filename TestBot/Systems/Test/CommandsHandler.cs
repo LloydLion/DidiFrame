@@ -30,7 +30,6 @@ namespace TestBot.Systems.Test
 		}
 
 		[Command("shello")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult SimpleHello(UserCommandContext _)
 		{
 			return UserCommandResult.CreateWithModal(UserCommandCode.Sucssesful, new Modal());
@@ -43,14 +42,12 @@ namespace TestBot.Systems.Test
 		}
 
 		[Command("printname")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult PrintChannelName(UserCommandContext ctx)
 		{
 			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Welcome to the " + ctx.SendData.Channel.Name));
 		}
 
 		[Command("get reactions")]
-		[SuppressMessage("Performance", "CA1822")]
 		public async Task<UserCommandResult> GetReactions(UserCommandContext ctx)
 		{
 			var msg = await ctx.SendData.Channel.SendMessageAsync(new MessageSendModel("Set 🍎 here!"));
@@ -60,7 +57,6 @@ namespace TestBot.Systems.Test
 		}
 
 		[Command("get msg")]
-		[SuppressMessage("Performance", "CA1822")]
 		public async Task<UserCommandResult> GetMessage(UserCommandContext ctx, string ulongId)
 		{
 			var id = ulong.Parse(ulongId);
@@ -71,28 +67,24 @@ namespace TestBot.Systems.Test
 		}
 
 		[Command("reply date")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult ReplyDate(UserCommandContext _, DateTime date)
 		{
 			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You entered: {date.Ticks} - {date:D}"));
 		}
 
 		[Command("reply time")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult ReplyTime(UserCommandContext _, TimeSpan time)
 		{
 			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You entered: {time.Ticks} - {time.TotalSeconds}"));
 		}
 
 		[Command("modal")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult ShowModal(UserCommandContext _)
 		{
 			return UserCommandResult.CreateWithModal(UserCommandCode.Sucssesful, new Modal());
 		}
 
 		[Command("button")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult RespondWithModal(UserCommandContext _)
 		{
 			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Button message")
@@ -122,7 +114,6 @@ namespace TestBot.Systems.Test
 		}
 
 		[Command("post last")]
-		[SuppressMessage("Performance", "CA1822")]
 		public async Task<UserCommandResult> PostLastMessage(UserCommandContext ctx)
 		{
 			if (ctx.SendData.Channel is ITextChannel textChannel && textChannel.CheckIfIsNewsChannel())

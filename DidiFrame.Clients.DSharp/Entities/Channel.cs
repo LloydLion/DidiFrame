@@ -10,7 +10,6 @@ namespace DidiFrame.Clients.DSharp.Entities
 	/// <summary>
 	/// DSharp implementation of DidiFrame.Interfaces.IChannel
 	/// </summary>
-	[SuppressMessage("Major Code Smell", "S4035")]
 	public class Channel : IChannel
 	{
 		private readonly ObjectSourceDelegate<DiscordChannel> channel;

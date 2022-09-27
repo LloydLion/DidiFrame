@@ -2,7 +2,6 @@
 using DidiFrame.UserCommands.Models;
 using DidiFrame.UserCommands.Pipeline;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace TestProject.SubsystemsTests.UserCommands.Pipeline
 {
@@ -81,7 +80,6 @@ namespace TestProject.SubsystemsTests.UserCommands.Pipeline
 		}
 
 
-		[SuppressMessage("Major Code Smell", "S3881")]
 		protected abstract class UserCommandPipelineDispatcherTrigger : IDisposable
 		{
 			public abstract IUserCommandPipelineDispatcher<TOut> CreateDispatcher();

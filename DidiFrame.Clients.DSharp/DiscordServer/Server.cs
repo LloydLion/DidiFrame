@@ -296,7 +296,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			return server;
 		}
 
-		[SuppressMessage("Major Code Smell", "S1172")]
+#pragma warning disable S1172
 		private Task OnThreadUpdatedForCacheActiveMode(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
@@ -308,13 +308,13 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 			return Task.CompletedTask;
 		}
 
-		[SuppressMessage("Major Code Smell", "S1172")]
 		private Task OnThreadUpdatedForCacheAllMode(DiscordClient sender, ThreadUpdateEventArgs e)
 		{
 			if (e.Guild != guild) return Task.CompletedTask;
 			channels.UpdateChannel(e.ThreadAfter);
 			return Task.CompletedTask;
 		}
+#pragma warning restore S1172
 
 		private Task OnChannelUpdated(DiscordClient sender, ChannelUpdateEventArgs e)
 		{

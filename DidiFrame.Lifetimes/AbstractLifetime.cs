@@ -7,7 +7,6 @@ namespace DidiFrame.Lifetimes
 	/// Represents base lifetime class with initial data 
 	/// </summary>
 	/// <typeparam name="TBase">Type of lifetime base</typeparam>
-	[SuppressMessage("Major Code Smell", "S3881")]
 	public abstract class AbstractLifetime<TBase> : ILifetime<TBase> where TBase : class, ILifetimeBase
 	{
 		/// <summary>

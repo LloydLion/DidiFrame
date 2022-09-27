@@ -18,8 +18,6 @@ namespace DidiFrame.Utils.StateMachine
 		/// <summary>
 		/// Creates new instance of DidiFrame.Utils.StateMachine.TaskTransitWorker`1 using task factory
 		/// </summary>
-		/// <param name="activation">Activation state (from)</param>
-		/// <param name="destination">Destonation state (to)</param>
 		/// <param name="taskFactory">Factory that will produce tasks for transit</param>
 		public TaskTransitWorker(Func<CancellationToken, Task> taskFactory)
 		{

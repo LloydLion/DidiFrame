@@ -94,7 +94,7 @@ namespace DidiFrame.Application
 
 			await Task.WhenAll(services.GetRequiredService<IServersStatesRepositoryFactory>().PreloadDataAsync(),
 				services.GetRequiredService<IServersSettingsRepositoryFactory>().PreloadDataAsync());
-			logger.Log(LogLevel.Debug, DataPreloadCompliteID, "Servers data preloaded (states and settings)");
+			logger.Log(LogLevel.Information, DataPreloadCompliteID, "Servers data preloaded (states and settings)");
 
 
 			client.SetupCultureProvider(services.GetService<IServerCultureProvider>());
@@ -104,9 +104,9 @@ namespace DidiFrame.Application
 			if (se is not null)
 			{
 				se.InvokeStartup();
-				logger.Log(LogLevel.Debug, StartEventFiredID, "Startup event fired and finished with sucsess");
+				logger.Log(LogLevel.Information, StartEventFiredID, "Startup event fired and finished with sucsess");
 			}
-			else logger.Log(LogLevel.Debug, StartEventSkippedID, "Startup event skipped because hasn't been added");
+			else logger.Log(LogLevel.Information, StartEventSkippedID, "Startup event skipped because hasn't been added");
 
 
 			var registries = services.GetServices<ILifetimesLoader>();
@@ -116,7 +116,7 @@ namespace DidiFrame.Application
 					culture.SetupCulture(server);
 					registry.RestoreLifetimes(server);
 				}
-			logger.Log(LogLevel.Debug, LifetimeRegistrationDoneID, "Every lifetime loaded and started");
+			logger.Log(LogLevel.Information, LifetimeRegistrationDoneID, "Every lifetime loaded and started");
 
 
 			var pipelineBuilder = services.GetRequiredService<IUserCommandPipelineBuilder>();
@@ -141,11 +141,11 @@ namespace DidiFrame.Application
 					}
 					catch (Exception iex)
 					{
-						logger.Log(LogLevel.Warning, ErrorMessageSendErrorID, iex, "Enable to send error message!");
+						logger.Log(LogLevel.Warning, ErrorMessageSendErrorID, iex, "Enable to send or delete error message!");
 					}
 				}
 			});
-			logger.Log(LogLevel.Debug, UserCommandsPipelineDoneID, "UserCommandPipeline created and event handler for executor registrated");
+			logger.Log(LogLevel.Information, UserCommandsPipelineDoneID, "UserCommandPipeline created and event handler for executor registrated");
 
 			phase = ApplicationPhase.Ready;
 		}
