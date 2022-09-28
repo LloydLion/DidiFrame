@@ -9,7 +9,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 	{
 		private static readonly EventId EventHandlerErrorID = new(55, "EventHandlerError");
 		private static readonly EventId ServerObjectCreatedID = new(23, "ServerObjectCreated");
-		private static readonly EventId ServerObjectDeletedID = new(24, "ServerObjectCreated");
+		private static readonly EventId ServerObjectDeletedID = new(24, "ServerObjectDeleted");
 
 
 		private readonly ConcurrentDictionary<Type, Registry> registries = new();

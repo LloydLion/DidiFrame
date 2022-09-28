@@ -206,7 +206,11 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 			cts.Cancel();
 
-			globalCacheUpdateTask.Wait();
+			try
+			{
+				globalCacheUpdateTask.Wait();
+			}
+			catch (Exception) { }
 
 			GC.SuppressFinalize(this);
 		}

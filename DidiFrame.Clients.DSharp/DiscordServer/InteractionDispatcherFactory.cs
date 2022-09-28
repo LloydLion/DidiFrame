@@ -194,6 +194,7 @@ namespace DidiFrame.Clients.DSharp.DiscordServer
 
 		public void Dispose()
 		{
+			server.SourceClient.BaseClient.ComponentInteractionCreated -= InteractionCreated;
 			modalHelper.Dispose();
 		}
 

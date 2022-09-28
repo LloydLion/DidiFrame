@@ -339,6 +339,7 @@ namespace DidiFrame.Lifetimes
 			{
 				cts.Cancel();
 				updateThread.Join();
+				synchronizationContext.EnableLinearExecuting();
 
 				lock (lifetimes)
 				{
@@ -356,6 +357,7 @@ namespace DidiFrame.Lifetimes
 				private readonly ConcurrentQueue<DispatcherTask> sharedTasks;
 				private readonly AutoResetEvent enqueueEvent;
 				private readonly int targetThreadId;
+				private bool linearExecution;
 
 
 				public LTSychContext(ConcurrentQueue<DispatcherTask> sharedTasks, AutoResetEvent enqueueEvent, int targetThreadId)
@@ -368,12 +370,24 @@ namespace DidiFrame.Lifetimes
 
 				public override void Post(SendOrPostCallback d, object? state)
 				{
+					if (linearExecution)
+					{
+						d(state);
+						return;
+					}
+
 					var task = new DispatcherTask(d, state, null, null);
 					sharedTasks.Enqueue(task);
 				}
 
 				public override void Send(SendOrPostCallback d, object? state)
 				{
+					if (linearExecution)
+					{
+						d(state);
+						return;
+					}
+
 					if (Environment.CurrentManagedThreadId == targetThreadId)
 						d(state);
 					else
@@ -387,6 +401,11 @@ namespace DidiFrame.Lifetimes
 						if (exceptionBuffer[0] is not null)
 							throw new AggregateException(exceptionBuffer[0]);
 					}
+				}
+
+				public void EnableLinearExecuting()
+				{
+					linearExecution = true;
 				}
 			}
 
