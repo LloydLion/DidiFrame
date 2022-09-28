@@ -111,7 +111,7 @@ Keys: NullValue, TooGreat, TooSmall</p>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.html">DidiFrame.UserCommands.ContextValidation.Arguments.Validators</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_GreaterThen_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class GreaterThen : IUserCommandArgumentValidator</code></pre>
@@ -456,13 +456,13 @@ Keys: NullValue, TooGreat, TooSmall</p>
   
   
   <a id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_GreaterThen_Validate_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate*"></a>
-  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_GreaterThen_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)">Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)</h4>
+  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_GreaterThen_Validate_UserCommandContext_UserCommandContext_ArgumentValue_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.Validate(UserCommandContext,UserCommandContext.ArgumentValue,IServiceProvider)">Validate(UserCommandContext, UserCommandContext.ArgumentValue, IServiceProvider)</h4>
   <div class="markdown level1 summary"><p>Validates argument value</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ValidationFailResult Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider locals)</code></pre>
+    <pre><code class="lang-csharp hljs">public ValidationFailResult Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -475,21 +475,9 @@ Keys: NullValue, TooGreat, TooSmall</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">services</span></td>
-        <td><p>Services to be used in method</p>
-</td>
-      </tr>
-      <tr>
         <td><span class="xref">UserCommandContext</span></td>
         <td><span class="parametername">context</span></td>
         <td><p>Context to validate</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">UserCommandArgument</span></td>
-        <td><span class="parametername">argument</span></td>
-        <td><p>Argumnet to validate</p>
 </td>
       </tr>
       <tr>
@@ -500,8 +488,9 @@ Keys: NullValue, TooGreat, TooSmall</p>
       </tr>
       <tr>
         <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">locals</span></td>
-        <td></td>
+        <td><span class="parametername">localServices</span></td>
+        <td><p>Local services from pipeline</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -524,10 +513,6 @@ Keys: NullValue, TooGreat, TooSmall</p>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html">IUserCommandArgumentValidator</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

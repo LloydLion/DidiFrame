@@ -111,7 +111,7 @@ Keys: CommandDisabled</p>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Invoker.Filters.html">DidiFrame.UserCommands.ContextValidation.Invoker.Filters</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_ContextValidation_Invoker_Filters_Disable_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class Disable : IUserCommandInvokerFilter</code></pre>
@@ -134,13 +134,13 @@ Keys: CommandDisabled</p>
   
   
   <a id="DidiFrame_UserCommands_ContextValidation_Invoker_Filters_Disable_Filter_" data-uid="DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter*"></a>
-  <h4 id="DidiFrame_UserCommands_ContextValidation_Invoker_Filters_Disable_Filter_IServiceProvider_UserCommandContext_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter(IServiceProvider,UserCommandContext,IServiceProvider)">Filter(IServiceProvider, UserCommandContext, IServiceProvider)</h4>
+  <h4 id="DidiFrame_UserCommands_ContextValidation_Invoker_Filters_Disable_Filter_UserCommandContext_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.Filter(UserCommandContext,IServiceProvider)">Filter(UserCommandContext, IServiceProvider)</h4>
   <div class="markdown level1 summary"><p>Does filtrating</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ValidationFailResult Filter(IServiceProvider services, UserCommandContext ctx, IServiceProvider locals)</code></pre>
+    <pre><code class="lang-csharp hljs">public ValidationFailResult Filter(UserCommandContext ctx, IServiceProvider localServices)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -153,12 +153,6 @@ Keys: CommandDisabled</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">services</span></td>
-        <td><p>Services to be used in method</p>
-</td>
-      </tr>
-      <tr>
         <td><span class="xref">UserCommandContext</span></td>
         <td><span class="parametername">ctx</span></td>
         <td><p>Context to validate</p>
@@ -166,8 +160,9 @@ Keys: CommandDisabled</p>
       </tr>
       <tr>
         <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">locals</span></td>
-        <td></td>
+        <td><span class="parametername">localServices</span></td>
+        <td><p>Local services from pipeline</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -190,10 +185,6 @@ Keys: CommandDisabled</p>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html">IUserCommandInvokerFilter</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

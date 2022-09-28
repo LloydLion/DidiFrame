@@ -106,42 +106,11 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Models.html">DidiFrame.UserCommands.Models</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Models_UserCommandResult_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class UserCommandResult</code></pre>
   </div>
-  <h3 id="constructors">Constructors
-  </h3>
-  
-  
-  <a id="DidiFrame_UserCommands_Models_UserCommandResult__ctor_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult__ctor_DidiFrame_UserCommands_Models_UserCommandCode_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.#ctor(DidiFrame.UserCommands.Models.UserCommandCode)">UserCommandResult(UserCommandCode)</h4>
-  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Models.UserCommandResult</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserCommandResult(UserCommandCode code)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandCode.html">UserCommandCode</a></td>
-        <td><span class="parametername">code</span></td>
-        <td><p>Status code</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <h3 id="properties">Properties
   </h3>
   
@@ -224,14 +193,14 @@
   </table>
   
   
-  <a id="DidiFrame_UserCommands_Models_UserCommandResult_RespondMessage_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.RespondMessage*"></a>
-  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult_RespondMessage" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.RespondMessage">RespondMessage</h4>
-  <div class="markdown level1 summary"><p>Send model of messages that will be sent as respond to command</p>
+  <a id="DidiFrame_UserCommands_Models_UserCommandResult_ResultType_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.ResultType*"></a>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult_ResultType" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.ResultType">ResultType</h4>
+  <div class="markdown level1 summary"><p>Type of result</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public MessageSendModel? RespondMessage { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public UserCommandResult.Type ResultType { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -243,15 +212,283 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">MessageSendModel</span>&gt;</td>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandResult.Type.html">UserCommandResult.Type</a></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_UserCommands_Models_UserCommandResult_CreateEmpty_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.CreateEmpty*"></a>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult_CreateEmpty_DidiFrame_UserCommands_Models_UserCommandCode_System_String_System_Nullable_Exception__" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.CreateEmpty(DidiFrame.UserCommands.Models.UserCommandCode,System.String,System.Nullable{Exception})">CreateEmpty(UserCommandCode, String, Nullable&lt;Exception&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates new empty instance of DidiFrame.UserCommands.Models.UserCommandResult</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UserCommandResult CreateEmpty(UserCommandCode code, string debugMessage = null, Exception? exception = null)</code></pre>
   </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandCode.html">UserCommandCode</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>Execution code</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">debugMessage</span></td>
+        <td><p>Optional debug message to log</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">Exception</span>&gt;</td>
+        <td><span class="parametername">exception</span></td>
+        <td><p>Optional exception to log</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a></td>
+        <td><p>New instance of DidiFrame.UserCommands.Models.UserCommandResult</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Models_UserCommandResult_CreateWithMessage_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.CreateWithMessage*"></a>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult_CreateWithMessage_DidiFrame_UserCommands_Models_UserCommandCode_MessageSendModel_System_Nullable_InteractionDispatcherSubscriber__System_String_System_Nullable_Exception__" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.CreateWithMessage(DidiFrame.UserCommands.Models.UserCommandCode,MessageSendModel,System.Nullable{InteractionDispatcherSubscriber},System.String,System.Nullable{Exception})">CreateWithMessage(UserCommandCode, MessageSendModel, Nullable&lt;InteractionDispatcherSubscriber&gt;, String, Nullable&lt;Exception&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Models.UserCommandResult with message</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UserCommandResult CreateWithMessage(UserCommandCode code, MessageSendModel sendModel, InteractionDispatcherSubscriber? subscriber = null, string debugMessage = null, Exception? exception = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandCode.html">UserCommandCode</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>Execution code</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">MessageSendModel</span></td>
+        <td><span class="parametername">sendModel</span></td>
+        <td><p>Send model of message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">InteractionDispatcherSubscriber</span>&gt;</td>
+        <td><span class="parametername">subscriber</span></td>
+        <td><p>Dispatcher subscriber for future message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">debugMessage</span></td>
+        <td><p>Optional debug message to log</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">Exception</span>&gt;</td>
+        <td><span class="parametername">exception</span></td>
+        <td><p>Optional exception to log</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a></td>
+        <td><p>New instance of DidiFrame.UserCommands.Models.UserCommandResult</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Models_UserCommandResult_CreateWithModal_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.CreateWithModal*"></a>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult_CreateWithModal_DidiFrame_UserCommands_Models_UserCommandCode_DidiFrame_Modals_IModalForm_System_String_System_Nullable_Exception__" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.CreateWithModal(DidiFrame.UserCommands.Models.UserCommandCode,DidiFrame.Modals.IModalForm,System.String,System.Nullable{Exception})">CreateWithModal(UserCommandCode, IModalForm, String, Nullable&lt;Exception&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Models.UserCommandResult with modal</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static UserCommandResult CreateWithModal(UserCommandCode code, IModalForm modal, string debugMessage = null, Exception? exception = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandCode.html">UserCommandCode</a></td>
+        <td><span class="parametername">code</span></td>
+        <td><p>Execution code</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">DidiFrame.Modals.IModalForm</span></td>
+        <td><span class="parametername">modal</span></td>
+        <td><p>Modal form object to show</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">debugMessage</span></td>
+        <td><p>Optional debug message to log</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">Exception</span>&gt;</td>
+        <td><span class="parametername">exception</span></td>
+        <td><p>Optional exception to log</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandResult.html">UserCommandResult</a></td>
+        <td><p>New instance of DidiFrame.UserCommands.Models.UserCommandResult</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Models_UserCommandResult_GetInteractionDispatcherSubcriber_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.GetInteractionDispatcherSubcriber*"></a>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult_GetInteractionDispatcherSubcriber" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.GetInteractionDispatcherSubcriber">GetInteractionDispatcherSubcriber()</h4>
+  <div class="markdown level1 summary"><p>Gets nullable interaction dispatcher subcriber if result is message</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public InteractionDispatcherSubscriber? GetInteractionDispatcherSubcriber()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">InteractionDispatcherSubscriber</span>&gt;</td>
+        <td><p>Interaction dispatcher subcriber from result or null if no subscriber has been added</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Models_UserCommandResult_GetModal_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.GetModal*"></a>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult_GetModal" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.GetModal">GetModal()</h4>
+  <div class="markdown level1 summary"><p>Gets modal form if result is modal</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IModalForm GetModal()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Modals.IModalForm</span></td>
+        <td><p>Modal form from result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Models_UserCommandResult_GetRespondMessage_" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.GetRespondMessage*"></a>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandResult_GetRespondMessage" data-uid="DidiFrame.UserCommands.Models.UserCommandResult.GetRespondMessage">GetRespondMessage()</h4>
+  <div class="markdown level1 summary"><p>Gets send model of messages that will be sent as respond to command if result contains it</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MessageSendModel GetRespondMessage()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">MessageSendModel</span></td>
+        <td><p>Raw message send model</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
 </article>
           </div>
           

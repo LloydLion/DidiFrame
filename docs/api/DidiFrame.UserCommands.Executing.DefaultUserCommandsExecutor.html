@@ -93,7 +93,10 @@
       <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;ValidatedUserCommandContext, UserCommandResult&gt;.Process(ValidatedUserCommandContext, UserCommandPipelineContext)</a>
     </div>
     <div>
-      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;ValidatedUserCommandContext, UserCommandResult&gt;.Process(Object, UserCommandPipelineContext)</a>
+      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;ValidatedUserCommandContext, UserCommandResult&gt;.ProcessAsync(ValidatedUserCommandContext, UserCommandPipelineContext)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;ValidatedUserCommandContext, UserCommandResult&gt;.ProcessAsync(Object, UserCommandPipelineContext)</a>
     </div>
     <div>
       <span class="xref">System.Object.Equals(System.Object)</span>
@@ -118,7 +121,7 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Executing.html">DidiFrame.UserCommands.Executing</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class DefaultUserCommandsExecutor : AbstractUserCommandPipelineMiddleware&lt;ValidatedUserCommandContext, UserCommandResult&gt;, IUserCommandPipelineMiddleware&lt;ValidatedUserCommandContext, UserCommandResult&gt;, IUserCommandPipelineMiddleware</code></pre>
@@ -128,13 +131,13 @@
   
   
   <a id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__ctor_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__ctor_FluentValidation_IValidator_UserCommandContext__IOptions_DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Options__ILogger_DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__DidiFrame_Culture_IServerCultureProvider_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.#ctor(FluentValidation.IValidator{UserCommandContext},IOptions{DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options},ILogger{DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor},DidiFrame.Culture.IServerCultureProvider)">DefaultUserCommandsExecutor(IValidator&lt;UserCommandContext&gt;, IOptions&lt;DefaultUserCommandsExecutor.Options&gt;, ILogger&lt;DefaultUserCommandsExecutor&gt;, IServerCultureProvider)</h4>
+  <h4 id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__ctor_IOptions_DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Options__ILogger_DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor__FluentValidation_IValidator_UserCommandContext__" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.#ctor(IOptions{DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options},ILogger{DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor},FluentValidation.IValidator{UserCommandContext})">DefaultUserCommandsExecutor(IOptions&lt;DefaultUserCommandsExecutor.Options&gt;, ILogger&lt;DefaultUserCommandsExecutor&gt;, IValidator&lt;UserCommandContext&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DefaultUserCommandsExecutor(IValidator&lt;UserCommandContext&gt; ctxValidator, IOptions&lt;DefaultUserCommandsExecutor.Options&gt; options, ILogger&lt;DefaultUserCommandsExecutor&gt; logger, IServerCultureProvider cultureProvider)</code></pre>
+    <pre><code class="lang-csharp hljs">public DefaultUserCommandsExecutor(IOptions&lt;DefaultUserCommandsExecutor.Options&gt; options, ILogger&lt;DefaultUserCommandsExecutor&gt; logger, IValidator&lt;UserCommandContext&gt; ctxValidator = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -146,12 +149,6 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandContext</span>&gt;</td>
-        <td><span class="parametername">ctxValidator</span></td>
-        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandContext</p>
-</td>
-      </tr>
       <tr>
         <td><span class="xref">IOptions</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options.html">DefaultUserCommandsExecutor.Options</a>&gt;</td>
         <td><span class="parametername">options</span></td>
@@ -165,9 +162,9 @@
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="DidiFrame.Culture.IServerCultureProvider.html">IServerCultureProvider</a></td>
-        <td><span class="parametername">cultureProvider</span></td>
-        <td><p>Culture provider to provide culture into commands' handlers</p>
+        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandContext</span>&gt;</td>
+        <td><span class="parametername">ctxValidator</span></td>
+        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandContext</p>
 </td>
       </tr>
     </tbody>
@@ -178,12 +175,12 @@
   
   <a id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Process_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Process*"></a>
   <h4 id="DidiFrame_UserCommands_Executing_DefaultUserCommandsExecutor_Process_ValidatedUserCommandContext_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Process(ValidatedUserCommandContext,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">Process(ValidatedUserCommandContext, UserCommandPipelineContext)</h4>
-  <div class="markdown level1 summary"><p>Processes some object into another</p>
+  <div class="markdown level1 summary"><p>Processes some into other</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override UserCommandResult? Process(ValidatedUserCommandContext ctx, UserCommandPipelineContext pipelineContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public override UserCommandMiddlewareExcutionResult&lt;UserCommandResult&gt; Process(ValidatedUserCommandContext ctx, UserCommandPipelineContext pipelineContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -218,8 +215,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">UserCommandResult</span>&gt;</td>
-        <td><p>Ready object or null if pipeline has been dropped or finalized</p>
+        <td><span class="xref">UserCommandMiddlewareExcutionResult</span>&lt;<span class="xref">UserCommandResult</span>&gt;</td>
+        <td><p>instance of UserCommandMiddlewareExcutionResult`1</p>
 </td>
       </tr>
     </tbody>
@@ -232,10 +229,6 @@
   </div>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html">IUserCommandPipelineMiddleware</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

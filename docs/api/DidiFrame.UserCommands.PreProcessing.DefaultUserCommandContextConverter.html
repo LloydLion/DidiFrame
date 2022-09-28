@@ -94,7 +94,10 @@
       <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;UserCommandPreContext, UserCommandContext&gt;.Process(UserCommandPreContext, UserCommandPipelineContext)</a>
     </div>
     <div>
-      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;UserCommandPreContext, UserCommandContext&gt;.Process(Object, UserCommandPipelineContext)</a>
+      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;UserCommandPreContext, UserCommandContext&gt;.ProcessAsync(UserCommandPreContext, UserCommandPipelineContext)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;UserCommandPreContext, UserCommandContext&gt;.ProcessAsync(Object, UserCommandPipelineContext)</a>
     </div>
     <div>
       <span class="xref">System.Object.Equals(System.Object)</span>
@@ -119,7 +122,7 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.PreProcessing.html">DidiFrame.UserCommands.PreProcessing</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class DefaultUserCommandContextConverter : AbstractUserCommandPipelineMiddleware&lt;UserCommandPreContext, UserCommandContext&gt;, IUserCommandContextConverter, IUserCommandPipelineMiddleware&lt;UserCommandPreContext, UserCommandContext&gt;, IUserCommandPipelineMiddleware</code></pre>
@@ -129,13 +132,13 @@
   
   
   <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_FluentValidation_IValidator_UserCommandPreContext__IServiceProvider_System_Collections_IEnumerable_DidiFrame_UserCommands_PreProcessing_IUserCommandContextSubConverter__IStringLocalizer_DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor(FluentValidation.IValidator{UserCommandPreContext},IServiceProvider,System.Collections.IEnumerable{DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter},IStringLocalizer{DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter})">DefaultUserCommandContextConverter(IValidator&lt;UserCommandPreContext&gt;, IServiceProvider, IEnumerable&lt;IUserCommandContextSubConverter&gt;, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt;)</h4>
+  <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__ctor_System_Collections_IEnumerable_DidiFrame_UserCommands_PreProcessing_IContextSubConverterInstanceCreator__IStringLocalizer_DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter__FluentValidation_IValidator_UserCommandPreContext__" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.#ctor(System.Collections.IEnumerable{DidiFrame.UserCommands.PreProcessing.IContextSubConverterInstanceCreator},IStringLocalizer{DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter},FluentValidation.IValidator{UserCommandPreContext})">DefaultUserCommandContextConverter(IEnumerable&lt;IContextSubConverterInstanceCreator&gt;, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt;, IValidator&lt;UserCommandPreContext&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DefaultUserCommandContextConverter(IValidator&lt;UserCommandPreContext&gt; preCtxValidator, IServiceProvider services, IEnumerable&lt;IUserCommandContextSubConverter&gt; subConverters, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt; localizer)</code></pre>
+    <pre><code class="lang-csharp hljs">public DefaultUserCommandContextConverter(IEnumerable&lt;IContextSubConverterInstanceCreator&gt; subConverters, IStringLocalizer&lt;DefaultUserCommandContextConverter&gt; localizer, IValidator&lt;UserCommandPreContext&gt; preCtxValidator = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -148,19 +151,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandPreContext</span>&gt;</td>
-        <td><span class="parametername">preCtxValidator</span></td>
-        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandPreContext</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">services</span></td>
-        <td><p>Services that will be provided to sub converters</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Collections.IEnumerable</span>&lt;<a class="xref" href="DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html">IUserCommandContextSubConverter</a>&gt;</td>
+        <td><span class="xref">System.Collections.IEnumerable</span>&lt;<a class="xref" href="DidiFrame.UserCommands.PreProcessing.IContextSubConverterInstanceCreator.html">IContextSubConverterInstanceCreator</a>&gt;</td>
         <td><span class="parametername">subConverters</span></td>
         <td><p>Sub converters that converts raw arguments to ready-to-use</p>
 </td>
@@ -169,6 +160,12 @@
         <td><span class="xref">IStringLocalizer</span>&lt;<a class="xref" href="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.html">DefaultUserCommandContextConverter</a>&gt;</td>
         <td><span class="parametername">localizer</span></td>
         <td><p>Localizer that will be used for print error messages</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandPreContext</span>&gt;</td>
+        <td><span class="parametername">preCtxValidator</span></td>
+        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandPreContext</p>
 </td>
       </tr>
     </tbody>
@@ -269,12 +266,12 @@
   
   <a id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_Process_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.Process*"></a>
   <h4 id="DidiFrame_UserCommands_PreProcessing_DefaultUserCommandContextConverter_Process_UserCommandPreContext_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.Process(UserCommandPreContext,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">Process(UserCommandPreContext, UserCommandPipelineContext)</h4>
-  <div class="markdown level1 summary"><p>Processes some object into another</p>
+  <div class="markdown level1 summary"><p>Processes some into other</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override UserCommandContext? Process(UserCommandPreContext preCtx, UserCommandPipelineContext pipelineContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public override UserCommandMiddlewareExcutionResult&lt;UserCommandContext&gt; Process(UserCommandPreContext preCtx, UserCommandPipelineContext pipelineContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -309,8 +306,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">UserCommandContext</span>&gt;</td>
-        <td><p>Ready object or null if pipeline has been dropped or finalized</p>
+        <td><span class="xref">UserCommandMiddlewareExcutionResult</span>&lt;<span class="xref">UserCommandContext</span>&gt;</td>
+        <td><p>instance of UserCommandMiddlewareExcutionResult`1</p>
 </td>
       </tr>
     </tbody>
@@ -326,10 +323,6 @@
   </div>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html">IUserCommandPipelineMiddleware</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

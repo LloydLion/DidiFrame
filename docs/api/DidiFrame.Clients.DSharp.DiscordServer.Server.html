@@ -1,0 +1,948 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Server
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Server
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server">
+  
+  
+  <h1 id="DidiFrame_Clients_DSharp_DiscordServer_Server" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server" class="text-break">Class Server
+  </h1>
+  <div class="markdown level0 summary"><p>DSharp implementation of DidiFrame.Interfaces.IServer</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">Server</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Clients.DSharp.DiscordServer.html">DidiFrame.Clients.DSharp.DiscordServer</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Clients.DSharp.dll</h6>
+  <h5 id="DidiFrame_Clients_DSharp_DiscordServer_Server_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Server : IDisposable</code></pre>
+  </div>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_Client_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Client*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_Client" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Client">Client</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IClient Client { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.IClient</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_Guild_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Guild*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_Guild" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Guild">Guild</h4>
+  <div class="markdown level1 summary"><p>Base DiscordGuild from DSharp</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DiscordGuild Guild { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordGuild</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_Id_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Id*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_Id" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Id">Id</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ulong Id { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_Name_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Name*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_Name" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Name">Name</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_SourceClient_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.SourceClient*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_SourceClient" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.SourceClient">SourceClient</h4>
+  <div class="markdown level1 summary"><p>Owner client object</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DSharpClient SourceClient { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.DSharpClient.html">DSharpClient</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_CacheChannel_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CacheChannel*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_CacheChannel_DSharpPlus_Entities_DiscordChannel_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CacheChannel(DSharpPlus.Entities.DiscordChannel)">CacheChannel(DiscordChannel)</h4>
+  <div class="markdown level1 summary"><p>Safely adds new channel to cache, or modify it if channel already in cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CacheChannel(DiscordChannel channel)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordChannel</span></td>
+        <td><span class="parametername">channel</span></td>
+        <td><p>Target channel</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_CacheMessage_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CacheMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_CacheMessage_DSharpPlus_Entities_DiscordMessage_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CacheMessage(DSharpPlus.Entities.DiscordMessage)">CacheMessage(DiscordMessage)</h4>
+  <div class="markdown level1 summary"><p>Safely adds new message to cache, or modify it if message already in cache</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CacheMessage(DiscordMessage message)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordMessage</span></td>
+        <td><span class="parametername">message</span></td>
+        <td><p>Target message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_CreateExtension_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CreateExtension*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_CreateExtension__1" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CreateExtension``1">CreateExtension&lt;TExtension&gt;()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TExtension CreateExtension&lt;TExtension&gt;()
+    where TExtension : class</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TExtension</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TExtension</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_CreateTemporalDispatcherForUnregistedMessage_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CreateTemporalDispatcherForUnregistedMessage*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_CreateTemporalDispatcherForUnregistedMessage_DSharpPlus_Entities_DiscordMessage_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CreateTemporalDispatcherForUnregistedMessage(DSharpPlus.Entities.DiscordMessage)">CreateTemporalDispatcherForUnregistedMessage(DiscordMessage)</h4>
+  <div class="markdown level1 summary"><p>Creates temporal interaction dispatcher for given message</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IInteractionDispatcher CreateTemporalDispatcherForUnregistedMessage(DiscordMessage message)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DSharpPlus.Entities.DiscordMessage</span></td>
+        <td><span class="parametername">message</span></td>
+        <td><p>Unregisted message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.IInteractionDispatcher</span></td>
+        <td><p>New temporal interaction dispatcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_CreateWrap_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CreateWrap*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_CreateWrap" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CreateWrap">CreateWrap()</h4>
+  <div class="markdown level1 summary"><p>Creates new wrap for this server</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ServerWrap CreateWrap()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.DiscordServer.ServerWrap.html">ServerWrap</a></td>
+        <td><p>New server wrap with this server</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_Dispose_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Dispose*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_Dispose" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetCategories_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetCategories*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetCategories" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetCategories">GetCategories()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;IChannelCategory&gt; GetCategories()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">DidiFrame.Clients.IChannelCategory</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetCategory_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetCategory*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetCategory_System_Nullable_System_UInt64__" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetCategory(System.Nullable{System.UInt64})">GetCategory(Nullable&lt;UInt64&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IChannelCategory GetCategory(ulong? id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">System.UInt64</span>&gt;</td>
+        <td><span class="parametername">id</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.IChannelCategory</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetChannel_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetChannel*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetChannel_System_UInt64_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetChannel(System.UInt64)">GetChannel(UInt64)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IChannel GetChannel(ulong id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.IChannel</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetChannels_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetChannels*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetChannels" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetChannels">GetChannels()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;IChannel&gt; GetChannels()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">DidiFrame.Clients.IChannel</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetMember_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetMember*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetMember_System_UInt64_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetMember(System.UInt64)">GetMember(UInt64)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IMember GetMember(ulong id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.IMember</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetMembers_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetMembers*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetMembers" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetMembers">GetMembers()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;IMember&gt; GetMembers()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">DidiFrame.Clients.IMember</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetRole_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetRole*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetRole_System_UInt64_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetRole(System.UInt64)">GetRole(UInt64)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IRole GetRole(ulong id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.IRole</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetRoles_" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetRoles*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_GetRoles" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.GetRoles">GetRoles()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;IRole&gt; GetRoles()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">DidiFrame.Clients.IRole</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+  </h3>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_CategoryCreated" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CategoryCreated">CategoryCreated</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectCreatedEventHandler&lt;IChannelCategory&gt; CategoryCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerObjectCreatedEventHandler</span>&lt;<span class="xref">DidiFrame.Clients.IChannelCategory</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_CategoryDeleted" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.CategoryDeleted">CategoryDeleted</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectDeletedEventHandler CategoryDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerObjectDeletedEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_ChannelCreated" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.ChannelCreated">ChannelCreated</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectCreatedEventHandler&lt;IChannel&gt; ChannelCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerObjectCreatedEventHandler</span>&lt;<span class="xref">DidiFrame.Clients.IChannel</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_ChannelDeleted" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.ChannelDeleted">ChannelDeleted</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectDeletedEventHandler ChannelDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerObjectDeletedEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_MemberCreated" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.MemberCreated">MemberCreated</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectCreatedEventHandler&lt;IMember&gt; MemberCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerObjectCreatedEventHandler</span>&lt;<span class="xref">DidiFrame.Clients.IMember</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_MemberDeleted" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.MemberDeleted">MemberDeleted</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectDeletedEventHandler MemberDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerObjectDeletedEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_MessageDeleted" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.MessageDeleted">MessageDeleted</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event MessageDeletedEventHandler MessageDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.MessageDeletedEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_MessageSent" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.MessageSent">MessageSent</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event MessageSentEventHandler MessageSent</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.MessageSentEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_RoleCreated" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.RoleCreated">RoleCreated</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectCreatedEventHandler&lt;IRole&gt; RoleCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerObjectCreatedEventHandler</span>&lt;<span class="xref">DidiFrame.Clients.IRole</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Clients_DSharp_DiscordServer_Server_RoleDeleted" data-uid="DidiFrame.Clients.DSharp.DiscordServer.Server.RoleDeleted">RoleDeleted</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerObjectDeletedEventHandler RoleDeleted</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerObjectDeletedEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

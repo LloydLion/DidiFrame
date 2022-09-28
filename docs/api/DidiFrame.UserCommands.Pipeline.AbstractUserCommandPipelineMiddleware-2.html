@@ -82,8 +82,8 @@
     <div class="level1"><span class="xref">AbstractUserCommandPipelineMiddleware&lt;TIn, TOut&gt;</span></div>
       <div class="level2"><a class="xref" href="DidiFrame.UserCommands.ContextValidation.ContextValidator.html">ContextValidator</a></div>
       <div class="level2"><a class="xref" href="DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.html">DefaultUserCommandsExecutor</a></div>
+      <div class="level2"><a class="xref" href="DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.html">TextCommandParser</a></div>
       <div class="level2"><a class="xref" href="DidiFrame.UserCommands.Pipeline.Utils.DelegateMiddleware-2.html">DelegateMiddleware&lt;TInput, TOutput&gt;</a></div>
-      <div class="level2"><a class="xref" href="DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.html">TextCommandParser</a></div>
       <div class="level2"><a class="xref" href="DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.html">DefaultUserCommandContextConverter</a></div>
   </div>
   <div classs="implements">
@@ -116,7 +116,7 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Pipeline.html">DidiFrame.UserCommands.Pipeline</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public abstract class AbstractUserCommandPipelineMiddleware&lt;TIn, TOut&gt; : IUserCommandPipelineMiddleware&lt;TIn, TOut&gt;, IUserCommandPipelineMiddleware</code></pre>
@@ -153,7 +153,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public AbstractUserCommandPipelineMiddleware()</code></pre>
+    <pre><code class="lang-csharp hljs">protected AbstractUserCommandPipelineMiddleware()</code></pre>
   </div>
   <h3 id="methods">Methods
   </h3>
@@ -161,12 +161,12 @@
   
   <a id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process_" data-uid="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2.Process*"></a>
   <h4 id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2.Process(`0,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">Process(TIn, UserCommandPipelineContext)</h4>
-  <div class="markdown level1 summary"><p>Processes some object into another</p>
+  <div class="markdown level1 summary"><p>Processes some into other</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public abstract TOut Process(TIn input, UserCommandPipelineContext pipelineContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public abstract UserCommandMiddlewareExcutionResult&lt;TOut&gt; Process(TIn input, UserCommandPipelineContext pipelineContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -202,22 +202,73 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">TOut</span></td>
-        <td><p>Ready object or null if pipeline has been dropped or finalized</p>
+        <td><span class="xref">UserCommandMiddlewareExcutionResult</span>&lt;TOut&gt;</td>
+        <td><p>instance of UserCommandMiddlewareExcutionResult`1</p>
 </td>
       </tr>
     </tbody>
   </table>
   
   
-  <a id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process_" data-uid="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2.Process*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2.Process(System.Object,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">Process(Object, UserCommandPipelineContext)</h4>
+  <a id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync_" data-uid="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2.ProcessAsync*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2.ProcessAsync(`0,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">ProcessAsync(TIn, UserCommandPipelineContext)</h4>
   <div class="markdown level1 summary"><p>Processes some object into another</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public object Process(object input, UserCommandPipelineContext pipelineContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;UserCommandMiddlewareExcutionResult&lt;TOut&gt;&gt; ProcessAsync(TIn input, UserCommandPipelineContext pipelineContext)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TIn</span></td>
+        <td><span class="parametername">input</span></td>
+        <td><p>Input object</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.html">UserCommandPipelineContext</a></td>
+        <td><span class="parametername">pipelineContext</span></td>
+        <td><p>Context where middleware executes</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">ValueTask</span>&lt;<span class="xref">UserCommandMiddlewareExcutionResult</span>&lt;TOut&gt;&gt;</td>
+        <td><p>instance of UserCommandMiddlewareExcutionResult`1</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync_" data-uid="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2.ProcessAsync*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware`2.ProcessAsync(System.Object,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">ProcessAsync(Object, UserCommandPipelineContext)</h4>
+  <div class="markdown level1 summary"><p>Processes some object into another</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ValueTask&lt;UserCommandMiddlewareExcutionResult&lt;object&gt;&gt; ProcessAsync(object input, UserCommandPipelineContext pipelineContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -253,8 +304,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Object</span></td>
-        <td><p>Ready object or null if pipeline has been dropped or finalized</p>
+        <td><span class="xref">ValueTask</span>&lt;<span class="xref">UserCommandMiddlewareExcutionResult</span>&lt;<span class="xref">System.Object</span>&gt;&gt;</td>
+        <td><p>instance of UserCommandMiddlewareExcutionResult`1</p>
 </td>
       </tr>
     </tbody>
@@ -265,10 +316,6 @@
   </div>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html">IUserCommandPipelineMiddleware</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

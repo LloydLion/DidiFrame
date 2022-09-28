@@ -77,7 +77,7 @@
 </div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Invoker.html">DidiFrame.UserCommands.ContextValidation.Invoker</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_ContextValidation_Invoker_IUserCommandInvokerFilter_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface IUserCommandInvokerFilter</code></pre>
@@ -87,13 +87,13 @@
   
   
   <a id="DidiFrame_UserCommands_ContextValidation_Invoker_IUserCommandInvokerFilter_Filter_" data-uid="DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter*"></a>
-  <h4 id="DidiFrame_UserCommands_ContextValidation_Invoker_IUserCommandInvokerFilter_Filter_IServiceProvider_UserCommandContext_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter(IServiceProvider,UserCommandContext,IServiceProvider)">Filter(IServiceProvider, UserCommandContext, IServiceProvider)</h4>
+  <h4 id="DidiFrame_UserCommands_ContextValidation_Invoker_IUserCommandInvokerFilter_Filter_UserCommandContext_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.Filter(UserCommandContext,IServiceProvider)">Filter(UserCommandContext, IServiceProvider)</h4>
   <div class="markdown level1 summary"><p>Does filtrating</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">ValidationFailResult Filter(IServiceProvider services, UserCommandContext ctx, IServiceProvider localServices)</code></pre>
+    <pre><code class="lang-csharp hljs">ValidationFailResult Filter(UserCommandContext ctx, IServiceProvider localServices)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -105,12 +105,6 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">services</span></td>
-        <td><p>Services to be used in method</p>
-</td>
-      </tr>
       <tr>
         <td><span class="xref">UserCommandContext</span></td>
         <td><span class="parametername">ctx</span></td>
@@ -141,10 +135,6 @@
       </tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
-  </div>
 </article>
           </div>
           

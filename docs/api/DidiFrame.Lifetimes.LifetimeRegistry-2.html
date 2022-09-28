@@ -85,6 +85,7 @@
     <h5>Implements</h5>
     <div><a class="xref" href="DidiFrame.Lifetimes.ILifetimesRegistry-2.html">ILifetimesRegistry</a>&lt;TLifetime, TBase&gt;</div>
     <div><a class="xref" href="DidiFrame.Lifetimes.ILifetimesLoader.html">ILifetimesLoader</a></div>
+    <div><span class="xref">IDisposable</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -111,10 +112,10 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Lifetimes.html">DidiFrame.Lifetimes</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Lifetimes.dll</h6>
   <h5 id="DidiFrame_Lifetimes_LifetimeRegistry_2_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class LifetimeRegistry&lt;TLifetime, TBase&gt; : ILifetimesRegistry&lt;TLifetime, TBase&gt;, ILifetimesLoader where TLifetime : ILifetime&lt;TBase&gt; where TBase : class, ILifetimeBase</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class LifetimeRegistry&lt;TLifetime, TBase&gt; : ILifetimesRegistry&lt;TLifetime, TBase&gt;, ILifetimesLoader where TLifetime : ILifetime&lt;TBase&gt; where TBase : class, ILifetimeBase</code></pre>
   </div>
   <h5 class="typeParameters">Type Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -142,13 +143,13 @@
   
   
   <a id="DidiFrame_Lifetimes_LifetimeRegistry_2__ctor_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.#ctor*"></a>
-  <h4 id="DidiFrame_Lifetimes_LifetimeRegistry_2__ctor_IServersStatesRepository_ICollection__1___DidiFrame_Lifetimes_ILifetimeFactory__0__1__ILogger_DidiFrame_Lifetimes_LifetimeRegistry__0__1___" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.#ctor(IServersStatesRepository{ICollection{`1}},DidiFrame.Lifetimes.ILifetimeFactory{`0,`1},ILogger{DidiFrame.Lifetimes.LifetimeRegistry{`0,`1}})">LifetimeRegistry(IServersStatesRepository&lt;ICollection&lt;TBase&gt;&gt;, ILifetimeFactory&lt;TLifetime, TBase&gt;, ILogger&lt;LifetimeRegistry&lt;TLifetime, TBase&gt;&gt;)</h4>
+  <h4 id="DidiFrame_Lifetimes_LifetimeRegistry_2__ctor_IServersStatesRepository_ICollection__1___DidiFrame_Lifetimes_ILifetimeInstanceCreator__0__1__ILogger_DidiFrame_Lifetimes_LifetimeRegistry__0__1___IServersNotify_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.#ctor(IServersStatesRepository{ICollection{`1}},DidiFrame.Lifetimes.ILifetimeInstanceCreator{`0,`1},ILogger{DidiFrame.Lifetimes.LifetimeRegistry{`0,`1}},IServersNotify)">LifetimeRegistry(IServersStatesRepository&lt;ICollection&lt;TBase&gt;&gt;, ILifetimeInstanceCreator&lt;TLifetime, TBase&gt;, ILogger&lt;LifetimeRegistry&lt;TLifetime, TBase&gt;&gt;, IServersNotify)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Lifetimes.LifetimeRegistry`2</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LifetimeRegistry(IServersStatesRepository&lt;ICollection&lt;TBase&gt;&gt; states, ILifetimeFactory&lt;TLifetime, TBase&gt; lifetimeFactory, ILogger&lt;LifetimeRegistry&lt;TLifetime, TBase&gt;&gt; logger)</code></pre>
+    <pre><code class="lang-csharp hljs">public LifetimeRegistry(IServersStatesRepository&lt;ICollection&lt;TBase&gt;&gt; states, ILifetimeInstanceCreator&lt;TLifetime, TBase&gt; lifetimeInstanceCreator, ILogger&lt;LifetimeRegistry&lt;TLifetime, TBase&gt;&gt; logger, IServersNotify serverNotify)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -167,8 +168,8 @@
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="DidiFrame.Lifetimes.ILifetimeFactory-2.html">ILifetimeFactory</a>&lt;TLifetime, TBase&gt;</td>
-        <td><span class="parametername">lifetimeFactory</span></td>
+        <td><a class="xref" href="DidiFrame.Lifetimes.ILifetimeInstanceCreator-2.html">ILifetimeInstanceCreator</a>&lt;TLifetime, TBase&gt;</td>
+        <td><span class="parametername">lifetimeInstanceCreator</span></td>
         <td><p>Factory for target lifetime</p>
 </td>
       </tr>
@@ -178,10 +179,26 @@
         <td><p>Logger for registry</p>
 </td>
       </tr>
+      <tr>
+        <td><span class="xref">IServersNotify</span></td>
+        <td><span class="parametername">serverNotify</span></td>
+        <td><p>Server delete notifier to delete per server resources</p>
+</td>
+      </tr>
     </tbody>
   </table>
   <h3 id="methods">Methods
   </h3>
+  
+  
+  <a id="DidiFrame_Lifetimes_LifetimeRegistry_2_Dispose_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.Dispose*"></a>
+  <h4 id="DidiFrame_Lifetimes_LifetimeRegistry_2_Dispose" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
   
   
   <a id="DidiFrame_Lifetimes_LifetimeRegistry_2_GetAllLifetimes_" data-uid="DidiFrame.Lifetimes.LifetimeRegistry`2.GetAllLifetimes*"></a>
@@ -359,9 +376,8 @@
   <div>
       <a class="xref" href="DidiFrame.Lifetimes.ILifetimesLoader.html">ILifetimesLoader</a>
   </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
   <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
+      <span class="xref">IDisposable</span>
   </div>
 </article>
           </div>

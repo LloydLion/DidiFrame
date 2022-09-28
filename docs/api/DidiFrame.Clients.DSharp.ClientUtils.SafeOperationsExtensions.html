@@ -1,0 +1,396 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class SafeOperationsExtensions
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class SafeOperationsExtensions
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions">
+  
+  
+  <h1 id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions" class="text-break">Class SafeOperationsExtensions
+  </h1>
+  <div class="markdown level0 summary"><p>Extensions for safe client operations</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">SafeOperationsExtensions</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Clients.DSharp.ClientUtils.html">DidiFrame.Clients.DSharp.ClientUtils</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Clients.DSharp.dll</h6>
+  <h5 id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class SafeOperationsExtensions</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_DoSafeOperation_" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.DoSafeOperation*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_DoSafeOperation_DidiFrame_Clients_DSharp_DSharpClient_Action_System_Nullable_DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_NotFoundInfo__" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.DoSafeOperation(DidiFrame.Clients.DSharp.DSharpClient,Action,System.Nullable{DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo})">DoSafeOperation(DSharpClient, Action, Nullable&lt;SafeOperationsExtensions.NotFoundInfo&gt;)</h4>
+  <div class="markdown level1 summary"><p>Do safe opration under discord client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void DoSafeOperation(this DSharpClient client, Action operation, SafeOperationsExtensions.NotFoundInfo? nfi = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.DSharpClient.html">DSharpClient</a></td>
+        <td><span class="parametername">client</span></td>
+        <td><p>Target client</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Action</span></td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>Operation delegate</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo.html">SafeOperationsExtensions.NotFoundInfo</a>&gt;</td>
+        <td><span class="parametername">nfi</span></td>
+        <td><p>Not found info for object not found case</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_DoSafeOperation_" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.DoSafeOperation*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_DoSafeOperation__1_DidiFrame_Clients_DSharp_DSharpClient_Func___0__System_Nullable_DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_NotFoundInfo__" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.DoSafeOperation``1(DidiFrame.Clients.DSharp.DSharpClient,Func{``0},System.Nullable{DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo})">DoSafeOperation&lt;TReturn&gt;(DSharpClient, Func&lt;TReturn&gt;, Nullable&lt;SafeOperationsExtensions.NotFoundInfo&gt;)</h4>
+  <div class="markdown level1 summary"><p>Do safe opration under discord client with result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static TReturn DoSafeOperation&lt;TReturn&gt;(this DSharpClient client, Func&lt;TReturn&gt; operation, SafeOperationsExtensions.NotFoundInfo? nfi = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.DSharpClient.html">DSharpClient</a></td>
+        <td><span class="parametername">client</span></td>
+        <td><p>Target client</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Func</span>&lt;TReturn&gt;</td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>Operation delegate</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo.html">SafeOperationsExtensions.NotFoundInfo</a>&gt;</td>
+        <td><span class="parametername">nfi</span></td>
+        <td><p>Not found info for object not found case</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TReturn</span></td>
+        <td><p>Operation result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TReturn</span></td>
+        <td><p>Type of result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_DoSafeOperationAsync_" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.DoSafeOperationAsync*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_DoSafeOperationAsync_DidiFrame_Clients_DSharp_DSharpClient_Func_Task__System_Nullable_DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_NotFoundInfo__" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.DoSafeOperationAsync(DidiFrame.Clients.DSharp.DSharpClient,Func{Task},System.Nullable{DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo})">DoSafeOperationAsync(DSharpClient, Func&lt;Task&gt;, Nullable&lt;SafeOperationsExtensions.NotFoundInfo&gt;)</h4>
+  <div class="markdown level1 summary"><p>Do safe async opration under discord client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static async Task DoSafeOperationAsync(this DSharpClient client, Func&lt;Task&gt; operation, SafeOperationsExtensions.NotFoundInfo? nfi = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.DSharpClient.html">DSharpClient</a></td>
+        <td><span class="parametername">client</span></td>
+        <td><p>Target client</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>Async operation delegate</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo.html">SafeOperationsExtensions.NotFoundInfo</a>&gt;</td>
+        <td><span class="parametername">nfi</span></td>
+        <td><p>Not found info for object not found case</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td><p>Wait task</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_DoSafeOperationAsync_" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.DoSafeOperationAsync*"></a>
+  <h4 id="DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_DoSafeOperationAsync__1_DidiFrame_Clients_DSharp_DSharpClient_Func_Task___0___System_Nullable_DidiFrame_Clients_DSharp_ClientUtils_SafeOperationsExtensions_NotFoundInfo__" data-uid="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.DoSafeOperationAsync``1(DidiFrame.Clients.DSharp.DSharpClient,Func{Task{``0}},System.Nullable{DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo})">DoSafeOperationAsync&lt;TReturn&gt;(DSharpClient, Func&lt;Task&lt;TReturn&gt;&gt;, Nullable&lt;SafeOperationsExtensions.NotFoundInfo&gt;)</h4>
+  <div class="markdown level1 summary"><p>Do safe async opration under discord client with result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static async Task&lt;TReturn&gt; DoSafeOperationAsync&lt;TReturn&gt;(this DSharpClient client, Func&lt;Task&lt;TReturn&gt;&gt; operation, SafeOperationsExtensions.NotFoundInfo? nfi = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Clients.DSharp.DSharpClient.html">DSharpClient</a></td>
+        <td><span class="parametername">client</span></td>
+        <td><p>Target client</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TReturn&gt;&gt;</td>
+        <td><span class="parametername">operation</span></td>
+        <td><p>Async operation delegate</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<a class="xref" href="DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo.html">SafeOperationsExtensions.NotFoundInfo</a>&gt;</td>
+        <td><span class="parametername">nfi</span></td>
+        <td><p>Not found info for object not found case</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span>&lt;TReturn&gt;</td>
+        <td><p>Async operation result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TReturn</span></td>
+        <td><p>Type of result</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

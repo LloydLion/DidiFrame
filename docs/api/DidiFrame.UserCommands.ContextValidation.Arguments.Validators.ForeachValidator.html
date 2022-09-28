@@ -111,13 +111,83 @@ Keys will be inherited from the validator</p>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.html">DidiFrame.UserCommands.ContextValidation.Arguments.Validators</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class ForeachValidator : IUserCommandArgumentValidator</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
+  
+  
+  <a id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator__ctor_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.#ctor*"></a>
+  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator__ctor_DidiFrame_UserCommands_ContextValidation_Arguments_IUserCommandArgumentValidator_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.#ctor(DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator)">ForeachValidator(IUserCommandArgumentValidator)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ForeachValidator(IUserCommandArgumentValidator validator)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html">IUserCommandArgumentValidator</a></td>
+        <td><span class="parametername">validator</span></td>
+        <td><p>&quot;Foreach&quot; validator itself</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator__ctor_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.#ctor*"></a>
+  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator__ctor_IServiceProvider_Type_System_Object___" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.#ctor(IServiceProvider,Type,System.Object[])">ForeachValidator(IServiceProvider, Type, Object[])</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ForeachValidator(IServiceProvider servicesForValidator, Type validatorType, object[] creationArgs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServiceProvider</span></td>
+        <td><span class="parametername">servicesForValidator</span></td>
+        <td><p>Services to create validator from type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Type</span></td>
+        <td><span class="parametername">validatorType</span></td>
+        <td><p>&quot;Foreach&quot; validator type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span>[]</td>
+        <td><span class="parametername">creationArgs</span></td>
+        <td><p>Parameters to create the validator</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   
   
   <a id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator__ctor_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.#ctor*"></a>
@@ -147,53 +217,18 @@ Keys will be inherited from the validator</p>
       </tr>
     </tbody>
   </table>
-  
-  
-  <a id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator__ctor_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator__ctor_Type_System_Object___" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.#ctor(Type,System.Object[])">ForeachValidator(Type, Object[])</h4>
-  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ForeachValidator(Type validatorType, object[] creationArgs)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">Type</span></td>
-        <td><span class="parametername">validatorType</span></td>
-        <td><p>&quot;Foreach&quot; validator type</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Object</span>[]</td>
-        <td><span class="parametername">creationArgs</span></td>
-        <td><p>Parameters to create the validator</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
   <h3 id="methods">Methods
   </h3>
   
   
   <a id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator_Validate_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate*"></a>
-  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate(IServiceProvider,UserCommandContext,UserCommandArgument,UserCommandContext.ArgumentValue,IServiceProvider)">Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)</h4>
+  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_ForeachValidator_Validate_UserCommandContext_UserCommandContext_ArgumentValue_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.Validate(UserCommandContext,UserCommandContext.ArgumentValue,IServiceProvider)">Validate(UserCommandContext, UserCommandContext.ArgumentValue, IServiceProvider)</h4>
   <div class="markdown level1 summary"><p>Validates argument value</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ValidationFailResult Validate(IServiceProvider services, UserCommandContext context, UserCommandArgument argument, UserCommandContext.ArgumentValue value, IServiceProvider locals)</code></pre>
+    <pre><code class="lang-csharp hljs">public ValidationFailResult Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -206,21 +241,9 @@ Keys will be inherited from the validator</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">services</span></td>
-        <td><p>Services to be used in method</p>
-</td>
-      </tr>
-      <tr>
         <td><span class="xref">UserCommandContext</span></td>
         <td><span class="parametername">context</span></td>
         <td><p>Context to validate</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">UserCommandArgument</span></td>
-        <td><span class="parametername">argument</span></td>
-        <td><p>Argumnet to validate</p>
 </td>
       </tr>
       <tr>
@@ -231,8 +254,9 @@ Keys will be inherited from the validator</p>
       </tr>
       <tr>
         <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">locals</span></td>
-        <td></td>
+        <td><span class="parametername">localServices</span></td>
+        <td><p>Local services from pipeline</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -255,10 +279,6 @@ Keys will be inherited from the validator</p>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html">IUserCommandArgumentValidator</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

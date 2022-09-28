@@ -106,7 +106,7 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Pipeline.html">DidiFrame.UserCommands.Pipeline</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class UserCommandPipelineContext</code></pre>
@@ -116,13 +116,13 @@
   
   
   <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext__ctor_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext__ctor_IServiceProvider_UserCommandSendData_Action_UserCommandResult__" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.#ctor(IServiceProvider,UserCommandSendData,Action{UserCommandResult})">UserCommandPipelineContext(IServiceProvider, UserCommandSendData, Action&lt;UserCommandResult&gt;)</h4>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext__ctor_IServiceProvider_UserCommandSendData_Func_UserCommandResult_Task__" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.#ctor(IServiceProvider,UserCommandSendData,Func{UserCommandResult,Task})">UserCommandPipelineContext(IServiceProvider, UserCommandSendData, Func&lt;UserCommandResult, Task&gt;)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserCommandPipelineContext(IServiceProvider localServices, UserCommandSendData sendData, Action&lt;UserCommandResult&gt; sendResponce)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserCommandPipelineContext(IServiceProvider localServices, UserCommandSendData sendData, Func&lt;UserCommandResult, Task&gt; sendResponce)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -147,7 +147,42 @@
 </td>
       </tr>
       <tr>
-        <td><span class="xref">Action</span>&lt;<span class="xref">UserCommandResult</span>&gt;</td>
+        <td><span class="xref">Func</span>&lt;<span class="xref">UserCommandResult</span>, <span class="xref">Task</span>&gt;</td>
+        <td><span class="parametername">sendResponce</span></td>
+        <td><p>Delegate that sends responce to dispatcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext__ctor_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.#ctor*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext__ctor_UserCommandSendData_Func_UserCommandResult_Task__" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.#ctor(UserCommandSendData,Func{UserCommandResult,Task})">UserCommandPipelineContext(UserCommandSendData, Func&lt;UserCommandResult, Task&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserCommandPipelineContext(UserCommandSendData sendData, Func&lt;UserCommandResult, Task&gt; sendResponce)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">UserCommandSendData</span></td>
+        <td><span class="parametername">sendData</span></td>
+        <td><p>Send data from dispatcher</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">Func</span>&lt;<span class="xref">UserCommandResult</span>, <span class="xref">Task</span>&gt;</td>
         <td><span class="parametername">sendResponce</span></td>
         <td><p>Delegate that sends responce to dispatcher</p>
 </td>
@@ -156,58 +191,6 @@
   </table>
   <h3 id="properties">Properties
   </h3>
-  
-  
-  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_CurrentStatus_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.CurrentStatus*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_CurrentStatus" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.CurrentStatus">CurrentStatus</h4>
-  <div class="markdown level1 summary"><p>Status of pipeline</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserCommandPipelineContext.Status CurrentStatus { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.Status.html">UserCommandPipelineContext.Status</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_ExecutionResult_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.ExecutionResult*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_ExecutionResult" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.ExecutionResult">ExecutionResult</h4>
-  <div class="markdown level1 summary"><p>Execution result if pipeline begins finalize. Not recomended use GetExecutionResult() method</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserCommandResult? ExecutionResult { get; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">UserCommandResult</span>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
   
   
   <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_LocalServices_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.LocalServices*"></a>
@@ -264,81 +247,14 @@
   </h3>
   
   
-  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_DropPipeline_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.DropPipeline*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_DropPipeline" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.DropPipeline">DropPipeline()</h4>
-  <div class="markdown level1 summary"><p>Sets status to BeginDrop</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void DropPipeline()</code></pre>
-  </div>
-  
-  
-  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_FinalizePipeline_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.FinalizePipeline*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_FinalizePipeline_UserCommandResult_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.FinalizePipeline(UserCommandResult)">FinalizePipeline(UserCommandResult)</h4>
-  <div class="markdown level1 summary"><p>Sets status to BeginFinalize and command result</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void FinalizePipeline(UserCommandResult result)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">UserCommandResult</span></td>
-        <td><span class="parametername">result</span></td>
-        <td><p>Command result for dispatcher</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_GetExecutionResult_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.GetExecutionResult*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_GetExecutionResult" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.GetExecutionResult">GetExecutionResult()</h4>
-  <div class="markdown level1 summary"><p>Gets execution result if pipeline begins finalize</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserCommandResult GetExecutionResult()</code></pre>
-  </div>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">UserCommandResult</span></td>
-        <td><p>Execution result</p>
-</td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_SendResponce_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.SendResponce*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_SendResponce_UserCommandResult_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.SendResponce(UserCommandResult)">SendResponce(UserCommandResult)</h4>
+  <a id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_SendResponceAsync_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.SendResponceAsync*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_SendResponceAsync_UserCommandResult_" data-uid="DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.SendResponceAsync(UserCommandResult)">SendResponceAsync(UserCommandResult)</h4>
   <div class="markdown level1 summary"><p>Send responce to dispatcher</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SendResponce(UserCommandResult result)</code></pre>
+    <pre><code class="lang-csharp hljs">public Task SendResponceAsync(UserCommandResult result)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -358,10 +274,21 @@
       </tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
-  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
 </article>
           </div>
           

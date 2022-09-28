@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Application.DiscordApplicationBuilder.html",
-          "hash": "YumjgQz/vVgXhPmFgv7NeufnWXnhGADf8o2zjXNW/Sg="
+          "hash": "t2uAPbUc9Bn/XpO6q9vW6iz3vrWM1QKzwht0e7/CW5Q="
         }
       },
       "is_incremental": true,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Application.Extensions.html",
-          "hash": "CYwv2tGr4zaA9dXQwnqNhtN95FILHdN9oqK0G1/S7B8="
+          "hash": "116Y/Hqq87a88aq+k9hH36cZv+ocerkJ3RXWAQqnYsU="
         }
       },
       "is_incremental": true,
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Application.IDiscordApplication.html",
-          "hash": "lOvr8lwLKy6mgRd31Wh6g1lxwFYjAcNASBdc0EB3OgY="
+          "hash": "DZcbBfGqairPvTAqJTI1vYJp/+I058m5zXUjmOb3xzI="
         }
       },
       "is_incremental": true,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Application.IDiscordApplicationBuilder.html",
-          "hash": "Mak8WdYOxO1QHM+Y47WKwa+FvbmqVvDDEeUJ0iOGiTI="
+          "hash": "QYhOYSI7PIYAsEnS3YbOgzI0mOMHYnHv5HnNYSnu4lI="
         }
       },
       "is_incremental": true,
@@ -65,11 +65,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.AutoInjecting.IAutoInjector.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.AutoInjecting.IAutoInjector.html",
-          "hash": "qNIXUMzVY2WiaoPVKM3fFv92UYJ02p+7Hl/yTzqpFn4="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo.html",
+          "hash": "B5W5nUrM3LNl43LwLyLm14dVWRI76o94uw1xqIdU0K4="
         }
       },
       "is_incremental": true,
@@ -77,11 +77,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.AutoInjecting.IAutoSubInjector.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.ApplicationCommandPair.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.AutoInjecting.IAutoSubInjector.html",
-          "hash": "7kQLvk173TJJ9eyiGtNBc+op42yTo++I0DFxtLujxqM="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.ApplicationCommandPair.html",
+          "hash": "deiuoMLOVgemww/NgAhiSuIKsoXEpBRIHS0BH9QrPt0="
         }
       },
       "is_incremental": true,
@@ -89,11 +89,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.AutoInjecting.ReflectionAutoInjector.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.ArgumentConvertationException.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.AutoInjecting.ReflectionAutoInjector.html",
-          "hash": "SC2ifchN/mYGWASaocRYyH3q2FYOrVEX+XsrtfPnI00="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.ArgumentConvertationException.html",
+          "hash": "LHM+Evo08CgjR8vIlqK6ZsoRnQ6IWLoBJTZ1lLbsKbQ="
         }
       },
       "is_incremental": true,
@@ -101,11 +101,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.AutoInjecting.ServicesExtensions.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.BehaviorModel.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.AutoInjecting.ServicesExtensions.html",
-          "hash": "h7U9Iwt8IZawS+YmnQyGJFA16oyODv9ghDsSIVvN+mk="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.BehaviorModel.html",
+          "hash": "sk6E/jM56tPlhJpj+R72bFUgiHSdd0jkVwdY37I81Q8="
         }
       },
       "is_incremental": true,
@@ -113,11 +113,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.AutoInjecting.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.Options.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.AutoInjecting.html",
-          "hash": "WtBz1LxpVRE0MVK9GULn52NT5RxWDiyIyU8yzk/mVSY="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.Options.html",
+          "hash": "3GyLz7vFh/wfG1PjKb/E7L0FSMRW0pXUyDyLFqZohsY="
         }
       },
       "is_incremental": true,
@@ -125,11 +125,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.ClientExtensions.Extensions.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.ClientExtensions.Extensions.html",
-          "hash": "cZgkxAW1hBNIZEaNGsQQvRyGPQseDGoFmN9uEPZXxDM="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.ApplicationCommandDispatcher.html",
+          "hash": "vkWArg4ePR1EUL4JNWXgkDWGSvl80EMXqDgdx875OQM="
         }
       },
       "is_incremental": true,
@@ -137,11 +137,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.ClientExtensions.IClientExtensionFactory-1.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.ClientExtensions.IClientExtensionFactory-1.html",
-          "hash": "TLRidWXV28sVH07w0dMzvYUsyv/XCsGPAa++33yXefA="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommands.html",
+          "hash": "BDBOnUee3gxLQxg+gFmhmci4X6+qaqLFGnwsD9HjBuo="
         }
       },
       "is_incremental": true,
@@ -149,11 +149,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.ClientExtensions.IServerExtensionFactory-1.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo.Type.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.ClientExtensions.IServerExtensionFactory-1.html",
-          "hash": "hY8vMjSGu4+4qN3UsQUIFmfxblCzNtMcagUDNPWgqPk="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo.Type.html",
+          "hash": "o8GjOBsnEej+J5WeOm/zw2h6ZkLbUb4ZUauWfwlntSk="
         }
       },
       "is_incremental": true,
@@ -161,11 +161,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.ClientExtensions.ReflectionClientExtensionFactory-2.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.ClientExtensions.ReflectionClientExtensionFactory-2.html",
-          "hash": "XglKt9BoLOl9jg9ahlrBUCyo1YnC6X07g6VkG0VdTxo="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.NotFoundInfo.html",
+          "hash": "voPUN1eoy+OCrhgl0SbCXsOtHclr2aLaEq2ZTDPgZiI="
         }
       },
       "is_incremental": true,
@@ -173,11 +173,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.ClientExtensions.ReflectionServerExtensionFactory-2.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.ClientExtensions.ReflectionServerExtensionFactory-2.html",
-          "hash": "febfzxTbNZAoYAIcFZl2gI42q5VgrQXR1tQXBgSlyCU="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ClientUtils.SafeOperationsExtensions.html",
+          "hash": "DKima4E7wp588uoHleNaVgTfb3MpemMBa8MJE9vJlaY="
         }
       },
       "is_incremental": true,
@@ -185,11 +185,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.ClientExtensions.ServicesExtensions.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.ClientUtils.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.ClientExtensions.ServicesExtensions.html",
-          "hash": "p90zp6W6j0qGdGAVCRo9e7d/o2iPa38ts/YFCz4xHQc="
+          "relative_path": "api/DidiFrame.Clients.DSharp.ClientUtils.html",
+          "hash": "1mRF4c/EdfLyKGfxPZsIZHk2dgBzDChGLrK4OE2CW7A="
         }
       },
       "is_incremental": true,
@@ -197,11 +197,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.ClientExtensions.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DSharpClient.ConnectStatus.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.ClientExtensions.html",
-          "hash": "ep9zgBt+bdGEGa8soLcTxO1Er30G2BFf4eyyBEOogAI="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DSharpClient.ConnectStatus.html",
+          "hash": "4tJvra+CpkgIuABeYTRHIFliT5GJCoZipAOewSEjO+4="
         }
       },
       "is_incremental": true,
@@ -209,11 +209,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DSharpClient.Options.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.ApplicationArgumnetInfo.html",
-          "hash": "e7HLFz3MKNMj3yIB+tmXZRt3DpbfP+ezWPpMVzowKPM="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DSharpClient.Options.html",
+          "hash": "CU1rdXO7p2BI9/jYbJAetdz5Xm/X9Dhu5hRlkQRn8PU="
         }
       },
       "is_incremental": true,
@@ -221,11 +221,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DSharpClient.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ApplicationCommandPair.html",
-          "hash": "BlcwXYn2+XBfRjTQE3yJSa/cM8nhIcZIEuC93DeEank="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DSharpClient.html",
+          "hash": "uW8JlafhBqQXDuODaShMMjOSgb1pPKfZgaRPeUpy2sI="
         }
       },
       "is_incremental": true,
@@ -233,11 +233,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ArgumentConvertationException.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.CachePolicy.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.ArgumentConvertationException.html",
-          "hash": "4NJBdKf3CKCfdxrQo8/ByeMvWEHG9yrmoW0s9DHzzT8="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.CachePolicy.html",
+          "hash": "LIVsoq3oIxGbMr08paihiaXVPZS/k1TnFyUlb4MiK5Q="
         }
       },
       "is_incremental": true,
@@ -245,11 +245,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.BehaviorModel.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.Factory.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.BehaviorModel.html",
-          "hash": "o8P/AxMkRnsNeJABkrBbIh9L08p0jBMj6e6HlnnulOI="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.Factory.html",
+          "hash": "FS3pmi3qK+cGcICKg1s9uNGeKx4imRrkWyqHxKiX8fE="
         }
       },
       "is_incremental": true,
@@ -257,11 +257,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.Options.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.MessagesPreloadingPolicy.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.Options.html",
-          "hash": "j/PZEECPyNrtbgLQmZhWpbOVx4iIxPKrU/J6rVf70Dg="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.MessagesPreloadingPolicy.html",
+          "hash": "awkU5HRhi0MCv9SNZ8CvMHO8bRcu9/Ne0u3UKbCIubU="
         }
       },
       "is_incremental": true,
@@ -269,11 +269,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.Options.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ApplicationCommandDispatcher.html",
-          "hash": "jq72ph0/9BHOP8NIkUwW7iuGLnhO0xPI2Jqin6MSb+Y="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.Options.html",
+          "hash": "Xe+RW99uKxkD5lMYbYlisvucEpan3aq2KsiTawYu2ZM="
         }
       },
       "is_incremental": true,
@@ -281,11 +281,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Channel.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Channel.html",
-          "hash": "EPD4i+KXMV+cs0VTfxmk7O4Rz0ORn+R/9LEi+IO+LaU="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ChannelMessagesCache.html",
+          "hash": "/MnRaBLklxL4SXUS0b+uFjRFIeQWiqRX7wYFPOCGGnE="
         }
       },
       "is_incremental": true,
@@ -293,11 +293,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ChannelCategory.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.IChannelMessagesCache.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ChannelCategory.html",
-          "hash": "Q1JphDvim8Gee63BYcn2BIrobX1lonN4qXH4HhPrCQ4="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.IChannelMessagesCache.html",
+          "hash": "gsjE781hOVSQoONOPddi2PbHX0ULxtP47v6kMR/JgT0="
         }
       },
       "is_incremental": true,
@@ -305,11 +305,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.CachePolicy.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.IChannelMessagesCacheFactory.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.CachePolicy.html",
-          "hash": "d+lT2FBZ+j1Gf4som1iZ2Tq9eQq2nbfii7N4ntH2xhs="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.IChannelMessagesCacheFactory.html",
+          "hash": "gwf0U4Npxf4MnTPRSPcdwqfvXgiT7mky/4nAdWMpzNY="
         }
       },
       "is_incremental": true,
@@ -317,11 +317,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.Factory.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.Server.Options.ThreadCacheBehavior.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.Factory.html",
-          "hash": "GPEWusyLjHrIb0p08RYa6yiMKjZkeu30gbitWMP1dFs="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.Server.Options.ThreadCacheBehavior.html",
+          "hash": "q7zZOSJCL5WIbAY16ihOpNIGVanol30H5Q8tSnybJbM="
         }
       },
       "is_incremental": true,
@@ -329,11 +329,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.MessagesPreloadingPolicy.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.Server.Options.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.MessagesPreloadingPolicy.html",
-          "hash": "+sqQOH6odJlMBqan7s2+cW4CspWQSPnUwOe+zHcu6TM="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.Server.Options.html",
+          "hash": "ZiichnI9GTym+K0NSaCB99niUGGtSbCulrT/uPEZWWA="
         }
       },
       "is_incremental": true,
@@ -341,11 +341,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.Options.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.Server.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.Options.html",
-          "hash": "1GxG+vjA4/pkJ5U8zhcoTgILN1uFeY8rnivtCBWSHxc="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.Server.html",
+          "hash": "Cc6SBG533FMOcz0lSkBqsjBBG0ULGb4DuwUuGYY1sfU="
         }
       },
       "is_incremental": true,
@@ -353,11 +353,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ServerWrap.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.ChannelMessagesCache.html",
-          "hash": "KDQ5cI5eXAbjs8nQfucAbG1yXwPbJq7fGrI9gW4s8rY="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.ServerWrap.html",
+          "hash": "V5ymN5mbD3u3eYZpVDfHsEsR6+wqTGQt9KOXuiAz7OA="
         }
       },
       "is_incremental": true,
@@ -365,11 +365,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Client.Options.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Client.Options.html",
-          "hash": "Q7r+c259lG/4FUIkhWV9silQPbhVUKRJhRo72tj2GaM="
+          "relative_path": "api/DidiFrame.Clients.DSharp.DiscordServer.html",
+          "hash": "mSZScEdz93N8y9zdBIbAzXYX9nbHoUpdhBVvDX0vqmA="
         }
       },
       "is_incremental": true,
@@ -377,11 +377,143 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Client.yml",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.Channel.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Client.html",
-          "hash": "AOGXMFCAxYh3Og9H0UNr9fNneJJVk0QOfsAlHVBMIo0="
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.Channel.html",
+          "hash": "sZHv1T2vQtaXOeMqf5Gf2AT0bUaLk6GvDiBOMpgKO8I="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.ChannelCategory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.ChannelCategory.html",
+          "hash": "x9HIBPkZznunl/cGc4j2RJEB4++zF+VADLMysYedZ3M="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.ForumChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.ForumChannel.html",
+          "hash": "k0qAbuODP0YERLv95732zU4t4OGf/9UAmdqDChMZNKc="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.Member.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.Member.html",
+          "hash": "AXNs/8IZsP5AGfvt0Q1RzrDH/hM5g6UGlLFaIq0kinM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.Message.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.Message.html",
+          "hash": "tP/5S3MlxcIYsI0YSWUHaM+v3QAd1lLvnducCiTpfJE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.Role.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.Role.html",
+          "hash": "Lef4aXuJWUUPndDyGyNgc6kHnc66GlH8kkNnLoSCedk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.TextChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.TextChannel.html",
+          "hash": "nb8Hvfw00jf3hly7Wd8hyfZKvbIwZEY9mIZsbz6y4cQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.TextChannelBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.TextChannelBase.html",
+          "hash": "JI/oJhrkVQDy7G1n5ZTAEL6mJMPOjE08d0mJhBE9WnA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.TextThread.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.TextThread.html",
+          "hash": "R+NNiNjBKmJej5FdtjsDnkraloGIOFAXbkKvNWqW5A0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.User.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.User.html",
+          "hash": "EA9e4Tf9435F++EVr00EPpwUzEwiWD/48CN6fT5zydM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.VoiceChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.VoiceChannel.html",
+          "hash": "hjuhsoYb4nya9Be61NTP9pNa3eNhLiPvTE0gW8+NMHg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Clients.DSharp.Entities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Clients.DSharp.Entities.html",
+          "hash": "f4ISYFegeNq59/4wp61z7JNfmTpT8H0ua4F2YOtMLSA="
         }
       },
       "is_incremental": true,
@@ -393,55 +525,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Clients.DSharp.Extensions.html",
-          "hash": "3PQjmqiYyUFSlROwbiW3NF7bFeSxX5v9KOeMe54JNco="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.IChannelMessagesCache.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.IChannelMessagesCache.html",
-          "hash": "bBHogM2dEnl0PaNlm37llnp4kE7+/63YuVjpz1CTfGI="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.IChannelMessagesCacheFactory.html",
-          "hash": "CEFmWbZO8hLwTPj3qnVH4+c2AQ2aVivZH/z1yYQhc3k="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Member.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Member.html",
-          "hash": "iSpvA/pbTeWJRudqleNfVLq97UuyL0Bannhqy+f/CEw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Message.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Message.html",
-          "hash": "XNlcdIt+jpZ/dJl1dM61VaXVJRJeV9UN/0N8x9mNpmw="
+          "hash": "sfyXXZOViYNgyZ7Of+HPRlExtn+au0FIPXlGEI6ibw0="
         }
       },
       "is_incremental": true,
@@ -453,7 +537,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Clients.DSharp.MessageConverter.html",
-          "hash": "tgjnY+ZF5CW3k87eFrHYY4AJi7H+AW8l9X+6+/Ml4Bk="
+          "hash": "O9S14k3zVvwtsncwy0enkjgh5B8BfbwuPsrPiN02IOI="
         }
       },
       "is_incremental": true,
@@ -465,55 +549,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Clients.DSharp.ObjectSourceDelegate-1.html",
-          "hash": "jJIWpPFp15Gz3cuwvlImJFxAXEeMI6MtUgi2eXt5d10="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Role.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Role.html",
-          "hash": "HkxsEX/JMtwruRtDzOv8FWyc7H1cS2nM5c2kB45xL10="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Server.Options.ThreadCacheBehavior.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Server.Options.ThreadCacheBehavior.html",
-          "hash": "9pKEckXUT/rhXo+kDUZeKwP30srego3OOufoHNDjxRM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Server.Options.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Server.Options.html",
-          "hash": "9wlf/0Qf8SjX0JjzQd76QW48Z/obVBP0AKGUdiKqvG0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.Server.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.Server.html",
-          "hash": "Jo43G/yZZimR2CZtnj/dHFAkkFGPBz6D3wYhUPxkWas="
+          "hash": "6NWYtjmNORsqiM0dwNpWIBDw4B2+dNof5aGd5UZNtw0="
         }
       },
       "is_incremental": true,
@@ -533,359 +569,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.TextChannel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.TextChannel.html",
-          "hash": "WfCCEmqZMzNLDF7JtInKNAfCtapVvgsmnsf3Gzfv4o8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.TextChannelBase.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.TextChannelBase.html",
-          "hash": "ql2wPeh8wg/9qQudcg8Fet1rlMVNF44+Y42XIeTgH0U="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.TextThread.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.TextThread.html",
-          "hash": "ay5f2+enw3yzh1zLjSxCU4Bb0XWySFly4CV8nWcx+JY="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.User.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.User.html",
-          "hash": "KiNRLmdg6FcyFfK31uHp7N/V4dPfhcTl/UuYINdFpqw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Clients.DSharp.VoiceChannel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Clients.DSharp.VoiceChannel.html",
-          "hash": "SHvVF/bZukmCj2AlJ0XPdrB+8jXcfLZMF/6Uc51SgQ8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/DidiFrame.Clients.DSharp.yml",
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Clients.DSharp.html",
-          "hash": "E28Zi8pKhThaFg3z2o7yL5/4xkiue+vrDVz8E4aUjjw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Culture.CultureSettings.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Culture.CultureSettings.html",
-          "hash": "FWaML6VPwn/R/tJZV+6kOV3x8gxqFeisj3QLQ0yd57o="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Culture.Extensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Culture.Extensions.html",
-          "hash": "ycHGlwNGff3akkqFvmhazBjcLpuHbVAw4VYWnaJSvDw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Culture.GagCultureProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Culture.GagCultureProvider.html",
-          "hash": "LXIOtcOlt0RTBkh/gMuxAkd7uAqJokeiLBbv/GPNCqA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Culture.IServerCultureProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Culture.IServerCultureProvider.html",
-          "hash": "SZqry1YbQY3APhLXV8SSHbRllluhDWezYW4iCYzysRs="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Culture.ServicesExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Culture.ServicesExtensions.html",
-          "hash": "0FwgHF5XaYrCpL+b+jsBF6W0eUVm/43MAL6/GgtkHyc="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Culture.SettingsBasedCultureProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Culture.SettingsBasedCultureProvider.html",
-          "hash": "EyDMoBOXHVwiBUNJNisq/mYVtgqasLylpe3gVpBBuRU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Culture.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Culture.html",
-          "hash": "ZlJjQUiauzqfXSYPK1PRxgaGydBn5p/1RiBybZeVRLk="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.AutoKeys.DataKey.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.AutoKeys.DataKey.html",
-          "hash": "gs+ECRkBqD/PAmuOyRcft6Cbxv8Ny8YX6Ok+HFPH4U8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.AutoKeys.DataKeyAttribute.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.AutoKeys.DataKeyAttribute.html",
-          "hash": "pEGounFe/bySG1z+csEd+dGRUl+bYxDoN3OnFqo1Hg8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.AutoKeys.ServicesExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.AutoKeys.ServicesExtensions.html",
-          "hash": "gA7mA//i0fVZY91eZahdTi669S3lX08M9NGe4XkGvQ8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.AutoKeys.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.AutoKeys.html",
-          "hash": "KlCX1yecS/Aw4QcjufQkvGL0ewQeEnjM0oIdEhk8Tzg="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.ContextBased.ContextBasedSettingsRepositoryFactory-2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.ContextBased.ContextBasedSettingsRepositoryFactory-2.html",
-          "hash": "qsBFq+7H/WLeZlrdXQg2JmDUtRqtVGcnDseDbbi/Rtk="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.ContextBased.ContextBasedStatesRepositoryFactory-2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.ContextBased.ContextBasedStatesRepositoryFactory-2.html",
-          "hash": "h5Dyu40rbPx0iCKQxsb6SPiXI/IBsNnx7N0wGYe7g5I="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.ContextBased.ContextType.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.ContextBased.ContextType.html",
-          "hash": "SIQ4qzjnmo+FmC8g8tHmpOlbsZ6Qvh/keRwsJzR2gG0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.ContextBased.IDataContext.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.ContextBased.IDataContext.html",
-          "hash": "iopQBiMPEAV8MORNy5CV7+ZUIbszsr027hN4g6Ro/wk="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.ContextBased.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.ContextBased.html",
-          "hash": "OKresYkq1y1Fdlc9DAQUnGRQQg9I7Z3YuQG81UyNxsE="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.DefaultCtorModelFactory-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.DefaultCtorModelFactory-1.html",
-          "hash": "gXSBOM6RvpnTJUIsIdFg2kwd1RJJCxAeKQIYINwIKWg="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.DefaultModelFactoryProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.DefaultModelFactoryProvider.html",
-          "hash": "5I1Z58Z+u2C7I4SdTZPRhIeDes6WcdDbVnaI4s1zFY8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.IModelFactory-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.IModelFactory-1.html",
-          "hash": "C/RhjBrvwEAdTEXFUJCHGtSlTddhV0/aOM9e86O/S0E="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.IModelFactoryProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.IModelFactoryProvider.html",
-          "hash": "7iNNn9eQYGd8Oo9CeJQVzpj0g5PIyCgoOi3/LJNuNqk="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.IServersSettingsRepository-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.IServersSettingsRepository-1.html",
-          "hash": "fv7KI+mcpj2kpDQGHQ+/xx/8k5cW7eX6M/f450qdOYo="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.IServersSettingsRepositoryFactory.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.IServersSettingsRepositoryFactory.html",
-          "hash": "4k18LdalMcXjMcHmMM+1hJqFzAHw39uQoxAY7/NXjSs="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.IServersStatesRepository-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.IServersStatesRepository-1.html",
-          "hash": "eZiKI1gyv73S+6faYLRJYitYXV97uxlLLwKN1I5iP9k="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.IServersStatesRepositoryFactory.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.IServersStatesRepositoryFactory.html",
-          "hash": "FjDVNV9YtgqSOUOvKFbpy6wINAFbV8TzjiYPdeYohWo="
+          "hash": "UJ00OfYhgtatJs2Z+0+7n7ZRHeq/v+ZkCDVNbfRPyuo="
         }
       },
       "is_incremental": true,
@@ -897,7 +585,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Data.Json.DataOptions.DataOption.html",
-          "hash": "scGa/JTYyCSx7GEpyUyCQbHwHAEIzA8A+YvDKIeRYuw="
+          "hash": "/mY6T5/3guUjbV/GwMAgWaFGF76/Zl2Vwpz7Itj6hVA="
         }
       },
       "is_incremental": true,
@@ -909,7 +597,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Data.Json.DataOptions.html",
-          "hash": "IHhU2ZEQGGPOeXGLa2wZ/eZkUDtum8Y07hp+yu76qLA="
+          "hash": "vz1jV/1rvT+2fonOjJCcHJTy19uAys654b2hZRBx1u4="
         }
       },
       "is_incremental": true,
@@ -921,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Data.Json.JsonContext.html",
-          "hash": "2DPy4n+QYPFpZU8r63Nvm8mEQhljisl3MTJKg1TXA/w="
+          "hash": "F1bFoyorB8563GcnOGUkrrV5nhGh3qN7YyK57kmLlzw="
         }
       },
       "is_incremental": true,
@@ -953,35 +641,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.Model.ConstructorAssignablePropertyAttribute.html",
-          "hash": "bgSEiknPQZ7/Fdnfvui+ecIjPxLPBBaEyceZwGK4Ke8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.Model.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.Model.html",
-          "hash": "3pRW/RcRE7mimolJkc+sUA5QVSzkV9ng6+B088UyGhY="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/DidiFrame.Data.Mongo.DataOptions.DataOption.yml",
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Data.Mongo.DataOptions.DataOption.html",
-          "hash": "lffKy2XZTFQMLP9VEkU3W4A1A+4/ix5PGnmWij7yvfQ="
+          "hash": "ktjOv5LHwHOoXzIvpm2GsSUKxtR1tH36JLk2jgrl5JI="
         }
       },
       "is_incremental": true,
@@ -993,7 +657,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Data.Mongo.DataOptions.html",
-          "hash": "qE6KtVy6wFRzthK5UTVywl7M5nTxt4erKBSR24zHrPo="
+          "hash": "hgfQGG7l00tAGHS/J07olLTrVnmjZZYtSU7T+S+Yu/A="
         }
       },
       "is_incremental": true,
@@ -1005,7 +669,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Data.Mongo.MongoDBContext.html",
-          "hash": "+KAAm80XHNmiAqZk75b3V8u+9O8G+Acd13eymslSOUw="
+          "hash": "eAIiUe3yCEOC8d9bLYObckA8tuItglORQrxyOtlyIBo="
         }
       },
       "is_incremental": true,
@@ -1037,779 +701,95 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.StateObjectController-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.StateObjectController-1.html",
-          "hash": "U/y+6YPG9Z5iibHEcFvciQdQgrBwqyP6CoQahVbT/9U="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Data.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Data.html",
-          "hash": "VnhhSeqd4/WNfslRjgMWjV0rkxpmR+QGOH6tT/DkVOo="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.ChannelCreationModel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.ChannelCreationModel.html",
-          "hash": "Fy7//VQCMkFsIPF02Ss5aQQB5xYDwX8LPY5wkzEG/mY="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.ChannelType.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.ChannelType.html",
-          "hash": "QcyKLewsCv+eVrx54u1PbmDQ3OCj56iFUd4rVAn4/2w="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Color.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Color.html",
-          "hash": "OmnDn7qE6qUZAMbbp6nfxaWIequsFwB10OAQ3LGr1s4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.DiscordStatic.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.DiscordStatic.html",
-          "hash": "qWubSFFHGTzBJ3PJaYEjQFvSuup3IZ8QfqkNTW0+6F4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.AsyncInteractionCallback-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.AsyncInteractionCallback-1.html",
-          "hash": "iXW9O1xgwdBmruxK3m3nVg/61wErl/47s8DffUZgTek="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.ButtonStyle.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.ButtonStyle.html",
-          "hash": "O7rXeDusESDf28NLO/rUy3DdeCTwP8eVAIkMbNlJJi4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.ComponentInteractionContext-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.ComponentInteractionContext-1.html",
-          "hash": "Oj0EMmrDBpTk2z4i1wHxw264pV9CIEg+AnekZlUFoxo="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.ComponentInteractionResult.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.ComponentInteractionResult.html",
-          "hash": "Nr40ngikpuXY6yC58CN1Av/uE4uqSryFiwI9JRjGPns="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.IComponent.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.IComponent.html",
-          "hash": "0kgwMBm2BNB5QkseneFYNh74na4xxqDbm6qnrB2M0+0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.IComponentState-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.IComponentState-1.html",
-          "hash": "TM5P78mmURLUgRzbKCIwdwzrqsssryTS+fE98vh+gvU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.IInteractionComponent.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.IInteractionComponent.html",
-          "hash": "GT8KdjnLDzmuFPGB+xew/gItTgbCc9ybgCGGQuc42D0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.MessageButton.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.MessageButton.html",
-          "hash": "g4ey+TbA5xwjOH3WRNLippsPjmnX29nVpu0TQv1jje8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.MessageComponentsRow.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.MessageComponentsRow.html",
-          "hash": "XSopQtC0kxvUG0Uz6oa1Ex5PLsqz2VoEe1KwKzb1bPA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.MessageLinkButton.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.MessageLinkButton.html",
-          "hash": "KJyZQehVhWkKO5IyoR/wNqdSM25Tp31sFqErr5BhuEQ="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.MessageSelectMenu.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.MessageSelectMenu.html",
-          "hash": "rM3A9AZEkleRSfU3LGYkMTvEprscBoFp1OQPTmF6rZA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.MessageSelectMenuOption.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.MessageSelectMenuOption.html",
-          "hash": "lhsch5iO0PsKk6AkCS6zq2VOeYFbO9k24ObJ6jAN5ik="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.MessageSelectMenuState.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.MessageSelectMenuState.html",
-          "hash": "BZ9jqZ34BteTOaQmoGYK+zhSbRHQVeSnJRGX/SGsXDU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Components.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Components.html",
-          "hash": "TbGqs3tmRbT4YkWW2Okx/QNOsYddz7Em0O7rrq2PdK8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Embed.EmbedField.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Embed.EmbedField.html",
-          "hash": "Daz4/JM22g4MPPn456n2wvO76iDGItJ72IAzWwEQqg8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Embed.EmbedMeta.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Embed.EmbedMeta.html",
-          "hash": "EkfXECzexDIskWEipTpCKVmkK/tJLIeXKF337lUHTwM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Embed.MessageEmbed.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Embed.MessageEmbed.html",
-          "hash": "do1wDInRl/yWmPZySvEHRuai2QOJX+BRntuMF7xi9jo="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Embed.MessageEmbedBuilder.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Embed.MessageEmbedBuilder.html",
-          "hash": "8tQDMbRWRlgYbS1LrJ4x6dN/pXCFCvP7mwHQGN/5/qs="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.Embed.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.Embed.html",
-          "hash": "tIZZivOv29I4ZxlsUSv/+kSsiLn7dqtPMEgOu+2w6xs="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.MessageFile.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.MessageFile.html",
-          "hash": "J06aoB7n9ilc7fOM79K2iS53bZHb1GT0zTLy+mpabRo="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.MessageSendModel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.MessageSendModel.html",
-          "hash": "DilpMeUhgOk7dsbQSG6BUBpIOq1eVWMaZJ+SmZogS0E="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Message.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Message.html",
-          "hash": "oBJ74yr3Fu4Uxhs2Yzyg5aIwbU50uOiDGw8tzTAlOUQ="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.Permissions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.Permissions.html",
-          "hash": "pt25IPJdWlA7uZws2xJXEBHE5V4Yu95CdTprgf+wo44="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Entities.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Entities.html",
-          "hash": "TgBzCu/Tk+m1ckGYbrSVHtm9e/hR5Xo777E2MnI6zt0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Exceptions.DiscordObjectNotFoundException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Exceptions.DiscordObjectNotFoundException.html",
-          "hash": "TKGgBUsbUVHssdicHsXzYm0Egliz4ioA30Dx3Sql0aY="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Exceptions.ImpossibleVariantException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Exceptions.ImpossibleVariantException.html",
-          "hash": "5MdjbrXc4A2Hev26scgxlk74uplxfLAkyDLzuh5rc3w="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Exceptions.InternalDiscordException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Exceptions.InternalDiscordException.html",
-          "hash": "QFu0iDRoM9xIQEgmwpUGSVna+B8rr2+8dMfSDpzqgO8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Exceptions.LifetimeTerminatedException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Exceptions.LifetimeTerminatedException.html",
-          "hash": "FKTrkw+ejgwVNxsRA2ASgREMUP8qkS3ZOaUXRqzs/ZA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Exceptions.NoExtensionFoundException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Exceptions.NoExtensionFoundException.html",
-          "hash": "bgcvmP9hHDuaslj+hagR21v82MeST287eEWMiWS5ooY="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Exceptions.NotEnoughPermissionsException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Exceptions.NotEnoughPermissionsException.html",
-          "hash": "g+qBde1wN2eIkqI9CitkGQzYqb6YQ6/j1L78+65XCeU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Exceptions.ObjectDoesNotExistException.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Exceptions.ObjectDoesNotExistException.html",
-          "hash": "UKIBJNAm2Bn/c2lb7D7/irwd8vJeHHTi/uVkk5Gg8o8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Exceptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Exceptions.html",
-          "hash": "6KxR52qA6Dq+7D256DALq7jltDPat0OYzJH2L35cz6w="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Extensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Extensions.html",
-          "hash": "hpImfFWBMYz1UMOr+TR2Ntqk55+0YINUEBxQrhVe5nw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.GlobalEvents.ServicesExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.GlobalEvents.ServicesExtensions.html",
-          "hash": "KDF8Ovw8e/T7vRwEf0ysJ+hb9V2EN0hI2Wf7zEMgB2Q="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.GlobalEvents.StartupEvent.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.GlobalEvents.StartupEvent.html",
-          "hash": "JttEEoWRCXGIHqnDsM6pAka3jsOLUGWB6ipchc4lnho="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.GlobalEvents.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.GlobalEvents.html",
-          "hash": "kqK/vXnQaUPNRxLkdeFwwzUUyjzBSEqzt/IfEQjT2WI="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.Extensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.Extensions.html",
-          "hash": "29svkyuixJfJO+QZjRFhmk2n6yHasqW1MSv2d+Fs08w="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IChannel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IChannel.html",
-          "hash": "NL1JxpupWtP12+Gn/K3vFROXRpllLoc0aK3YME3Sd2M="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IChannelCategory.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IChannelCategory.html",
-          "hash": "9NeNqzWRJ/K+/hj2PK+2iHiieZUVplB6G89fTswKAMQ="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IClient.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IClient.html",
-          "hash": "3Afa94/6YPM4hxT6noX1ozAvUYHfQynqpnCoUh4u+jA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IInteractionDispatcher.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IInteractionDispatcher.html",
-          "hash": "dP0oT0uOlG0XndOTi523J3vKQkdP87GxdIDTESC3wKM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IMember.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IMember.html",
-          "hash": "QInkR2ZhSF4hQN6O5jcm5pjIVu1rbASIfJeAO3gwDcU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IMessage.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IMessage.html",
-          "hash": "AVlKfnD4/FJIOfw+cOcggjgD1WtQmDVMb1VlFpZkMRA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IRole.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IRole.html",
-          "hash": "mwcb1KjhM7+h28LIqmPvE9ibOeuILuum34PSlJ5ZA24="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IServer.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IServer.html",
-          "hash": "yOmUzjDJNAzsfStXSiXier9BrB4wd3hvyFAnHq+Kl7s="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IServerEntity.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IServerEntity.html",
-          "hash": "yixY3diFxegaFScg8Xw957TrrO513AHZQ/pAybnpKb0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.ITextChannel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.ITextChannel.html",
-          "hash": "TEwNraI1cz9dXsF8lospvEHYT9p1lT66DvXmMRXcFkg="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.ITextChannelBase.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.ITextChannelBase.html",
-          "hash": "a/KmBHCVFeiv0ZD4M0y4SZcAtoMwj+lia5dpAgaXDlw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.ITextThread.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.ITextThread.html",
-          "hash": "//EoOyCneWVozK5dPV0ZYVOSgGOTmoXhLxUDVJfSaCI="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IUser.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IUser.html",
-          "hash": "nMB8tgok0XpzCRtoWO2msUuyVuzzKMevVyKNMo/zaHU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.IVoiceChannel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.IVoiceChannel.html",
-          "hash": "2g+/cAEHKtG7/DiAJoraGamIv1nP/6ZA0fr6XT1n7xw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.MessageDeletedEventHandler.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.MessageDeletedEventHandler.html",
-          "hash": "4EHreTpMlmo2LkiuHSmke9gtGeKQ0SFmWjm8/FrtEnE="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.MessageSentEventHandler.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.MessageSentEventHandler.html",
-          "hash": "QT+ERDY2jiQt5TpL5V/YhZhxX2XSgB2tdlmWKhu80MU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.ServerCreatedEventHandler.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.ServerCreatedEventHandler.html",
-          "hash": "nK7FK45z4YDK9bwDzW6e39lNdKrSbR3M1tVFOtyYHVM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.ServerObjectCreatedEventHandler-1.html",
-          "hash": "eFF7RaI7KP5hcc0z9ieDjQXX7aXIeJ4tgTe9ol+yzbM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.ServerObjectDeletedEventHandler.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.ServerObjectDeletedEventHandler.html",
-          "hash": "ZtFyY9bBfYStpkEMEnnkADrxFTVnt2mRazuLIgUqLvM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.ServerRemovedEventHandler.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.ServerRemovedEventHandler.html",
-          "hash": "0Gj0Mk1IQSRh6uRWuEPuLNV0KAZwOTc7XWHnExJJdOQ="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Interfaces.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Interfaces.html",
-          "hash": "vzl7sAx52F5eEVJNq/buRu3xzWdn6ddo6q3MPVPwebw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/DidiFrame.Lifetimes.AbstractFullLifetime-2.yml",
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.AbstractFullLifetime-2.html",
-          "hash": "f+czx0ECsXSrQ+hc1SBrX/Xp9Z9h9AJyvm4Byl0EX6o="
+          "hash": "D0WK6mheepHkea3Kxe5wWcX6Wre0gQVFbvxaMNrPV5g="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.InitialData.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.InitialData.html",
+          "hash": "lb3S19fMHa1JqAHi+Fw6wTKbm6mpW5BlXtqd+MufLzM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.InitialDataBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.InitialDataBuilder.html",
+          "hash": "0CeMMnzeT6+3OiIVsLKdoioUuYdipyDtqukLMFh32RI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.LifetimePostRanHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.LifetimePostRanHandler.html",
+          "hash": "WHs6p7tcaVQC6DZbayIm2RqYSxKBZQHqqYeFV4y1S10="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.LifetimeRanHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.LifetimeRanHandler.html",
+          "hash": "9jnd8j6nGh+HlKGzX0SEDyREvPjI4WfgrvTxjtLDU4g="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.LifetimeUpdatedHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.LifetimeUpdatedHandler.html",
+          "hash": "uGhtQqxw0ZyCr8qSz4mWtz2gbor4T7QaKZlRH8viLIk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Lifetimes.AbstractLifetime-1.html",
+          "hash": "GtX28nxXTjlEWU5SDXTBXljOvPKLaOP+RZVZRv349q4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.StateControlledObjectHolder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.StateControlledObjectHolder.html",
+          "hash": "PSYf5Y2VkQQytgjn1ru846FQ6NCEounz399Wg0/jKsc="
         }
       },
       "is_incremental": true,
@@ -1821,7 +801,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html",
-          "hash": "KMG/WWIJZV2Gey84gP8pXW76nva/YxYkQQp9AobBnRE="
+          "hash": "2VuG0uSZUtgXaPsAJ4V6+XIz2E8csPGDcHSyRPl0zQk="
         }
       },
       "is_incremental": true,
@@ -1833,7 +813,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.ILifetime-1.html",
-          "hash": "FrV/8CBGFx7FPr5KU5hRXAUYwzhZrlQMq/joCDCRQ6o="
+          "hash": "4a8qcshHx/hlpevbca3jAUdoZpe4LhW7K6cGjdU6/bE="
         }
       },
       "is_incremental": true,
@@ -1845,7 +825,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.ILifetimeBase.html",
-          "hash": "PHTxog53LuMu3Bl3m07j+hngJdJJT3ts8dhR4/plD7s="
+          "hash": "8WFmXBe3Hf6aHhOuNwQ8wAHOIXjxDkqsCCQ3H7RRMck="
         }
       },
       "is_incremental": true,
@@ -1857,7 +837,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.ILifetimeContext-1.html",
-          "hash": "vXkjlnIFAHxrAhVA7LrwSY1eF6Yph8Rg6zdtChoMGRY="
+          "hash": "sS4pebCbmPtyVh+j7YXoYR4jDsUxCIwspEWpIbq+nAI="
         }
       },
       "is_incremental": true,
@@ -1865,11 +845,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Lifetimes.ILifetimeFactory-2.yml",
+      "source_relative_path": "api/DidiFrame.Lifetimes.ILifetimeInstanceCreator-2.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Lifetimes.ILifetimeFactory-2.html",
-          "hash": "VUeqlXCYtTpGETTsWbf1sTmWwh2W13MtlejsYTj7XBI="
+          "relative_path": "api/DidiFrame.Lifetimes.ILifetimeInstanceCreator-2.html",
+          "hash": "X01/GAaY5FfaE0JwTGftw639OXJO33UCPs9UWRmhWlw="
         }
       },
       "is_incremental": true,
@@ -1881,7 +861,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.ILifetimesLoader.html",
-          "hash": "iZCGuTIIEBvIQQRz2nI/P4BYItvuwIhHgz81VaJpDz8="
+          "hash": "bWCXMPe3c1MLPabrZI5ETpKFF3BahoxtX0oULJe5BOI="
         }
       },
       "is_incremental": true,
@@ -1893,7 +873,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.ILifetimesRegistry-2.html",
-          "hash": "EjzoH1+cCOXEJoxUyWBqvs8/NpKUfnTI2Bc63riJFlc="
+          "hash": "6WcMg0/Rw2nTV1U2lmKctRgO8dUuh5m3gjhVAJHAClE="
         }
       },
       "is_incremental": true,
@@ -1905,7 +885,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.IStateBasedLifetimeBase-1.html",
-          "hash": "qgkAX+n9y3uYvXDHZqDsZmr6zxZHXANXeNE0S3WJEnM="
+          "hash": "ZdnTnAdeCjuP8WH+QkUQ6rxaMpCtGjcrhNz1T2lUea0="
         }
       },
       "is_incremental": true,
@@ -1917,7 +897,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.LifetimeRegistry-2.html",
-          "hash": "eKft9kYmddAf/17uDRtgOYYTrWb3LPn2TkoAeoCNEDU="
+          "hash": "tae1BfJTYrl1Nsu3vJUPvvTFThff7oj7ZM98lmseUa4="
         }
       },
       "is_incremental": true,
@@ -1925,11 +905,23 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Lifetimes.ReflectionLifetimeFactory-2.yml",
+      "source_relative_path": "api/DidiFrame.Lifetimes.LifetimeSynchronizationContext.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.Lifetimes.ReflectionLifetimeFactory-2.html",
-          "hash": "M88nb9e+sjecpZa2JD5V2SMNf8XrUX+xD7XJI7JdYcM="
+          "relative_path": "api/DidiFrame.Lifetimes.LifetimeSynchronizationContext.html",
+          "hash": "rCoTx04qsJVVXpgBd1WY2n2FKpXbXhrfsS2WO0YmwO4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Lifetimes.ReflectionLifetimeInstanceCreator-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Lifetimes.ReflectionLifetimeInstanceCreator-2.html",
+          "hash": "0j2W9Cx9/q0DPpZLThVrPN6uOfsu08hZUH30aQBuPC4="
         }
       },
       "is_incremental": true,
@@ -1941,7 +933,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.ServicesExtensions.html",
-          "hash": "jPhE8fQPMHdm8paOe5CmzQSPnRhR/fmp5PgKkY5VHvc="
+          "hash": "w+VH17MKQq4mwKs0BVpMW6lDrak1vEx4Cqjf72FWT90="
         }
       },
       "is_incremental": true,
@@ -1953,127 +945,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Lifetimes.html",
-          "hash": "UOwMEEX6JscST1VcQDUbmbtRVfaK7Z6S20s3SA12s+A="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Localization.DidiFrameLocalizerFactory.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Localization.DidiFrameLocalizerFactory.html",
-          "hash": "XFJfEKfKafF1bizdcAIFeqBc+ZOrPHUmsvwugRG3uBk="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Localization.IDidiFrameLocalizationProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Localization.IDidiFrameLocalizationProvider.html",
-          "hash": "gONWLiOZscMWQI6LQxj5dY7/Spc++ddsd2xNG5QM05I="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Localization.LocaleDictionary.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Localization.LocaleDictionary.html",
-          "hash": "tnB1Nxjf8Zw/sW8ldf2zaxtHfSHRQTaMc1bUkPw1F3M="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Localization.ServicesExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Localization.ServicesExtensions.html",
-          "hash": "Z+GD9I6FW4cjxB3S2ZSisUNMwS9BKeI8WhYSHgpv9KA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Localization.SmartDidiFrameLocalizationProvider-1.Adder.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Localization.SmartDidiFrameLocalizationProvider-1.Adder.html",
-          "hash": "1Ic5HlfjGVtTfrneOYHA5FrkC8Oa720+FLuqX3rtIlM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Localization.SmartDidiFrameLocalizationProvider-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Localization.SmartDidiFrameLocalizationProvider-1.html",
-          "hash": "wh03w9xzz9wCvaZm6pKA+e65WGUPpeBAqeOBzRX9mEY="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Localization.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Localization.html",
-          "hash": "Q8r6d2y3TVznbq/bAKabIc255mNclZsf7gEd8Q4gVpU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Logging.FancyConsoleLoggerProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Logging.FancyConsoleLoggerProvider.html",
-          "hash": "EpJXIwx12VReRE4EaWRAWz7Y7hH7qnzA2P6TKyuLUvc="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Logging.LoggingExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Logging.LoggingExtensions.html",
-          "hash": "6TcUrq9O9QIx7fm7dglUVG+6I0jQFij0CXFNoK7h9D0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Logging.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Logging.html",
-          "hash": "NUt8bI4IvoMVTSfzLTvS5oEjU+9I2xVK8ZJiDABiVe4="
+          "hash": "mt0F7yLFa0glDnTIC5V3tud+NV0gOCIjR9vtQgrzAB8="
         }
       },
       "is_incremental": true,
@@ -2085,7 +957,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Statistic.IStatisticCollector.html",
-          "hash": "JMSNkTzP5utvl8DA//oxIxpubpuIkczYahX370wcQqg="
+          "hash": "HtKn1sv9RdLSjFVS/6oWZ0AOo6jQQ4LaG1NgxNFEokE="
         }
       },
       "is_incremental": true,
@@ -2097,7 +969,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Statistic.ServicesExtensions.html",
-          "hash": "LINU5Koi8atXo5h2VIMuibtnycUmFVx6/l6jrb0/4AM="
+          "hash": "ztforhvqesDaEfzR+0QVaM/osVjDCOAzjZI73DkMqOk="
         }
       },
       "is_incremental": true,
@@ -2109,7 +981,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Statistic.StateBasedStatisticCollector.StatisticDictionaryItem.html",
-          "hash": "Is40oG+/Pt1UQwKprX6L1kJINBmCvhM1i8ioGj5plQ0="
+          "hash": "E7aee4P2MHthGEDjYdv1UrDqpG1QwbhBnaX18vhLHHE="
         }
       },
       "is_incremental": true,
@@ -2121,7 +993,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Statistic.StateBasedStatisticCollector.html",
-          "hash": "LJtvmpiYtDOLy3C4lcy2Lw/0yFJ02T8Ck5dcziQZIPU="
+          "hash": "gIdhP0xyOqWc4VA6V5TIFCbUs/C5uHZGIcwHJ3omfKg="
         }
       },
       "is_incremental": true,
@@ -2133,7 +1005,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Statistic.StatisticAction.html",
-          "hash": "WkfI1sEfw8VaNLJW0xg2G0SAGEBsMx+vKaEbRqEq5l4="
+          "hash": "Wpw4k0epzRABKB0TB/VWPSdVdQV/28A0KhqQRGyKQMY="
         }
       },
       "is_incremental": true,
@@ -2145,7 +1017,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Statistic.StatisticEntry.html",
-          "hash": "jIiIymO8+zQzVXk1Q0kksf2f4wSCB4yQJQlvCnZ6VOU="
+          "hash": "RyW3gzEv2Fywq0iP6RPu6v1za53gz8Shg5Z5jCswYnA="
         }
       },
       "is_incremental": true,
@@ -2165,11 +1037,431 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.yml",
+      "source_relative_path": "api/DidiFrame.Testing.Client.Channel.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html",
-          "hash": "O1MmWb+A/BNs5iSP0H+iQ50PqfUPyXgeu8MJw9gWq6A="
+          "relative_path": "api/DidiFrame.Testing.Client.Channel.html",
+          "hash": "b9LIg4bXZ4vBz6ftfIt+cnCUoogtzG/4qJRjylBQHvE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.ChannelCategory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.ChannelCategory.html",
+          "hash": "Mfh2ziLEyTgmUTuMW9hOsOvFVl02yz7nTVFbt0XmtVU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.Client.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.Client.html",
+          "hash": "gCAqfUXMfWYCt/+qwDwAVG6wP2EBrAIE2XYWLnAzm6A="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.ForumChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.ForumChannel.html",
+          "hash": "NSc8AUJGAIS0aNySupPL+V4Xzr9FAXfVVXb+V/4AGuM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.Member.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.Member.html",
+          "hash": "E6lW8tCbnEjkylzPpdPu9Q+AL6J9CZ2KGu7pKdBaN6E="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.Message.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.Message.html",
+          "hash": "m9HE8VMLdvYeECX1p38THWORKnQXEneirOsY7fIgomg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.MessageInteractionDispatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.MessageInteractionDispatcher.html",
+          "hash": "vm+xQTCUYalfsSy1wmlrCnOTQLYIMYVoMCJFqamSHTg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.Role.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.Role.html",
+          "hash": "h4HtDpxwBzJyxL/Q+GoFa338UYkWcf1lIjhMJ9t3pvU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.Server.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.Server.html",
+          "hash": "PiQRGRg/fYgKg6VbD/74QnydpR2RWTpe6ZXKq8rHAms="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.TextChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.TextChannel.html",
+          "hash": "3PtrOLf0Tacj519uF0tAtITd1Eay0aKqQzWyoF5QNsQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.TextChannelBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.TextChannelBase.html",
+          "hash": "u/wguUVOubwf6DddIDDss1nqkVdxyI0Ra8fYxpXfXAg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.TextThread.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.TextThread.html",
+          "hash": "uaeLytKfuPjKFP/vAPfauxMZLkjd7A/wdIw/qrn8pgI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.ThreadsContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.ThreadsContainer.html",
+          "hash": "tQTW+iFh8A/138p2x3VQoDCRhxzHoF9tLrzfnzYUYM0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.User.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.User.html",
+          "hash": "syon7TewsUwJDF04z1126LUdUWFWAHwk71AD6YClcek="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.VoiceChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.VoiceChannel.html",
+          "hash": "RCZJrbSK3GzT3urT92HiVrWp1oD2ern/tm1ug+VfpD8="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Client.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Client.html",
+          "hash": "YQFCLP7jtFkt8IHNAZy5LETzlZGo1Z0mujUDM9WO/EE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.CustomFactoryProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.CustomFactoryProvider.html",
+          "hash": "vWDdlg/aPPjbxEBPfWGVh1S92XOtGDIX3LODNSYi0zk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.DefaultCtorFactoryProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.DefaultCtorFactoryProvider.html",
+          "hash": "XGbdY9+JJrXCVxvxzfXuNq4BB+zxX2LaP9eT22gA2WM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.ServersSettingsRepository-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.ServersSettingsRepository-1.html",
+          "hash": "rVULabTDgQqZ7eq6GLhwWP8381RDrueJnl3WM7024wo="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.ServersSettingsRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.ServersSettingsRepository.html",
+          "hash": "AqYVkw4+JvhRIkxGaGy9pR80FxpY/iSHMx5gy1zx74U="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.ServersSettingsRepositoryFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.ServersSettingsRepositoryFactory.html",
+          "hash": "ZI6VldKLKxz2t+Re8YTYTCzJpppIuzbCTZ7YJuM7wRk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.ServersStatesRepository-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.ServersStatesRepository-1.html",
+          "hash": "flD2Ih4cKiXVxFVKQdwv6j/B+t95uEaa/SXBFl3IX8c="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.ServersStatesRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.ServersStatesRepository.html",
+          "hash": "oePYzmCYYI8g3lStKMRUq0Ba16UZnXNQnhWAG3gZgLo="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.ServersStatesRepositoryFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.ServersStatesRepositoryFactory.html",
+          "hash": "S0e388s6LUAM/cvWXb0H64dlm+NeJq2Fj2asLd+UzKE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Data.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Data.html",
+          "hash": "CBa3kSr3c/shAdZtnF7n0wKgfetvBB/5MB6LnxyBaio="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Localization.TestLocalizer-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Localization.TestLocalizer-1.html",
+          "hash": "uodzjPyx+KNVOVzqY+YTpEO8F0AzaW03Dd+QJNPG5Xg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Localization.TestLocalizer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Localization.TestLocalizer.html",
+          "hash": "lBIRLO9T33dhx95quGgjDuYRfPDk5coZO8M+jeq1DZk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Localization.TestLocalizerFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Localization.TestLocalizerFactory.html",
+          "hash": "U7plQKHBrORiBeJK6j4WL/gJGu8+flx/Axkb4VTpGU4="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Localization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Localization.html",
+          "hash": "C5invLbZnlxryz1WvQARwSYF/cDvtGYjUvCzVPsv+Gs="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Logging.DebugConsoleLogger-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Logging.DebugConsoleLogger-1.html",
+          "hash": "LTyeh/QLXXjHAQvu9w7M6cekliK/+Mu5wJxchTim5kM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Logging.DebugConsoleLogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Logging.DebugConsoleLogger.html",
+          "hash": "wAfq3965SDuiCRaKrBKazOvnLQowVFVtMXq5NW6pPaQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Logging.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Logging.html",
+          "hash": "dKFICza5nXaSM4L+MfQ9Tn7qoXjeufscHtK1miXtJ/0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.UserCommands.NoHandler.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.UserCommands.NoHandler.html",
+          "hash": "mDe6Hvg5gKdJ+yPxIvVhk2AEdto+zrPhuePksOrHOCA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.UserCommands.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.UserCommands.html",
+          "hash": "jEnAyt1N7G2/GTYiyHr4KhrmE/Q6o5yCF5jxO2iTqBY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Utils.InvokationKey.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Utils.InvokationKey.html",
+          "hash": "lBK5dWaaGLNLIJSb7KoH83AMCSF9GHCgJ2TNXcxPadM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.Testing.Utils.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.Testing.Utils.html",
+          "hash": "D1nHovpL3MO6fA/KQkilBJpL329q1BvQa8GNhgpn6Yw="
         }
       },
       "is_incremental": true,
@@ -2181,7 +1473,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html",
-          "hash": "qKD8yo667P+UnHaLc1GCxpv2jnQ7a335GfloLwIfxCI="
+          "hash": "zdDrHOq2T3HMO6EA8ThOAG2gUox7XVB5qq/CnKItjPY="
         }
       },
       "is_incremental": true,
@@ -2193,7 +1485,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValuesProvider.html",
-          "hash": "s7cIkjrHcE5otbdVL+4LfLKuwq3trlbax+qLrMov1HM="
+          "hash": "ygo3CJ+RNW7wc50nJ2xm+Lh/EHuV5PXDaY2vSQMjduk="
         }
       },
       "is_incremental": true,
@@ -2205,7 +1497,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Providers.DelegateProvider-1.html",
-          "hash": "Yx5k4rA8Un/174FAD08wxKyW67qXug90OaKujpgqBpQ="
+          "hash": "4pT+hEyd1igjZOj9JRbxpfzHD64aRARGzDA/6U4s7J0="
         }
       },
       "is_incremental": true,
@@ -2217,7 +1509,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Providers.FixedProvider-1.html",
-          "hash": "h1RfWxyrrxzh9ATP6ZANS6u+jrJTuNHe7OM7FeQdnF4="
+          "hash": "+8eGmtnblSoyC1qrH4nTTD9m3Dee2hsbagul7OI+dfE="
         }
       },
       "is_incremental": true,
@@ -2229,7 +1521,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Providers.NumericProvider.html",
-          "hash": "NSK0/3+hCYudlpmYLb94T/r0WQLrQOTk1hpN66R6Hlg="
+          "hash": "HL53/N8sADFjsRiZ+KCifIherUP3Z0oTRou39h6akEk="
         }
       },
       "is_incremental": true,
@@ -2253,7 +1545,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.ForeachValidator.html",
-          "hash": "wS8ral72h812XVmtkH/XveZxXcLNauM9X9DE6c5q6qk="
+          "hash": "Rj1LYMm7R6PVh/44hOxYZ01dpKu+k0cqdu1cYgVgoOY="
         }
       },
       "is_incremental": true,
@@ -2265,7 +1557,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.GreaterThen.html",
-          "hash": "/yugGHG3dvj2oS2S0qYQc816yIMP/i0zlp/63xNhd0A="
+          "hash": "ibHpBGSNTA3Kedb1Ody5a5GksJfkAfxalsTC5D19zcw="
         }
       },
       "is_incremental": true,
@@ -2277,7 +1569,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NoBot.html",
-          "hash": "1r2/FbPdmj1aYwzWV97cFRCItabrFfQ1DXkhKiOD8lg="
+          "hash": "nm5hElrqLQ3DuiDlg7UaocbC0KByJ2XAI7W2WooIUb4="
         }
       },
       "is_incremental": true,
@@ -2289,7 +1581,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NoInvoker.html",
-          "hash": "bU1Ka9kgixzBKECBkhGitdBtmewgNqhAfbw/Uv5XLBs="
+          "hash": "WYYR5foPfYoDMsB8+H6yxAJZV22nRVTC2cTIaq1Rlek="
         }
       },
       "is_incremental": true,
@@ -2301,7 +1593,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NormalString.html",
-          "hash": "+AX2Hc501pce9nQTdIPVW08Aai8iJ/mxyJDvQgQbEP0="
+          "hash": "Nkkz+y69LAXCP3UKRS/NIOPjb1WHHOd3yNUGEZguHdM="
         }
       },
       "is_incremental": true,
@@ -2313,7 +1605,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.Validators.StringCase.html",
-          "hash": "swICWhI2hCOpT1wFnI2tA3lDyfBjJ2DROU7bTt/kVtA="
+          "hash": "SkBARqIl9EHZXss7ceI/PbO92ipv5EDYX39zD7/sa7Q="
         }
       },
       "is_incremental": true,
@@ -2337,7 +1629,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Arguments.html",
-          "hash": "srgk1hnRNaGhlZAiDv771HO0G+n/NgtStxyBqX4DHHo="
+          "hash": "V2RGIsJKWnR+hMatHZbmBskj7c/gr3OZ47UW8F+PkmM="
         }
       },
       "is_incremental": true,
@@ -2349,7 +1641,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.ContextValidator.html",
-          "hash": "SM+oywvjTROQSm3GEoKa1cjoXmH4iihhR84NseFr+8U="
+          "hash": "UtF3xEjmUdlhn29XwgXlyH+wlat2VARBVB/x5BT13bE="
         }
       },
       "is_incremental": true,
@@ -2361,7 +1653,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Invoker.Filters.Disable.html",
-          "hash": "CJsR8cbgiAtF5QaO1F/wpjR+5RaiffhqWlXNfy9nwNg="
+          "hash": "JLZ3IZYNNYqW4PcOCXNqiNRw4cdfNc1xfH5J5voYaZc="
         }
       },
       "is_incremental": true,
@@ -2373,7 +1665,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Invoker.Filters.PermissionFilter.html",
-          "hash": "rd92c54QiyS+s3UdRcg0d4ureHSwrc7+eoJZ2xJM56w="
+          "hash": "JNh5xWwT7EEm4S2eDyAFdRKSDsHEQDb+BcHE/OeR+zQ="
         }
       },
       "is_incremental": true,
@@ -2397,7 +1689,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.Invoker.IUserCommandInvokerFilter.html",
-          "hash": "GK86cNsINJ6ii06760zjzBT87/UmzYZdavGwjIqpl9w="
+          "hash": "YSWlru1V/VAIGZbV2/7CmHVppx2gm71GZyZpWHEpF5s="
         }
       },
       "is_incremental": true,
@@ -2421,7 +1713,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.ContextValidation.ValidationFailResult.html",
-          "hash": "gtfEplho0Fi+ezxKl7qEjpuVu6gf+l80MzCKI2LRw8Y="
+          "hash": "D82GKHkYMynswX1zg3eP/hfkbohwIaUbSmYU1ml/XHk="
         }
       },
       "is_incremental": true,
@@ -2445,7 +1737,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options.UnspecifiedErrorMessageBehavior.html",
-          "hash": "EwuPe7YyF726dX6fydK9tmXloF6MfSA4D0GLaMGadg8="
+          "hash": "ohafhycL1TQc7m8MbqXKdFYedynSQ1IlCV26dP88blM="
         }
       },
       "is_incremental": true,
@@ -2457,7 +1749,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.Options.html",
-          "hash": "pDSBK5mYDJEDAWSdW2Y7SK+POP0o/7kHDfd8KgrU+xA="
+          "hash": "4T/+7iPnemM23/lSa9hd2jJOWUX9+fisvupD7VCJ6ms="
         }
       },
       "is_incremental": true,
@@ -2469,7 +1761,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Executing.DefaultUserCommandsExecutor.html",
-          "hash": "c/XWEJM+/nX6gpcwuIWokJWPm6L9/4m93hVIHKAtiTk="
+          "hash": "iEdn59imdc5DEBoETs3MiC9VfAv2GLbB03DIEjvo/8g="
         }
       },
       "is_incremental": true,
@@ -2489,11 +1781,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Extensions.yml",
+      "source_relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.ArgumentDescription.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Extensions.html",
-          "hash": "yNc04veuw5wiwi3h9epoDysTXW+a7maYLPJdPqauid4="
+          "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.ArgumentDescription.html",
+          "hash": "ScX/XkNXtSJauRdxtwQpM6IvQn+e+/j64Ff9t1/Jqxo="
         }
       },
       "is_incremental": true,
@@ -2501,11 +1793,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.ArgumentDescription.yml",
+      "source_relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Creator.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.ArgumentDescription.html",
-          "hash": "rvzGDGxuSBh64rUV08EdB74Q0oXtDYQ+SW5wYQKkA3Q="
+          "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.Creator.html",
+          "hash": "Zg7vGcyqtlE2WayD6nMn+bKF9WYYJz72Qrjk5ONqQ3A="
         }
       },
       "is_incremental": true,
@@ -2517,7 +1809,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandConverter.html",
-          "hash": "sNsViBZvWratle8I4tNudFYSxV7WbzCInFsk2MD5tCE="
+          "hash": "7IWpB+PcnrSIyxAva9ifoMuGAlYLwGeERGKQKniy6m8="
         }
       },
       "is_incremental": true,
@@ -2529,7 +1821,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.CommandDescription.html",
-          "hash": "4Btsb4KDH6LxKHV+pMw//LNx+s/qimwSTHdf/+cWD+Q="
+          "hash": "2nd7pq3A0Bdzehc1eqLIhW6MSR1NdBspKZF3PvvXU2c="
         }
       },
       "is_incremental": true,
@@ -2541,7 +1833,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.HelpCommandLoader.BehaviorModel.html",
-          "hash": "OB0E24MlKYZ1r7iNB8NY+EV/JR0kw6tr2JXs6uX6yIE="
+          "hash": "7oQ5+vS9V5HewpjE77oZAZ5FI+DdfAIKhHUkuCOFzZk="
         }
       },
       "is_incremental": true,
@@ -2553,7 +1845,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.HelpCommandLoader.html",
-          "hash": "xX2O21dZNbfeNeJz9eFIi+JJLC3S/MaF1/Z8HJOCc/Y="
+          "hash": "evNOAUF05KFD2+khgxW7ca00UH29iR8BrXsi0I1U96c="
         }
       },
       "is_incremental": true,
@@ -2565,7 +1857,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.LaunchGroup.html",
-          "hash": "uRmvkNK3nbk6Ak/RH6nkjRVV52HG3NrSxbeRrgFoKQk="
+          "hash": "epIsuufjTAbweXYF65FkwsarKmEMs78NNQRRbGnu6jI="
         }
       },
       "is_incremental": true,
@@ -2577,7 +1869,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.ServicesExtensions.html",
-          "hash": "6QxabL+rkfgEppPLJ76NlrLhrtOdOLZ3otfXltoxTTo="
+          "hash": "+HMyfervGn1ccX91AYOp0YMEs7uZQ646oAI9VmnVdI4="
         }
       },
       "is_incremental": true,
@@ -2589,7 +1881,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.EmbededCommands.Help.html",
-          "hash": "/UvLjNgAoFHs2qxCSh4lqic+rEfEBKC86QE3JGd7dnc="
+          "hash": "vG899sC6118iLc6vE5bt5fTdJPD7DqAIhrTt0Kk+ipk="
         }
       },
       "is_incremental": true,
@@ -2601,7 +1893,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.IUserCommandsLoader.html",
-          "hash": "Tz4kSelLKQnkNZeVC7MxvgixCFxlPE7Q8Xh6Lt8afiM="
+          "hash": "+R++c+7KStC1Hc6cyMFtEFn4ra6SS+VUX9MoK5y/Gn4="
         }
       },
       "is_incremental": true,
@@ -2613,7 +1905,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.ArgDescriptionAttribute.html",
-          "hash": "EU6YK1245zFKg7m2gK7g3W+n13bdCbZya8+uNiTrqsc="
+          "hash": "G4Vrqkls5wwYL3/p1aubZBawio8Ud+UwaGHhm8ES3P8="
         }
       },
       "is_incremental": true,
@@ -2625,7 +1917,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.CommandAttribute.html",
-          "hash": "6eWc/Xa9RZ/na0mervV7DhxHTKOj4CyZRg3F5V60aZI="
+          "hash": "itV+COMHUKCv7KfBjplIIucEQw4vWMQ6NV/xUd5xVAM="
         }
       },
       "is_incremental": true,
@@ -2637,7 +1929,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.DescriptionAttribute.html",
-          "hash": "K9sr83HAXLOtfD9gNXJXKz2YRnR8svi0d+Eyo/LeBa4="
+          "hash": "0TOfOWwVUhzDnMCIyYXECnPdJb5Ym8Rs4bSXZEtxA5A="
         }
       },
       "is_incremental": true,
@@ -2649,7 +1941,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.ICommandsModule.html",
-          "hash": "8/U+ernbo0vw7+v/f9QSmWqI+QC49qIZ3HAZEoA6mao="
+          "hash": "WmrtBhbwx+g0vOfx3pEpAUYXp8rWJjbUKkqTBnFGqxg="
         }
       },
       "is_incremental": true,
@@ -2661,7 +1953,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.IReflectionCommandAdditionalInfoLoader.html",
-          "hash": "DWWccf9KILohKVK/BC4IDK+Q3Ilgx+3UfoBeuNGhjvY="
+          "hash": "wjMtOc/5VTMGJAa/qwNX3wH1wsYpDK6ai/qXZNxuAhc="
         }
       },
       "is_incremental": true,
@@ -2669,11 +1961,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.InvokerFilter.yml",
+      "source_relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.InvokerFilterAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.InvokerFilter.html",
-          "hash": "+QAmrH5FME2lhtw6WQFXSyad4HMHMpXoNtEx7IVUFyE="
+          "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.InvokerFilterAttribute.html",
+          "hash": "1U894w47R9xIbkv9qj4pQoFRPgTMAp1bJGCp5qRoCGo="
         }
       },
       "is_incremental": true,
@@ -2685,7 +1977,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.MapAttribute.html",
-          "hash": "h43wMyWxxw71TV2SMAXLe/mJZ7uFZSPj/jvea7oG8bY="
+          "hash": "vcYqr9uUTG4LM/jCd1EJ+5utTeg7whKTC6xcj0dM21A="
         }
       },
       "is_incremental": true,
@@ -2697,7 +1989,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.BehaviorModel.MethodValiudationResult.html",
-          "hash": "NnNhUfw58rekezVd8DWpgt8T0lJgJX0hGumnefRpGvo="
+          "hash": "eUywVSYvE/1rKpQwL1wxOsEX1hrFd3E5qnmUJzKbt3w="
         }
       },
       "is_incremental": true,
@@ -2709,7 +2001,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.BehaviorModel.html",
-          "hash": "GFHCccYB2PEXLhfgufm3OtkrOUoJpu6k3v28ISUPa7I="
+          "hash": "I+ejERK2Z38ehekhTftmwbOrTB9pI6v2/65F8/6Gz1w="
         }
       },
       "is_incremental": true,
@@ -2721,7 +2013,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.html",
-          "hash": "JqC+G4i9p6mZrNEORmo0DxokjBb0COGQRamYPZpDvQU="
+          "hash": "/XWDVWX5jxn1Zd9KPjMk8wjdUuPHc2aa1tRKNAI1ACA="
         }
       },
       "is_incremental": true,
@@ -2733,7 +2025,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.ServicesExtensions.html",
-          "hash": "oMxoNRAGUM7xiKkdm8bXiDTTFOi9FT9K1F5CtEAc9DA="
+          "hash": "YXtoZGNzLUX7Htr7uoBz8baZCjQIQatqKi68Ku9PFec="
         }
       },
       "is_incremental": true,
@@ -2745,7 +2037,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.ValidatorAttribute.html",
-          "hash": "GjdmhKi4KCmv7y5No+xUIGSH9WFT2kV/YePrjASezwo="
+          "hash": "KaIAh7z+DScFd8kD99ucU7soce9hrki20Zvywh4pwMo="
         }
       },
       "is_incremental": true,
@@ -2757,7 +2049,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.ValuesProviderAttribute.html",
-          "hash": "0l0F67qj21bwMyH8Y8m6w/YkwQXyFvWvfAgzEHyrOoo="
+          "hash": "mbA1E8h3XuVc951Bp0GuJHX/PnkWJScmnSLff4czWZk="
         }
       },
       "is_incremental": true,
@@ -2769,7 +2061,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Loader.Reflection.html",
-          "hash": "c+VFUJdqzPhaMUMHxCltTosJXVgAu6p2OMbdPgHnEYQ="
+          "hash": "sZKGpyq3QXdW6mFE2gz6+555kIxtLNvGO4kl7iIohxA="
         }
       },
       "is_incremental": true,
@@ -2789,11 +2081,23 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Models.Extensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Models.Extensions.html",
+          "hash": "TD5AFa8JvMbtZakPrRcE/JzqSQyCzx+UP4Qurm1gVYU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/DidiFrame.UserCommands.Models.UserCommandArgument.Type.yml",
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandArgument.Type.html",
-          "hash": "zSEctv+msDo055XXmfDmHJcbl3TSEaOCtko9aU1h13c="
+          "hash": "8r53F2r+95HM4NTdRKcKNKCAJBlE0E12GunCdcywIoA="
         }
       },
       "is_incremental": true,
@@ -2805,7 +2109,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandArgument.html",
-          "hash": "FX5MjqqpC43W2fqUjEp/L+YNql7P/rO8UWAfEIx3nhY="
+          "hash": "jCM1bOxUiLuc7eDAKCi2h8+ntFi2qbxBtCbZznq0r9c="
         }
       },
       "is_incremental": true,
@@ -2817,7 +2121,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandCode.html",
-          "hash": "3KOqtk6j9XaqQ8zzZGjwS+1n3xk8IamLnqARVZ/VlMw="
+          "hash": "lBtuGy97jU/374Flzlvsh/S+pCriaNFMaK/L5UznMgQ="
         }
       },
       "is_incremental": true,
@@ -2829,7 +2133,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandContext.ArgumentValue.html",
-          "hash": "hVqCJCN99zJgRL2pLyZyDZh0Yh9bHhlKeFONAbLtz9s="
+          "hash": "ct9RL4P2/LULhFoPKZnP+fk/obB8PYRDTeOBAU+RuaE="
         }
       },
       "is_incremental": true,
@@ -2841,7 +2145,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandContext.html",
-          "hash": "BvFQEEgICHqzuue4b8k5IrBEwRum+nZ+5oeNcLTdoiQ="
+          "hash": "0TWRRrwQCQgZ3dOpdt2LvYAHekWzbgVQsKMODjEDU28="
         }
       },
       "is_incremental": true,
@@ -2853,7 +2157,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandHandler.html",
-          "hash": "Vye5viE9jyC8A3FLGGVsKFDt0zvdpPskEf4LtNWvAIs="
+          "hash": "cwOIgBUfvA9kca6mDWFU9xT1iHKbAB17bCCoqSda3cM="
         }
       },
       "is_incremental": true,
@@ -2865,7 +2169,43 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandInfo.html",
-          "hash": "gHo5Kj5MUTL7zSRiTxyG8fs0dEBMyVtLGZswYgC3JhQ="
+          "hash": "gF2+F3+Xc3wVBfPZ4ZmUP5wt8/v2YyDWFKH2BmsLUH0="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Models.UserCommandMiddlewareExcutionResult-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandMiddlewareExcutionResult-1.html",
+          "hash": "qLgyjy9b2XKtnPuc09epJ4CWaellQAFXUubPpJLhc9U="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Models.UserCommandMiddlewareExcutionResult.Type.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandMiddlewareExcutionResult.Type.html",
+          "hash": "pfvVkNt7P2w01mhzjk0BNMVod4n/xNC22EGsNy6q9NE="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Models.UserCommandMiddlewareExcutionResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandMiddlewareExcutionResult.html",
+          "hash": "qjeKjmi/LjUk9Tn3Ujy9LRMQGA6R/kWr3wFeduROfiE="
         }
       },
       "is_incremental": true,
@@ -2877,7 +2217,19 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandPreContext.html",
-          "hash": "/+C9XrV1CgCojEpe+PXynWCmfKKeTasYehfFgkOiE2c="
+          "hash": "id//LQszGDFJ3aj1IHjVD6sy8cDtiB0JZspO9/wK8TA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Models.UserCommandResult.Type.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandResult.Type.html",
+          "hash": "zYE7p8ELx0MyxPJbSOulMjVh2kId0ado3N/L3exf5i8="
         }
       },
       "is_incremental": true,
@@ -2889,7 +2241,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandResult.html",
-          "hash": "nbZ7wtCyW0rUYSr7HJyaWNut6fVs0d6W1jeCLOncJ7E="
+          "hash": "ZQCDfPFHwPr9FjzztFQvanYX3wgr2e3zawL6JoJhtus="
         }
       },
       "is_incremental": true,
@@ -2901,7 +2253,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.UserCommandSendData.html",
-          "hash": "7BR1q498wD7XI4F0LUiliDb//Nm5EElueuHwa8/nuUg="
+          "hash": "jKEkkw9rgwapIr6ZU6ZtUdeALOvIzzVl+B3W2blPsrs="
         }
       },
       "is_incremental": true,
@@ -2913,7 +2265,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.ValidatedUserCommandContext.html",
-          "hash": "JhMsWDhKmUA+6RAZ1GDvb6pFUruW0RJ9lU3QU8/EfI4="
+          "hash": "qiz3fzo2FM366T+yIL2ZOLSdHETOvjIijFyuB5f4OJ4="
         }
       },
       "is_incremental": true,
@@ -2925,7 +2277,19 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Models.html",
-          "hash": "P64yiYuMpMGzZZlTB9w3zq+8ZIxIgpS7NeWpPNv0USc="
+          "hash": "Tc2C5+H9mJVGTk6jIvwcJ2C6UkhwTu50voSg+OjdZQI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineAsyncMiddleware-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineAsyncMiddleware-2.html",
+          "hash": "9bGg9nZv/zTTDhbyfIWoYN3PD56xcZiiOVVy8ceTw0U="
         }
       },
       "is_incremental": true,
@@ -2937,7 +2301,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html",
-          "hash": "MveXJ1Ahd8zE5e7iK+u7xGcuoliDs9eqwQnMCott+BQ="
+          "hash": "f49Vdkeo1KhT2aX1hKE1tTCTM72DHrVO6XHOk8zHJfU="
         }
       },
       "is_incremental": true,
@@ -2949,7 +2313,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.Building.BuildingExtensions.html",
-          "hash": "OQp7Ej74/uaZKs8Os45BwqfrKzCVw4g/4sT0KZBHr8w="
+          "hash": "4MalJHGZJM4hUr+j6Hm4LCfperuHPUYDaLXR01BzP2Y="
         }
       },
       "is_incremental": true,
@@ -2961,7 +2325,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.Building.IUserCommandPipelineBuilder.html",
-          "hash": "xhd98+tkCq31hGft3dgsE5cmfQ/gY+poUyWpsPUjV0A="
+          "hash": "gPL0yV8zd5p05paKH3s66PqqgqZVA3ByW7h3KbMPbVs="
         }
       },
       "is_incremental": true,
@@ -2973,7 +2337,31 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.Building.IUserCommandPipelineMiddlewareBuilder-1.html",
-          "hash": "SM8ups4pxnxyI1K59J8LYisPcpTNyjf+35Toxeu3YeU="
+          "hash": "eW1wF2ziTW0vfDnCQ6ek7OgFCV6FJlbODGkJAuTK8DA="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.Building.ServicesExtenions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.Building.ServicesExtenions.html",
+          "hash": "uQL1oZZR0jG/ZRrATb+t2w2oV9vG8wXTB0ljb4bg6JU="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.Building.UserCommandPipelineBuilder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.Building.UserCommandPipelineBuilder.html",
+          "hash": "pcuIZOxnCAIOoUADNerBd809l6o4fIgztNZwbOmE44E="
         }
       },
       "is_incremental": true,
@@ -2985,7 +2373,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.Building.html",
-          "hash": "T9bacTCbhELGrrkQXh4j0auvO6RX/U0irlhDp0suxuI="
+          "hash": "R/ncsfuiP+ANXdHhVcM96uc8gxQ7tIhm2xEeO0jl21c="
         }
       },
       "is_incremental": true,
@@ -2993,11 +2381,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.DispatcherSyncCallback-1.yml",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.Options.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.DispatcherSyncCallback-1.html",
-          "hash": "7UGGw2ooj7UQuAiMVNOjSnOX2k98qOorsU72NZYvw6s="
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.Options.html",
+          "hash": "V1ZRrH4yZbWm+hNDUznMHPpgSMYrSeNXqmRbVKM1lnM="
         }
       },
       "is_incremental": true,
@@ -3005,11 +2393,95 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.IUserCommandLocalServiceDescriptor.yml",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.yml",
       "output": {
         ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.IUserCommandLocalServiceDescriptor.html",
-          "hash": "RTHpN3jQkyj08/CLHeive10LwtsATj70WrkE22/UEbA="
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.html",
+          "hash": "YDnM7/fmIeeJ0gDQgLJT3fGgYcz21iQaQkv0NQas/rk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.ServicesExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.ServicesExtensions.html",
+          "hash": "oLRa/nnaJ9PLDylLcNfjtUoaze7ECjDhJusU42aQEVg="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.ArgumentSelect.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.ArgumentSelect.html",
+          "hash": "/jLrr5FdXdb+sYdpJi/1ovzypUnOFmpKEghUhOSdp4k="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.BehaviorModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.BehaviorModel.html",
+          "hash": "BhGoIRFTJAowEx0eBEmCHo4C/iyH0myaiNQgPkMDpPw="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.Options.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.Options.html",
+          "hash": "HFMU1JWTTBovITAIA/8KKZrNfCffx+Z/WZWh1hZ4R2M="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.TextCommandParser.html",
+          "hash": "vMNmnKIsAXF+W+vkPFEGCN6Uy2ha+xpsuLh9YtRLwkM="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ClassicPipeline.html",
+          "hash": "iNp6KZ+dNy3hK6wZx1IuETyob2FZQVgYLr9nmtT8f+E="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.DispatcherCallback-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Pipeline.DispatcherCallback-1.html",
+          "hash": "/J9mxlLzYFiJ7sBxUcg7DnS7JBHnX/4jAVSTeBQ9Gms="
         }
       },
       "is_incremental": true,
@@ -3021,7 +2493,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher-1.html",
-          "hash": "WBfgws0VB9F86j7PyVWj79tq1ZVXKHnFBM6EdhAgT+U="
+          "hash": "2+P4gPX9jhTPZ3fy1KwCwuLzwqZkzs2nWNYmeGVJcho="
         }
       },
       "is_incremental": true,
@@ -3033,7 +2505,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineExecutor.html",
-          "hash": "NUKLb9oXE+PHd1DPMHYscg/6N0x2X411RNRyZECOuUk="
+          "hash": "hfw8P/w7v+Urw4uKfBZbgX8b+RsBUP+lUk3DuXZnO1U="
         }
       },
       "is_incremental": true,
@@ -3045,7 +2517,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware-2.html",
-          "hash": "b2v/Lrnvv+VV9AkDB3g72V/oQtw6pIVXwofrW6dQNeU="
+          "hash": "Aff7BnW0blGI6Rvk7NKMnNEIgPRwBDKPvcxRiitIJx0="
         }
       },
       "is_incremental": true,
@@ -3057,7 +2529,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html",
-          "hash": "naisQfOwUKcZDfew54UwMvpP956VCJEKqN4g1a7RbOE="
+          "hash": "K+b3amYU5nCzCNKD4uP/HCCrMRO59xW+9vv+wvyyaKg="
         }
       },
       "is_incremental": true,
@@ -3069,7 +2541,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.Services.Disposer.html",
-          "hash": "O96pu+LmMRer47KCw5E8AhjTHVNKzPAeVbVNG3OF9l8="
+          "hash": "kHQmnavTE0m2FQQdwV85o+YEHqVoD2idJOERL+/LUE0="
         }
       },
       "is_incremental": true,
@@ -3089,47 +2561,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.ServicesExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.ServicesExtensions.html",
-          "hash": "agtGd9f/8+7MbUlEPsMTfQHC8T2f1DjKBSIHWVLoJ/g="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.UserCommandLocalServiceDescriptor-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.UserCommandLocalServiceDescriptor-1.html",
-          "hash": "tncYxVJka8uy2rB4f7JaX6NCo2jOUtjLGh1R1J+3uEM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.UserCommandPipeline.yml",
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.UserCommandPipeline.html",
-          "hash": "wH0tIio8DbMOmyoXa8hcRN1UrzP3BRoaRCEjhoGsiU8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.Status.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.Status.html",
-          "hash": "iE3jLsFTyoWnmgoB5TwQu8urxkLM9350/VZFqCGLX3M="
+          "hash": "WLw1hHtQaLEooFGMSmZpabAYeTZIM5lETdSBv5E7dsc="
         }
       },
       "is_incremental": true,
@@ -3141,7 +2577,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext.html",
-          "hash": "IfLZ0XQdRjiTriYieItPKm2MmUtVuUYnzrCP2wvAvhY="
+          "hash": "0SdSEYFx3KCSKE04J0O5XHGoQmTeu3L/xlqqg9aT87Y="
         }
       },
       "is_incremental": true,
@@ -3153,7 +2589,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.UserCommandPipelineExecutor.html",
-          "hash": "1/ZifNK1Tn4Gw/s1xJSOuhJH10n9MBU4vyem1IO/EMI="
+          "hash": "xvCYB8IWv/rAmisnQDOtemD7T9KM3C0R0Wv2Qt6CF3U="
         }
       },
       "is_incremental": true,
@@ -3165,67 +2601,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.DelegateMiddleware-2.html",
-          "hash": "pwk9DiZS/vird8HzztA3pBJtl4xeKbYdo88LC/FguhA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher.html",
-          "hash": "FH2wpwoQ5QKKQNPYVYT5/VNb3AnOoLEe4RivKmHIdTM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.ArgumentSelect.html",
-          "hash": "QTUuD3K+4R/WtroRvVHLsNdUl/XjuuXXgGb7r4GbZlU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.BehaviorModel.html",
-          "hash": "xy4PE5ezw9mp83DtNGRsFArN9BeLTBzjy78P2A+2LTY="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.Options.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.Options.html",
-          "hash": "xuyblGbq4mgmeoU2YcdXPuFAk3lliGVdUCd9hCVRGI8="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.TextCommandParser.html",
-          "hash": "bGwEsJtmFtx4MwpzzjKNYQ36uP3ASfRF6881bhbcsCI="
+          "hash": "ifH6u3xjK39VTInIAuzICJcoi1cMfj8jUO4uiRnC0eQ="
         }
       },
       "is_incremental": true,
@@ -3237,7 +2613,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.Utils.html",
-          "hash": "smlZmvk8p4eKvNc/DnFBTEDjZls5udKDExNIyq8LaS4="
+          "hash": "CkmRc8KJQW8JBMBhmsP95reHSnhlZTWwS6USHj7hjd0="
         }
       },
       "is_incremental": true,
@@ -3249,7 +2625,19 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Pipeline.html",
-          "hash": "CFyP1v/MtvwnYFbVVxpphzlHzr1UQZUbTvnZdrKnktI="
+          "hash": "SC4V5b0Il0oNeXfSQXItkmuR9HwE9JGshmJNYvqocAY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.PreProcessing.BackConvertationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.PreProcessing.BackConvertationResult.html",
+          "hash": "usJBCMfXgzlKKD5ktw2W3iOW97hSRcg2yeGI8tGTAqU="
         }
       },
       "is_incremental": true,
@@ -3261,7 +2649,19 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.PreProcessing.ConvertationResult.html",
-          "hash": "YSDxdu87tJSBAg4RwUXpzYvOYP2sUYn19YY5gDiouqI="
+          "hash": "ISjWnS1CvmQofiMArUgX6ljyD62juVgLHbJ558ZJ8Tk="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.PreProcessing.DefaultCtorContextSubConverterInstanceCreator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.PreProcessing.DefaultCtorContextSubConverterInstanceCreator-1.html",
+          "hash": "9pYVkhSMMAJ2jV8zg2LL2IuGZYr/05iulSWwjIo4Vtg="
         }
       },
       "is_incremental": true,
@@ -3273,7 +2673,19 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.PreProcessing.DefaultUserCommandContextConverter.html",
-          "hash": "58EUS5++UKA/lJlo9CW1y9OR4qpFDgFTzVDncQJsP40="
+          "hash": "lnSIeuGx7vEfU67P8fLWBlOHIKemeTA0Ug2P8HiNloQ="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.PreProcessing.IContextSubConverterInstanceCreator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.PreProcessing.IContextSubConverterInstanceCreator.html",
+          "hash": "FvQwAzg8WJ7R6hSYIGh4hWD0H4fGfk0IasWNEUpO5jM="
         }
       },
       "is_incremental": true,
@@ -3285,7 +2697,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter.html",
-          "hash": "hZZupNHA33+l/VeJYbtHYBwM2cVqMB4kPMnOWdR3A6k="
+          "hash": "WsrvLuEEel8NadpPYEoz1I5tHdj4LGt3gE7T0EB1meg="
         }
       },
       "is_incremental": true,
@@ -3297,7 +2709,31 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.PreProcessing.IUserCommandContextSubConverter.html",
-          "hash": "IN3/uJFiJ1yqktgaiHmW/moM3hf1t85M4th7Etf4PGs="
+          "hash": "n1ku/53PqXvxWWg1RVa3jV4u/qxs37ww8BuN1h60/6Q="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.PreProcessing.ReflectionContextSubConverterInstanceCreator-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.PreProcessing.ReflectionContextSubConverterInstanceCreator-1.html",
+          "hash": "rn1jhw5NyyFIMbcCYHBwy3MGzybffrI56KEJhpiCIKo="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.PreProcessing.SingletonContextSubConverterInstanceCreator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.PreProcessing.SingletonContextSubConverterInstanceCreator.html",
+          "hash": "cAvDhDSKP0p1Inkx7Uum7nCLkpqBngdkO07P1lVCfBk="
         }
       },
       "is_incremental": true,
@@ -3309,7 +2745,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.PreProcessing.html",
-          "hash": "IGyvh5gsMfB7NUpUXzR+3W6u7eVRr1sWh+PlD9Iwct8="
+          "hash": "FivF+icPqGtWSz3XhIegkqtYEKvjpLhE2Y/OQCqd1/4="
         }
       },
       "is_incremental": true,
@@ -3321,7 +2757,19 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Repository.IUserCommandsCollection.html",
-          "hash": "+qGO6R+8KhORQKNzE4/QGg0Tn1t0aYt+kd63j9yjvRE="
+          "hash": "XNZ56+thi5Q6iVg96b1t3QPEIYInZM4PBCP5PWulE4U="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Repository.IUserCommandsReadOnlyRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Repository.IUserCommandsReadOnlyRepository.html",
+          "hash": "dDHVkc/UgkGtgbJQ77+kw5ELW9+Ys/rcnDwINSk0FAI="
         }
       },
       "is_incremental": true,
@@ -3333,7 +2781,19 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Repository.IUserCommandsRepository.html",
-          "hash": "KnWbcouAzG56+jHPDEkCi0rgZB6/r5Ck4k58WmhcmKo="
+          "hash": "VGZ5BhWTjQMpgyCGw32IlVPhiXm1d30tjeSIYCEBsFo="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/DidiFrame.UserCommands.Repository.ServicesExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/DidiFrame.UserCommands.Repository.ServicesExtensions.html",
+          "hash": "HHchSuDcOOxuUedq9UaxVd7OvbVMFSUJ7Cv/JcX8yVk="
         }
       },
       "is_incremental": true,
@@ -3345,19 +2805,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Repository.SimpleUserCommandsRepository.html",
-          "hash": "IYv/1IpQjqtqDUnueHmn8FzXAsuhk6EtB4X+Xc5fXNU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.Repository.UserCommandsCollection.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.Repository.UserCommandsCollection.html",
-          "hash": "BhURpFaIHdzl4Wu0UwYXljTGOVWn6aq4kOdRGA7/XQw="
+          "hash": "XDCq6YVWzKSTQEv1kGgs4Mcur3DKa3IOyqwp3m0+j38="
         }
       },
       "is_incremental": true,
@@ -3369,187 +2817,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.UserCommands.Repository.html",
-          "hash": "2c+bnJJF5lna93K2oDEPTuP18zRnlJQxKqFYvIto+OQ="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.ServicesExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.ServicesExtensions.html",
-          "hash": "OVPQSot3Zs6eNhWoutIcKKNeV9GzeYrl/+G6IUat+LU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.UserCommands.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.UserCommands.html",
-          "hash": "BeBYp0+7gk+6/urFYIz2jqG/TQmZGoaNS0PIFTntkdk="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.Collections.CollectionDifference-3.Difference.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.Collections.CollectionDifference-3.Difference.html",
-          "hash": "GKSyXqDZZqwZUvS3KPkxlq0DILCCux2AoXZO/jON+T0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.Collections.CollectionDifference-3.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.Collections.CollectionDifference-3.html",
-          "hash": "SrJiST8F9J886f5MaKeDlnj97dTO8aNz87+KOAq+IQs="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.Collections.CollectionDifference.OperationType.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.Collections.CollectionDifference.OperationType.html",
-          "hash": "7mgSIaAUQjff+DNPY7oehw3rU50APuqxTfMjFLBJM0Y="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.Collections.CollectionDifference.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.Collections.CollectionDifference.html",
-          "hash": "Dge/+WkhFfeUpSHRtQuQvCSAqMP4rspg8BUkwCV3EH4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.Collections.SingleElementCollection-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.Collections.SingleElementCollection-1.html",
-          "hash": "/XtTl6PIeHCrPhJ7T5SQ6PhutS/LrfrF1zHQuySoq7w="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.Collections.SingleElementCollectionExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html",
-          "hash": "T+gDmrywwOWDT+158OZUEN6lGvUyc2KXkHIcNcOrjco="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.Collections.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.Collections.html",
-          "hash": "ccF0C7aVxVzxqvEz8zNOLetHP7qlDgRT/t1XlLc9tGA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider.html",
-          "hash": "7SJblb8EzmuvnRHf/YZKrVWFuDsvYBJJytOAFdI1EpU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ExtendableModels.ProviderExtensions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ExtendableModels.ProviderExtensions.html",
-          "hash": "Ws+c9/u3mVCAso4YzCoCy64cjWhzbxsd0R7nvYkI5S0="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider.html",
-          "hash": "eaG8OaX2h9oe5H1hy9Q/J1C52EqVNQNgbHBi1BplRFg="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ExtendableModels.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ExtendableModels.html",
-          "hash": "hFOxvvP6C8z23E1Vr2isJLaa1uCcchfQMDIVX/sR7gg="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.FileCache.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.FileCache.html",
-          "hash": "CzIax6Yp8DqPbiAApr1Mm2WbzsP94SeoGSxPyJaOF20="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.IObjectController-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.IObjectController-1.html",
-          "hash": "bcb9y5MKREoHW4Fz6PirBsKAw0lkHH1GmzzWy87/L1Q="
+          "hash": "x/tXD9pdFEtkD7FV2nNOsExz1oZnNw4rgwx9RXbKx6w="
         }
       },
       "is_incremental": true,
@@ -3561,7 +2829,7 @@
       "output": {
         ".html": {
           "relative_path": "api/DidiFrame.Utils.Json.JsonSerializerFactory.html",
-          "hash": "rsxxp0305J43p11aR04Lx2vnE0mOIBp7V+EA7i9OP2A="
+          "hash": "/s5I2bjhQlD8z3S3pt6EF3m5inKFQ5dPVoir92nitqI="
         }
       },
       "is_incremental": true,
@@ -3580,324 +2848,12 @@
       "version": ""
     },
     {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.LocaleMap.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.LocaleMap.html",
-          "hash": "QqMDFBfyb0xqI8vsNEghP4gS7g2yjVLZF1unNihvrig="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.MessageAliveHolder-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.MessageAliveHolder-1.html",
-          "hash": "QLNXtZdN9PQ5/r0UJ3f6YJJ5l5mLTnBOwGLFPLajZF4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.MessageAliveHolderModel.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.MessageAliveHolderModel.html",
-          "hash": "3yfRyhPcLwKHyohoetqegCOo8AOY3Pq0Ln6DmitBMnk="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.MessageCreator-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.MessageCreator-1.html",
-          "hash": "7yyKlJXmTMTbLglqv6skUp/jXiUU5oi59MHfMB4HDBM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.MessagePostProcessor-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.MessagePostProcessor-1.html",
-          "hash": "V5gQgTXqTuyyTPKoNEP/my/gwPSPjsEtJPuJIZvqPmQ="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ObjectHolder-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ObjectHolder-1.html",
-          "hash": "yeUCAG7GheeHVWhATCxTqJSCcLNcqTa0QE5DRz5sMto="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ObjectsCache-1.Frame-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ObjectsCache-1.Frame-1.html",
-          "hash": "ODfKqK7ASbrrrh/fMTaQlHv/Aw1Zpx8flJ+5TsMw3YI="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ObjectsCache-1.Frame.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ObjectsCache-1.Frame.html",
-          "hash": "sen0V1QQMrbpmZoSqrqj5tjDhb3kJ38MhiEQDbWiygY="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ObjectsCache-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ObjectsCache-1.html",
-          "hash": "FEGvhLmJ2Y5CQ47m4C5N6JpM01de1uDzT40CQhQG1kI="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.SelectObjectContoller-2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.SelectObjectContoller-2.html",
-          "hash": "TrI3biKYUYWrO9tGLD+NqxQJBTvxrrSuHm2nv8Jq5FQ="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.AbstractTransitWorker-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.AbstractTransitWorker-1.html",
-          "hash": "C/hsckBhUG3WbngOUHxkEck6HUG9bU2ynHuinCQtPHI="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.FreezeModel-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.FreezeModel-1.html",
-          "hash": "75eTFcA9HRlHARi+RWa2I6eTFM4q2JnBoL58QyiDKUc="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.IStateMachine-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.IStateMachine-1.html",
-          "hash": "Ok7mBqNWEoc1+z9YKkhzcrAbXlEleVJ/Lp+a0E/xc3A="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.IStateTransitWorker-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.IStateTransitWorker-1.html",
-          "hash": "3MsHyV2z4u8mrpBSHGOtJD3tkf2lpk9Nn502M8wZlmM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.PredicateTransitWorker-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.PredicateTransitWorker-1.html",
-          "hash": "URri/0b7oSMvMOCcvZy7FPa3mj6KPO7wTY4cvW6vb7w="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.ResetTransitWorker-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.ResetTransitWorker-1.html",
-          "hash": "W2F5flWJJYak/EwxjxWjzFKZzS/RogTvmAA20UTBVXM="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.StateChangedEventHandler-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.StateChangedEventHandler-1.html",
-          "hash": "KmyeLdE33mkTESEqjLWUFZWjDOzW4RET08jqBQ4ooTA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.StateMachine-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.StateMachine-1.html",
-          "hash": "FAJaVDmpqOCRdhWguhZiP2qXn2W+mOEjFEmBKzgiCpU="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.StateMachineBuilder-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.StateMachineBuilder-1.html",
-          "hash": "GsGtXEJADfI2K7dXagvbGBcz73yjT9wrD/7B1HEHYQo="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.StateUpdateResult-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.StateUpdateResult-1.html",
-          "hash": "faSImNw7gMAU/0Dw/4Pckn4jGia0WERDbgmPMzyO17A="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.TaskTransitWorker-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.TaskTransitWorker-1.html",
-          "hash": "cE1X/FsDf2Tbw9MUMrEcLIfVCOVQx2l6Q/g3pbhzH+U="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.StateMachine.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.StateMachine.html",
-          "hash": "oYUpdS0gEZDZcJy4ZjCdcYMcdvxC0AV4+I+uZq/qCMA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.ThreadLocker-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.ThreadLocker-1.html",
-          "hash": "I2BCX8TeMCWrqAsQRV9bSM2W4Y71M5CfMZcdLx5Vvdo="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.WaitFor.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.WaitFor.html",
-          "hash": "9Pmnr8GwPQvdOqokMs+ppvuzdMibS0TmbdwQ3hdAsQE="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.Utils.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.Utils.html",
-          "hash": "RgzTafX7n3qUk2yr28SWd67Jq/bfsS7ooj7ZJo/aiTo="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/DidiFrame.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/DidiFrame.html",
-          "hash": "ymaXzcdd9LduNhOjSUkmu98BrdW0vY2UsCdtoGpvbgg="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
       "type": "Toc",
       "source_relative_path": "api/toc.yml",
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "zqxt7zLEgB/FrDmL18RDUES24d1zWQa6UVls2HDMU08="
+          "hash": "2S3k9eb1HPPNbd7/y4/WkzsW3OCMrdlBiswHU9ERk/o="
         }
       },
       "is_incremental": false,
@@ -4056,10 +3012,10 @@
       "output": {
         ".html": {
           "relative_path": "download.html",
-          "hash": "JYjv4pDuFJo0l9Z2gqGJeeeRXQ24ysIpdzcmxcthBsE="
+          "hash": "NT9Yyznc5b1Htvypw4WTpcjRircfbVgKYjPvF0qIrGY="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -4082,7 +3038,7 @@
           "hash": "Vt57OLMi1lSq/kHCz+hFnBwCOke8dl0ckkjwUYvzZqA="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -4091,7 +3047,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "ArPMHPf2yZ+c8IL43cbkfkIFAn78rIqzJ+EfEkfKldg="
+          "hash": "hHn6NZ3/24BDNIenpNlIvLHA0sH6x1MpYaaG8mUEK2M="
         }
       },
       "is_incremental": false,
@@ -4106,7 +3062,7 @@
           "hash": "d9HH2yodxtzHBghRJ7XYVg4pzOVr9vcCysejJXQCnyU="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     }
   ],
@@ -4123,13 +3079,13 @@
           "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 12,
-          "skipped_file_count": 12
+          "skipped_file_count": 11
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 324,
-          "skipped_file_count": 324
+          "total_file_count": 237,
+          "skipped_file_count": 237
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,

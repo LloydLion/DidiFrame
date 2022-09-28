@@ -3,7 +3,7 @@
   homepage: articles/intro.md
 - name: Api Documentation
   href: api/
-  homepage: api/DidiFrame.yml
+  homepage: api/DidiFrame.Application.yml
 - name: Github
   href: https://github.com/LloydLion/DidiFrame
 - name: Download

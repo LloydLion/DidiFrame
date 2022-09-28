@@ -80,8 +80,7 @@ Key: WhiteSpace</p>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html">AbstractArgumentValidator</a>&lt;<span class="xref">System.String</span>&gt;</div>
-    <div class="level2"><span class="xref">NormalString</span></div>
+    <div class="level1"><span class="xref">NormalString</span></div>
   </div>
   <div classs="implements">
     <h5>Implements</h5>
@@ -89,15 +88,6 @@ Key: WhiteSpace</p>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_Validate_IServiceProvider_UserCommandContext_UserCommandArgument_UserCommandContext_ArgumentValue_IServiceProvider_">AbstractArgumentValidator&lt;String&gt;.Validate(IServiceProvider, UserCommandContext, UserCommandArgument, UserCommandContext.ArgumentValue, IServiceProvider)</a>
-    </div>
-    <div>
-      <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_GetServiceProvider">AbstractArgumentValidator&lt;String&gt;.GetServiceProvider()</a>
-    </div>
-    <div>
-      <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator-1.html#DidiFrame_UserCommands_ContextValidation_Arguments_AbstractArgumentValidator_1_GetLocalServices">AbstractArgumentValidator&lt;String&gt;.GetLocalServices()</a>
-    </div>
     <div>
       <span class="xref">System.Object.Equals(System.Object)</span>
     </div>
@@ -121,10 +111,10 @@ Key: WhiteSpace</p>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.html">DidiFrame.UserCommands.ContextValidation.Arguments.Validators</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_NormalString_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class NormalString : AbstractArgumentValidator&lt;string&gt;, IUserCommandArgumentValidator</code></pre>
+    <pre><code class="lang-csharp hljs">public class NormalString : IUserCommandArgumentValidator</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -144,13 +134,13 @@ Key: WhiteSpace</p>
   
   
   <a id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_NormalString_Validate_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NormalString.Validate*"></a>
-  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_NormalString_Validate_UserCommandContext_UserCommandArgument_System_String_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NormalString.Validate(UserCommandContext,UserCommandArgument,System.String)">Validate(UserCommandContext, UserCommandArgument, String)</h4>
+  <h4 id="DidiFrame_UserCommands_ContextValidation_Arguments_Validators_NormalString_Validate_UserCommandContext_UserCommandContext_ArgumentValue_IServiceProvider_" data-uid="DidiFrame.UserCommands.ContextValidation.Arguments.Validators.NormalString.Validate(UserCommandContext,UserCommandContext.ArgumentValue,IServiceProvider)">Validate(UserCommandContext, UserCommandContext.ArgumentValue, IServiceProvider)</h4>
   <div class="markdown level1 summary"><p>Validates argument value</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected override ValidationFailResult Validate(UserCommandContext context, UserCommandArgument argument, string value)</code></pre>
+    <pre><code class="lang-csharp hljs">public ValidationFailResult Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -169,15 +159,16 @@ Key: WhiteSpace</p>
 </td>
       </tr>
       <tr>
-        <td><span class="xref">UserCommandArgument</span></td>
-        <td><span class="parametername">argument</span></td>
-        <td><p>Argumnet to validate</p>
+        <td><span class="xref">UserCommandContext.ArgumentValue</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>Argument value to validate</p>
 </td>
       </tr>
       <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">value</span></td>
-        <td></td>
+        <td><span class="xref">IServiceProvider</span></td>
+        <td><span class="parametername">localServices</span></td>
+        <td><p>Local services from pipeline</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -197,15 +188,9 @@ Key: WhiteSpace</p>
       </tr>
     </tbody>
   </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><span class="xref">DidiFrame.UserCommands.ContextValidation.Arguments.AbstractArgumentValidator&lt;System.String&gt;.Validate(UserCommandContext, UserCommandArgument, System.String)</span></div>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.ContextValidation.Arguments.IUserCommandArgumentValidator.html">IUserCommandArgumentValidator</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

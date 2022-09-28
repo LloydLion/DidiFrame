@@ -77,7 +77,7 @@
 </div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Pipeline.html">DidiFrame.UserCommands.Pipeline</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface IUserCommandPipelineDispatcher&lt;out TOut&gt;</code></pre>
@@ -131,14 +131,14 @@
   </table>
   
   
-  <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_Respond_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.Respond*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_Respond_System_Object_UserCommandResult_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.Respond(System.Object,UserCommandResult)">Respond(Object, UserCommandResult)</h4>
+  <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_RespondAsync_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.RespondAsync*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_RespondAsync_System_Object_UserCommandResult_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.RespondAsync(System.Object,UserCommandResult)">RespondAsync(Object, UserCommandResult)</h4>
   <div class="markdown level1 summary"><p>Responds to command call with user command result</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Respond(object stateObject, UserCommandResult result)</code></pre>
+    <pre><code class="lang-csharp hljs">Task RespondAsync(object stateObject, UserCommandResult result)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -164,16 +164,31 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   
   
   <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_SetSyncCallback_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.SetSyncCallback*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_SetSyncCallback_DidiFrame_UserCommands_Pipeline_DispatcherSyncCallback__0__" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.SetSyncCallback(DidiFrame.UserCommands.Pipeline.DispatcherSyncCallback{`0})">SetSyncCallback(DispatcherSyncCallback&lt;TOut&gt;)</h4>
+  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineDispatcher_1_SetSyncCallback_DidiFrame_UserCommands_Pipeline_DispatcherCallback__0__" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher`1.SetSyncCallback(DidiFrame.UserCommands.Pipeline.DispatcherCallback{`0})">SetSyncCallback(DispatcherCallback&lt;TOut&gt;)</h4>
   <div class="markdown level1 summary"><p>Subscribes sync hander to start-pipeline event</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void SetSyncCallback(DispatcherSyncCallback&lt;TOut&gt; callback)</code></pre>
+    <pre><code class="lang-csharp hljs">void SetSyncCallback(DispatcherCallback&lt;TOut&gt; callback)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -186,17 +201,13 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.DispatcherSyncCallback-1.html">DispatcherSyncCallback</a>&lt;TOut&gt;</td>
+        <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.DispatcherCallback-1.html">DispatcherCallback</a>&lt;TOut&gt;</td>
         <td><span class="parametername">callback</span></td>
         <td><p>Handler that recives start object, send data and state object to finalize pipeline using dispathcer</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
-  </div>
 </article>
           </div>
           

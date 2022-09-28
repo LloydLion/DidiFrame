@@ -93,7 +93,10 @@
       <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;TInput, TOutput&gt;.Process(TInput, UserCommandPipelineContext)</a>
     </div>
     <div>
-      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_Process_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;TInput, TOutput&gt;.Process(Object, UserCommandPipelineContext)</a>
+      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;TInput, TOutput&gt;.ProcessAsync(TInput, UserCommandPipelineContext)</a>
+    </div>
+    <div>
+      <a class="xref" href="DidiFrame.UserCommands.Pipeline.AbstractUserCommandPipelineMiddleware-2.html#DidiFrame_UserCommands_Pipeline_AbstractUserCommandPipelineMiddleware_2_ProcessAsync_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">AbstractUserCommandPipelineMiddleware&lt;TInput, TOutput&gt;.ProcessAsync(Object, UserCommandPipelineContext)</a>
     </div>
     <div>
       <span class="xref">System.Object.Equals(System.Object)</span>
@@ -118,7 +121,7 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Pipeline.Utils.html">DidiFrame.UserCommands.Pipeline.Utils</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Pipeline_Utils_DelegateMiddleware_2_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class DelegateMiddleware&lt;TInput, TOutput&gt; : AbstractUserCommandPipelineMiddleware&lt;TInput, TOutput&gt;, IUserCommandPipelineMiddleware&lt;TInput, TOutput&gt;, IUserCommandPipelineMiddleware</code></pre>
@@ -181,12 +184,12 @@
   
   <a id="DidiFrame_UserCommands_Pipeline_Utils_DelegateMiddleware_2_Process_" data-uid="DidiFrame.UserCommands.Pipeline.Utils.DelegateMiddleware`2.Process*"></a>
   <h4 id="DidiFrame_UserCommands_Pipeline_Utils_DelegateMiddleware_2_Process__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Pipeline.Utils.DelegateMiddleware`2.Process(`0,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">Process(TInput, UserCommandPipelineContext)</h4>
-  <div class="markdown level1 summary"><p>Processes some object into another</p>
+  <div class="markdown level1 summary"><p>Processes some into other</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override TOutput Process(TInput input, UserCommandPipelineContext pipelineContext)</code></pre>
+    <pre><code class="lang-csharp hljs">public override UserCommandMiddlewareExcutionResult&lt;TOutput&gt; Process(TInput input, UserCommandPipelineContext pipelineContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -221,8 +224,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">TOutput</span></td>
-        <td><p>Ready object or null if pipeline has been dropped or finalized</p>
+        <td><span class="xref">UserCommandMiddlewareExcutionResult</span>&lt;TOutput&gt;</td>
+        <td><p>instance of UserCommandMiddlewareExcutionResult`1</p>
 </td>
       </tr>
     </tbody>
@@ -235,10 +238,6 @@
   </div>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html">IUserCommandPipelineMiddleware</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

@@ -77,7 +77,7 @@
 </div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Application.html">DidiFrame.Application</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Application.dll</h6>
   <h5 id="DidiFrame_Application_IDiscordApplication_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface IDiscordApplication</code></pre>
@@ -167,15 +167,30 @@
   </table>
   
   
-  <a id="DidiFrame_Application_IDiscordApplication_Connect_" data-uid="DidiFrame.Application.IDiscordApplication.Connect*"></a>
-  <h4 id="DidiFrame_Application_IDiscordApplication_Connect" data-uid="DidiFrame.Application.IDiscordApplication.Connect">Connect()</h4>
+  <a id="DidiFrame_Application_IDiscordApplication_ConnectAsync_" data-uid="DidiFrame.Application.IDiscordApplication.ConnectAsync*"></a>
+  <h4 id="DidiFrame_Application_IDiscordApplication_ConnectAsync" data-uid="DidiFrame.Application.IDiscordApplication.ConnectAsync">ConnectAsync()</h4>
   <div class="markdown level1 summary"><p>Connects to the server using client</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Connect()</code></pre>
+    <pre><code class="lang-csharp hljs">Task ConnectAsync()</code></pre>
   </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   
   
   <a id="DidiFrame_Application_IDiscordApplication_PrepareAsync_" data-uid="DidiFrame.Application.IDiscordApplication.PrepareAsync*"></a>
@@ -203,10 +218,6 @@
       </tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
-  </div>
 </article>
           </div>
           
