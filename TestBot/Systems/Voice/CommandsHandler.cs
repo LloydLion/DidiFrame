@@ -5,7 +5,7 @@ namespace TestBot.Systems.Voice
 {
 	public class CommandsHandler : ICommandsModule
 	{
-		private static readonly StatisticEntry ChannelsCreated = new("channels_created");
+		private static readonly StatisticEntry ChannelsCreated = new("channels_created", 0);
 
 		private readonly ISystemCore core;
 		private readonly IStringLocalizer<CommandsHandler> localizer;
@@ -23,18 +23,18 @@ namespace TestBot.Systems.Voice
 		[Command("voice")]
 		public async Task<UserCommandResult> CreateChannel(UserCommandContext ctx, [Validator(typeof(StringCase), false)] string name)
 		{
-			await core.CreateAsync(name, ctx.Invoker);
+			await core.CreateAsync(name, ctx.SendData.Invoker);
 
-			statistic.Collect((ref long data) => data++, ChannelsCreated, ctx.Channel.Server);
+			statistic.Collect((ref long data) => data++, ChannelsCreated, ctx.SendData.Channel.Server);
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["ChannelCreated", name]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["ChannelCreated", name]));
 		}
 
 		[Command("stats channels-created")]
 		public UserCommandResult GetStatRecord(UserCommandContext ctx)
 		{
-			var count = statistic.Get(ChannelsCreated, ctx.Channel.Server);
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["ChannelCreatedCount", count]) };
+			var count = statistic.Get(ChannelsCreated, ctx.SendData.Channel.Server);
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["ChannelCreatedCount", count]));
 		}
 	}
 }

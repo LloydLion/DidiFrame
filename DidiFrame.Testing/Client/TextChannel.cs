@@ -1,22 +1,28 @@
-﻿using DidiFrame.Interfaces;
+﻿using DidiFrame.Clients;
 
 namespace DidiFrame.Testing.Client
 {
+	/// <summary>
+	/// Test ITextChannel implementation
+	/// </summary>
 	public class TextChannel : TextChannelBase, ITextChannel
 	{
-		private readonly List<TextThread> threads = new();
+		private readonly ThreadsContainer threads = new();
 
 
-		public TextChannel(string name, ChannelCategory category) : base(name, category)
+		internal TextChannel(string name, ChannelCategory category) : base(name, category)
 		{
 
 		}
 
 
-		public IReadOnlyCollection<ITextThread> GetThreads() => GetIfExist(threads);
+		/// <summary>
+		/// Container for channel's threads
+		/// </summary>
+		public ThreadsContainer Threads => GetIfExist(threads);
 
-		internal void AddThreadInternal(TextThread thread) => GetIfExist(threads).Add(thread);
 
-		internal void DeleteThreadInternal(TextThread thread) => GetIfExist(threads).Remove(thread);
+		/// <inheritdoc/>
+		public IReadOnlyCollection<ITextThread> GetThreads() => GetIfExist(threads).GetThreads();
 	}
 }

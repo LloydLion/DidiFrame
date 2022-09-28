@@ -1,11 +1,20 @@
-﻿using DidiFrame.UserCommands.ContextValidation;
+﻿using DidiFrame.Dependencies;
+using DidiFrame.UserCommands.ContextValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Streaming.CommandEvironment
 {
-	internal class NoStreamExist : AbstractArgumentValidator<string>
+	internal class NoStreamExist : IUserCommandArgumentValidator
 	{
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, string value) =>
-			GetServiceProvider().GetRequiredService<ISystemCore>().HasStream(context.Invoker.Server, value) ? new("StreamExist", UserCommandCode.InvalidInput) : null;
+		private readonly ISystemCore core;
+
+
+		public NoStreamExist([Dependency] ISystemCore core)
+		{
+			this.core = core;
+		}
+
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices) =>
+			core.HasStream(context.SendData.Invoker.Server, value.As<string>()) ? new("StreamExist", UserCommandCode.InvalidInput) : null;
 	}
 }

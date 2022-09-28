@@ -1,7 +1,8 @@
 ﻿using DidiFrame.Data.ContextBased;
-using DidiFrame.Interfaces;
+using DidiFrame.Clients;
 using DidiFrame.Utils;
 using DidiFrame.Utils.Json;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace DidiFrame.Data.Json
@@ -21,13 +22,17 @@ namespace DidiFrame.Data.Json
 		/// <param name="options">Creation options</param>
 		/// <param name="contextType">Type of context: state or settings</param>
 		/// <param name="logger">Logger</param>
-		/// <param name="_">Won't be used, is here only because that context based factories require</param>
+		/// <param name="services">Services with server notify</param>
 		/// <exception cref="ArgumentNullException">If required option is null</exception>
-		public JsonContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider _)
+		public JsonContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider services)
 		{
 			var option = (contextType == ContextType.Settings ? options.Settings?.BaseDirectory : options.States?.BaseDirectory) ?? throw new ArgumentNullException(nameof(options));
 			cache = new JsonCache(option, logger);
 			this.logger = logger;
+
+			//Context and notifier is global objects, we can don't ubsubcribe
+			var notify = services.GetRequiredService<IServersNotify>();
+			notify.ServerRemoved += OnServerRemoved;
 		}
 
 
@@ -92,6 +97,11 @@ namespace DidiFrame.Data.Json
 		public Task PreloadDataAsync()
 		{
 			return cache.LoadAllAsync();
+		}
+
+		private void OnServerRemoved(IServer server)
+		{
+			cache.Delete(GetFileForServer(server));
 		}
 
 		private static string GetFileForServer(IServer server) => $"{server.Id}.json";

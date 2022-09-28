@@ -2,30 +2,23 @@
 
 namespace DidiFrame.Logging
 {
-	internal class FancyConsoleLogger : ILogger
+	internal sealed class FancyConsoleLogger : ILogger
 	{
 		private readonly string categoryName;
 		private readonly Format console;
 		private readonly Stack<ScopeHandler> scopeStack = new();
-		private static DateOnly start;
-		private static bool init;
+		private readonly DateOnly startTime;
 		private static readonly object syncRoot = new();
 
-
-		public FancyConsoleLogger(string categoryName, Format format, DateTime start)
+		public FancyConsoleLogger(string categoryName, Format format, DateOnly startTime)
 		{
 			lock (syncRoot)
 			{
 				this.categoryName = categoryName;
 				console = format;
-
-				if (init == false)
-				{
-					console.WriteLine($"Startup - now: {start}", Colors.txtInfo);
-					FancyConsoleLogger.start = DateOnly.FromDateTime(start);
-					init = true;
-				}
 			}
+
+			this.startTime = startTime;
 		}
 
 
@@ -50,7 +43,7 @@ namespace DidiFrame.Logging
 			lock (syncRoot)
 			{
 				console.Write("[Day:");
-				console.Write($"{(DateTime.Now - start.ToDateTime(new TimeOnly(0, 0, 0, 0))).Days} {DateTime.Now:HH:mm:ss}", Colors.txtWarning);
+				console.Write($"{(DateTime.Now - startTime.ToDateTime(new TimeOnly(0, 0, 0, 0))).Days} {DateTime.Now:HH:mm:ss}", Colors.txtWarning);
 				console.Write("] [");
 				console.Write(categoryName, Colors.txtSuccess);
 				if (scopeStack.Count != 0)
@@ -83,7 +76,7 @@ namespace DidiFrame.Logging
 		}
 
 
-		private class ScopeHandler : IDisposable
+		private sealed class ScopeHandler : IDisposable
 		{
 			private readonly FancyConsoleLogger owner;
 
@@ -103,10 +96,6 @@ namespace DidiFrame.Logging
 			public void Dispose()
 			{
 				Disposed = true;
-
-				if (owner.scopeStack.Peek() != this)
-					throw new InvalidOperationException("Can't dispose the scope before next scoped");
-
 				owner.scopeStack.Pop();
 			}
 		}

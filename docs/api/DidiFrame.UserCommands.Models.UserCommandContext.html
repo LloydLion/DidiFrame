@@ -111,7 +111,7 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Models.html">DidiFrame.UserCommands.Models</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Models_UserCommandContext_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class UserCommandContext : IEquatable&lt;UserCommandContext&gt;</code></pre>
@@ -121,13 +121,13 @@
   
   
   <a id="DidiFrame_UserCommands_Models_UserCommandContext__ctor_" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Models_UserCommandContext__ctor_IMember_ITextChannelBase_DidiFrame_UserCommands_Models_UserCommandInfo_IReadOnlyDictionary_DidiFrame_UserCommands_Models_UserCommandArgument_DidiFrame_UserCommands_Models_UserCommandContext_ArgumentValue__DidiFrame_Utils_ExtendableModels_IModelAdditionalInfoProvider_" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.#ctor(IMember,ITextChannelBase,DidiFrame.UserCommands.Models.UserCommandInfo,IReadOnlyDictionary{DidiFrame.UserCommands.Models.UserCommandArgument,DidiFrame.UserCommands.Models.UserCommandContext.ArgumentValue},DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider)">UserCommandContext(IMember, ITextChannelBase, UserCommandInfo, IReadOnlyDictionary&lt;UserCommandArgument, UserCommandContext.ArgumentValue&gt;, IModelAdditionalInfoProvider)</h4>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandContext__ctor_DidiFrame_UserCommands_Models_UserCommandSendData_DidiFrame_UserCommands_Models_UserCommandInfo_IReadOnlyDictionary_DidiFrame_UserCommands_Models_UserCommandArgument_DidiFrame_UserCommands_Models_UserCommandContext_ArgumentValue__DidiFrame_Utils_ExtendableModels_IModelAdditionalInfoProvider_" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.#ctor(DidiFrame.UserCommands.Models.UserCommandSendData,DidiFrame.UserCommands.Models.UserCommandInfo,IReadOnlyDictionary{DidiFrame.UserCommands.Models.UserCommandArgument,DidiFrame.UserCommands.Models.UserCommandContext.ArgumentValue},DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider)">UserCommandContext(UserCommandSendData, UserCommandInfo, IReadOnlyDictionary&lt;UserCommandArgument, UserCommandContext.ArgumentValue&gt;, IModelAdditionalInfoProvider)</h4>
   <div class="markdown level1 summary"><p>Ready-to-use model for command execution</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public UserCommandContext(IMember Invoker, ITextChannelBase Channel, UserCommandInfo Command, IReadOnlyDictionary&lt;UserCommandArgument, UserCommandContext.ArgumentValue&gt; Arguments, IModelAdditionalInfoProvider AdditionalInfo)</code></pre>
+    <pre><code class="lang-csharp hljs">public UserCommandContext(UserCommandSendData SendData, UserCommandInfo Command, IReadOnlyDictionary&lt;UserCommandArgument, UserCommandContext.ArgumentValue&gt; Arguments, IModelAdditionalInfoProvider AdditionalInfo)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -140,15 +140,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IMember</span></td>
-        <td><span class="parametername">Invoker</span></td>
-        <td><p>A member that has called a command</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">ITextChannelBase</span></td>
-        <td><span class="parametername">Channel</span></td>
-        <td><p>A channel where it has written</p>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandSendData.html">UserCommandSendData</a></td>
+        <td><span class="parametername">SendData</span></td>
+        <td><p>Send data of command</p>
 </td>
       </tr>
       <tr>
@@ -164,7 +158,7 @@
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider.html">IModelAdditionalInfoProvider</a></td>
+        <td><span class="xref">DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider</span></td>
         <td><span class="parametername">AdditionalInfo</span></td>
         <td><p>A model additional info provider to provide additional and dynamic data about model</p>
 </td>
@@ -193,7 +187,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider.html">IModelAdditionalInfoProvider</a></td>
+        <td><span class="xref">DidiFrame.Utils.ExtendableModels.IModelAdditionalInfoProvider</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -225,31 +219,6 @@
   </table>
   
   
-  <a id="DidiFrame_UserCommands_Models_UserCommandContext_Channel_" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.Channel*"></a>
-  <h4 id="DidiFrame_UserCommands_Models_UserCommandContext_Channel" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.Channel">Channel</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ITextChannelBase Channel { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">ITextChannelBase</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
   <a id="DidiFrame_UserCommands_Models_UserCommandContext_Command_" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.Command*"></a>
   <h4 id="DidiFrame_UserCommands_Models_UserCommandContext_Command" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.Command">Command</h4>
   <div class="markdown level1 summary"></div>
@@ -275,13 +244,13 @@
   </table>
   
   
-  <a id="DidiFrame_UserCommands_Models_UserCommandContext_Invoker_" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.Invoker*"></a>
-  <h4 id="DidiFrame_UserCommands_Models_UserCommandContext_Invoker" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.Invoker">Invoker</h4>
+  <a id="DidiFrame_UserCommands_Models_UserCommandContext_SendData_" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.SendData*"></a>
+  <h4 id="DidiFrame_UserCommands_Models_UserCommandContext_SendData" data-uid="DidiFrame.UserCommands.Models.UserCommandContext.SendData">SendData</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IMember Invoker { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public UserCommandSendData SendData { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -293,7 +262,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">IMember</span></td>
+        <td><a class="xref" href="DidiFrame.UserCommands.Models.UserCommandSendData.html">UserCommandSendData</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -330,10 +299,6 @@
   <h3 id="implements">Implements</h3>
   <div>
       <span class="xref">System.IEquatable&lt;T&gt;</span>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

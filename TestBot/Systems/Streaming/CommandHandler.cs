@@ -23,9 +23,9 @@ namespace TestBot.Systems.Streaming
 			if (place.StartsWith("dc#")) place = localizer["InDiscordPlace", place];
 			else place = localizer["ExternalPlace", place];
 
-			systemCore.AnnounceStream(name, ctx.Invoker, plannedStartDate.ToUniversalTime(), place);
+			systemCore.AnnounceStream(name, ctx.SendData.Invoker, plannedStartDate.ToUniversalTime(), place);
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamCreated", name]) });
+			return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["StreamCreated", name])));
 		}
 
 		[Command("stream replan")]
@@ -34,7 +34,7 @@ namespace TestBot.Systems.Streaming
 		{
 			stream.Replan(plannedStartDate);
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamReplanned", stream.GetName()]) });
+			return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["StreamReplanned", stream.GetName()])));
 		}
 
 		[Command("stream rename")]
@@ -43,7 +43,7 @@ namespace TestBot.Systems.Streaming
 		{
 			stream.Rename(newName);
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamRenamed", stream.GetName()]) });
+			return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["StreamRenamed", stream.GetName()])));
 		}
 
 		[Command("stream move")]
@@ -54,10 +54,10 @@ namespace TestBot.Systems.Streaming
 
 			stream.Move(newPlace);
 
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["StreamMoved", stream.GetName()]) });
+			return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["StreamMoved", stream.GetName()])));
 		}
 
 
-		private static IComparable GetNow(UserCommandContext _) => DateTime.Now + new TimeSpan(0, 5, 0);
+		private static IComparable GetNow(UserCommandContext _) => DateTime.Now + new TimeSpan(0, 0, 30);
 	}
 }

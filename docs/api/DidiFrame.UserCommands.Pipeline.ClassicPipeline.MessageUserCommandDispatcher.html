@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class MessageUserCommandDispatcher
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class MessageUserCommandDispatcher
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher">
+  
+  
+  <h1 id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher" class="text-break">Class MessageUserCommandDispatcher
+  </h1>
+  <div class="markdown level0 summary"><p>Dispatcher that based on simple discord messages</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">MessageUserCommandDispatcher</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher-1.html">IUserCommandPipelineDispatcher</a>&lt;<span class="xref">IMessage</span>&gt;</div>
+    <div><span class="xref">IDisposable</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Pipeline.ClassicPipeline.html">DidiFrame.UserCommands.Pipeline.ClassicPipeline</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
+  <h5 id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class MessageUserCommandDispatcher : IUserCommandPipelineDispatcher&lt;IMessage&gt;</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher__ctor_" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.#ctor*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher__ctor_IClient_IStringLocalizer_DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher__ILogger_DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher__IOptions_DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_Options__FluentValidation_IValidator_UserCommandResult__" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.#ctor(IClient,IStringLocalizer{DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher},ILogger{DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher},IOptions{DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.Options},FluentValidation.IValidator{UserCommandResult})">MessageUserCommandDispatcher(IClient, IStringLocalizer&lt;MessageUserCommandDispatcher&gt;, ILogger&lt;MessageUserCommandDispatcher&gt;, IOptions&lt;MessageUserCommandDispatcher.Options&gt;, IValidator&lt;UserCommandResult&gt;)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public MessageUserCommandDispatcher(IClient client, IStringLocalizer&lt;MessageUserCommandDispatcher&gt; localizer, ILogger&lt;MessageUserCommandDispatcher&gt; logger, IOptions&lt;MessageUserCommandDispatcher.Options&gt; options, IValidator&lt;UserCommandResult&gt; resultValidator = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IClient</span></td>
+        <td><span class="parametername">client</span></td>
+        <td><p>Discord clint to access to discord</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">IStringLocalizer</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.html">MessageUserCommandDispatcher</a>&gt;</td>
+        <td><span class="parametername">localizer</span></td>
+        <td><p>Localizer for dispatcher</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">ILogger</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.html">MessageUserCommandDispatcher</a>&gt;</td>
+        <td><span class="parametername">logger</span></td>
+        <td><p>Logger for dispatcher</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">IOptions</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.Options.html">MessageUserCommandDispatcher.Options</a>&gt;</td>
+        <td><span class="parametername">options</span></td>
+        <td><p>Options for DidiFrame.UserCommands.Pipeline.Utils.MessageUserCommandDispatcher</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">FluentValidation.IValidator</span>&lt;<span class="xref">UserCommandResult</span>&gt;</td>
+        <td><span class="parametername">resultValidator</span></td>
+        <td><p>Validator for DidiFrame.UserCommands.Models.UserCommandResult</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_Dispose_" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.Dispose*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_Dispose" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_FinalizePipeline_" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.FinalizePipeline*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_FinalizePipeline_System_Object_" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.FinalizePipeline(System.Object)">FinalizePipeline(Object)</h4>
+  <div class="markdown level1 summary"><p>Finalizes pipeline</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void FinalizePipeline(object stateObject)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">stateObject</span></td>
+        <td><p>Special state object that have been given by dispatcher</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_RespondAsync_" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.RespondAsync*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_RespondAsync_System_Object_UserCommandResult_" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.RespondAsync(System.Object,UserCommandResult)">RespondAsync(Object, UserCommandResult)</h4>
+  <div class="markdown level1 summary"><p>Responds to command call with user command result</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public async Task RespondAsync(object stateObject, UserCommandResult result)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">stateObject</span></td>
+        <td><p>Special state object that have been given by dispatcher</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">UserCommandResult</span></td>
+        <td><span class="parametername">result</span></td>
+        <td><p>Result of user command pipeline</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_SetSyncCallback_" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.SetSyncCallback*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_ClassicPipeline_MessageUserCommandDispatcher_SetSyncCallback_DidiFrame_UserCommands_Pipeline_DispatcherCallback_IMessage__" data-uid="DidiFrame.UserCommands.Pipeline.ClassicPipeline.MessageUserCommandDispatcher.SetSyncCallback(DidiFrame.UserCommands.Pipeline.DispatcherCallback{IMessage})">SetSyncCallback(DispatcherCallback&lt;IMessage&gt;)</h4>
+  <div class="markdown level1 summary"><p>Subscribes sync hander to start-pipeline event</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetSyncCallback(DispatcherCallback&lt;IMessage&gt; callback)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.UserCommands.Pipeline.DispatcherCallback-1.html">DispatcherCallback</a>&lt;<span class="xref">IMessage</span>&gt;</td>
+        <td><span class="parametername">callback</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineDispatcher-1.html">IUserCommandPipelineDispatcher&lt;TOut&gt;</a>
+  </div>
+  <div>
+      <span class="xref">IDisposable</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -110,7 +110,7 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Loader.Reflection.html">DidiFrame.UserCommands.Loader.Reflection</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class ReflectionUserCommandsLoader : IUserCommandsLoader</code></pre>
@@ -120,13 +120,13 @@
   
   
   <a id="DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__ctor_" data-uid="DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.#ctor*"></a>
-  <h4 id="DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__ctor_IEnumerable_DidiFrame_UserCommands_Loader_Reflection_ICommandsModule__ILogger_DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__IStringLocalizerFactory_DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_IEnumerable_DidiFrame_UserCommands_Loader_Reflection_IReflectionCommandAdditionalInfoLoader__DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader_BehaviorModel_" data-uid="DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.#ctor(IEnumerable{DidiFrame.UserCommands.Loader.Reflection.ICommandsModule},ILogger{DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader},IStringLocalizerFactory,DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter,IEnumerable{DidiFrame.UserCommands.Loader.Reflection.IReflectionCommandAdditionalInfoLoader},DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.BehaviorModel)">ReflectionUserCommandsLoader(IEnumerable&lt;ICommandsModule&gt;, ILogger&lt;ReflectionUserCommandsLoader&gt;, IStringLocalizerFactory, IUserCommandContextConverter, IEnumerable&lt;IReflectionCommandAdditionalInfoLoader&gt;, ReflectionUserCommandsLoader.BehaviorModel)</h4>
+  <h4 id="DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__ctor_IServiceProvider_IEnumerable_DidiFrame_UserCommands_Loader_Reflection_ICommandsModule__ILogger_DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader__IStringLocalizerFactory_DidiFrame_UserCommands_PreProcessing_IUserCommandContextConverter_IEnumerable_DidiFrame_UserCommands_Loader_Reflection_IReflectionCommandAdditionalInfoLoader__DidiFrame_UserCommands_Loader_Reflection_ReflectionUserCommandsLoader_BehaviorModel_" data-uid="DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.#ctor(IServiceProvider,IEnumerable{DidiFrame.UserCommands.Loader.Reflection.ICommandsModule},ILogger{DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader},IStringLocalizerFactory,DidiFrame.UserCommands.PreProcessing.IUserCommandContextConverter,IEnumerable{DidiFrame.UserCommands.Loader.Reflection.IReflectionCommandAdditionalInfoLoader},DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader.BehaviorModel)">ReflectionUserCommandsLoader(IServiceProvider, IEnumerable&lt;ICommandsModule&gt;, ILogger&lt;ReflectionUserCommandsLoader&gt;, IStringLocalizerFactory, IUserCommandContextConverter, IEnumerable&lt;IReflectionCommandAdditionalInfoLoader&gt;, ReflectionUserCommandsLoader.BehaviorModel)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.UserCommands.Loader.Reflection.ReflectionUserCommandsLoader</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ReflectionUserCommandsLoader(IEnumerable&lt;ICommandsModule&gt; modules, ILogger&lt;ReflectionUserCommandsLoader&gt; logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter, IEnumerable&lt;IReflectionCommandAdditionalInfoLoader&gt; subloaders, ReflectionUserCommandsLoader.BehaviorModel behaviorModel = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public ReflectionUserCommandsLoader(IServiceProvider servicesForValidationObjects, IEnumerable&lt;ICommandsModule&gt; modules, ILogger&lt;ReflectionUserCommandsLoader&gt; logger, IStringLocalizerFactory stringLocalizerFactory, IUserCommandContextConverter converter, IEnumerable&lt;IReflectionCommandAdditionalInfoLoader&gt; subloaders, ReflectionUserCommandsLoader.BehaviorModel behaviorModel = null)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -138,6 +138,12 @@
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td><span class="xref">IServiceProvider</span></td>
+        <td><span class="parametername">servicesForValidationObjects</span></td>
+        <td><p>Services to create validators, providers and filters</p>
+</td>
+      </tr>
       <tr>
         <td><span class="xref">IEnumerable</span>&lt;<a class="xref" href="DidiFrame.UserCommands.Loader.Reflection.ICommandsModule.html">ICommandsModule</a>&gt;</td>
         <td><span class="parametername">modules</span></td>
@@ -210,10 +216,6 @@
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="DidiFrame.UserCommands.Loader.IUserCommandsLoader.html">IUserCommandsLoader</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
   </div>
 </article>
           </div>

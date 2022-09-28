@@ -1,6 +1,6 @@
 ﻿global using DidiFrame.Entities;
 global using DidiFrame.Exceptions;
-global using DidiFrame.Interfaces;
+global using DidiFrame.Clients;
 global using DidiFrame.Data;
 global using FluentValidation;
 global using Microsoft.Extensions.Logging;
@@ -28,6 +28,9 @@ using DidiFrame.UserCommands.Loader.EmbededCommands.Help;
 using DidiFrame.Statistic;
 using DidiFrame.Localization;
 using DidiFrame.Data.Mongo;
+using DidiFrame.UserCommands.Pipeline.ClassicPipeline;
+using DidiFrame.UserCommands.Repository;
+using DidiFrame.Clients.DSharp.ApplicationCommands;
 
 var appBuilder = DiscordApplicationBuilder.Create();
 
@@ -43,8 +46,8 @@ appBuilder.AddServices((services, config) =>
 		.AddAutoDataRepositories()
 		.AddTransient<IModelFactoryProvider, DefaultModelFactoryProvider>()
 		.AddDSharpClient(config.GetSection("Discord"))
-		//.AddApplicationCommandsUserCommandsPipeline(config.GetSection("Commands:ApplicationCommands"), config.GetSection("Commands:Executing"))
-		.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
+		.AddApplicationCommandsUserCommandsPipeline(config.GetSection("Commands:ApplicationCommands"), config.GetSection("Commands:Executing"))
+		//.AddClassicMessageUserCommandPipeline(config.GetSection("Commands:Parsing"), config.GetSection("Commands:Executing"))
 		.AddSimpleUserCommandsRepository()
 		.AddReflectionUserCommandsLoader()
 		.AddHelpCommands()
@@ -55,22 +58,19 @@ appBuilder.AddServices((services, config) =>
 		.AddStateBasedStatisticTools()
 		.Configure<LoggerFilterOptions>(opt => opt.AddFilter("Microsoft.Extensions.Localization.ResourceManagerStringLocalizer", LogLevel.None))
 		.InjectAutoDependencies(new ReflectionAutoInjector());
-
-	//Add overrides
-	services
-		.AddTransient<ApplicationCommandDispatcher.BehaviorModel, TestBot.Overrides.ApplicationCommandsDispathcerBehaviorModel>();
 });
 
 
 var application = appBuilder.Build();
 
 #if !DEBUG
+if (args.Contains("--no-logo") == false)
 	printLogoAnimation(application.Services.GetRequiredService<Colorify.Format>()).Wait();
 #endif
 
-application.Connect();
-application.PrepareAsync().Wait();
-application.AwaitForExit().Wait();
+await application.ConnectAsync();
+await application.PrepareAsync();
+await application.AwaitForExit();
 
 
 

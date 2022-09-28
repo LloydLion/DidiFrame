@@ -33,9 +33,9 @@ namespace TestBot.Systems.Games
 			else req = false;
 			var startAtMembers = int.Parse(startAtMembersPre);
 
-			systemCore.CreateGame(ctx.Invoker, name, req, description, invited, startAtMembers);
+			systemCore.CreateGame(ctx.SendData.Invoker, name, req, description, invited, startAtMembers);
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameCreated"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["GameCreated"]));
 		}
 
 		[Command("game invite-members")]
@@ -44,18 +44,18 @@ namespace TestBot.Systems.Games
 		{
 			game.Invite(invited);
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["MembersHaveInvitedToGame"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["MembersHaveInvitedToGame"]));
 		}
 
 		[Command("game invite-party")]
 		public UserCommandResult InvitePartyToGame(UserCommandContext _, GameLifetime game,
-			[Validator(typeof(NoPartyExist))] ObjectHolder<PartyModel> party)
+			[Validator(typeof(NoPartyExist))] IObjectController<PartyModel> party)
 		{
-			game.Invite(party.Object.Members.Append(party.Object.Creator).ToArray());
+			using var holder = party.Open();
 
-			party.Dispose();
+			game.Invite(holder.Object.Members.Append(holder.Object.Creator).ToArray());
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["PartyHasInvitedToGame"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["PartyHasInvitedToGame"]));
 		}
 
 		[Command("game clear-invites")]
@@ -63,7 +63,7 @@ namespace TestBot.Systems.Games
 		{
 			game.ClearInvites();
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameInvitesHaveCleared"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["GameInvitesHaveCleared"]));
 		}
 
 		[Command("game rename")]
@@ -72,7 +72,7 @@ namespace TestBot.Systems.Games
 		{
 			game.Rename(newName);
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameHasRenamed"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["GameHasRenamed"]));
 		}
 
 		[Command("game redescribe")]
@@ -81,7 +81,7 @@ namespace TestBot.Systems.Games
 		{
 			game.ChangeDescription(newDescription);
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameDescriptionHasChanged"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["GameDescriptionHasChanged"]));
 		}
 
 		[Command("game change-cond")]
@@ -95,7 +95,7 @@ namespace TestBot.Systems.Games
 
 			game.ChangeStartCondition(startAtMembers, req);
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameStartConditionHasChanged"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["GameStartConditionHasChanged"]));
 		}
 
 		[Command("game cancel")]
@@ -103,7 +103,7 @@ namespace TestBot.Systems.Games
 		{
 			game.CloseAsync();
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["GameHasCanceled"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["GameHasCanceled"]));
 		}
 
 		[Command("game send-invites")]
@@ -117,7 +117,7 @@ namespace TestBot.Systems.Games
 
 			await Task.WhenAll(tasks);
 
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["InvitationHaveSent"]) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["InvitationHaveSent"]));
 		}
 	}
 }

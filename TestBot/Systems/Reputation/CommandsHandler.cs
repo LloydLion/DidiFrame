@@ -29,26 +29,26 @@ namespace TestBot.Systems.Reputation
 		{
 			var doMsg = system.AddIllegal(new MemberLegalLevelChangeOperationArgs(member, amount));
 
-			await member.SendDirectMessageAsync(uiHelper.CreateDirectNotification(ctx.Invoker, amount, reason.JoinWords()));
+			await member.SendDirectMessageAsync(uiHelper.CreateDirectNotification(ctx.SendData.Invoker, amount, reason.JoinWords()));
 
-			if (doMsg) return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["IllegalAppliedWarning", member.UserName, amount]) };
-			else return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new MessageSendModel(localizer["IllegalApplied", member.UserName, amount]) };
+			if (doMsg) return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["IllegalAppliedWarning", member.UserName, amount]));
+			else return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new MessageSendModel(localizer["IllegalApplied", member.UserName, amount]));
 		}
 
 		[Command("myrp")]
-		public Task<UserCommandResult> SeeReputaion(UserCommandContext ctx)
+		public UserCommandResult SeeReputaion(UserCommandContext ctx)
 		{
-			var rp = system.GetReputation(ctx.Invoker);
-			var sm = uiHelper.CreateReputaionTablet(rp, ctx.Invoker);
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = sm });
+			var rp = system.GetReputation(ctx.SendData.Invoker);
+			var sm = uiHelper.CreateReputaionTablet(rp, ctx.SendData.Invoker);
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, sm);
 		}
 
 		[Command("seerp")]
-		public Task<UserCommandResult> SeeReputaion(UserCommandContext _, [Validator(typeof(NoBot))] IMember member)
+		public UserCommandResult SeeReputaion(UserCommandContext _, [Validator(typeof(NoBot))] IMember member)
 		{
 			var rp = system.GetReputation(member);
 			var sm = uiHelper.CreateReputaionTablet(rp, member);
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = sm });
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, sm);
 		}
 	}
 }

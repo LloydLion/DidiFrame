@@ -4,10 +4,16 @@
       "src": [
         {
           "files": [
-            "**/DidiFrame.csproj",
+            "**/DidiFrame.csproj'",
+            "**/DidiFrame.Application.csproj",
             "**/DidiFrame.Clients.DSharp.csproj",
             "**/DidiFrame.Data.Json.csproj",
-            "**/DidiFrame.Data.Mongo.csproj"
+            "**/DidiFrame.Data.Mongo.csproj",
+            "**/DidiFrame.Lifetimes.csproj",
+            "**/DidiFrame.Statistic.csproj",
+            "**/DidiFrame.Testing.csproj",
+            "**/DidiFrame.UserCommands.csproj",
+            "**/DidiFrame.Utils.Json.csproj",
           ],
           "src": "../.."
         }

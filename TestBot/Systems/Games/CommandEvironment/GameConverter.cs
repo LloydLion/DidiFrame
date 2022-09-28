@@ -5,23 +5,31 @@ namespace TestBot.Systems.Games.CommandEvironment
 {
 	internal class GameConverter : IUserCommandContextSubConverter
 	{
+		private readonly ISystemCore core;
+
+
 		public Type WorkType => typeof(GameLifetime);
 
 		public IReadOnlyList<UserCommandArgument.Type> PreObjectTypes => new[] { UserCommandArgument.Type.String };
 
 
-		public ConvertationResult Convert(IServiceProvider services, UserCommandPreContext preCtx, IReadOnlyList<object> preObjects, IServiceProvider locals)
+		public GameConverter(ISystemCore core)
 		{
-			var sysCore = services.GetRequiredService<ISystemCore>();
+			this.core = core;
+		}
+
+
+		public ConvertationResult Convert(UserCommandSendData sendData, IReadOnlyList<object> preObjects, IServiceProvider? locals = null)
+		{
 			var name = (string)preObjects[0];
-			if (sysCore.HasGame(preCtx.Invoker, name)) return ConvertationResult.Success(sysCore.GetGame(preCtx.Invoker, name));
+			if (core.HasGame(sendData.Invoker, name)) return ConvertationResult.Success(core.GetGame(sendData.Invoker, name));
 			else return ConvertationResult.Failture("NoGameExist", UserCommandCode.InvalidInput);
 		}
 
-		public IReadOnlyList<object> ConvertBack(IServiceProvider services, object convertationResult)
+		public BackConvertationResult ConvertBack(object convertationResult)
 		{
 			var gl = (GameLifetime)convertationResult;
-			return new object[] { gl.GetName() };
+			return new BackConvertationResult(new object[] { gl.GetName() }, gl.GetCreator());
 		}
 
 		public IUserCommandArgumentValuesProvider? CreatePossibleValuesProvider()

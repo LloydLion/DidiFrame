@@ -77,7 +77,7 @@
 </div>
   <div class="markdown level0 conceptual"></div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Statistic.html">DidiFrame.Statistic</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Statistic.dll</h6>
   <h5 id="DidiFrame_Statistic_IStatisticCollector_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public interface IStatisticCollector</code></pre>
@@ -87,13 +87,13 @@
   
   
   <a id="DidiFrame_Statistic_IStatisticCollector_Collect_" data-uid="DidiFrame.Statistic.IStatisticCollector.Collect*"></a>
-  <h4 id="DidiFrame_Statistic_IStatisticCollector_Collect_DidiFrame_Statistic_StatisticAction_DidiFrame_Statistic_StatisticEntry_IServer_System_Int64_" data-uid="DidiFrame.Statistic.IStatisticCollector.Collect(DidiFrame.Statistic.StatisticAction,DidiFrame.Statistic.StatisticEntry,IServer,System.Int64)">Collect(StatisticAction, StatisticEntry, IServer, Int64)</h4>
+  <h4 id="DidiFrame_Statistic_IStatisticCollector_Collect_DidiFrame_Statistic_StatisticAction_DidiFrame_Statistic_StatisticEntry_IServer_" data-uid="DidiFrame.Statistic.IStatisticCollector.Collect(DidiFrame.Statistic.StatisticAction,DidiFrame.Statistic.StatisticEntry,IServer)">Collect(StatisticAction, StatisticEntry, IServer)</h4>
   <div class="markdown level1 summary"><p>Applies operation under stat entry</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">void Collect(StatisticAction action, StatisticEntry entry, IServer server, long defaultValue = 0L)</code></pre>
+    <pre><code class="lang-csharp hljs">void Collect(StatisticAction action, StatisticEntry entry, IServer server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -123,24 +123,18 @@
         <td><p>Server where need to do operation</p>
 </td>
       </tr>
-      <tr>
-        <td><span class="xref">System.Int64</span></td>
-        <td><span class="parametername">defaultValue</span></td>
-        <td><p>Default value of entry if it hasn't created yet</p>
-</td>
-      </tr>
     </tbody>
   </table>
   
   
   <a id="DidiFrame_Statistic_IStatisticCollector_Get_" data-uid="DidiFrame.Statistic.IStatisticCollector.Get*"></a>
-  <h4 id="DidiFrame_Statistic_IStatisticCollector_Get_DidiFrame_Statistic_StatisticEntry_IServer_System_Int64_" data-uid="DidiFrame.Statistic.IStatisticCollector.Get(DidiFrame.Statistic.StatisticEntry,IServer,System.Int64)">Get(StatisticEntry, IServer, Int64)</h4>
+  <h4 id="DidiFrame_Statistic_IStatisticCollector_Get_DidiFrame_Statistic_StatisticEntry_IServer_" data-uid="DidiFrame.Statistic.IStatisticCollector.Get(DidiFrame.Statistic.StatisticEntry,IServer)">Get(StatisticEntry, IServer)</h4>
   <div class="markdown level1 summary"><p>Gets stat entry current value</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">long Get(StatisticEntry entry, IServer server, long defaultValue = 0L)</code></pre>
+    <pre><code class="lang-csharp hljs">long Get(StatisticEntry entry, IServer server)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -164,12 +158,6 @@
         <td><p>Server where need to get value</p>
 </td>
       </tr>
-      <tr>
-        <td><span class="xref">System.Int64</span></td>
-        <td><span class="parametername">defaultValue</span></td>
-        <td><p>Default value of entry if it hasn't created yet</p>
-</td>
-      </tr>
     </tbody>
   </table>
   <h5 class="returns">Returns</h5>
@@ -188,10 +176,6 @@
       </tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
-  </div>
 </article>
           </div>
           

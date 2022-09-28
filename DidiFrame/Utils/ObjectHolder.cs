@@ -4,7 +4,7 @@
 	/// Safe container for objects
 	/// </summary>
 	/// <typeparam name="TObject">Type of internal object</typeparam>
-	public class ObjectHolder<TObject> : IDisposable where TObject : class
+	public sealed class ObjectHolder<TObject> : IDisposable where TObject : class
 	{
 		private readonly Action<ObjectHolder<TObject>> callback;
 

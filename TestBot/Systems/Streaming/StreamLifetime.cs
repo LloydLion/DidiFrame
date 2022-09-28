@@ -24,7 +24,7 @@ namespace TestBot.Systems.Streaming
 
 		public void Replan(DateTime newStartDate)
 		{
-			if (GetStateMachine().CurrentState == StreamState.Running)
+			if (StateMachine.CurrentState == StreamState.Running)
 				throw new InvalidOperationException("Stream already has started");
 
 			using var baseObj = GetBase();
@@ -70,24 +70,53 @@ namespace TestBot.Systems.Streaming
 					var di = message.GetInteractionDispatcher();
 					di.Attach<MessageButton>(StartStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker.Equals((IUser)parameter.Owner))
+						if (ctx.Invoker.Equals(parameter.Owner))
 						{
 							waitForStartButton.Callback();
-							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["StartOk"])));
+							return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["StartOk"])));
 						}
-						else return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["StartFail"])));
+						else return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["StartFail"])));
 					});
 					break;
 				case StreamState.Running:
 					var di2 = message.GetInteractionDispatcher();
 					di2.Attach<MessageButton>(FinishStreamButtonId, ctx =>
 					{
-						if (ctx.Invoker.Equals((IUser)parameter.Owner))
+						if (ctx.Invoker.Equals(parameter.Owner))
 						{
-							waitForFinishButton.Callback();
-							return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["FinishOk"])));
+							return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["SubmitFinish"])
+							{
+								ComponentsRows = new[]
+								{
+									new MessageComponentsRow(new[]
+									{
+										new MessageButton("submit", "Submit", ButtonStyle.Primary),
+										new MessageButton("close", "Close", ButtonStyle.Secondary)
+									})
+								}
+							},
+							
+							dispatcher =>
+							{
+								dispatcher.Attach<MessageButton>("submit", subSubmit);
+								Task<ComponentInteractionResult> subSubmit(ComponentInteractionContext<MessageButton> _)
+								{
+									waitForFinishButton.Callback();
+									dispatcher.Detach<MessageButton>("submit", subSubmit);
+									dispatcher.Detach<MessageButton>("close", subCancel);
+									return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishOk"])));
+								}
+
+								dispatcher.Attach<MessageButton>("close", subCancel);
+								Task<ComponentInteractionResult> subCancel(ComponentInteractionContext<MessageButton> _)
+								{
+									dispatcher.Detach<MessageButton>("submit", subSubmit);
+									dispatcher.Detach<MessageButton>("close", subCancel);
+									return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishCanceled"])));
+								}
+							}));
 						}
-						else return Task.FromResult(new ComponentInteractionResult(new MessageSendModel(localizer["FinishFail"])));
+						else return Task.FromResult(ComponentInteractionResult.CreateWithMessage(new MessageSendModel(localizer["FinishFail"])));
 					});
 					break;
 				default:
@@ -106,9 +135,9 @@ namespace TestBot.Systems.Streaming
 			};
 		}
 
-		protected override void OnBuild(StreamModel initialBase)
+		protected override void PrepareStateMachine(StreamModel initialBase, InitialDataBuilder builder)
 		{
-			AddReport(new MessageAliveHolder<StreamModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents));
+			AddReport(new MessageAliveHolder<StreamModel>(s => s.ReportMessage, CreateReportMessage, AttachEvents), builder);
 
 			AddTransit(StreamState.Announced, StreamState.WaitingForStreamer, () => DateTime.UtcNow >= GetBaseProperty(s => s.PlanedStartTime));
 			AddTransit(StreamState.WaitingForStreamer, StreamState.Announced, () => DateTime.UtcNow < GetBaseProperty(s => s.PlanedStartTime));

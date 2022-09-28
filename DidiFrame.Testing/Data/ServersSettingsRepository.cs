@@ -1,23 +1,37 @@
-﻿using DidiFrame.Data;
-using System.Collections.Generic;
+﻿using DidiFrame.Clients;
+using DidiFrame.Data;
 
-namespace TestProject.Environment.Data
+namespace DidiFrame.Testing.Data
 {
-	internal class ServersSettingsRepository<TModel> : ServersSettingsRepository, IServersSettingsRepository<TModel> where TModel : class
+	/// <summary>
+	/// Test implementation IServersSettingsRepository`1
+	/// </summary>
+	/// <typeparam name="TModel">Target model type</typeparam>
+	public class ServersSettingsRepository<TModel> : ServersSettingsRepository, IServersSettingsRepository<TModel> where TModel : class
 	{
 		private readonly Dictionary<IServer, TModel> data = new();
 
 
+		/// <inheritdoc/>
 		public TModel Get(IServer server)
 		{
 			return data[server];
 		}
 
+		/// <inheritdoc/>
 		public void PostSettings(IServer server, TModel settings)
 		{
-			data.Add(server, settings);
+			if (data.ContainsKey(server))
+				data[server] = settings;
+			else data.Add(server, settings);
 		}
 	}
 
-	internal abstract class ServersSettingsRepository { }
+	/// <summary>
+	/// Base class for DidiFrame.Testing.Data.ServersSettingsRepository`1
+	/// </summary>
+	public abstract class ServersSettingsRepository
+	{
+
+	}
 }

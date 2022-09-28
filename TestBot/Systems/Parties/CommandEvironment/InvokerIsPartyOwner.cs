@@ -3,9 +3,12 @@ using DidiFrame.Utils;
 
 namespace TestBot.Systems.Parties.CommandEvironment
 {
-	internal class InvokerIsPartyOwner : AbstractArgumentValidator<ObjectHolder<PartyModel>>
+	internal class InvokerIsPartyOwner : IUserCommandArgumentValidator
 	{
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, ObjectHolder<PartyModel> value) =>
-			value.Object.Creator == context.Invoker ? null : new("Unauthorizated", UserCommandCode.Unauthorizated);
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices)
+		{
+			using var holder = value.As<IObjectController<PartyModel>>().Open();
+			return holder.Object.Creator.Equals(context.SendData.Invoker) ? null : new("Unauthorizated", UserCommandCode.Unauthorizated);
+		}			
 	}
 }

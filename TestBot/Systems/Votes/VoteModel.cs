@@ -16,13 +16,14 @@ namespace TestBot.Systems.Votes
 			Message = new(channel);
 		}
 
+		[SerializationConstructor]
 		public VoteModel(IMember creator, IDictionary<string, int> options, string title, MessageAliveHolderModel message, Guid id)
 		{
 			Creator = creator;
 			Options = options;
 			Title = title;
 			Message = message;
-			Guid = id;
+			Id = id;
 		}
 
 
@@ -39,13 +40,16 @@ namespace TestBot.Systems.Votes
 		public MessageAliveHolderModel Message { get; }
 
 		[ConstructorAssignableProperty(4, "id")]
-		public Guid Guid { get; }
+		public Guid Id { get; }
 
 		public IServer Server => Message.Channel.Server;
 
 
-		public override bool Equals(object? obj) => obj is VoteModel model && model.Guid == Guid;
+		public bool Equals(IDataModel? other) =>
+			other is VoteModel model && model.Id == Id;
 
-		public override int GetHashCode() => Guid.GetHashCode();
+		public override bool Equals(object? obj) => Equals(obj as IDataModel);
+
+		public override int GetHashCode() => Id.GetHashCode();
 	}
 }

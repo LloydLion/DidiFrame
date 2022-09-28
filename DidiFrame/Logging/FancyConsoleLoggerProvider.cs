@@ -5,7 +5,7 @@ namespace DidiFrame.Logging
 	/// <summary>
 	/// Provider for fancy console logger
 	/// </summary>
-	public class FancyConsoleLoggerProvider : ILoggerProvider
+	public sealed class FancyConsoleLoggerProvider : ILoggerProvider
 	{
 		private readonly Format format;
 		private readonly DateTime start;
@@ -20,13 +20,15 @@ namespace DidiFrame.Logging
 		{
 			this.format = format;
 			this.start = start;
+
+			format.WriteLine($"Startup - now: {start}", Colors.txtInfo);
 		}
 
 
 		/// <inheritdoc/>
 		public ILogger CreateLogger(string categoryName)
 		{
-			return new FancyConsoleLogger(categoryName, format, start);
+			return new FancyConsoleLogger(categoryName, format, DateOnly.FromDateTime(start));
 		}
 
 		/// <inheritdoc/>

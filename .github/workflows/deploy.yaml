@@ -7,9 +7,15 @@ on:
 
 env:
   PROJECT_PATH_1: 'DidiFrame/DidiFrame.csproj'
-  PROJECT_PATH_2: 'DidiFrame.Clients.DSharp/DidiFrame.Clients.DSharp.csproj'
-  PROJECT_PATH_3: 'DidiFrame.Data.Json/DidiFrame.Data.Json.csproj'
-  PROJECT_PATH_4: 'DidiFrame.Data.Mongo/DidiFrame.Data.Mongo.csproj'
+  PROJECT_PATH_2: 'DidiFrame.Application/DidiFrame.Application.csproj'
+  PROJECT_PATH_3: 'DidiFrame.Clients.DSharp/DidiFrame.Clients.DSharp.csproj'
+  PROJECT_PATH_4: 'DidiFrame.Data.Json/DidiFrame.Data.Json.csproj'
+  PROJECT_PATH_5: 'DidiFrame.Data.Mongo/DidiFrame.Data.Mongo.csproj'
+  PROJECT_PATH_6: 'DidiFrame.Lifetimes/DidiFrame.Lifetimes.csproj'
+  PROJECT_PATH_7: 'DidiFrame.Statistic/DidiFrame.Statistic.csproj'
+  PROJECT_PATH_8: 'DidiFrame.Testing/DidiFrame.Testing.csproj'
+  PROJECT_PATH_9: 'DidiFrame.UserCommands/DidiFrame.UserCommands.csproj'
+  PROJECT_PATH_10: 'DidiFrame.Utils.Json/DidiFrame.Utils.Json.csproj'
   NUGET_SOURCE_URL: 'https://api.nuget.org/v3/index.json'
   SNUGET_SOURCE_URL: 'https://symbols.nuget.org/download/symbols'
   
@@ -54,6 +60,42 @@ jobs:
       
     - name: 'Pack project 4'
       run: dotnet pack ${{ env.PROJECT_PATH_4 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+
+    - name: 'Build project 5'
+      run: dotnet build ${{ env.PROJECT_PATH_5 }} --configuration Release
+      
+    - name: 'Pack project 5'
+      run: dotnet pack ${{ env.PROJECT_PATH_5 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+
+    - name: 'Build project 6'
+      run: dotnet build ${{ env.PROJECT_PATH_6 }} --configuration Release
+      
+    - name: 'Pack project 6'
+      run: dotnet pack ${{ env.PROJECT_PATH_6 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+
+    - name: 'Build project 7'
+      run: dotnet build ${{ env.PROJECT_PATH_7 }} --configuration Release
+      
+    - name: 'Pack project 7'
+      run: dotnet pack ${{ env.PROJECT_PATH_7 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+
+    - name: 'Build project 8'
+      run: dotnet build ${{ env.PROJECT_PATH_8 }} --configuration Release
+      
+    - name: 'Pack project 8'
+      run: dotnet pack ${{ env.PROJECT_PATH_8 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+
+    - name: 'Build project 9'
+      run: dotnet build ${{ env.PROJECT_PATH_9 }} --configuration Release
+      
+    - name: 'Pack project 9'
+      run: dotnet pack ${{ env.PROJECT_PATH_9 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
+
+    - name: 'Build project 10'
+      run: dotnet build ${{ env.PROJECT_PATH_10 }} --configuration Release
+      
+    - name: 'Pack project 10'
+      run: dotnet pack ${{ env.PROJECT_PATH_10 }} --configuration Release --include-symbols -p:PackageVersion=${{ steps.version.outputs.version-without-v }} --output "output"
 
     - name: 'Push packages'
       run: dotnet nuget push "output\*.nupkg" -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }}

@@ -5,13 +5,18 @@ namespace DidiFrame.Localization
 	/// <summary>
 	/// DidiFrame localization part. Don't use this class anywhere
 	/// </summary>
-	public class DidiFrameLocalizerFactory : IStringLocalizerFactory
+	public sealed class DidiFrameLocalizerFactory : IStringLocalizerFactory
 	{
 		private readonly static string[] moduleAssemblies = new[]
 		{
+			"DidiFrame.Application",
 			"DidiFrame.Clients.DSharp",
 			"DidiFrame.Data.Json",
 			"DidiFrame.Data.Mongo",
+			"DidiFrame.Lifetimes",
+			"DidiFrame.Statistic",
+			"DidiFrame.UserCommands",
+			"DidiFrame.Utils.Json",
 		};
 
 
@@ -91,7 +96,7 @@ namespace DidiFrame.Localization
 		}
 
 
-		private class Source : ILocaleDictionarySource
+		private sealed class Source : ILocaleDictionarySource
 		{
 			private readonly IDidiFrameLocalizationProvider provider;
 
@@ -108,7 +113,7 @@ namespace DidiFrame.Localization
 			}
 		}
 
-		private class NoSource : ILocaleDictionarySource
+		private sealed class NoSource : ILocaleDictionarySource
 		{
 			private readonly LocaleDictionary dic;
 

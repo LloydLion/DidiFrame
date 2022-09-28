@@ -1,14 +1,10 @@
 ﻿global using DidiFrame.Entities;
 global using DidiFrame.Exceptions;
-global using DidiFrame.Interfaces;
+global using DidiFrame.Clients;
 global using DidiFrame.Data;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Localization;
-global using DidiFrame.UserCommands.Models;
-global using DidiFrame.UserCommands.ContextValidation.Arguments;
-global using DidiFrame.UserCommands.ContextValidation.Invoker;
-global using DidiFrame.UserCommands.Repository;
 global using DidiFrame.Entities.Message;
 global using DidiFrame.Entities.Message.Components;
 global using DidiFrame.Entities.Message.Embed;

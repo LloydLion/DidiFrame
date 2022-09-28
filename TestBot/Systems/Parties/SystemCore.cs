@@ -28,77 +28,22 @@ namespace TestBot.Systems.Parties
 			state.Object.Add(party);
 		}
 
-		public ObjectHolder<IReadOnlyCollection<PartyModel>> GetPartiesWith(IMember member)
+		public IObjectController<IReadOnlyCollection<PartyModel>> GetPartiesWith(IMember member)
 		{
-			var state = states.GetState(member.Server).Open();
-			var collection = state.Object.Where(s => s.Members.Contains(member) || s.Creator == member).ToArray();
-			return new ObjectHolder<IReadOnlyCollection<PartyModel>>(collection, (_) =>
-			{
-				var exceptions = new List<Exception>();
-				foreach (var party in collection)
-				{
-					var ex = ValidateParty((IReadOnlyCollection<PartyModel>)state.Object, party, () => state.Object.Remove(party));
-					if (ex is not null) exceptions.Add(ex);
-				}
-
-				state.Dispose();
-
-				if(exceptions.Count != 0) throw new AggregateException(exceptions);
-			});
+			var state = states.GetState(member.Server);
+			return new SelectObjectContoller<ICollection<PartyModel>, IReadOnlyCollection<PartyModel>>(state, baseCollection => baseCollection.Where(s => s.Members.Contains(member) || s.Creator == member).ToArray());
 		}
 
-		public ObjectHolder<PartyModel> GetParty(IServer server, string name)
+		public IObjectController<PartyModel> GetParty(IServer server, string name)
 		{
-			bool ok = false;
-			ObjectHolder<ICollection<PartyModel>>? state = null;
-
-			try
-			{
-				state = states.GetState(server).Open();
-				var party = state.Object.Single(s => s.Name == name);
-				ok = true;
-				return new ObjectHolder<PartyModel>(party, (_) => { var ex = ValidateParty((IReadOnlyCollection<PartyModel>)state.Object, party,
-					() => state.Object.Remove(party)); state.Dispose(); if (ex is not null) throw ex; });
-			}
-			finally
-			{
-				if (!ok) state?.Dispose();
-			}
+			var state = states.GetState(server);
+			return new SelectObjectContoller<ICollection<PartyModel>, PartyModel>(state, baseCollection => baseCollection.Single(s => s.Name == name));
 		}
 
 		public bool HasParty(IServer server, string name)
 		{
 			using var state = states.GetState(server).Open();
 			return state.Object.Any(s => s.Name == name);
-		}
-
-		private static Exception? ValidateParty(IReadOnlyCollection<PartyModel> allParties, PartyModel party, Action callback)
-		{
-			if (party.Members.Any(s => s == party.Creator))
-			{
-				callback();
-				return new InvalidOperationException("Members mustn't include creator");
-			}
-
-			if (party.Members.Any(s => s.IsBot))
-			{
-				callback();
-				return new InvalidOperationException("No anyone member mustn't be bot");
-			}
-
-			if (allParties.Any(s => !s.Equals(party) && s.Name == party.Name))
-			{
-				callback();
-				return new InvalidOperationException($"Party with same name ({party.Name}) already exits on this server");
-			}
-
-			if (string.IsNullOrWhiteSpace(party.Name))
-			{
-				callback();
-				throw new InvalidOperationException("Name mustn't be white space");
-			}
-
-			return null;
 		}
 	}
 }

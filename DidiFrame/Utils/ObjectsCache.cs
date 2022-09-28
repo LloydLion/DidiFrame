@@ -111,13 +111,19 @@
 
 
 			/// <summary>
+			/// Sync root of frame object
+			/// </summary>
+			public object SyncRoot { get; } = new();
+
+
+			/// <summary>
 			/// Adds object to this cache
 			/// </summary>
 			/// <param name="key">Key of object</param>
 			/// <param name="obj">Object to add</param>
 			public void AddObject(TKey key, object obj)
 			{
-				lock (this)
+				lock (SyncRoot)
 				{
 					var isSuccess = objects.TryAdd(key, obj);
 					if (isSuccess && owner.addHandlers.ContainsKey(ttype)) owner.addHandlers[ttype].Invoke(key, obj);
@@ -130,7 +136,7 @@
 			/// <param name="key">Key of object</param>
 			public void DeleteObject(TKey key)
 			{
-				lock (this)
+				lock (SyncRoot)
 				{
 					if (objects.TryGetValue(key, out var value))
 					{
@@ -147,7 +153,7 @@
 			/// <returns>Object from cache</returns>
 			public object GetObject(TKey key)
 			{
-				lock (this)
+				lock (SyncRoot)
 				{
 					return objects[key];
 				}
@@ -160,7 +166,7 @@
 			/// <returns>Object from cache or null if no object found</returns>
 			public object? GetNullableObject(TKey key)
 			{
-				lock (this)
+				lock (SyncRoot)
 				{
 					return objects.ContainsKey(key) ? objects[key] : null;
 				}
@@ -172,7 +178,7 @@
 			/// <returns></returns>
 			public IReadOnlyCollection<object> GetObjects()
 			{
-				lock (this)
+				lock (SyncRoot)
 				{
 					return objects.Values;
 				}
@@ -185,7 +191,7 @@
 			/// <returns>If has object</returns>
 			public bool HasObject(TKey id)
 			{
-				lock (this)
+				lock (SyncRoot)
 				{
 					return objects.ContainsKey(id);
 				}

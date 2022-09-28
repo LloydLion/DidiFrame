@@ -42,5 +42,34 @@ namespace DidiFrame
 			Thread.CurrentThread.CurrentUICulture = ui;
 			return ret;
 		}
+
+		/// <summary>
+		/// Waits and creates disposable for AutoResentEvent that releases event
+		/// </summary>
+		/// <param name="resetEvent">Reset event itself</param>
+		/// <returns>Dispoable that releases event</returns>
+		public static IDisposable WaitAndCreateDisposable(this AutoResetEvent resetEvent)
+		{
+			resetEvent.WaitOne();
+			return new AutoResetEventDisposable(resetEvent);
+		}
+
+
+		private sealed class AutoResetEventDisposable : IDisposable
+		{
+			private readonly AutoResetEvent autoResetEvent;
+
+
+			public AutoResetEventDisposable(AutoResetEvent autoResetEvent)
+			{
+				this.autoResetEvent = autoResetEvent;
+			}
+
+
+			public void Dispose()
+			{
+				autoResetEvent.Set();	
+			}
+		}
 	}
 }

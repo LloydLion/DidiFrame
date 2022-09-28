@@ -1,9 +1,12 @@
 ﻿using DidiFrame.Entities.Message;
+using DidiFrame.Modals;
 using DidiFrame.UserCommands;
 using DidiFrame.UserCommands.Loader.Reflection;
+using DidiFrame.Modals.Components;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using TestBot.Systems.Test.ClientExtensions;
+using TestBot.Systems.Test.ClientExtensions.NewsChannels;
+using TestBot.Systems.Test.ClientExtensions.ReactionExtension;
 
 namespace TestBot.Systems.Test
 {
@@ -23,62 +26,126 @@ namespace TestBot.Systems.Test
 		[Command("hello")]
 		public Task<UserCommandResult> TestCmd(UserCommandContext _, string to)
 		{
-			return Task.FromResult(new UserCommandResult(UserCommandCode.Sucssesful)
-				{ RespondMessage = new MessageSendModel(localizer["Greeting", to]) });
+			return Task.FromResult(UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new(localizer["Greeting", to])));
 		}
 
-		[Command("shello", "SimpleGreeting")]
-		[SuppressMessage("Performance", "CA1822")]
-		public void SimpleHello(UserCommandContext _) { }
+		[Command("shello")]
+		public UserCommandResult SimpleHello(UserCommandContext _)
+		{
+			return UserCommandResult.CreateWithModal(UserCommandCode.Sucssesful, new Modal());
+		}
 
 		[Command("display", "DisplayComplite")]
 		public async Task Display(UserCommandContext ctx)
 		{
-			await core.SendDisplayMessageAsync(ctx.Invoker.Server);
+			await core.SendDisplayMessageAsync(ctx.SendData.Invoker.Server);
 		}
 
 		[Command("printname")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult PrintChannelName(UserCommandContext ctx)
 		{
-			return new(UserCommandCode.Sucssesful) { RespondMessage = new("Welcome to the " + ctx.Channel.Name) };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Welcome to the " + ctx.SendData.Channel.Name));
 		}
 
 		[Command("get reactions")]
-		[SuppressMessage("Performance", "CA1822")]
 		public async Task<UserCommandResult> GetReactions(UserCommandContext ctx)
 		{
-			var msg = await ctx.Channel.SendMessageAsync(new MessageSendModel("Set 🍎 here!"));
+			var msg = await ctx.SendData.Channel.SendMessageAsync(new MessageSendModel("Set 🍎 here!"));
 			await Task.Delay(5000);
 			var count = msg.GetReactions(":apple:");
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new($"You setted {count} 🍎") };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You setted {count} 🍎"));
 		}
 
 		[Command("get msg")]
-		[SuppressMessage("Performance", "CA1822")]
 		public async Task<UserCommandResult> GetMessage(UserCommandContext ctx, string ulongId)
 		{
 			var id = ulong.Parse(ulongId);
-			var msg = ctx.Channel.GetMessage(id);
+			var msg = ctx.SendData.Channel.GetMessage(id);
 			var content = msg.Content;
 			await Task.Delay(5000);
-			return new UserCommandResult(UserCommandCode.Sucssesful) { RespondMessage = new($"Now - {msg.Content}, Was - {content}") };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"Now - {msg.Content}, Was - {content}"));
 		}
 
 		[Command("reply date")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult ReplyDate(UserCommandContext _, DateTime date)
 		{
-			return new(UserCommandCode.Sucssesful) { RespondMessage = new($"You entered: {date.Ticks} - {date:D}") };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You entered: {date.Ticks} - {date:D}"));
 		}
 
 		[Command("reply time")]
-		[SuppressMessage("Performance", "CA1822")]
 		public UserCommandResult ReplyTime(UserCommandContext _, TimeSpan time)
 		{
-			return new(UserCommandCode.Sucssesful) { RespondMessage = new($"You entered: {time.Ticks} - {time.TotalSeconds}") };
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"You entered: {time.Ticks} - {time.TotalSeconds}"));
 		}
 
+		[Command("modal")]
+		public UserCommandResult ShowModal(UserCommandContext _)
+		{
+			return UserCommandResult.CreateWithModal(UserCommandCode.Sucssesful, new Modal());
+		}
+
+		[Command("button")]
+		public UserCommandResult RespondWithModal(UserCommandContext _)
+		{
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Button message")
+			{
+				ComponentsRows = new[]
+				{
+					new MessageComponentsRow(new[] { new MessageButton("btn", "Label", ButtonStyle.Danger) })
+				}
+			},
+
+			subscriber: dispatcher =>
+			{
+				dispatcher.Attach<MessageButton>("btn", cctx => Task.FromResult(ComponentInteractionResult.CreateWithMessage(new("Button message x2")
+				{
+					ComponentsRows = new[]
+					{
+						new MessageComponentsRow(new[] { new MessageButton("btn2", "Label", ButtonStyle.Danger) })
+					}
+				},
+
+				subscriber: dispatcher =>
+				{
+					dispatcher.Attach<MessageButton>("btn2", cctx => Task.FromResult(ComponentInteractionResult.CreateWithMessage(new("Super!"))));
+				}
+				)));
+			});
+		}
+
+		[Command("post last")]
+		public async Task<UserCommandResult> PostLastMessage(UserCommandContext ctx)
+		{
+			if (ctx.SendData.Channel is ITextChannel textChannel && textChannel.CheckIfIsNewsChannel())
+			{
+				var newsChannel = textChannel.AsNewsChannel();
+				var prevMessage = textChannel.GetMessages(1).Single();
+				await newsChannel.PostMessageAsync(prevMessage);
+				return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Post OK!"));
+			}
+			else return UserCommandResult.CreateWithMessage(UserCommandCode.InvalidInput, new("Enable to post message in non-news channel"));
+		}
+
+
+		private class Modal : IModalForm
+		{
+			public void Build(ModalBuilder modalBuilder)
+			{
+				modalBuilder.WithTitle("Demo modal");
+				modalBuilder.AddComponent(new ModalTextBox("demo", TextBoxStyle.Paragraph, "Test text box", "No data", "Initial data", false, 10, 25));
+			}
+
+
+			public Task<ModalSubmitResult> SubmitModalAsync(ModalSubmitContext context)
+			{
+				var value = context.Arguments.GetValueFor("demo").As<string>();
+				Console.WriteLine("Modal interaction result: " + value);
+
+				if (value != "Test string")
+					return Task.FromResult(ModalSubmitResult.CreateValidationError(new("Invalid string input", context.Arguments.GetComponent("demo"))));
+				else return Task.FromResult(ModalSubmitResult.CreateSuccessful(new("All ok")));
+			}
+		}
 
 		public class MyProv : IUserCommandArgumentValuesProvider
 		{
@@ -96,7 +163,7 @@ namespace TestBot.Systems.Test
 			public Type TargetType => typeof(string);
 
 
-			public IReadOnlyCollection<object> ProvideValues(IServer server, IServiceProvider services)
+			public IReadOnlyCollection<object> ProvideValues(UserCommandSendData sendData)
 			{
 				return new Collection(magicBase, count);
 			}

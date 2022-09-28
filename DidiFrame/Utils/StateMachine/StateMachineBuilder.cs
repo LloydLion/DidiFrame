@@ -7,7 +7,7 @@
 	public class StateMachineBuilder<TState> where TState : struct
 	{
 		private readonly ILogger logger;
-		private readonly List<IStateTransitWorker<TState>> workers = new();
+		private readonly List<StateTransit<TState>> transits = new();
 		private readonly List<StateChangedEventHandler<TState>> handlers = new();
 
 
@@ -22,10 +22,17 @@
 
 
 		/// <summary>
-		/// Adds transit worker into machine
+		/// Adds statemachine transit
 		/// </summary>
-		/// <param name="worker"></param>
-		public void AddStateTransitWorker(IStateTransitWorker<TState> worker) => workers.Add(worker);
+		/// <param name="transit">Transit itself</param>
+		public void AddStateTransit(StateTransit<TState> transit) => transits.Add(transit);
+
+		/// <summary>
+		/// Adds statemachine transit
+		/// </summary>
+		/// <param name="worker">Worker of new transit</param>
+		/// <param name="router">Router of new transit</param>
+		public void AddStateTransit(IStateTransitWorker<TState> worker, IStateTransitRouter<TState> router) => AddStateTransit(new StateTransit<TState>(router, worker));
 
 		/// <summary>
 		/// Adds state changed event handler into machine
@@ -39,7 +46,7 @@
 		/// <returns>New statemachine instance</returns>
 		public StateMachine<TState> Build()
 		{
-			var sm = new StateMachine<TState>(workers, logger);
+			var sm = new StateMachine<TState>(transits, logger);
 			foreach (var handler in handlers) sm.StateChanged += handler;
 
 			return sm;

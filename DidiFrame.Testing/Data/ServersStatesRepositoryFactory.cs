@@ -2,35 +2,45 @@
 
 namespace DidiFrame.Testing.Data
 {
-	internal class ServersStatesRepositoryFactory : IServersStatesRepositoryFactory
+	/// <summary>
+	/// Test IServersStatesRepositoryFactory implementation
+	/// </summary>
+	public class ServersStatesRepositoryFactory : IServersStatesRepositoryFactory
 	{
-		private readonly IModelFactoryProvider provider;
-		private readonly Dictionary<string, List<ServersStatesRepository>> data = new();
+		private readonly Dictionary<string, ServersStatesRepository> repositories = new();
+		private readonly IModelFactoryProvider modelFactoryProvider;
 
 
-		public ServersStatesRepositoryFactory(IModelFactoryProvider provider)
+		/// <summary>
+		/// Creates new instance of DidiFrame.Testing.Data.ServersStatesRepositoryFactory
+		/// </summary>
+		/// <param name="modelFactoryProvider"></param>
+		public ServersStatesRepositoryFactory(IModelFactoryProvider modelFactoryProvider)
 		{
-			this.provider = provider;
+			this.modelFactoryProvider = modelFactoryProvider;
 		}
 
-		public ServersStatesRepositoryFactory() : this(new DefaultCtorFactoryProvider()) { }
 
+		/// <inheritdoc/>
+		public IServersStatesRepository<TModel> Create<TModel>(string key) where TModel : class => CreateTest<TModel>(key);
 
-		public IServersStatesRepository<TModel> Create<TModel>(string key) where TModel : class
+		/// <summary>
+		/// Create new repository
+		/// </summary>
+		/// <typeparam name="TModel">Type of repository</typeparam>
+		/// <param name="key">State key in servers' states</param>
+		/// <returns>New repository</returns>
+		public ServersStatesRepository<TModel> CreateTest<TModel>(string key) where TModel : class
 		{
-			return (ServersStatesRepository<TModel>)data[key].Single(s => s is ServersStatesRepository<TModel>);
+			if (repositories.ContainsKey(key) == false)
+				repositories.Add(key, new ServersStatesRepository<TModel>(modelFactoryProvider.GetFactory<TModel>()));
+			return (ServersStatesRepository<TModel>)repositories[key];
 		}
 
+		/// <inheritdoc/>
 		public Task PreloadDataAsync()
 		{
 			return Task.CompletedTask;
-		}
-
-		public void AddRepository<TModel>(string key, ServersStatesRepository<TModel> repository) where TModel : class
-		{
-			repository.AddFactory(provider.GetFactory<TModel>());
-			if (data.ContainsKey(key) == false) data.Add(key, new());
-			data[key].Add(repository);
 		}
 	}
 }

@@ -98,7 +98,7 @@
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Statistic.html">DidiFrame.Statistic</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Statistic.dll</h6>
   <h5 id="DidiFrame_Statistic_StatisticEntry_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public struct StatisticEntry</code></pre>
@@ -108,13 +108,13 @@
   
   
   <a id="DidiFrame_Statistic_StatisticEntry__ctor_" data-uid="DidiFrame.Statistic.StatisticEntry.#ctor*"></a>
-  <h4 id="DidiFrame_Statistic_StatisticEntry__ctor_System_String_" data-uid="DidiFrame.Statistic.StatisticEntry.#ctor(System.String)">StatisticEntry(String)</h4>
+  <h4 id="DidiFrame_Statistic_StatisticEntry__ctor_System_String_System_Int64_" data-uid="DidiFrame.Statistic.StatisticEntry.#ctor(System.String,System.Int64)">StatisticEntry(String, Int64)</h4>
   <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Statistic.StatisticEntry</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public StatisticEntry(string key)</code></pre>
+    <pre><code class="lang-csharp hljs">public StatisticEntry(string key, long defaultValue)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -129,13 +129,45 @@
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">key</span></td>
-        <td><p>unique statistic key</p>
+        <td><p>Unique statistic key</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int64</span></td>
+        <td><span class="parametername">defaultValue</span></td>
+        <td><p>Default value for statistic entry</p>
 </td>
       </tr>
     </tbody>
   </table>
   <h3 id="properties">Properties
   </h3>
+  
+  
+  <a id="DidiFrame_Statistic_StatisticEntry_DefaultValue_" data-uid="DidiFrame.Statistic.StatisticEntry.DefaultValue*"></a>
+  <h4 id="DidiFrame_Statistic_StatisticEntry_DefaultValue" data-uid="DidiFrame.Statistic.StatisticEntry.DefaultValue">DefaultValue</h4>
+  <div class="markdown level1 summary"><p>Default value for statistic entry</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public readonly long DefaultValue { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int64</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   
   
   <a id="DidiFrame_Statistic_StatisticEntry_Key_" data-uid="DidiFrame.Statistic.StatisticEntry.Key*"></a>
@@ -162,10 +194,6 @@
       </tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
-  </div>
 </article>
           </div>
           

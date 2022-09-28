@@ -1,43 +1,67 @@
 ﻿using DidiFrame.Entities;
 using DidiFrame.Exceptions;
-using DidiFrame.Interfaces;
+using DidiFrame.Clients;
 using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Testing.Client
 {
+	/// <summary>
+	/// Test IMember implementation
+	/// </summary>
 	public class Member : User, IMember, IServerDeletable
 	{
 		private readonly Permissions permissions;
 		private readonly ICollection<Role> roles = new HashSet<Role>();
 
 
-		public Member(Server server, User baseUser, Permissions permissions) : base(server.BaseClient, baseUser.UserName, baseUser.IsBot)
+		internal Member(Server server, User baseUser, Permissions permissions) : base(server.BaseClient, baseUser.UserName, baseUser.IsBot, baseUser.Id)
 		{
 			Server = server;
 			this.permissions = permissions;
-			Id = baseUser.Id;
+		}
+
+		internal Member(Server server, string userName, bool isBot, Permissions permissions) : base(server.BaseClient, userName, isBot)
+		{
+			Server = server;
+			this.permissions = permissions;
 		}
 
 
+		/// <inheritdoc/>
 		public IServer Server { get; }
 
+		/// <inheritdoc/>
 		public ICollection<Role> Roles => GetIfExist(roles);
 
+		/// <inheritdoc/>
 		public bool IsExist { get; private set; } = true;
 
-		public bool Equals(IServerEntity? other) => other is Member member && IsExist && member.IsExist && member.Id == Id;
+		/// <inheritdoc/>
+		public bool Equals(IServerEntity? other) => Equals(other as IMember);
 
+		/// <inheritdoc/>
+		public bool Equals(IMember? other) => base.Equals(other);
 
+		/// <inheritdoc/>
+		public override bool Equals(object? obj) => Equals(obj as IMember);
+
+		/// <inheritdoc/>
+		public override int GetHashCode() => Id.GetHashCode();
+
+		/// <inheritdoc/>
 		public IReadOnlyCollection<IRole> GetRoles() => (IReadOnlyCollection<IRole>)GetIfExist(roles);
 
+		/// <inheritdoc/>
 		public Task GrantRoleAsync(IRole role)
 		{
 			GetIfExist(roles).Add((Role)role);
 			return Task.CompletedTask;
 		}
 
+		/// <inheritdoc/>
 		public bool HasPermissionIn(Permissions permissions, IChannel channel) => GetIfExist(this.permissions).HasFlag(permissions);
 
+		/// <inheritdoc/>
 		public Task RevokeRoleAsync(IRole role)
 		{
 			GetIfExist(roles).Remove((Role)role);

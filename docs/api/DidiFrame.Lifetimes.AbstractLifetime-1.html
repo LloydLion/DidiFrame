@@ -1,0 +1,829 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class AbstractLifetime&lt;TBase&gt;
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class AbstractLifetime&lt;TBase&gt;
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1">
+  
+  
+  <h1 id="DidiFrame_Lifetimes_AbstractLifetime_1" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1" class="text-break">Class AbstractLifetime&lt;TBase&gt;
+  </h1>
+  <div class="markdown level0 summary"><p>Represents base lifetime class with initial data</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">AbstractLifetime&lt;TBase&gt;</span></div>
+      <div class="level2"><a class="xref" href="DidiFrame.Lifetimes.AbstractStateBasedLifetime-2.html">AbstractStateBasedLifetime&lt;TState, TBase&gt;</a></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="DidiFrame.Lifetimes.ILifetime-1.html">ILifetime</a>&lt;TBase&gt;</div>
+    <div><span class="xref">IDisposable</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Lifetimes.html">DidiFrame.Lifetimes</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Lifetimes.dll</h6>
+  <h5 id="DidiFrame_Lifetimes_AbstractLifetime_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class AbstractLifetime&lt;TBase&gt; : ILifetime&lt;TBase&gt; where TBase : class, ILifetimeBase</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TBase</span></td>
+        <td><p>Type of lifetime base</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1__ctor_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.#ctor*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1__ctor_ILogger_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.#ctor(ILogger)">AbstractLifetime(ILogger)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Lifetimes.AbstractLifetime`1</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected AbstractLifetime(ILogger logger)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">ILogger</span></td>
+        <td><span class="parametername">logger</span></td>
+        <td><p>Logger to log some lifetime actions</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_Data_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Data*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_Data" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Data">Data</h4>
+  <div class="markdown level1 summary"><p>Initialized lifetime data</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected AbstractLifetime&lt;TBase&gt;.InitialData Data { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Lifetimes.AbstractLifetime-1.InitialData.html">AbstractLifetime.InitialData</a>&lt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_Id_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Id*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_Id" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Id">Id</h4>
+  <div class="markdown level1 summary"><p>Id of lifetime</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid Id { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Guid</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_IsFinalized_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.IsFinalized*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_IsFinalized" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.IsFinalized">IsFinalized</h4>
+  <div class="markdown level1 summary"><p>If lifetime is finalized</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsFinalized { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_IsInitialized_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.IsInitialized*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_IsInitialized" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.IsInitialized">IsInitialized</h4>
+  <div class="markdown level1 summary"><p>If lifetime is initialized</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsInitialized { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_IsNewlyCreated_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.IsNewlyCreated*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_IsNewlyCreated" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.IsNewlyCreated">IsNewlyCreated</h4>
+  <div class="markdown level1 summary"><p>If lifetime is newly created else lifetime is restored</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsNewlyCreated { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_Logger_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Logger*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_Logger" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Logger">Logger</h4>
+  <div class="markdown level1 summary"><p>Provided logger</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected ILogger Logger { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">ILogger</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_Server_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Server*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_Server" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Server">Server</h4>
+  <div class="markdown level1 summary"><p>Server that contains this lifetime</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IServer Server { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IServer</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_SynchronizationContext_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.SynchronizationContext*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_SynchronizationContext" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.SynchronizationContext">SynchronizationContext</h4>
+  <div class="markdown level1 summary"><p>Provides current lifetime sync context</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected LifetimeSynchronizationContext SynchronizationContext { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Lifetimes.LifetimeSynchronizationContext.html">LifetimeSynchronizationContext</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_CrashLifetime_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.CrashLifetime*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_CrashLifetime_Exception_System_Boolean_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.CrashLifetime(Exception,System.Boolean)">CrashLifetime(Exception, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Crashes lifetime with exception</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void CrashLifetime(Exception exception, bool isInvalidBase)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Exception</span></td>
+        <td><span class="parametername">exception</span></td>
+        <td><p>Exception to log</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isInvalidBase</span></td>
+        <td><p>If base has been invalid</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_Destroy_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Destroy*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_Destroy" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Destroy">Destroy()</h4>
+  <div class="markdown level1 summary"><p>Destroys lifetime from server</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void Destroy()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_Dispose_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Dispose*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_Dispose" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual void Dispose()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_FinalizeLifetime_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.FinalizeLifetime*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_FinalizeLifetime" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.FinalizeLifetime">FinalizeLifetime()</h4>
+  <div class="markdown level1 summary"><p>Finalizes lifetime</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void FinalizeLifetime()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_GetBase_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.GetBase*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_GetBase" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.GetBase">GetBase()</h4>
+  <div class="markdown level1 summary"><p>Provides base holder in write mode</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual ObjectHolder&lt;TBase&gt; GetBase()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Utils.ObjectHolder</span>&lt;TBase&gt;</td>
+        <td><p>Object holder with base object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_GetBaseController_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.GetBaseController*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_GetBaseController_System_Boolean_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.GetBaseController(System.Boolean)">GetBaseController(Boolean)</h4>
+  <div class="markdown level1 summary"><p>Get object controller for base obj</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected IObjectController&lt;TBase&gt; GetBaseController(bool asReadOnly = true)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">asReadOnly</span></td>
+        <td><p>If need get readonly controller</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Utils.IObjectController</span>&lt;TBase&gt;</td>
+        <td><p>Object controller</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_GetBaseProperty_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.GetBaseProperty*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_GetBaseProperty__1_Func__0___0__" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.GetBaseProperty``1(Func{`0,``0})">GetBaseProperty&lt;TTarget&gt;(Func&lt;TBase, TTarget&gt;)</h4>
+  <div class="markdown level1 summary"><p>Provides some base property</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected TTarget GetBaseProperty&lt;TTarget&gt;(Func&lt;TBase, TTarget&gt; selector)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Func</span>&lt;TBase, TTarget&gt;</td>
+        <td><span class="parametername">selector</span></td>
+        <td><p>Property selector</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TTarget</span></td>
+        <td><p>Selected value</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TTarget</span></td>
+        <td><p>Type of property</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_GetReadOnlyBase_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.GetReadOnlyBase*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_GetReadOnlyBase" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.GetReadOnlyBase">GetReadOnlyBase()</h4>
+  <div class="markdown level1 summary"><p>Provides base holder in read only mode</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual ObjectHolder&lt;TBase&gt; GetReadOnlyBase()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Utils.ObjectHolder</span>&lt;TBase&gt;</td>
+        <td><p>Object holder with base object</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_Run_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Run*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_Run__0_DidiFrame_Lifetimes_ILifetimeContext__0__" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Run(`0,DidiFrame.Lifetimes.ILifetimeContext{`0})">Run(TBase, ILifetimeContext&lt;TBase&gt;)</h4>
+  <div class="markdown level1 summary"><p>Starts lifetime processing</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Run(TBase initialBase, ILifetimeContext&lt;TBase&gt; context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TBase</span></td>
+        <td><span class="parametername">initialBase</span></td>
+        <td><p>Initial base for lifetime, cannot be saved in lifetime</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Lifetimes.ILifetimeContext-1.html">ILifetimeContext</a>&lt;TBase&gt;</td>
+        <td><span class="parametername">context</span></td>
+        <td><p>Context where lifetime runs</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_TerminateLifetime_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.TerminateLifetime*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_TerminateLifetime_System_String_System_Nullable_Exception__" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.TerminateLifetime(System.String,System.Nullable{Exception})">TerminateLifetime(String, Nullable&lt;Exception&gt;)</h4>
+  <div class="markdown level1 summary"><p>Terminates lifetime</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void TerminateLifetime(string reason, Exception? exception = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">reason</span></td>
+        <td><p>Reason of termination</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Nullable</span>&lt;<span class="xref">Exception</span>&gt;</td>
+        <td><span class="parametername">exception</span></td>
+        <td><p>Optional termination exception</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_ThrowIfBuilden_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.ThrowIfBuilden*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_ThrowIfBuilden" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.ThrowIfBuilden">ThrowIfBuilden()</h4>
+  <div class="markdown level1 summary"><p>Throws exception if lifetime is builden</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void ThrowIfBuilden()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_ThrowUnlessBuilden_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.ThrowUnlessBuilden*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_ThrowUnlessBuilden" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.ThrowUnlessBuilden">ThrowUnlessBuilden()</h4>
+  <div class="markdown level1 summary"><p>Throws exception unless lifetime is builden</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void ThrowUnlessBuilden()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_Lifetimes_AbstractLifetime_1_Update_" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Update*"></a>
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_Update" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.Update">Update()</h4>
+  <div class="markdown level1 summary"><p>Updates lifetime state</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Update()</code></pre>
+  </div>
+  <h3 id="events">Events
+  </h3>
+  
+  
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_LifetimePostRan" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.LifetimePostRan">LifetimePostRan</h4>
+  <div class="markdown level1 summary"><p>Event that fires on lifetime post run</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected event AbstractLifetime&lt;TBase&gt;.LifetimePostRanHandler LifetimePostRan</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Lifetimes.AbstractLifetime-1.LifetimePostRanHandler.html">AbstractLifetime.LifetimePostRanHandler</a>&lt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_LifetimeRan" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.LifetimeRan">LifetimeRan</h4>
+  <div class="markdown level1 summary"><p>Event that fires on lifetime run</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected event AbstractLifetime&lt;TBase&gt;.LifetimeRanHandler LifetimeRan</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Lifetimes.AbstractLifetime-1.LifetimeRanHandler.html">AbstractLifetime.LifetimeRanHandler</a>&lt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Lifetimes_AbstractLifetime_1_LifetimeUpdated" data-uid="DidiFrame.Lifetimes.AbstractLifetime`1.LifetimeUpdated">LifetimeUpdated</h4>
+  <div class="markdown level1 summary"><p>Event that fires on lifetime updated</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected event AbstractLifetime&lt;TBase&gt;.LifetimeUpdatedHandler LifetimeUpdated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Lifetimes.AbstractLifetime-1.LifetimeUpdatedHandler.html">AbstractLifetime.LifetimeUpdatedHandler</a>&lt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="DidiFrame.Lifetimes.ILifetime-1.html">ILifetime&lt;TBase&gt;</a>
+  </div>
+  <div>
+      <span class="xref">IDisposable</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

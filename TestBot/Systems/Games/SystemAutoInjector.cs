@@ -18,7 +18,7 @@ namespace TestBot.Systems.Games
 			services.AddTransient<ICommandsModule, CommandsHandler>();
 			services.AddTransient<IModelFactory<ICollection<GameModel>>, DefaultCtorModelFactory<List<GameModel>>>();
 			services.AddLifetime<GameLifetime, GameModel>(StatesKeys.GamesSystem);
-			services.AddTransient<IUserCommandContextSubConverter, GameConverter>();
+			services.AddTransient<IContextSubConverterInstanceCreator, ReflectionContextSubConverterInstanceCreator<GameConverter>>();
 		}
 	}
 }

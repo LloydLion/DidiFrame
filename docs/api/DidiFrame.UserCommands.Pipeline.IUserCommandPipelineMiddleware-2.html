@@ -79,14 +79,14 @@
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
-      <a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html#DidiFrame_UserCommands_Pipeline_IUserCommandPipelineMiddleware_Process_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">IUserCommandPipelineMiddleware.Process(Object, UserCommandPipelineContext)</a>
+      <a class="xref" href="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware.html#DidiFrame_UserCommands_Pipeline_IUserCommandPipelineMiddleware_ProcessAsync_System_Object_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_">IUserCommandPipelineMiddleware.ProcessAsync(Object, UserCommandPipelineContext)</a>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.UserCommands.Pipeline.html">DidiFrame.UserCommands.Pipeline</a></h6>
-  <h6><strong>Assembly</strong>: DidiFrame.dll</h6>
+  <h6><strong>Assembly</strong>: DidiFrame.UserCommands.dll</h6>
   <h5 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineMiddleware_2_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public interface IUserCommandPipelineMiddleware&lt;in TIn, out TOut&gt; : IUserCommandPipelineMiddleware</code></pre>
+    <pre><code class="lang-csharp hljs">public interface IUserCommandPipelineMiddleware&lt;in TIn, TOut&gt; : IUserCommandPipelineMiddleware</code></pre>
   </div>
   <h5 class="typeParameters">Type Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -113,14 +113,14 @@
   </h3>
   
   
-  <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineMiddleware_2_Process_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware`2.Process*"></a>
-  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineMiddleware_2_Process__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware`2.Process(`0,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">Process(TIn, UserCommandPipelineContext)</h4>
+  <a id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineMiddleware_2_ProcessAsync_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware`2.ProcessAsync*"></a>
+  <h4 id="DidiFrame_UserCommands_Pipeline_IUserCommandPipelineMiddleware_2_ProcessAsync__0_DidiFrame_UserCommands_Pipeline_UserCommandPipelineContext_" data-uid="DidiFrame.UserCommands.Pipeline.IUserCommandPipelineMiddleware`2.ProcessAsync(`0,DidiFrame.UserCommands.Pipeline.UserCommandPipelineContext)">ProcessAsync(TIn, UserCommandPipelineContext)</h4>
   <div class="markdown level1 summary"><p>Processes some object into another</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">TOut Process(TIn input, UserCommandPipelineContext pipelineContext)</code></pre>
+    <pre><code class="lang-csharp hljs">ValueTask&lt;UserCommandMiddlewareExcutionResult&lt;TOut&gt;&gt; ProcessAsync(TIn input, UserCommandPipelineContext pipelineContext)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -156,16 +156,12 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">TOut</span></td>
-        <td><p>Ready object or null if pipeline has been dropped or finalized</p>
+        <td><span class="xref">ValueTask</span>&lt;<span class="xref">UserCommandMiddlewareExcutionResult</span>&lt;TOut&gt;&gt;</td>
+        <td><p>instance of UserCommandMiddlewareExcutionResult`1</p>
 </td>
       </tr>
     </tbody>
   </table>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
-  </div>
 </article>
           </div>
           

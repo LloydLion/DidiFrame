@@ -18,7 +18,7 @@ namespace TestBot.Systems.Streaming
 			services.AddTransient<ICommandsModule, CommandHandler>();
 			services.AddTransient<IModelFactory<ICollection<StreamModel>>, DefaultCtorModelFactory<List<StreamModel>>>();
 			services.AddLifetime<StreamLifetime, StreamModel>(StatesKeys.StreamingSystem);
-			services.AddTransient<IUserCommandContextSubConverter, StreamConverter>();
+			services.AddTransient<IContextSubConverterInstanceCreator, ReflectionContextSubConverterInstanceCreator<StreamConverter>>();
 		}
 	}
 }

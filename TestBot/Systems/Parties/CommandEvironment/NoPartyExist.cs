@@ -1,11 +1,21 @@
-﻿using DidiFrame.UserCommands.ContextValidation;
+﻿using DidiFrame.Dependencies;
+using DidiFrame.UserCommands.ContextValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace TestBot.Systems.Parties.CommandEvironment
 {
-	internal class NoPartyExist : AbstractArgumentValidator<string>
+	internal class NoPartyExist : IUserCommandArgumentValidator
 	{
-		protected override ValidationFailResult? Validate(UserCommandContext context, UserCommandArgument argument, string value) =>
-			GetServiceProvider().GetRequiredService<ISystemCore>().HasParty(context.Invoker.Server, value) ? new("PartyExist", UserCommandCode.InvalidInput) : null;
+		private readonly ISystemCore core;
+
+
+		public NoPartyExist([Dependency] ISystemCore core)
+		{
+			this.core = core;
+		}
+
+
+		public ValidationFailResult? Validate(UserCommandContext context, UserCommandContext.ArgumentValue value, IServiceProvider localServices) =>
+			core.HasParty(context.SendData.Invoker.Server, value.As<string>()) ? new("PartyExist", UserCommandCode.InvalidInput) : null;
 	}
 }

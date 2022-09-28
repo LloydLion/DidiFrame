@@ -8,6 +8,7 @@ namespace TestBot.Systems.Voice
 	[DataKey(SettingsKeys.VoiceSystem)]
 	public class CreatedVoiceChannel : IStateBasedLifetimeBase<VoiceChannelState>
 	{
+		[SerializationConstructor]
 		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, MessageAliveHolderModel report, IMember creator, VoiceChannelState state, Guid id)
 		{
 			Name = name;
@@ -15,7 +16,7 @@ namespace TestBot.Systems.Voice
 			Creator = creator;
 			State = state;
 			ReportMessage = report;
-			Guid = id;
+			Id = id;
 		}
 
 		public CreatedVoiceChannel(string name, IVoiceChannel baseChannel, ITextChannel reportChannel, IMember creator)
@@ -32,19 +33,15 @@ namespace TestBot.Systems.Voice
 
 		[ConstructorAssignableProperty(4, "state")] public VoiceChannelState State { get; set; }
 
-		[ConstructorAssignableProperty(5, "id")] public Guid Guid { get; }
+		[ConstructorAssignableProperty(5, "id")] public Guid Id { get; }
 
 		public IServer Server => Creator.Server;
 		
 
-		public override bool Equals(object? obj) =>
-			obj is CreatedVoiceChannel channel && channel.Guid == Guid;
+		public bool Equals(IDataModel? other) => other is CreatedVoiceChannel channel && channel.Id == Id;
 
-		public override int GetHashCode() => Guid.GetHashCode();
+		public override bool Equals(object? obj) => Equals(obj as IDataModel);
 
-		public static bool operator ==(CreatedVoiceChannel? left, CreatedVoiceChannel? right) =>
-			EqualityComparer<CreatedVoiceChannel>.Default.Equals(left, right);
-
-		public static bool operator !=(CreatedVoiceChannel? left, CreatedVoiceChannel? right) => !(left == right);
+		public override int GetHashCode() => Id.GetHashCode();
 	}
 }

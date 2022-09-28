@@ -21,7 +21,7 @@ namespace DidiFrame.Data.ContextBased
 
 		public IObjectController<TModel> GetState(IServer server)
 		{
-			var syncRoot = perServerLock.GetLockObject(server);
+			var syncRoot = new ThreadLocker<IServer>.Agent(perServerLock, server);
 			return new StateObjectController<TModel>(syncRoot, server, FinalizeObject, GetObject);
 		}
 

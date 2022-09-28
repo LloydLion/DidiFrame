@@ -83,7 +83,7 @@
   </div>
   <div classs="implements">
     <h5>Implements</h5>
-    <div><a class="xref" href="DidiFrame.Data.ContextBased.IDataContext.html">IDataContext</a></div>
+    <div><span class="xref">DidiFrame.Data.ContextBased.IDataContext</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -126,7 +126,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public JsonContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider _)</code></pre>
+    <pre><code class="lang-csharp hljs">public JsonContext(DataOptions options, ContextType contextType, ILogger logger, IServiceProvider services)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -145,7 +145,7 @@
 </td>
       </tr>
       <tr>
-        <td><a class="xref" href="DidiFrame.Data.ContextBased.ContextType.html">ContextType</a></td>
+        <td><span class="xref">DidiFrame.Data.ContextBased.ContextType</span></td>
         <td><span class="parametername">contextType</span></td>
         <td><p>Type of context: state or settings</p>
 </td>
@@ -158,8 +158,8 @@
       </tr>
       <tr>
         <td><span class="xref">IServiceProvider</span></td>
-        <td><span class="parametername">_</span></td>
-        <td><p>Won't be used, is here only because that context based factories require</p>
+        <td><span class="parametername">services</span></td>
+        <td><p>Services with server notify</p>
 </td>
       </tr>
     </tbody>
@@ -169,7 +169,7 @@
   
   
   <a id="DidiFrame_Data_Json_JsonContext_Load_" data-uid="DidiFrame.Data.Json.JsonContext.Load*"></a>
-  <h4 id="DidiFrame_Data_Json_JsonContext_Load__1_DidiFrame_Interfaces_IServer_System_String_DidiFrame_Data_IModelFactory___0__" data-uid="DidiFrame.Data.Json.JsonContext.Load``1(DidiFrame.Interfaces.IServer,System.String,DidiFrame.Data.IModelFactory{``0})">Load&lt;TModel&gt;(IServer, String, IModelFactory&lt;TModel&gt;)</h4>
+  <h4 id="DidiFrame_Data_Json_JsonContext_Load__1_DidiFrame_Clients_IServer_System_String_DidiFrame_Data_IModelFactory___0__" data-uid="DidiFrame.Data.Json.JsonContext.Load``1(DidiFrame.Clients.IServer,System.String,DidiFrame.Data.IModelFactory{``0})">Load&lt;TModel&gt;(IServer, String, IModelFactory&lt;TModel&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -188,7 +188,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="DidiFrame.Interfaces.IServer.html">IServer</a></td>
+        <td><span class="xref">DidiFrame.Clients.IServer</span></td>
         <td><span class="parametername">server</span></td>
         <td></td>
       </tr>
@@ -198,7 +198,7 @@
         <td></td>
       </tr>
       <tr>
-        <td><a class="xref" href="DidiFrame.Data.IModelFactory-1.html">IModelFactory</a>&lt;TModel&gt;</td>
+        <td><span class="xref">DidiFrame.Data.IModelFactory</span>&lt;TModel&gt;</td>
         <td><span class="parametername">factory</span></td>
         <td></td>
       </tr>
@@ -262,7 +262,7 @@
   
   
   <a id="DidiFrame_Data_Json_JsonContext_Put_" data-uid="DidiFrame.Data.Json.JsonContext.Put*"></a>
-  <h4 id="DidiFrame_Data_Json_JsonContext_Put__1_DidiFrame_Interfaces_IServer_System_String___0_" data-uid="DidiFrame.Data.Json.JsonContext.Put``1(DidiFrame.Interfaces.IServer,System.String,``0)">Put&lt;TModel&gt;(IServer, String, TModel)</h4>
+  <h4 id="DidiFrame_Data_Json_JsonContext_Put__1_DidiFrame_Clients_IServer_System_String___0_" data-uid="DidiFrame.Data.Json.JsonContext.Put``1(DidiFrame.Clients.IServer,System.String,``0)">Put&lt;TModel&gt;(IServer, String, TModel)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -281,7 +281,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="DidiFrame.Interfaces.IServer.html">IServer</a></td>
+        <td><span class="xref">DidiFrame.Clients.IServer</span></td>
         <td><span class="parametername">server</span></td>
         <td></td>
       </tr>
@@ -314,11 +314,7 @@
   </table>
   <h3 id="implements">Implements</h3>
   <div>
-      <a class="xref" href="DidiFrame.Data.ContextBased.IDataContext.html">IDataContext</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods</h3>
-  <div>
-      <a class="xref" href="DidiFrame.Utils.Collections.SingleElementCollectionExtensions.html#DidiFrame_Utils_Collections_SingleElementCollectionExtensions_StoreSingle__1___0_">SingleElementCollectionExtensions.StoreSingle&lt;T&gt;(T)</a>
+      <span class="xref">DidiFrame.Data.ContextBased.IDataContext</span>
   </div>
 </article>
           </div>

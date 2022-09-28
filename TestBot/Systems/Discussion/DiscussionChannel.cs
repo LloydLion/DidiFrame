@@ -7,11 +7,11 @@ namespace TestBot.Systems.Discussion
 	[DataKey(StatesKeys.DiscussionSystem)]
 	internal class DiscussionChannel : ILifetimeBase
 	{
-		public DiscussionChannel(ITextChannelBase channel, IMessage askMessage, Guid guid)
+		public DiscussionChannel(ITextChannelBase channel, IMessage askMessage, Guid id)
 		{
 			Channel = channel;
 			AskMessage = askMessage;
-			Guid = guid;
+			Id = id;
 		}
 
 
@@ -23,7 +23,15 @@ namespace TestBot.Systems.Discussion
 
 		public IServer Server => Channel.Server;
 
-		[ConstructorAssignableProperty(2, "guid")]
-		public Guid Guid { get; }
+		[ConstructorAssignableProperty(2, "id")]
+		public Guid Id { get; }
+
+
+		public bool Equals(IDataModel? other) =>
+			other is DiscussionChannel channel && channel.Id == Id;
+
+		public override bool Equals(object? obj) => Equals(obj as IDataModel);
+
+		public override int GetHashCode() => Id.GetHashCode();
 	}
 }

@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.Exceptions
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DidiFrame.Exceptions
 {
 	/// <summary>
 	/// Exception that will be thrown when discord server gives unexcepted error

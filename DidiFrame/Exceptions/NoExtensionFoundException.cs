@@ -1,4 +1,6 @@
-﻿namespace DidiFrame.Exceptions
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace DidiFrame.Exceptions
 {
 	/// <summary>
 	/// Exception that will be thrown when extension for client or server hasn't been found

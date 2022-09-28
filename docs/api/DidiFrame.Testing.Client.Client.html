@@ -1,0 +1,736 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Client
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Client
+   ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="DidiFrame.Testing.Client.Client">
+  
+  
+  <h1 id="DidiFrame_Testing_Client_Client" data-uid="DidiFrame.Testing.Client.Client" class="text-break">Class Client
+  </h1>
+  <div class="markdown level0 summary"><p>Test IClient implementation</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">Client</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">DidiFrame.Clients.IClient</span></div>
+    <div><span class="xref">IDisposable</span></div>
+    <div><span class="xref">DidiFrame.Clients.IServersNotify</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="DidiFrame.Testing.Client.html">DidiFrame.Testing.Client</a></h6>
+  <h6><strong>Assembly</strong>: DidiFrame.Testing.dll</h6>
+  <h5 id="DidiFrame_Testing_Client_Client_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class Client : IClient, IServersNotify</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client__ctor_" data-uid="DidiFrame.Testing.Client.Client.#ctor*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client__ctor_IReadOnlyCollection_DidiFrame_ClientExtensions_IClientExtensionFactory__IReadOnlyCollection_DidiFrame_ClientExtensions_IServerExtensionFactory__System_String_" data-uid="DidiFrame.Testing.Client.Client.#ctor(IReadOnlyCollection{DidiFrame.ClientExtensions.IClientExtensionFactory},IReadOnlyCollection{DidiFrame.ClientExtensions.IServerExtensionFactory},System.String)">Client(IReadOnlyCollection&lt;IClientExtensionFactory&gt;, IReadOnlyCollection&lt;IServerExtensionFactory&gt;, String)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Testing.Client.Client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Client(IReadOnlyCollection&lt;IClientExtensionFactory&gt; clientExtensions, IReadOnlyCollection&lt;IServerExtensionFactory&gt; serverExtensions, string userName = &quot;Test bot&quot;)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">DidiFrame.ClientExtensions.IClientExtensionFactory</span>&gt;</td>
+        <td><span class="parametername">clientExtensions</span></td>
+        <td><p>Collection of client extensions</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">DidiFrame.ClientExtensions.IServerExtensionFactory</span>&gt;</td>
+        <td><span class="parametername">serverExtensions</span></td>
+        <td><p>Collection of server extensions</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">userName</span></td>
+        <td><p>User name of bot</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client__ctor_" data-uid="DidiFrame.Testing.Client.Client.#ctor*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client__ctor_System_String_" data-uid="DidiFrame.Testing.Client.Client.#ctor(System.String)">Client(String)</h4>
+  <div class="markdown level1 summary"><p>Creates new instance of DidiFrame.Testing.Client.Client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Client(string userName = &quot;Test bot&quot;)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">userName</span></td>
+        <td><p>User name of bot</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_CultureProvider_" data-uid="DidiFrame.Testing.Client.Client.CultureProvider*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_CultureProvider" data-uid="DidiFrame.Testing.Client.Client.CultureProvider">CultureProvider</h4>
+  <div class="markdown level1 summary"><p>Client's culture provider for server</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IServerCultureProvider CultureProvider { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Culture.IServerCultureProvider</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_SelfAccount_" data-uid="DidiFrame.Testing.Client.Client.SelfAccount*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_SelfAccount" data-uid="DidiFrame.Testing.Client.Client.SelfAccount">SelfAccount</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IUser SelfAccount { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.IUser</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_ServerExtensions_" data-uid="DidiFrame.Testing.Client.Client.ServerExtensions*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_ServerExtensions" data-uid="DidiFrame.Testing.Client.Client.ServerExtensions">ServerExtensions</h4>
+  <div class="markdown level1 summary"><p>Collection of server extensions</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;IServerExtensionFactory&gt; ServerExtensions { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">DidiFrame.ClientExtensions.IServerExtensionFactory</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_Servers_" data-uid="DidiFrame.Testing.Client.Client.Servers*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_Servers" data-uid="DidiFrame.Testing.Client.Client.Servers">Servers</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IReadOnlyCollection&lt;IServer&gt; Servers { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">DidiFrame.Clients.IServer</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_TestSelfAccount_" data-uid="DidiFrame.Testing.Client.Client.TestSelfAccount*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_TestSelfAccount" data-uid="DidiFrame.Testing.Client.Client.TestSelfAccount">TestSelfAccount</h4>
+  <div class="markdown level1 summary"><p>Base bot's account in discord</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public User TestSelfAccount { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Testing.Client.User.html">User</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_AwaitForExit_" data-uid="DidiFrame.Testing.Client.Client.AwaitForExit*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_AwaitForExit" data-uid="DidiFrame.Testing.Client.Client.AwaitForExit">AwaitForExit()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task AwaitForExit()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_ConnectAsync_" data-uid="DidiFrame.Testing.Client.Client.ConnectAsync*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_ConnectAsync" data-uid="DidiFrame.Testing.Client.Client.ConnectAsync">ConnectAsync()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task ConnectAsync()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Task</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_CreateExtension_" data-uid="DidiFrame.Testing.Client.Client.CreateExtension*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_CreateExtension__1" data-uid="DidiFrame.Testing.Client.Client.CreateExtension``1">CreateExtension&lt;TExtension&gt;()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TExtension CreateExtension&lt;TExtension&gt;()
+    where TExtension : class</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TExtension</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TExtension</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_CreateServer_" data-uid="DidiFrame.Testing.Client.Client.CreateServer*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_CreateServer_System_String_" data-uid="DidiFrame.Testing.Client.Client.CreateServer(System.String)">CreateServer(String)</h4>
+  <div class="markdown level1 summary"><p>Creates server in test client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Server CreateServer(string serverName = &quot;Some server&quot;)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">serverName</span></td>
+        <td><p>Name of server</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Testing.Client.Server.html">Server</a></td>
+        <td><p>New test server instance</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_DeleteServer_" data-uid="DidiFrame.Testing.Client.Client.DeleteServer*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_DeleteServer_DidiFrame_Testing_Client_Server_" data-uid="DidiFrame.Testing.Client.Client.DeleteServer(DidiFrame.Testing.Client.Server)">DeleteServer(Server)</h4>
+  <div class="markdown level1 summary"><p>Deletes server from client</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void DeleteServer(Server server)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Testing.Client.Server.html">Server</a></td>
+        <td><span class="parametername">server</span></td>
+        <td><p>Server to delete</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_Dispose_" data-uid="DidiFrame.Testing.Client.Client.Dispose*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_Dispose" data-uid="DidiFrame.Testing.Client.Client.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_GenerateNextId_" data-uid="DidiFrame.Testing.Client.Client.GenerateNextId*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_GenerateNextId" data-uid="DidiFrame.Testing.Client.Client.GenerateNextId">GenerateNextId()</h4>
+  <div class="markdown level1 summary"><p>Generates new global id</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ulong GenerateNextId()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><p>New global id</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_GetServer_" data-uid="DidiFrame.Testing.Client.Client.GetServer*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_GetServer_System_UInt64_" data-uid="DidiFrame.Testing.Client.Client.GetServer(System.UInt64)">GetServer(UInt64)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IServer GetServer(ulong id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.IServer</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_GetTestServer_" data-uid="DidiFrame.Testing.Client.Client.GetTestServer*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_GetTestServer_System_UInt64_" data-uid="DidiFrame.Testing.Client.Client.GetTestServer(System.UInt64)">GetTestServer(UInt64)</h4>
+  <div class="markdown level1 summary"><p>Gets base server by id</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Server GetTestServer(ulong id)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt64</span></td>
+        <td><span class="parametername">id</span></td>
+        <td><p>Id of server to get</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="DidiFrame.Testing.Client.Server.html">Server</a></td>
+        <td><p>Target server</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="DidiFrame_Testing_Client_Client_SetupCultureProvider_" data-uid="DidiFrame.Testing.Client.Client.SetupCultureProvider*"></a>
+  <h4 id="DidiFrame_Testing_Client_Client_SetupCultureProvider_DidiFrame_Culture_IServerCultureProvider_" data-uid="DidiFrame.Testing.Client.Client.SetupCultureProvider(DidiFrame.Culture.IServerCultureProvider)">SetupCultureProvider(IServerCultureProvider)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetupCultureProvider(IServerCultureProvider cultureProvider)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Culture.IServerCultureProvider</span></td>
+        <td><span class="parametername">cultureProvider</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="events">Events
+  </h3>
+  
+  
+  <h4 id="DidiFrame_Testing_Client_Client_ServerCreated" data-uid="DidiFrame.Testing.Client.Client.ServerCreated">ServerCreated</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerCreatedEventHandler ServerCreated</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerCreatedEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="DidiFrame_Testing_Client_Client_ServerRemoved" data-uid="DidiFrame.Testing.Client.Client.ServerRemoved">ServerRemoved</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event ServerRemovedEventHandler ServerRemoved</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">DidiFrame.Clients.ServerRemovedEventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">DidiFrame.Clients.IClient</span>
+  </div>
+  <div>
+      <span class="xref">IDisposable</span>
+  </div>
+  <div>
+      <span class="xref">DidiFrame.Clients.IServersNotify</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

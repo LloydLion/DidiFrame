@@ -188,13 +188,14 @@ namespace DidiFrame.Utils
 	/// <summary>
 	/// Serialization model of DidiFrame.Utils.MessageAliveHolder
 	/// </summary>
-	public class MessageAliveHolderModel
+	public class MessageAliveHolderModel : IDataModel
 	{
 		/// <summary>
 		/// Creates DidiFrame.Utils.MessageAliveHolder.Model using possible id and channel
 		/// </summary>
 		/// <param name="possibleMessageId">Possible message id</param>
 		/// <param name="channel">Channel where need to create message</param>
+		[SerializationConstructor]
 		public MessageAliveHolderModel(ulong possibleMessageId, ITextChannelBase channel)
 		{
 			PossibleMessageId = possibleMessageId;
@@ -222,5 +223,12 @@ namespace DidiFrame.Utils
 		/// </summary>
 		[ConstructorAssignableProperty(1, "channel")]
 		public ITextChannelBase Channel { get; }
+
+		/// <inheritdoc/>
+		public Guid Id { get; } = Guid.NewGuid();
+
+
+		/// <inheritdoc/>
+		public bool Equals(IDataModel? other) => false;
 	}
 }

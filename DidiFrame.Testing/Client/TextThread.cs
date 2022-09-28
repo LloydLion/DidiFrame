@@ -1,20 +1,33 @@
-﻿using DidiFrame.Interfaces;
+﻿using DidiFrame.Clients;
 
 namespace DidiFrame.Testing.Client
 {
+	/// <summary>
+	/// Test ITextThread implementation
+	/// </summary>
 	public class TextThread : TextChannelBase, ITextThread
 	{
-		private readonly TextChannel channel;
+		private readonly ITextThreadContainerChannel parentChannel;
+		private readonly ThreadsContainer parentContainer;
 
 
-		public TextThread(string name, TextChannel channel, ChannelCategory category) : base(name, category)
+		internal TextThread(string name, ITextThreadContainerChannel parentChannel, ThreadsContainer parentContainer) : base(name, (ChannelCategory)parentChannel.Category)
 		{
-			this.channel = channel;
+			this.parentChannel = parentChannel;
+			this.parentContainer = parentContainer;
 		}
 
+		internal TextThread(string name, TextChannel parentChannel) : this(name, parentChannel, parentChannel.Threads) { }
 
-		public ITextChannel Parent => GetIfExist(channel);
+		internal TextThread(string name, ForumChannel parentChannel) : this(name, parentChannel, parentChannel.Threads) { }
 
-		public TextChannel BaseParent => GetIfExist(channel);
+
+		/// <inheritdoc/>
+		public ITextThreadContainerChannel Parent => GetIfExist(parentChannel);
+
+		/// <summary>
+		/// Base parent container
+		/// </summary>
+		public ThreadsContainer BaseContainer => GetIfExist(parentContainer);
 	}
 }
