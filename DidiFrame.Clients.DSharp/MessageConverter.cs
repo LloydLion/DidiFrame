@@ -31,7 +31,12 @@ namespace DidiFrame.Clients.DSharp
 
 				foreach (var file in message.Attachments)
 				{
-					files.Add(new MessageFile(file.FileName, new DiscordFileReader(file)));
+					files.Add(new MessageFile(file.FileName, async (target) =>
+					{
+						var http = new HttpClient();
+						var result = await http.GetAsync(file.Url);
+						await result.Content.CopyToAsync(target);
+					}));
 				}
 			}
 
@@ -101,7 +106,9 @@ namespace DidiFrame.Clients.DSharp
 			if (messageSendModel.Files is not null)
 				foreach (var file in messageSendModel.Files)
 				{
-					var stream = new MemoryStream(Encoding.Default.GetBytes(file.Reader.ReadToEnd()));
+					var stream = new MemoryStream();
+					file.CopyTo(stream).Wait();
+					stream.Position = 0;
 					builder.WithFile(file.FileName, stream);
 				}
 
@@ -146,84 +153,6 @@ namespace DidiFrame.Clients.DSharp
 			}
 
 			return builder;
-		}
-
-
-		private sealed class DiscordFileReader : TextReader
-		{
-			private HttpClient? httpClient;
-			private StreamReader? cachedReader;
-			private readonly DiscordAttachment attachment;
-
-
-			public DiscordFileReader(DiscordAttachment attachment)
-			{
-				this.httpClient = new HttpClient();
-				this.attachment = attachment;
-			}
-
-
-			public override void Close() => cachedReader?.Close();
-
-			public override int Peek() => WorkWithReader(s => s.Peek());
-
-			public override int Read() => WorkWithReader(s => s.Read());
-
-			public override int Read(char[] buffer, int index, int count) => WorkWithReader(s => s.Read(buffer, index, count));
-
-			public override int Read(Span<char> buffer)
-			{
-				InitReader();
-				if (cachedReader is null) throw new ImpossibleVariantException();
-				return cachedReader.Read(buffer);
-			}
-
-			public override Task<int> ReadAsync(char[] buffer, int index, int count) => WorkWithReader(s => s.ReadAsync(buffer, index, count));
-
-			public override ValueTask<int> ReadAsync(Memory<char> buffer, CancellationToken cancellationToken = default) => WorkWithReader(s => s.ReadAsync(buffer, cancellationToken));
-
-			public override int ReadBlock(char[] buffer, int index, int count) => WorkWithReader(s => s.ReadBlock(buffer, index, count));
-
-			public override int ReadBlock(Span<char> buffer)
-			{
-				InitReader();
-				if (cachedReader is null) throw new ImpossibleVariantException();
-				return cachedReader.ReadBlock(buffer);
-			}
-
-			public override Task<int> ReadBlockAsync(char[] buffer, int index, int count) => WorkWithReader(s => s.ReadBlockAsync(buffer, index, count));
-
-			public override ValueTask<int> ReadBlockAsync(Memory<char> buffer, CancellationToken cancellationToken = default) => WorkWithReader(s => s.ReadBlockAsync(buffer, cancellationToken));
-
-			public override string? ReadLine() => WorkWithReader(s => s.ReadLine());
-
-			public override Task<string?> ReadLineAsync() => WorkWithReader(s => s.ReadLineAsync());
-
-			public override string ReadToEnd() => WorkWithReader(s => s.ReadToEnd());
-
-			public override Task<string> ReadToEndAsync() => WorkWithReader(s => s.ReadToEndAsync());
-
-			[Obsolete("This Remoting API is not supported and throws PlatformNotSupportedException")]
-			public override object InitializeLifetimeService() => WorkWithReader(s => s.InitializeLifetimeService());
-
-
-			private TOutput WorkWithReader<TOutput>(Func<StreamReader, TOutput> operatingFunction)
-			{
-				InitReader();
-				if (cachedReader is null) throw new ImpossibleVariantException();
-				return operatingFunction(cachedReader);
-			}
-
-			private void InitReader()
-			{
-				if (cachedReader is null)
-				{
-					if (httpClient is null) throw new ImpossibleVariantException();
-					cachedReader = new StreamReader(httpClient.GetStreamAsync(attachment.Url).Result);
-					httpClient.Dispose();
-					httpClient = null;
-				}
-			}
 		}
 	}
 }

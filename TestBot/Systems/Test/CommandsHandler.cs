@@ -7,6 +7,9 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using TestBot.Systems.Test.ClientExtensions.NewsChannels;
 using TestBot.Systems.Test.ClientExtensions.ReactionExtension;
+using DidiFrame.Utils.Collections;
+using System.Text;
+using System;
 
 namespace TestBot.Systems.Test
 {
@@ -124,6 +127,26 @@ namespace TestBot.Systems.Test
 				return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Post OK!"));
 			}
 			else return UserCommandResult.CreateWithMessage(UserCommandCode.InvalidInput, new("Enable to post message in non-news channel"));
+		}
+
+		[Command("senddown")]
+		public async Task<UserCommandResult> SendAndDownloadFile(UserCommandContext ctx)
+		{
+			using var fs = File.OpenRead("TextFile1.txt");
+			var buffer = new byte[fs.Length];
+			await fs.ReadAsync(buffer.AsMemory());
+
+			var message = await ctx.SendData.Channel.SendMessageAsync(new() { Files = new MessageFile("File1.txt", (target) => target.WriteAsync(buffer.AsMemory()).AsTask()).StoreSingle() });
+
+			var memory = new MemoryStream();
+#nullable disable
+			await message.SendModel.Files.Single().CopyTo(memory);
+#nullable restore
+
+			var str = Encoding.UTF8.GetString(memory.ToArray());
+			Console.WriteLine(str);
+
+			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new("Qwerty"));
 		}
 
 
