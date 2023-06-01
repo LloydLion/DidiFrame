@@ -2,7 +2,7 @@
 
 namespace DidiFrame.Utils.RoutedEvents
 {
-	public class RoutedEvent<TEventArgs> where TEventArgs : notnull, EventArgs
+	public class RoutedEvent<TEventArgs> : RoutedEventBase where TEventArgs : notnull, EventArgs
 	{
 		public RoutedEvent(Type eventOwner, string name, PropagationDirection propagation = PropagationDirection.Bubbling)
 		{
@@ -28,5 +28,13 @@ namespace DidiFrame.Utils.RoutedEvents
 			Bubbling,
 			Tunneling
 		}	
+	}
+
+	public abstract class RoutedEventBase
+	{
+		public RoutedEvent<TEventArgs> As<TEventArgs>() where TEventArgs : notnull, EventArgs
+		{
+			return (RoutedEvent<TEventArgs>)this;
+		}
 	}
 }
