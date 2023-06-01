@@ -106,6 +106,9 @@ dotnet_diagnostic.S4035.severity = silent
 dotnet_diagnostic.CS1572.severity = suggestion
 dotnet_diagnostic.NUnit2045.severity = silent
 dotnet_diagnostic.S3881.severity = silent
+csharp_style_prefer_utf8_string_literals = true:suggestion
+csharp_style_prefer_top_level_statements = true:silent
+dotnet_diagnostic.CS1591.severity = suggestion
 
 [*.vb]
 #### Стили именования ####

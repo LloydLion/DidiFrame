@@ -1,13 +1,7 @@
 ﻿namespace DidiFrame.Clients
 {
-	/// <summary>
-	/// Represents a discord voice channel
-	/// </summary>
-	public interface IVoiceChannel : ITextChannelBase
+	public interface IVoiceChannel : ITextChannelBase, IVoiceChannelBase
 	{
-		/// <summary>
-		/// Provides connected to channel members
-		/// </summary>
-		public IReadOnlyCollection<IMember> ConnectedMembers { get; }
+
 	}
 }

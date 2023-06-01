@@ -1,66 +1,55 @@
-﻿using DidiFrame.Entities.Message;
+﻿using DidiFrame.Utils.RoutedEvents;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DidiFrame.Clients
 {
-	/// <summary>
-	/// Represents a discord message
-	/// </summary>
-	public interface IMessage : IEquatable<IMessage>
+	public interface IMessage : IDiscordObject
 	{
-		/// <summary>
-		/// Send model of the message
-		/// </summary>
-		public MessageSendModel SendModel { get; }
+		public IMessageContainer Container { get; }
 
-		/// <summary>
-		/// Message's content (from SendModel)
-		/// </summary>
-		public string? Content { get { return SendModel.Content; } }
+		public string Content { get; }
 
-		/// <summary>
-		/// Id of the message
-		/// </summary>
-		public ulong Id { get; }
+		public MessageSendModel Model { get; }
 
-		/// <summary>
-		/// Text channel that contains this message
-		/// </summary>
-		public ITextChannelBase TextChannel { get; }
-
-		/// <summary>
-		/// Author of the message
-		/// </summary>
-		public IMember Author { get; }
-
-		/// <summary>
-		/// If message still exists in channel
-		/// </summary>
-		public bool IsExist { get; }
+		public IUser Author { get; }
 
 
-		/// <summary>
-		/// Deletes the message async
-		/// </summary>
-		/// <returns>Wait task</returns>
-		public Task DeleteAsync();
+		public ValueTask DeleteAsync();
 
-		/// <summary>
-		/// Gets interaction dispatcher for this message
-		/// </summary>
-		/// <returns>New interaction dispatcher or cached old instance</returns>
-		public IInteractionDispatcher GetInteractionDispatcher();
+		public ValueTask ModifyAsync(MessageSendModel newModel);
 
-		/// <summary>
-		/// Modifies message
-		/// </summary>
-		/// <param name="sendModel">New send model</param>
-		/// <param name="resetDispatcher">If need to erase interaction dispatcher and create new</param>
-		/// <returns>Wait task</returns>
-		public Task ModifyAsync(MessageSendModel sendModel, bool resetDispatcher);
 
-		/// <summary>
-		/// Erases interaction dispatcher and creates new
-		/// </summary>
-		public void ResetInteractionDispatcher();
+		public static readonly RoutedEvent<MessageEventArgs> MessageCreated = new(typeof(IMessage), nameof(MessageCreated), RoutedEvent.PropagationDirection.Bubbling);
+
+		public static readonly RoutedEvent<MessageEventArgs> MessageDeleted = new(typeof(IMessage), nameof(MessageDeleted), RoutedEvent.PropagationDirection.Bubbling);
+
+		public static readonly RoutedEvent<MessageEventArgs> MessageModified = new(typeof(IMessage), nameof(MessageModified), RoutedEvent.PropagationDirection.Bubbling);
+
+
+		public class MessageEventArgs : EventArgs
+		{
+			public MessageEventArgs(IMessage message)
+			{
+				Message = message;
+			}
+
+
+			public IMessage Message { get; }
+
+
+			public bool IfServerMessage([NotNullWhen(true)] out IServerMessage? serverMessage)
+			{
+				if (Message is IServerMessage sm)
+				{
+					serverMessage = sm;
+					return true;
+				}
+				else
+				{
+					serverMessage = null;
+					return false;
+				}
+			}
+		}
 	}
 }

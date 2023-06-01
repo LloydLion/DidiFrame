@@ -1,141 +1,46 @@
-﻿using DidiFrame.ClientExtensions;
+﻿using DidiFrame.Utils.RoutedEvents;
 
 namespace DidiFrame.Clients
 {
 	/// <summary>
-	/// Represents a discord server
+	/// Represents discord server
 	/// </summary>
-	public interface IServer : IEquatable<IServer>
+	public interface IServer : IDiscordObject
 	{
-		/// <summary>
-		/// Event that fires when new message sent
-		/// </summary>
-		public event MessageSentEventHandler? MessageSent;
+		public IReadOnlyCollection<IMember> ListMembers();
 
-		/// <summary>
-		/// Event that fires when a message deleted
-		/// </summary>
-		public event MessageDeletedEventHandler? MessageDeleted;
-
-		/// <summary>
-		/// Event that fires when a channel deleted
-		/// </summary>
-		public event ServerObjectDeletedEventHandler? ChannelDeleted;
-
-		/// <summary>
-		/// Event that fires when a member deleted (left)
-		/// </summary>
-		public event ServerObjectDeletedEventHandler? MemberDeleted;
-
-		/// <summary>
-		/// Event that fires when a role deleted
-		/// </summary>
-		public event ServerObjectDeletedEventHandler? RoleDeleted;
-
-		/// <summary>
-		/// Event that fires when a category deleted
-		/// </summary>
-		public event ServerObjectDeletedEventHandler? CategoryDeleted;
-
-		/// <summary>
-		/// Event that fires when a new channel
-		/// </summary>
-		public event ServerObjectCreatedEventHandler<IChannel>? ChannelCreated;
-
-		/// <summary>
-		/// Event that fires when a new member created (joined)
-		/// </summary>
-		public event ServerObjectCreatedEventHandler<IMember>? MemberCreated;
-
-		/// <summary>
-		/// Event that fires when a new role created
-		/// </summary>
-		public event ServerObjectCreatedEventHandler<IRole>? RoleCreated;
-
-		/// <summary>
-		/// Event that fires when a new category created
-		/// </summary>
-		public event ServerObjectCreatedEventHandler<IChannelCategory>? CategoryCreated;
-
-
-		/// <summary>
-		/// Provides all server's members
-		/// </summary>
-		/// <returns>Collection of members</returns>
-		public IReadOnlyCollection<IMember> GetMembers();
-
-		/// <summary>
-		/// Gets member by id
-		/// </summary>
-		/// <param name="id">Id of member</param>
-		/// <returns>Member with given id</returns>
 		public IMember GetMember(ulong id);
 
-		/// <summary>
-		/// Provides all server's categories
-		/// </summary>
-		/// <returns>Collection of categories</returns>
-		public IReadOnlyCollection<IChannelCategory> GetCategories();
+		public IReadOnlyCollection<IRole> ListRoles();
 
-		/// <summary>
-		/// Gets category by id
-		/// </summary>
-		/// <param name="id">Id of category</param>
-		/// <returns>Category with given id</returns>
-		public IChannelCategory GetCategory(ulong? id);
-
-		/// <summary>
-		/// Provides all server's channels
-		/// </summary>
-		/// <returns>Collection of channels</returns>
-		public IReadOnlyCollection<IChannel> GetChannels();
-
-		/// <summary>
-		/// Gets channel by id
-		/// </summary>
-		/// <param name="id">Id of channel</param>
-		/// <returns>Channel with given id</returns>
-		public IChannel GetChannel(ulong id);
-
-		/// <summary>
-		/// Provides all server's roles
-		/// </summary>
-		/// <returns>Collection of roles</returns>
-		public IReadOnlyCollection<IRole> GetRoles();
-
-		/// <summary>
-		/// Gets role by id
-		/// </summary>
-		/// <param name="id">Id of role</param>
-		/// <returns>Role with given id</returns>
 		public IRole GetRole(ulong id);
 
-		/// <summary>
-		/// Creates or gets extension for this server of TExtension type
-		/// </summary>
-		/// <typeparam name="TExtension">Type of extension</typeparam>
-		/// <returns>Instance of extension</returns>
-		public TExtension CreateExtension<TExtension>() where TExtension : class;
+		public IReadOnlyCollection<ICategory> ListCategories();
+
+		public ICategory GetCategory(ulong id);
+
+		public IReadOnlyCollection<ChannelProvider> ListChannels();
+
+		public TChannel GetChannel<TChannel>(ulong id) where TChannel : notnull, IChannel;
 
 
-		/// <summary>
-		/// Client that contains this server
-		/// </summary>
-		public IClient Client { get; }
+		public IServerPermissions ManagePermissions();
 
-		/// <summary>
-		/// Name of the server
-		/// </summary>
-		public string Name { get; }
 
-		/// <summary>
-		/// Id of the server
-		/// </summary>
-		public ulong Id { get; }
+		public static readonly RoutedEvent<ServerEventArgs> ServerCreated = new(typeof(IServer), nameof(ServerCreated), RoutedEvent.PropagationDirection.Bubbling);
 
-		/// <summary>
-		/// If server closed
-		/// </summary>
-		public bool IsClosed { get; }
+		public static readonly RoutedEvent<ServerEventArgs> ServerRemoved = new(typeof(IServer), nameof(ServerRemoved), RoutedEvent.PropagationDirection.Bubbling);
+
+
+		public class ServerEventArgs : EventArgs
+		{
+			public ServerEventArgs(IServer server)
+			{
+				Server = server;
+			}
+
+
+			public IServer Server { get; }
+		}
 	}
 }
