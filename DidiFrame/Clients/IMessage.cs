@@ -13,10 +13,26 @@ namespace DidiFrame.Clients
 
 		public IUser Author { get; }
 
+		/// <summary>
+		/// If object still presents in server structure
+		/// </summary>
+		public bool IsExists { get; }
+
 
 		public ValueTask DeleteAsync();
 
-		public ValueTask ModifyAsync(MessageSendModel newModel);
+		public ValueTask ModifyAsync(MessageSendModel newModel, bool resetDispatcher);
+
+		/// <summary>
+		/// Erases interaction dispatcher and creates new
+		/// </summary>
+		public void ResetInteractionDispatcher();
+
+		/// <summary>
+		/// Gets interaction dispatcher for this message
+		/// </summary>
+		/// <returns>New interaction dispatcher or cached old instance</returns>
+		public IInteractionDispatcher GetInteractionDispatcher();
 
 
 		public static readonly RoutedEvent<MessageEventArgs> MessageCreated = new(typeof(IMessage), nameof(MessageCreated), RoutedEvent.PropagationDirection.Bubbling);

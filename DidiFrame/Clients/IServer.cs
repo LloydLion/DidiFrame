@@ -7,6 +7,11 @@ namespace DidiFrame.Clients
 	/// </summary>
 	public interface IServer : IDiscordObject
 	{
+		public IClient Client { get; }
+
+		bool IsClosed { get; }
+
+
 		public IReadOnlyCollection<IMember> ListMembers();
 
 		public IMember GetMember(ulong id);
@@ -22,7 +27,6 @@ namespace DidiFrame.Clients
 		public IReadOnlyCollection<ChannelProvider> ListChannels();
 
 		public TChannel GetChannel<TChannel>(ulong id) where TChannel : notnull, IChannel;
-
 
 		public IServerPermissions ManagePermissions();
 

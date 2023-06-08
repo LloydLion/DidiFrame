@@ -63,7 +63,7 @@ namespace DidiFrame.Utils
 			var model = selector(parameter);
 			var msg = GetMessage(model);
 
-			if (msg.IsExist) postProcessor(parameter, msg, isModified: false);
+			if (msg.IsExists) postProcessor(parameter, msg, isModified: false);
 			else await SendNewMessage(parameter, model);
 
 			syncRoot.Set();
@@ -74,7 +74,7 @@ namespace DidiFrame.Utils
 		/// </summary>
 		/// <param name="parameter">Parameter</param>
 		/// <returns>Text channel that contains message (or not exist)</returns>
-		public ITextChannelBase GetChannel(TParameter parameter) => selector(parameter).Channel;
+		public IMessageContainer GetChannel(TParameter parameter) => selector(parameter).Channel;
 
 		/// <summary>
 		/// Gets message, can restore it if need
@@ -110,7 +110,7 @@ namespace DidiFrame.Utils
 			var model = selector(parameter);
 			var msg = GetMessage(model);
 
-			if (msg.IsExist) await msg.DeleteAsync();
+			if (msg.IsExists) await msg.DeleteAsync();
 
 			syncRoot.Set();
 		}
@@ -170,7 +170,7 @@ namespace DidiFrame.Utils
 		{
 			var msg = GetMessage(model);
 
-			if (!msg.IsExist) msg = await SendNewMessage(parameter, model);
+			if (!msg.IsExists) msg = await SendNewMessage(parameter, model);
 
 			return msg;
 		}
@@ -196,7 +196,7 @@ namespace DidiFrame.Utils
 		/// <param name="possibleMessageId">Possible message id</param>
 		/// <param name="channel">Channel where need to create message</param>
 		[SerializationConstructor]
-		public MessageAliveHolderModel(ulong possibleMessageId, ITextChannelBase channel)
+		public MessageAliveHolderModel(ulong possibleMessageId, IMessageContainer channel)
 		{
 			PossibleMessageId = possibleMessageId;
 			Channel = channel;
@@ -206,7 +206,7 @@ namespace DidiFrame.Utils
 		/// Creates DidiFrame.Utils.MessageAliveHolder.Model using channel
 		/// </summary>
 		/// <param name="channel">Channel where need to create message</param>
-		public MessageAliveHolderModel(ITextChannelBase channel)
+		public MessageAliveHolderModel(IMessageContainer channel)
 		{
 			Channel = channel;
 		}
@@ -222,7 +222,7 @@ namespace DidiFrame.Utils
 		/// Channel where need to create message
 		/// </summary>
 		[ConstructorAssignableProperty(1, "channel")]
-		public ITextChannelBase Channel { get; }
+		public IMessageContainer Channel { get; }
 
 		/// <inheritdoc/>
 		public Guid Id { get; } = Guid.NewGuid();

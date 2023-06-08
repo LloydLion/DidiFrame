@@ -1,4 +1,5 @@
 ﻿using DidiFrame.Dependencies;
+using DidiFrame.Utils.RoutedEvents;
 using System.Reflection;
 
 namespace DidiFrame.ClientExtensions.Reflection
@@ -63,23 +64,21 @@ namespace DidiFrame.ClientExtensions.Reflection
 				{
 					instances.Add(server, services.ResolveObjectWithDependencies<TImplementation>(new object[] { server, extensionContext }));
 
-					server.Client.ServerRemoved += onServerRemoved;
-
-
-					void onServerRemoved(IServer removedServer)
-					{
-						if (server.Equals(removedServer))
-						{
-							lock (syncRoot)
-							{
-								instances.Remove(server);
-								server.Client.ServerRemoved -= onServerRemoved;
-							}
-						}
-					}
+					server.AddListener(IServer.ServerRemoved, onServerRemoved);
 				}
 
 				return instances[server];
+			}
+
+
+
+			void onServerRemoved(RoutedEventSender sender, IServer.ServerEventArgs args)
+			{
+				lock (syncRoot)
+				{
+					instances.Remove(server);
+					sender.UnSubscribeMyself();
+				}
 			}
 		}
 	}
