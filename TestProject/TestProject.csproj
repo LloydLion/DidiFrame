@@ -21,9 +21,12 @@
 	
 
   <ItemGroup>
-    <ProjectReference Include="..\DidiFrame.Statistic\DidiFrame.Statistic.csproj" />
-    <ProjectReference Include="..\DidiFrame.Testing\DidiFrame.Testing.csproj" />
     <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
+  </ItemGroup>
+	
+
+  <ItemGroup>
+    <Folder Include="SubsystemsTests\Threading\" />
   </ItemGroup>
 
 </Project>
