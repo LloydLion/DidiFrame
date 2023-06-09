@@ -33,7 +33,9 @@ namespace DidiFrame.Threading
 		}
 
 
-		private TaskQueue CurrentQueue => currentQueue ?? throw new NullReferenceException();
+		public bool IsInside => Environment.CurrentManagedThreadId == internalThread.ManagedThreadId;
+
+		private TaskQueue CurrentQueue => currentQueue ?? throw new InvalidOperationException("These is no any queue");
 
 
 		public void Begin(IManagedThreadExecutionQueue queue)
@@ -51,6 +53,11 @@ namespace DidiFrame.Threading
 		{
 			logger.Log(LogLevel.Debug, NewExecutionQueueCreatedID, "[{This}]: New execution queue created with name {Name}", ToString(), queueName);
 			return new TaskQueue(this, queueName);
+		}
+
+		public IManagedThreadExecutionQueue GetActiveQueue()
+		{
+			return CurrentQueue;
 		}
 
 		public void SetExecutionQueue(IManagedThreadExecutionQueue queue)
@@ -78,7 +85,7 @@ namespace DidiFrame.Threading
 
 		private void CheckAccess()
 		{
-			if (Environment.CurrentManagedThreadId != internalThread.ManagedThreadId)
+			if (IsInside == false)
 				throw new InvalidOperationException($"Call from invalid thread, you can operate with it only from {internalThread} thread");
 		}
 
@@ -102,6 +109,7 @@ namespace DidiFrame.Threading
 				while (CurrentQueue.Queue.TryDequeue(out var task))
 				{
 					currentExecutingTask = task;
+					SynchronizationContext.SetSynchronizationContext(CurrentQueue.Context);
 
 					try
 					{
@@ -126,6 +134,7 @@ namespace DidiFrame.Threading
 		private sealed class TaskQueue : IManagedThreadExecutionQueue, IDisposable
 		{
 			private readonly ManagedThread owner;
+			private readonly SynchronizationContext context;
 			private bool disposed;
 
 
@@ -133,6 +142,7 @@ namespace DidiFrame.Threading
 			{
 				this.owner = owner;
 				Name = name;
+				context = new ManagedQueueBasedSynchronizationContext(this);
 			}
 
 
@@ -144,9 +154,15 @@ namespace DidiFrame.Threading
 
 			public bool IsDisposed => disposed;
 
+			public IManagedThread Thread => owner;
+
+			public SynchronizationContext Context => context;
+
 
 			public void Dispatch(ManagedThreadTask task)
 			{
+				CheckDisposed();
+
 				owner.logger.Log(LogLevel.Debug, TaskDispatchedID, "[{This}]: New task dispatched. Task delegate: {Task}", ToString(), task);
 
 #if DEBUG || LogFullTraceInfo

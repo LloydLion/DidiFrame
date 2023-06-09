@@ -1,5 +1,7 @@
 ﻿using DidiFrame.Threading;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace TestProject.SubsystemsTests.Threading
 {
@@ -34,13 +36,11 @@ namespace TestProject.SubsystemsTests.Threading
 		{
 			var system = CreateNewSystem();
 
-			var thread = system.CreateNewThread();
+			using var threadDiposable = system.CreateNewThread().CreateTestDisposable(out var thread);
 
 			var queue = thread.CreateNewExecutionQueue("default");
 
-			Assert.DoesNotThrow(() => thread.Begin(queue));	
-
-			queue.Dispatch(thread.Stop);
+			Assert.DoesNotThrow(() => thread.Begin(queue));
 		}
 
 		[Test]
@@ -60,7 +60,7 @@ namespace TestProject.SubsystemsTests.Threading
 		{
 			var system = CreateNewSystem();
 
-			var thread = system.CreateNewThread();
+			using var threadDiposable = system.CreateNewThread().CreateTestDisposable(out var thread);
 
 			var queue = thread.CreateNewExecutionQueue("default");
 
@@ -70,15 +70,8 @@ namespace TestProject.SubsystemsTests.Threading
 
 			queue.Dispatch(task);
 
-			try
-			{
-				if (resetEvent.WaitOne(CommonTaskTimeout) == false)
-					Assert.Fail($"Task was not executed in {CommonTaskTimeout}ms timeout");
-			}
-			finally
-			{
-				queue.Dispatch(thread.Stop);
-			}
+			if (resetEvent.WaitOne(CommonTaskTimeout) == false)
+				Assert.Fail($"Task was not executed in {CommonTaskTimeout}ms timeout");
 
 
 
@@ -93,7 +86,7 @@ namespace TestProject.SubsystemsTests.Threading
 		{
 			var system = CreateNewSystem();
 
-			var thread = system.CreateNewThread();
+			using var threadDiposable = system.CreateNewThread().CreateTestDisposable(out var thread);
 
 			var queue1 = thread.CreateNewExecutionQueue("queue1");
 			var queue2 = thread.CreateNewExecutionQueue("queue2");
@@ -110,27 +103,16 @@ namespace TestProject.SubsystemsTests.Threading
 			thread.Begin(queue1);
 
 
-			try
-			{
-				if (task1call.WaitOne(CommonTaskTimeout) == false)
-					Assert.Fail($"Task #1 was not executed in {CommonTaskTimeout}ms timeout");
+			if (task1call.WaitOne(CommonTaskTimeout) == false)
+				Assert.Fail($"Task #1 was not executed in {CommonTaskTimeout}ms timeout");
 
-				Thread.Sleep(CommonTaskTimeout);
+			Thread.Sleep(CommonTaskTimeout);
 
-				if (task3call.WaitOne(CommonTaskTimeout) == false)
-					Assert.Fail($"Task #3 was not executed in {CommonTaskTimeout}ms timeout");
+			if (task3call.WaitOne(CommonTaskTimeout) == false)
+				Assert.Fail($"Task #3 was not executed in {CommonTaskTimeout}ms timeout");
 
-				if (task2call)
-					Assert.Fail($"Task #2 was executed, when shouldn't have");
-			}
-			finally
-			{
-				if (queue1.IsDisposed == false)
-					queue1.Dispatch(thread.Stop);
-
-				if (queue2.IsDisposed == false)
-					queue2.Dispatch(thread.Stop);
-			}
+			if (task2call)
+				Assert.Fail($"Task #2 was executed, when shouldn't have");
 
 
 
@@ -149,6 +131,63 @@ namespace TestProject.SubsystemsTests.Threading
 			{
 				task3call.Set();
 			}
+		}
+
+		[Test]
+		public void DisposeQueue()
+		{
+			var system = CreateNewSystem();
+
+			using var threadDiposable = system.CreateNewThread().CreateTestDisposable(out var thread);
+
+			var queue1 = thread.CreateNewExecutionQueue("queue1");
+			var queue2 = thread.CreateNewExecutionQueue("queue2");
+
+			var resetEvent = new AutoResetEvent(false);
+
+			queue1.Dispatch(() =>
+			{
+				thread.SetExecutionQueue(queue2);
+				resetEvent.Set();
+			});
+
+			thread.Begin(queue1);
+
+
+			if (resetEvent.WaitOne(CommonTaskTimeout) == false)
+				Assert.Fail($"Task was not executed in {CommonTaskTimeout}ms timeout");
+
+			Assert.That(queue1.IsDisposed, Is.True);
+			Assert.That(queue2.IsDisposed, Is.False);
+			Assert.Throws<ObjectDisposedException>(() => queue1.Dispatch(() => { }));
+		}
+
+		[Test]
+		public void CheckSynchronizationContext()
+		{
+			var system = CreateNewSystem();
+
+			using var threadDiposable = system.CreateNewThread().CreateTestDisposable(out var thread);
+
+			var queue = thread.CreateNewExecutionQueue("default");
+
+			var resetEvent = new AutoResetEvent(false);
+			SynchronizationContext? internalContext = null;
+
+			queue.Dispatch(() =>
+			{
+				internalContext = SynchronizationContext.Current;
+				resetEvent.Set();
+			});
+
+			thread.Begin(queue);
+
+
+			if (resetEvent.WaitOne(CommonTaskTimeout) == false)
+				Assert.Fail($"Task was not executed in {CommonTaskTimeout}ms timeout");
+
+			Assert.That(internalContext, Is.InstanceOf<ManagedQueueBasedSynchronizationContext>());
+			Assert.That(((ManagedQueueBasedSynchronizationContext)internalContext!).Queue, Is.EqualTo(queue));
 		}
 	}
 }
