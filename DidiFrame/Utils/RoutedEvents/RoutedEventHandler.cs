@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.Utils.RoutedEvents
 {
-	public delegate void RoutedEventHandler<in TEventArgs>(RoutedEventSender sender, TEventArgs args) where TEventArgs : notnull, EventArgs;
+	public delegate ValueTask RoutedEventHandler<in TEventArgs>(RoutedEventSender sender, TEventArgs args) where TEventArgs : notnull, EventArgs;
 
 
 	public class RoutedEventHandler

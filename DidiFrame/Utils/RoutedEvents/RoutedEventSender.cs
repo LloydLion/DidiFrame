@@ -1,15 +1,15 @@
 ﻿namespace DidiFrame.Utils.RoutedEvents
 {
-	public class RoutedEventSender
+	public struct RoutedEventSender
 	{
-		private readonly UnSubscriber unSubscriber;
+		private readonly Action unSubscribeDelegate;
 
 
-		public RoutedEventSender(IRoutedEventObject originalSource, IRoutedEventObject sender, UnSubscriber unSubscriber)
+		public RoutedEventSender(IRoutedEventObject originalSource, IRoutedEventObject sender, Action unSubscribeDelegate)
 		{
 			OriginalSource = originalSource;
 			Sender = sender;
-			this.unSubscriber = unSubscriber;
+			this.unSubscribeDelegate = unSubscribeDelegate;
 		}
 
 
@@ -20,28 +20,7 @@
 
 		public void UnSubscribeMyself()
 		{
-			unSubscriber.UnSubscribe();
-		}
-
-
-		public class UnSubscriber
-		{
-			private readonly Action<dynamic> unSubMethod;
-			private dynamic? parameter;
-
-
-			public UnSubscriber(Action<dynamic> unSubMethod)
-			{
-				this.unSubMethod = unSubMethod;
-			}
-
-
-			public void SetParameter(dynamic? parameter) => this.parameter = parameter;
-
-			public void UnSubscribe()
-			{
-				unSubMethod(parameter ?? throw new NotSupportedException());
-			}
+			unSubscribeDelegate();
 		}
 	}
 }

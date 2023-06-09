@@ -2,14 +2,17 @@
 {
 	public class RoutedEventTreeNode : IRoutedEventObject
 	{
+		public delegate Task HandlerExecutor(Func<ValueTask> asyncHandler);
+
+
 		private readonly HashSet<RoutedEventTreeNode> children = new();
 		private RoutedEventTreeNode? parent = null;
 		private readonly Dictionary<RoutedEventBase, List<RoutedEventHandler>> handlers = new();
-		private readonly Action<Action> handlerExecutor;
+		private readonly HandlerExecutor handlerExecutor;
 		private readonly IRoutedEventObject owner;
 
 
-		public RoutedEventTreeNode(Action<Action> handlerExecutor, IRoutedEventObject owner)
+		public RoutedEventTreeNode(HandlerExecutor handlerExecutor, IRoutedEventObject owner)
 		{
 			this.handlerExecutor = handlerExecutor;
 			this.owner = owner;
@@ -33,22 +36,20 @@
 			parent?.children.Add(this);
 		}
 
-		public void Invoke<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args) where TEventArgs : notnull, EventArgs
+		public Task Invoke<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args) where TEventArgs : notnull, EventArgs
 		{
-			InvokeInternal(routedEvent, args, owner);
+			return InvokeInternal(routedEvent, args, owner);
 		}
 
-		private void InvokeInternal<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args, IRoutedEventObject originalSource) where TEventArgs : notnull, EventArgs
+		private async Task InvokeInternal<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args, IRoutedEventObject originalSource) where TEventArgs : notnull, EventArgs
 		{
-			var unsubScriber = new RoutedEventSender.UnSubscriber((handler) => owner.RemoveListener(routedEvent, handler));
-			var sender = new RoutedEventSender(originalSource, owner, unsubScriber);
-
 			var eventHandlers = GetHandlers(routedEvent);
 
+			var tasks = new List<Task>();
 			foreach (var handler in eventHandlers.Select(s => s.As<TEventArgs>()))
 			{
-				unsubScriber.SetParameter(handler);
-				handlerExecutor.Invoke(() => handler.Invoke(sender, args));
+				var sender = new RoutedEventSender(originalSource, owner, () => { owner.RemoveListener(routedEvent, handler); });
+				tasks.Add(handlerExecutor.Invoke(() => handler.Invoke(sender, args)));
 			}
 
 			switch (routedEvent.Propagation)
@@ -61,13 +62,14 @@
 					break;
 
 				case RoutedEvent.PropagationDirection.Tunneling:
-					foreach (var child in children)
-						child.InvokeInternal(routedEvent, args, owner);
+					await Task.WhenAll(children.Select(child => child.InvokeInternal(routedEvent, args, owner)));
 					break;
 
 				default:
 					throw new NotSupportedException($"RoutedEventTreeNode doesn't support {routedEvent.Propagation} event propagation type");
 			}
+
+			await Task.WhenAll(tasks);
 		}
 
 		private List<RoutedEventHandler> GetHandlers(RoutedEventBase routedEvent)
