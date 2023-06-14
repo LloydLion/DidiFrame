@@ -114,14 +114,14 @@ namespace DidiFrame.Threading
 					try
 					{
 						task.Task.Invoke();
-						logger.Log(LogLevel.Trace, TaskExecutedID, "[{This}]: Task executed. Task delegate: {Task}", ToString(), task.Task);
+						logger.Log(LogLevel.Trace, TaskExecutedID, "[{This}]: Task executed. Task delegate: {Task}", ToString(), task.Task.AsLogString());
 					}
 					catch (Exception ex)
 					{
 #if DEBUG || LogFullTraceInfo
-						logger.Log(LogLevel.Error, InternalTaskErrorID, ex, "[{This}]: Error in executing task. Task delegate: {Task}. (ONLY IN DEBUG) {Debug}", ToString(), task.Task, task.Debug);
+						logger.Log(LogLevel.Error, InternalTaskErrorID, ex, "[{This}]: Error in executing task. Task delegate: {Task}.\n(ONLY IN DEBUG)\n{Debug}", ToString(), task.Task.AsLogString(), task.Debug);
 #else
-						logger.Log(LogLevel.Error, InternalTaskErrorID, ex, "[{This}]: Error in executing task. Task delegate: {Task}", ToString(), task.Task);
+						logger.Log(LogLevel.Error, InternalTaskErrorID, ex, "[{This}]: Error in executing task. Task delegate: {Task}", ToString(), task.Task.AsLogString());
 #endif
 					}
 
@@ -163,7 +163,7 @@ namespace DidiFrame.Threading
 			{
 				CheckDisposed();
 
-				owner.logger.Log(LogLevel.Debug, TaskDispatchedID, "[{This}]: New task dispatched. Task delegate: {Task}", ToString(), task);
+				owner.logger.Log(LogLevel.Debug, TaskDispatchedID, "[{This}]: New task dispatched. Task delegate: {Task}", ToString(), task.AsLogString());
 
 #if DEBUG || LogFullTraceInfo
 				InternalThreadTask? ownerTask = null;
@@ -246,11 +246,26 @@ namespace DidiFrame.Threading
 
 						var frames = isDegenerate ? state.Callstack.GetFrames().Skip(FrameToSlice) : state.Callstack.GetFrames();
 
+
+						int skippedFrames = 0;
 						foreach (var frame in frames)
 						{
 							var method = frame.GetMethod();
+
 							if (method is not null)
 							{
+								if (method.DeclaringType?.Assembly?.GetName()?.Name?.StartsWith("DidiFrame") != true)
+								{
+									skippedFrames++;
+									continue;
+								}
+
+								if (skippedFrames != 0)
+								{
+									callstackText.AppendLine($"---- Skipped {skippedFrames} frames from another assembly ----");
+									skippedFrames = 0;
+								}
+
 								var methodVisual = $"{method.DeclaringType?.FullName}.{method.Name}[{string.Join(", ", method.GetGenericArguments().AsEnumerable())}]({string.Join(", ", method.GetParameters().AsEnumerable())})";
 								var filePosition = frame.HasSource() ? $" in {frame.GetFileName()} at {frame.GetFileLineNumber}:{frame.GetFileColumnNumber()}" : null;
 								callstackText.AppendLine(methodVisual + filePosition);
@@ -261,13 +276,16 @@ namespace DidiFrame.Threading
 							}
 						}
 
+						if (skippedFrames != 0)
+							callstackText.AppendLine($"---- Skipped {skippedFrames} frames from another assembly ----");
+
 						result.Add(callstackText.ToString());
 
 						state = state.Creator;
 					}
 
 					result.Reverse();
-					return string.Join($"\n{new string('-', 50)}\n", result);
+					return string.Join($"\n{new string('=', 50)}\n", result);
 				}
 			}
 #endif
