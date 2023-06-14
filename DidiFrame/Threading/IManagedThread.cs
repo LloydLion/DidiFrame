@@ -7,7 +7,7 @@
 
 		public void Begin(IManagedThreadExecutionQueue queue);
 
-		public void SetExecutionQueue(IManagedThreadExecutionQueue queue);
+		public void SetExecutionQueue(IManagedThreadExecutionQueue queue, bool closePreviousQueue = true);
 
 		public IManagedThreadExecutionQueue GetActiveQueue();
 

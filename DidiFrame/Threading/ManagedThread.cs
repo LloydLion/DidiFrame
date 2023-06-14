@@ -43,7 +43,7 @@ namespace DidiFrame.Threading
 			if (internalThread.ThreadState != ThreadState.Unstarted)
 				throw new InvalidOperationException("Thread was stared");
 
-			SetExecutionQueueInternal(queue);
+			SetExecutionQueueInternal(queue, closePreviousQueue: true);
 			internalThread.Start();
 
 			logger.Log(LogLevel.Debug, ThreadStartedID, "[{This}]: Stated new managed thread with id {ID}", ToString(), internalThread.ManagedThreadId);
@@ -60,10 +60,10 @@ namespace DidiFrame.Threading
 			return CurrentQueue;
 		}
 
-		public void SetExecutionQueue(IManagedThreadExecutionQueue queue)
+		public void SetExecutionQueue(IManagedThreadExecutionQueue queue, bool closePreviousQueue = true)
 		{
 			CheckAccess();
-			SetExecutionQueueInternal(queue);
+			SetExecutionQueueInternal(queue, closePreviousQueue);
 		}
 
 		public void Stop()
@@ -89,10 +89,12 @@ namespace DidiFrame.Threading
 				throw new InvalidOperationException($"Call from invalid thread, you can operate with it only from {internalThread} thread");
 		}
 
-		private void SetExecutionQueueInternal(IManagedThreadExecutionQueue queue)
+		private void SetExecutionQueueInternal(IManagedThreadExecutionQueue queue, bool closePreviousQueue)
 		{
 			var tq = (TaskQueue)queue;
 			tq.CheckAccess(this);
+			if (closePreviousQueue == false)
+				currentQueue?.DontClose();
 			currentQueue?.Dispose();
 			currentQueue = tq;
 
@@ -136,6 +138,7 @@ namespace DidiFrame.Threading
 			private readonly ManagedThread owner;
 			private readonly SynchronizationContext context;
 			private bool disposed;
+			private bool dontClose = false;
 
 
 			public TaskQueue(ManagedThread owner, string name)
@@ -161,6 +164,12 @@ namespace DidiFrame.Threading
 
 			public void Dispatch(ManagedThreadTask task)
 			{
+				if (dontClose && disposed)
+				{
+					//Ignore any input task, Dispatch method will not throw exception if queue disposed and dontClose set
+					return;
+				}
+
 				CheckDisposed();
 
 				owner.logger.Log(LogLevel.Debug, TaskDispatchedID, "[{This}]: New task dispatched. Task delegate: {Task}", ToString(), task.AsLogString());
@@ -201,6 +210,11 @@ namespace DidiFrame.Threading
 			{
 				if (disposed)
 					throw new ObjectDisposedException("This execution queue is disposed. NOTE: execution queue can be used only one time");
+			}
+
+			public void DontClose()
+			{
+				dontClose = true;
 			}
 		}
 

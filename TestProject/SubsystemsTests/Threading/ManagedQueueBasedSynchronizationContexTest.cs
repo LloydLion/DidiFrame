@@ -150,7 +150,7 @@ namespace TestProject.SubsystemsTests.Threading
 				throw new NotImplementedException();
 			}
 
-			public void SetExecutionQueue(IManagedThreadExecutionQueue queue)
+			public void SetExecutionQueue(IManagedThreadExecutionQueue queue, bool closePreviousQueue = true)
 			{
 				throw new NotImplementedException();
 			}

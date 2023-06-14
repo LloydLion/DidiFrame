@@ -163,6 +163,35 @@ namespace TestProject.SubsystemsTests.Threading
 		}
 
 		[Test]
+		public void DontCloseQueue()
+		{
+			var system = CreateNewSystem();
+
+			using var threadDiposable = system.CreateNewThread().CreateTestDisposable(out var thread);
+
+			var queue1 = thread.CreateNewExecutionQueue("queue1");
+			var queue2 = thread.CreateNewExecutionQueue("queue2");
+
+			var resetEvent = new AutoResetEvent(false);
+
+			queue1.Dispatch(() =>
+			{
+				thread.SetExecutionQueue(queue2, closePreviousQueue: false);
+				resetEvent.Set();
+			});
+
+			thread.Begin(queue1);
+
+
+			if (resetEvent.WaitOne(CommonTaskTimeout) == false)
+				Assert.Fail($"Task was not executed in {CommonTaskTimeout}ms timeout");
+
+			Assert.That(queue1.IsDisposed, Is.True);
+			Assert.That(queue2.IsDisposed, Is.False);
+			Assert.DoesNotThrow(() => queue1.Dispatch(() => { }));
+		}
+
+		[Test]
 		public void CheckSynchronizationContext()
 		{
 			var system = CreateNewSystem();
