@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace DidiFrame.Exceptions
+﻿namespace DidiFrame.Exceptions
 {
 	/// <summary>
 	/// Exception that will be thrown when some discord object hasn't found

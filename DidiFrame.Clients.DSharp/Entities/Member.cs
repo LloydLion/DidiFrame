@@ -1,104 +1,80 @@
-﻿using DidiFrame.Entities;
-using DidiFrame.Entities.Message;
-using DidiFrame.Exceptions;
-using DidiFrame.Clients;
+﻿using DidiFrame.Utils;
 using DSharpPlus.Entities;
-using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp.Entities
 {
-	/// <summary>
-	/// DSharp implementation of DidiFrame.Interfaces.IMember
-	/// </summary>
-	public sealed class Member : User, IMember
+	public class Member : ServerObject, IMember
 	{
-		private readonly ObjectSourceDelegate<DiscordMember> member;
-		private readonly ServerWrap baseServer;
+		private DiscordMember? discordMember;
+		private string userName;
+		private string avatarURL;
+		private string mention;
+		private bool isBot;
 
 
-		/// <inheritdoc/>
-		public IServer Server => baseServer;
-
-		/// <summary>
-		/// DSharp server where member present. Casted to DidiFrame.Clients.DSharp.Server Server property
-		/// </summary>
-		public ServerWrap BaseServer => baseServer;
-
-		/// <inheritdoc/>
-		public override string UserName => AccessBase().Username;
-
-		/// <summary>
-		/// Base DiscordMember from DSharp
-		/// </summary>
-		public DiscordMember BaseMember => AccessBase();
-
-		/// <inheritdoc/>
-		public bool IsExist => member() is not null;
-
-
-		/// <summary>
-		/// Creates new instance of DidiFrame.Clients.DSharp.Member
-		/// </summary>
-		/// <param name="id">Id of user and member</param>
-		/// <param name="member">Base DiscordMember from DSharp source</param>
-		/// <param name="server">Owner server wrap object</param>
-		public Member(ulong id, ObjectSourceDelegate<DiscordMember> member, ServerWrap server) : base(id, member, server.SourceClient)
+		public Member(Server server, DiscordMember discordMember) : base(server, discordMember)
 		{
-			baseServer = server;
-			this.member = member;
+			this.discordMember = discordMember;
+
+			WrapName = discordMember.DisplayName;
+			userName = discordMember.Username;
+			avatarURL = discordMember.AvatarUrl;
+			mention = discordMember.Mention;
+			isBot = discordMember.IsBot;
+		}
+
+		public Member(Server server, ulong targetId) : base(server, targetId)
+		{
+			discordMember = null;
+
+			WrapName = string.Empty;
+			userName = string.Empty;
+			avatarURL = string.Empty;
+			mention = string.Empty;
+			isBot = false;
 		}
 
 
-		/// <inheritdoc/>
-		public bool Equals(IServerEntity? other) => Equals(other as Member);
+		public string Nickname => Name;
 
-		/// <inheritdoc/>
-		public bool Equals(IMember? other) => other is Member otherMember && otherMember.IsExist && IsExist && base.Equals(otherMember) && otherMember.Server.Equals(Server);
+		public string UserName { get => CheckAccess<string>(userName); private set => userName = value; }
 
-		/// <inheritdoc/>
-		public override bool Equals(object? obj) => Equals(obj as Member);
+		public string AvatarURL { get => CheckAccess<string>(avatarURL); private set => avatarURL = value; }
+
+		public string Mention { get => CheckAccess<string>(mention); private set => mention = value; }
+
+		public bool IsBot { get => CheckAccess(isBot); private set => isBot = value; }
+
+		protected override string WrapName { get; set; }
 
 
-		/// <inheritdoc/>
-		public override int GetHashCode() => HashCode.Combine(Id, Server);
-
-		/// <inheritdoc/>
-		public IReadOnlyCollection<IRole> GetRoles()
+		public override string? ToString()
 		{
-			return AccessBase().Roles.Select(s => baseServer.GetRole(s.Id)).ToArray();
+			return $"[Discord member ({Id})] {{Nickname={Nickname}; UserName={UserName}; Mention={Mention}; IsBot={IsBot}; CreationTimeStamp={CreationTimeStamp}; AvatarURL={AvatarURL}}}";
 		}
 
-		/// <inheritdoc/>
-		public Task GrantRoleAsync(IRole role)
+		internal Task MutateAsync(DiscordMember discordMember)
 		{
-			return BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().GrantRoleAsync(((Role)role).BaseRole));
+			CheckAccess();
+
+			this.discordMember = discordMember;
+			WrapName = discordMember.DisplayName;
+			UserName = discordMember.Username;
+			AvatarURL = discordMember.AvatarUrl;
+			Mention = discordMember.Mention;
+			IsBot = discordMember.IsBot;
+
+			return NotifyModified();
 		}
 
-		/// <inheritdoc/>
-		public Task RevokeRoleAsync(IRole role)
+		protected override async ValueTask CallRenameOperationAsync(string newName)
 		{
-			return BaseServer.SourceClient.DoSafeOperationAsync(() => AccessBase().RevokeRoleAsync(((Role)role).BaseRole));
+			await AccessObject(discordMember).ModifyAsync(s => s.Nickname = newName);
 		}
 
-		/// <inheritdoc/>
-		public bool HasPermissionIn(Permissions permissions, IChannel channel) =>
-			AccessBase().PermissionsIn(((Channel)channel).BaseChannel).GetAbstract().HasFlag(permissions);
-
-		internal Task SendDirectMessageAsyncInternal(MessageSendModel model)
+		protected override async ValueTask CallDeleteOperationAsync()
 		{
-			return BaseServer.SourceClient.DoSafeOperationAsync(async () =>
-			{
-				var channel = await AccessBase().CreateDmChannelAsync();
-				await channel.SendMessageAsync(MessageConverter.ConvertUp(model));
-			}, new(SafeOperationsExtensions.NotFoundInfo.Type.User, Id, base.UserName));
-		}
-
-		private DiscordMember AccessBase([CallerMemberName] string nameOfCaller = "")
-		{
-			var obj = member();
-			if (obj is null)
-				throw new ObjectDoesNotExistException(nameOfCaller);
-			else return obj;
+			await AccessObject(discordMember).RemoveAsync();
 		}
 	}
 }

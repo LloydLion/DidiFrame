@@ -9,6 +9,8 @@ TestBot/settings/
 
 DidiFrame/DocFX/api
 
+/DidiFrame.Clients.DSharp/token.ini
+
 # User-specific files
 *.rsuser
 *.suo

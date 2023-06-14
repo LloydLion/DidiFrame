@@ -11,7 +11,8 @@ namespace DidiFrame.Exceptions
 		/// Creates new instance of DidiFrame.Exceptions.NotEnoughPermissionsException
 		/// </summary>
 		/// <param name="message">Message for exception</param>
-		public NotEnoughPermissionsException(string message) : base(message)
+		/// <param name="innerException">Inner exception</param>
+		public NotEnoughPermissionsException(string message, Exception? innerException) : base(message, innerException)
 		{
 
 		}

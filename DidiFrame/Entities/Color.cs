@@ -51,5 +51,11 @@
 		/// Blue channel value
 		/// </summary>
 		public byte Blue => blue;
+
+
+		public override string? ToString()
+		{
+			return $"RGB ({Red}, {Green}, {Blue})";
+		}
 	}
 }

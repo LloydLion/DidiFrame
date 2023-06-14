@@ -1,193 +1,99 @@
-﻿using DidiFrame.Culture;
-using DidiFrame.Entities.Message;
-using DidiFrame.Exceptions;
+﻿using DidiFrame.Exceptions;
+using DidiFrame.Threading;
+using DidiFrame.Utils.RoutedEvents;
 using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Localization;
-using DidiFrame.ClientExtensions;
-using DidiFrame.Clients.DSharp.ClientUtils;
-using DidiFrame.Utils.Collections;
-using DidiFrame.Modals;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace DidiFrame.Clients.DSharp
 {
 	/// <summary>
 	/// Discord client based on DSharpPlus library
 	/// </summary>
-	public sealed class DSharpClient : IClient
+	public sealed class DSharpClient : IClient, IDisposable
 	{
-		internal const string ChannelName = "Channel";
-		internal const string MemberName = "Member";
-		internal const string UserName = "User";
-		internal const string ServerName = "Server";
-		internal const string MessageName = "Message";
-		private readonly static EventId NoServerConnectionID = new(21, "NoServerConnection");
+		private readonly RoutedEventTreeNode routedEventTreeNode;
+		private readonly Dictionary<ulong, Server> servers = new();
+		private readonly DiscordClient discordClient;
+		private readonly IThreadingSystem threading;
+		private readonly IManagedThread clientThread;
+		private readonly IManagedThreadExecutionQueue clientThreadQueue;
 
 
-		private readonly DiscordClient client;
-		private User? selfAccount;
-		private readonly IChannelMessagesCacheFactory messagesCacheFactory;
-		private readonly IReadOnlyCollection<IClientExtensionFactory> clientExtensions;
-		private readonly ExtensionContextFactory extensionContextFactory = new();
-		private readonly ClientServersHolder servers;
+		public DSharpClient(IOptions<Options> options, ILoggerFactory loggerFactory, IThreadingSystem threading)
+		{
+			Logger = loggerFactory.CreateLogger<DSharpClient>();
+			this.threading = threading;
 
 
-		/// <inheritdoc/>
-		public event ServerCreatedEventHandler? ServerCreated
-		{ add => servers.ServerCreated += value; remove => servers.ServerCreated -= value; }
+			routedEventTreeNode = new RoutedEventTreeNode(this);
+			discordClient = new DiscordClient(new DiscordConfiguration()
+			{
+				MessageCacheSize = 0,
+				AlwaysCacheMembers = false,
 
-		/// <inheritdoc/>
-		public event ServerRemovedEventHandler? ServerRemoved
-		{ add => servers.ServerRemoved += value; remove => servers.ServerRemoved -= value; }
+				Token = options.Value.Token,
+				AutoReconnect = true,
+				HttpTimeout = new TimeSpan(0, 1, 0),
+				TokenType = TokenType.Bot,
+				LoggerFactory = loggerFactory,
+				Intents = DiscordIntents.All
+			});
 
+			discordClient.GuildCreated += OnGuildCreated;
+			discordClient.GuildDeleted += OnGuildDeleted;
+#if DEBUG
+			discordClient.MessageCreated += ProcessDebugCommand;
+#endif
 
-		/// <inheritdoc/>
+			clientThread = threading.CreateNewThread();
+			clientThreadQueue = clientThread.CreateNewExecutionQueue("main");
+			clientThread.Begin(clientThreadQueue);
+		}
+
 		public IReadOnlyCollection<IServer> Servers
 		{
 			get
 			{
 				ThrowUnlessConnected();
-				return SelectCollection<ServerWrap>.Create(servers.ServerCollection, s => s.CreateWrap());
+				return servers.Values;
 			}
 		}
 
-		/// <inheritdoc/>
-		public IUser SelfAccount
+		public ConnectStatus CurrentConnectStatus { get; private set; }
+
+		public DiscordClient BaseClient => discordClient;
+
+		internal ILogger<DSharpClient> Logger { get; }
+
+		internal RoutedEventTreeNode RoutedEventTreeNode => routedEventTreeNode;
+
+
+		public async ValueTask ConnectAsync()
 		{
-			get
+			if (CurrentConnectStatus != ConnectStatus.NoConnection)
+				throw new InvalidOperationException("Enable to connect twice");
+
+			await discordClient.ConnectAsync();
+
+			Thread.Sleep(5000);
+
+			foreach (var guild in discordClient.Guilds)
 			{
-				ThrowUnlessConnected();
-				return selfAccount ?? throw new ImpossibleVariantException();
+				await InitializeGuild(guild.Value);
 			}
+
+			CurrentConnectStatus = ConnectStatus.Connected;
 		}
 
-		/// <summary>
-		/// Base client from DSharpPlus library
-		/// </summary>
-		public DiscordClient BaseClient => client;
-
-		/// <summary>
-		/// Culture info provider that using in event to setup culture
-		/// </summary>
-		public IServerCultureProvider? CultureProvider { get; private set; }
-
-		/// <summary>
-		/// Client logger
-		/// </summary>
-		public ILogger<DSharpClient> Logger { get; }
-
-		/// <summary>
-		/// Validator for MessageSendModel
-		/// </summary>
-		public IValidator<MessageSendModel>? MessageSendModelValidator { get; }
-
-		/// <summary>
-		/// Validator for ModalModel
-		/// </summary>
-		public IValidator<ModalModel>? ModalValidator { get; private set; }
-
-		/// <summary>
-		/// DSharp client localizer
-		/// </summary>
-		public IStringLocalizer Localizer { get; }
-
-		/// <summary>
-		/// Extension factories for servers
-		/// </summary>
-		public IReadOnlyCollection<IServerExtensionFactory> ServerExtensions { get; }
-
-		/// <summary>
-		/// Connect status of client, current client state
-		/// </summary>
-		public ConnectStatus CurrentConnectStatus { get; private set; } = ConnectStatus.NoConnection;
-
-
-		/// <summary>
-		/// Creates new instance of DidiFrame.Clients.DSharp.DSharpClient
-		/// </summary>
-		/// <param name="options">Options for client</param>
-		/// <param name="factory">Logger factory for DSharpPlus client</param>
-		/// <param name="localizer">Localizer for client</param>
-		/// <param name="clientExtensions">Extension factories for client</param>
-		/// <param name="serverExtensions">Extension factories for server</param>
-		/// <param name="messageSendModelValidator">Optional validator for MessageSendModel</param>
-		/// <param name="modalValidator">Optional validator for ModalModel</param>
-		/// <param name="messagesCacheFactory">Channel messages cache factory</param>
-		/// <exception cref="ArgumentException">If cache options is null and no custom messages cache factory provided</exception>
-		public DSharpClient(IOptions<Options> options,
-			ILoggerFactory factory,
-			IStringLocalizer<DSharpClient> localizer,
-			IEnumerable<IClientExtensionFactory> clientExtensions,
-			IEnumerable<IServerExtensionFactory> serverExtensions,
-			IValidator<MessageSendModel>? messageSendModelValidator = null,
-			IValidator<ModalModel>? modalValidator = null,
-			IChannelMessagesCacheFactory? messagesCacheFactory = null)
-		{
-			Logger = factory.CreateLogger<DSharpClient>();
-			Localizer = localizer;
-			this.clientExtensions = clientExtensions.ToArray();
-			ServerExtensions = serverExtensions.ToArray();
-			MessageSendModelValidator = messageSendModelValidator;
-			ModalValidator = modalValidator;
-
-
-			client = new DiscordClient(new DiscordConfiguration
-			{
-				Token = options.Value.Token,
-				AutoReconnect = true,
-				HttpTimeout = new TimeSpan(0, 1, 0),
-				TokenType = TokenType.Bot,
-				LoggerFactory = factory,
-				Intents = DiscordIntents.All
-			});
-
-
-			this.messagesCacheFactory = messagesCacheFactory ?? new ChannelMessagesCache.Factory(options.Value.CacheOptions
-				?? throw new ArgumentException("Cache options can't be null if no custom messages cache factory provided", nameof(options)));
-
-			servers = new(this, guild => Server.CreateServerAsync(guild, this, options.Value.ServerOptions, this.messagesCacheFactory.Create(guild, this)));
-		}
-
-
-		/// <inheritdoc/>
-		IServer IClient.GetServer(ulong id) => GetServer(id);
-		
-		/// <summary>
-		/// Gets server by its id
-		/// </summary>
-		/// <param name="id">If of server to get</param>
-		/// <returns>Target server wrap object</returns>
-		public ServerWrap GetServer(ulong id)
-		{
-			ThrowUnlessConnected();
-			return servers.Servers[id].CreateWrap();
-		}
-
-		internal Server? GetRawServer(ulong id)
-		{
-			ThrowUnlessConnected();
-			return servers.Servers.ContainsKey(id) ? servers.Servers[id] : null;
-		}
-
-		/// <inheritdoc/>
-		public void SetupCultureProvider(IServerCultureProvider? cultureProvider)
-		{
-			if (CurrentConnectStatus != ConnectStatus.Connected)
-				throw new InvalidOperationException("Cannot await for exit if client hasn't connected");
-
-			if (CultureProvider is not null)
-				throw new InvalidOperationException("Enable to setup culture provider twice");
-			CultureProvider = cultureProvider;
-		}
-
-		/// <inheritdoc/>
 		public async Task AwaitForExit()
 		{
-			if (CurrentConnectStatus != ConnectStatus.Connected)
-				throw new InvalidOperationException("Cannot await for exit if client hasn't connected");
+			ThrowUnlessConnected();
 
 			int ticks = 0;
 			while (ticks < 5)
@@ -197,7 +103,7 @@ namespace DidiFrame.Clients.DSharp
 				try
 				{
 					//Demo operation
-					await client.GetUserAsync(SelfAccount.Id, updateCache: true);
+					await discordClient.GetUserAsync(discordClient.CurrentUser.Id, updateCache: true);
 					ticks = 0;
 				}
 				catch (Exception)
@@ -205,76 +111,147 @@ namespace DidiFrame.Clients.DSharp
 					ticks++;
 				}
 			}
+
+			CurrentConnectStatus = ConnectStatus.Disconnected;
 		}
 
-		/// <inheritdoc/>
-		public async Task ConnectAsync()
+		public void RemoveListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs => routedEventTreeNode.AddListener(routedEvent, handler);
+
+		public void AddListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs => routedEventTreeNode.RemoveListener(routedEvent, handler);
+
+		public void Dispose()
 		{
-			if (CurrentConnectStatus != ConnectStatus.NoConnection)
-				throw new InvalidOperationException("Cannot connect already connected client");
-
-			await client.ConnectAsync();
-			await Task.Delay(5000);
-
-			await servers.RefreshServersListAsync();
-
-			servers.SubscribeEventsHandlers();
-			servers.StartObserveTask();
-
-			selfAccount = new User(client.CurrentUser.Id, () => client.CurrentUser, this);
-
-			CurrentConnectStatus = ConnectStatus.Connected;
+			discordClient.Dispose();
+			clientThreadQueue.Dispatch(clientThread.Stop);
 		}
 
-		/// <summary>
-		/// Throws exception if client is not connected
-		/// </summary>
-		/// <exception cref="InvalidOperationException">If client is not connected</exception>
 		public void ThrowUnlessConnected()
 		{
 			if (CurrentConnectStatus != ConnectStatus.Connected)
 				throw new InvalidOperationException("Enable to do this operation if client hasn't connected");
 		}
 
-		/// <inheritdoc/>
-		public TExtension CreateExtension<TExtension>() where TExtension : class
+		public async Task<TResult> DoDiscordOperation<TResult>(Func<Task<TResult>> asyncOperation, Func<TResult, Task> asyncEffector, ServerObject serverObject)
 		{
-			var extensionFactory = (IClientExtensionFactory<TExtension>)clientExtensions.Single(s => s is IClientExtensionFactory<TExtension> factory && factory.TargetClientType.IsInstanceOfType(this));
-			return extensionFactory.Create(this, extensionContextFactory.CreateInstance<TExtension>());
-		}
+			if (serverObject.IsExists == false)
+				throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
 
-		/// <inheritdoc/>
-		public void Dispose()
-		{
-			GC.SuppressFinalize(this);
-			servers.Dispose();
-			client.Dispose();
-		}
+			await AwaitConnection();
 
-#pragma warning disable S907 //goto statement use
-		/// <summary>
-		/// Checks connection to discord server and if fail awaits it
-		/// </summary>
-		/// <returns>Wait task that will be complited only when connection will be alive</returns>
-		public async Task CheckAndAwaitConnectionAsync()
-		{
-			if (CurrentConnectStatus != ConnectStatus.Connected)
-				return;
+			TResult result;
 
-		reset:
 			try
 			{
-				//Demo operation
-				await client.GetUserAsync(SelfAccount.Id, updateCache: true);
+				result = await asyncOperation();
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				Logger.Log(LogLevel.Warning, NoServerConnectionID, "No connection to discord server! Waiting 1000ms");
-				await Task.Delay(1000);
-				goto reset;
+				var iex = ex is AggregateException aex ? aex.InnerException : ex;
+
+				if (iex is NotFoundException)
+				{
+					await serverObject.MakeDeletedAsync();
+
+					throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
+				}
+
+				if (iex is UnauthorizedException unauthorizedException)
+				{
+					throw new NotEnoughPermissionsException("Bot don't have permission to do this discord operation", unauthorizedException);
+				}
+
+				throw new InternalDiscordException("Discord operation failed", iex);
+			}
+
+			await asyncEffector(result);
+
+			return result;
+		}
+
+		public async Task AwaitConnection()
+		{
+			while (true)
+			{
+				try
+				{
+					await discordClient.GetUserAsync(discordClient.CurrentUser.Id, updateCache: true);
+					return;
+				}
+				catch (Exception)
+				{
+					await Task.Delay(new TimeSpan(0, 0, 30));
+				}
 			}
 		}
-#pragma warning restore S907 //goto statement use
+
+		private async Task OnGuildCreated(DiscordClient sender, GuildCreateEventArgs e)
+		{
+			await InitializeGuild(e.Guild);
+		}
+
+		private async Task OnGuildDeleted(DiscordClient sender, GuildDeleteEventArgs e)
+		{
+			if (servers.TryGetValue(e.Guild.Id, out var server))
+			{
+				await server.ShutdownAsync();
+				servers.Remove(e.Guild.Id);
+			}
+			else throw new Exception($"Invalid event recived, no server with id {e.Guild.Id} was registered");
+		}
+
+		private Task InitializeGuild(DiscordGuild guild)
+		{
+			return clientThreadQueue.DispatchAsync(() =>
+			{
+				var thread = threading.CreateNewThread();
+
+				var server = new Server(this, guild, thread);
+
+				servers.Add(guild.Id, server);
+
+				return server.InitiateStartupProcedure();
+			});
+		}
+
+#if DEBUG
+		private async Task ProcessDebugCommand(DiscordClient sender, MessageCreateEventArgs e)
+		{
+			if (e.Message.Content != $".didiFrame.{discordClient.CurrentUser.Id}.showVSS")
+				return;
+
+			if (e.Guild is null)
+			{
+				await e.Message.RespondAsync("Enable to locale server where command called");
+				return;
+			}
+
+			if (servers.TryGetValue(e.Guild.Id, out var server))
+			{
+				string message = await server.WorkQueue.DispatchAsync(() =>
+				{
+					var members = server.ListMembers();
+					var membersList = string.Join("\n", members);
+
+					var roles = server.ListRoles();
+					var rolesList = string.Join("\n", roles);
+
+					return $"Server: {server}\n\nMembers [{members.Count}]:\n{membersList}\n\nRoles [{roles.Count}]:\n{rolesList}";
+				});
+
+				var file = Encoding.UTF8.GetBytes(message);
+				var memoryStream = new MemoryStream(file);
+
+				await e.Message.RespondAsync(builder =>
+				{
+					builder.WithFile("VSS.txt", memoryStream, resetStreamPosition: true);
+				});
+			}
+			else
+			{
+				await e.Message.RespondAsync($"There is no server with id {e.Guild.Id} in server list");
+			}
+		}
+#endif
 
 
 		/// <summary>
@@ -286,49 +263,6 @@ namespace DidiFrame.Clients.DSharp
 			/// Discord's bot token, see discord documentation
 			/// </summary>
 			public string Token { get; set; } = "";
-
-			/// <summary>
-			/// Options for each server
-			/// </summary>
-			public Server.Options ServerOptions { get; set; } = new();
-
-			/// <summary>
-			/// Options for default channel messages caches, if you use custom fill with null
-			/// </summary>
-			public ChannelMessagesCache.Options? CacheOptions { get; set; } = new();
-		}
-
-		private sealed class ExtensionContextFactory
-		{
-			private readonly Dictionary<Type, object> dataStore = new();
-
-
-			public IClientExtensionContext<TExtension> CreateInstance<TExtension>() where TExtension : class
-			{
-				return new Instance<TExtension>(dataStore);
-			}
-
-
-			private sealed class Instance<TExtension> : IClientExtensionContext<TExtension> where TExtension : class
-			{
-				private readonly Dictionary<Type, object> dataStore;
-
-
-				public Instance(Dictionary<Type, object> dataStore)
-				{
-					this.dataStore = dataStore;
-				}
-
-
-				public object? GetExtensionData() => dataStore.ContainsKey(typeof(TExtension)) ? dataStore[typeof(TExtension)] : null;
-
-				public void SetExtensionData(object data)
-				{
-					if (dataStore.ContainsKey(typeof(TExtension)))
-						dataStore[typeof(TExtension)] = data;
-					else dataStore.Add(typeof(TExtension), data);
-				}
-			}
 		}
 
 		/// <summary>

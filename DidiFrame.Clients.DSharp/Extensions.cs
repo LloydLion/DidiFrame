@@ -5,7 +5,6 @@ using AbsChannelType = DidiFrame.Entities.ChannelType;
 using DButtonStyle= DSharpPlus.ButtonStyle;
 using AbsButtonStyle = DidiFrame.Entities.Message.Components.ButtonStyle;
 using DSharpPlus.Entities;
-using DidiFrame.Exceptions;
 using DidiFrame.Entities;
 
 namespace DidiFrame.Clients.DSharp
@@ -52,6 +51,16 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 		/// <summary>
+		/// Converts DSharp color to  DidiFrame color 
+		/// </summary>
+		/// <param name="color">DSharp color</param>
+		/// <returns>DidiFrame color</returns>
+		public static Color GetAbstract(this DiscordColor color)
+		{
+			return new Color(color.R, color.G, color.B);
+		}
+
+		/// <summary>
 		/// Converts DidiFrame permissions enum to DSharo permissions enum
 		/// </summary>
 		/// <param name="absPermissions">DiDiFrame permissions enum</param>
@@ -86,6 +95,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			return new DiscordColor(color.Red, color.Green, color.Blue);
 		}
+
 
 		/// <summary>
 		/// Converts DidiFrame button style to DSharp button style

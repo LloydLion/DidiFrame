@@ -25,6 +25,16 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
+	<PropertyGroup Condition="$(Configuration) == 'DEBUG'">
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	
+	<ItemGroup Condition="$(Configuration) == 'DEBUG'">
+		<None Update="token.ini">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
   <ItemGroup>
     <None Include="..\DidiFrameIcon.png">
       <Pack>True</Pack>
@@ -49,7 +59,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DidiFrame.UserCommands\DidiFrame.UserCommands.csproj" />
     <ProjectReference Include="..\DidiFrame\DidiFrame.csproj" />
   </ItemGroup>
 

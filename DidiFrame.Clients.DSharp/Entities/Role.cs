@@ -1,81 +1,91 @@
 ﻿using DidiFrame.Entities;
-using DidiFrame.Exceptions;
-using DidiFrame.Clients;
 using DSharpPlus.Entities;
-using System.Runtime.CompilerServices;
 
 namespace DidiFrame.Clients.DSharp.Entities
 {
-	/// <summary>
-	/// DSharp implementation of DidiFrame.Interfaces.IRole
-	/// </summary>
-	public sealed class Role : IRole
+	public class Role : ServerObject, IRole
 	{
-		private readonly ObjectSourceDelegate<DiscordRole> role;
-		private readonly ServerWrap server;
+		private DiscordRole? role;
+		private Color color;
+		private int position;
+		private string? iconUrl;
+		private Permissions permissions;
+		private bool isMentionable;
+		private bool isHoisted;
 
-
-		/// <summary>
-		/// Creates new instance of DidiFrame.Clients.DSharp.Role
-		/// </summary>
-		/// <param name="id">Id of role</param>
-		/// <param name="role">Base DiscordRole from DSharp source</param>
-		/// <param name="server">Base server object wrap</param>
-		public Role(ulong id, ObjectSourceDelegate<DiscordRole> role, ServerWrap server)
+		public Role(Server baseServer, DiscordRole role) : base(baseServer, role)
 		{
-			Id = id;
 			this.role = role;
-			this.server = server;
+
+			WrapName = role.Name;
+			color = role.Color.GetAbstract();
+			position = role.Position;
+			iconUrl = role.IconUrl;
+			permissions = role.Permissions.GetAbstract();
+			isMentionable = role.IsMentionable;
+			isHoisted = role.IsHoisted;
+		}
+
+		public Role(Server baseServer, ulong id) : base(baseServer, id)
+		{
+			role = null;
+
+			WrapName = string.Empty;
+			color = default;
+			position = 0;
+			iconUrl = null;
+			permissions = Permissions.None;
+			isMentionable = false;
+			isHoisted = false;
 		}
 
 
-		/// <inheritdoc/>
-		public Permissions Permissions => AccessBase().Permissions.GetAbstract();
+		public Color Color { get => CheckAccess(color); private set => color = value; }
 
-		/// <inheritdoc/>
-		public string Name => AccessBase().Name;
+		public int Position { get => CheckAccess(position); private set => position = value; }
 
-		/// <inheritdoc/>
-		public ulong Id { get; }
+		public string? IconUrl { get => CheckAccess<string?>(iconUrl); private set => iconUrl = value; }
 
-		/// <inheritdoc/>
-		public IServer Server => server;
+		public Permissions Permissions { get => CheckAccess(permissions); private set => permissions = value; }
 
-		/// <summary>
-		/// Base server wrap
-		/// </summary>
-		public ServerWrap BaseServer => server;
+		public bool IsMentionable { get => CheckAccess(isMentionable); private set => isMentionable = value; }
 
-		/// <summary>
-		/// Base discord role from DSharp
-		/// </summary>
-		public DiscordRole BaseRole => AccessBase();
+		public bool IsHoisted { get => CheckAccess(isHoisted); private set => isHoisted = value; }
 
-		/// <inheritdoc/>
-		public bool IsExist => role() is not null;
-
-		/// <inheritdoc/>
-		public string Mention => AccessBase().Mention;
+		protected override string WrapName { get; set; }
 
 
-		/// <inheritdoc/>
-		public bool Equals(IServerEntity? other) => Equals(other as Role);
-
-		/// <inheritdoc/>
-		public bool Equals(IRole? other) => other is Role otherRole && otherRole.IsExist && IsExist && otherRole.Id == Id && otherRole.Server == Server;
-
-		/// <inheritdoc/>
-		public override bool Equals(object? obj) => Equals(obj as Role);
-
-		/// <inheritdoc/>
-		public override int GetHashCode() => Id.GetHashCode();
-
-		private DiscordRole AccessBase([CallerMemberName] string nameOfCaller = "")
+		public override string? ToString()
 		{
-			var obj = role();
-			if (obj is null)
-				throw new ObjectDoesNotExistException(nameOfCaller);
-			else return obj;
+			return $"[Discord role ({Id})] {{Name={Name}; Position={Position}; Color={Color}; Permissions={(long)Permissions}; CreationTimeStamp={CreationTimeStamp}; IsMentionable={IsMentionable}; IsHoisted={IsHoisted}; IconUrl={IconUrl ?? "null"}}}";
+		}
+
+		internal Task MutateAsync(DiscordRole discordRole)
+		{
+			CheckAccess();
+
+			role = discordRole;
+
+			WrapName = role.Name;
+			Color = role.Color.GetAbstract();
+			Position = role.Position;
+			IconUrl = role.IconUrl;
+			Permissions = role.Permissions.GetAbstract();
+			IsMentionable = role.IsMentionable;
+			IsHoisted = role.IsHoisted;
+
+			return NotifyModified();
+		}
+
+
+		protected override async ValueTask CallDeleteOperationAsync()
+		{
+			await AccessObject(role).DeleteAsync();
+		}
+
+		protected override async ValueTask CallRenameOperationAsync(string newName)
+		{
+			await AccessObject(role).ModifyAsync(name: newName);
 		}
 	}
 }
