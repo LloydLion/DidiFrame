@@ -4,14 +4,6 @@ namespace DidiFrame.Utils.RoutedEvents
 {
 	public static class Extensions
 	{
-		public static void InvokeInManagedThread<TEventArgs>(this RoutedEventTreeNode node, IManagedThreadExecutionQueue queue, RoutedEvent<TEventArgs> routedEvent, TEventArgs args) where TEventArgs : notnull, EventArgs
-		{
-			queue.Dispatch(async () =>
-			{
-				await node.Invoke(routedEvent, args);
-			});
-		}
-
 		public static void AddListener<TEventArgs>(this IRoutedEventObject eventObject, RoutedEvent<TEventArgs> routedEvent, RoutedEventSyncHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs
 		{
 			eventObject.AddListener(routedEvent, new HandlerClass<TEventArgs>(handler).HandlerWrap);

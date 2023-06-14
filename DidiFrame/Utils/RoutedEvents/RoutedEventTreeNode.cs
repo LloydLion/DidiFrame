@@ -8,14 +8,24 @@
 		private readonly HashSet<RoutedEventTreeNode> children = new();
 		private RoutedEventTreeNode? parent = null;
 		private readonly Dictionary<RoutedEventBase, List<RoutedEventHandler>> handlers = new();
-		private readonly HandlerExecutor handlerExecutor;
 		private readonly IRoutedEventObject owner;
+		private HandlerExecutor? overrideHandlerExecutor;
+		private TaskCompletionSource? invokeWaitTask = null;
 
 
-		public RoutedEventTreeNode(HandlerExecutor handlerExecutor, IRoutedEventObject owner)
+		public RoutedEventTreeNode(IRoutedEventObject owner, HandlerExecutor? overrideHandlerExecutor = null)
 		{
-			this.handlerExecutor = handlerExecutor;
 			this.owner = owner;
+			this.overrideHandlerExecutor = overrideHandlerExecutor;
+		}
+
+
+		private HandlerExecutor? DelegatedHandlerExecutor
+		{
+			get
+			{
+				return overrideHandlerExecutor ?? parent?.DelegatedHandlerExecutor;
+			}
 		}
 
 
@@ -36,20 +46,34 @@
 			parent?.children.Add(this);
 		}
 
-		public Task Invoke<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args) where TEventArgs : notnull, EventArgs
+		public async Task Invoke<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args, HandlerExecutor? overrideExecutor = null) where TEventArgs : notnull, EventArgs
 		{
-			return InvokeInternal(routedEvent, args, owner);
+			if (invokeWaitTask is not null)
+				await invokeWaitTask.Task;
+
+			invokeWaitTask = new();
+
+			var saved = overrideHandlerExecutor;
+			overrideHandlerExecutor = overrideExecutor ?? saved;
+
+			await InvokeInternal(routedEvent, args, owner);
+
+			overrideHandlerExecutor = saved;
+
+			invokeWaitTask = null;
 		}
 
-		private async Task InvokeInternal<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args, IRoutedEventObject originalSource) where TEventArgs : notnull, EventArgs
+		private async Task InvokeInternal<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args, IRoutedEventObject originalSource, HandlerExecutor? prevExecutor = null) where TEventArgs : notnull, EventArgs
 		{
+			var executor = DelegatedHandlerExecutor ?? prevExecutor ?? throw new InvalidOperationException("No handler executor in routed event tree");
+
 			var eventHandlers = GetHandlers(routedEvent);
 
 			var tasks = new List<Task>();
 			foreach (var handler in eventHandlers.Select(s => s.As<TEventArgs>()))
 			{
 				var sender = new RoutedEventSender(originalSource, owner, () => { owner.RemoveListener(routedEvent, handler); });
-				tasks.Add(handlerExecutor.Invoke(() => handler.Invoke(sender, args)));
+				tasks.Add(executor.Invoke(() => handler.Invoke(sender, args)));
 			}
 
 			switch (routedEvent.Propagation)
@@ -58,11 +82,11 @@
 					break;
 
 				case RoutedEvent.PropagationDirection.Bubbling:
-					parent?.InvokeInternal(routedEvent, args, owner);
+					parent?.InvokeInternal(routedEvent, args, owner, executor);
 					break;
 
 				case RoutedEvent.PropagationDirection.Tunneling:
-					await Task.WhenAll(children.Select(child => child.InvokeInternal(routedEvent, args, owner)));
+					await Task.WhenAll(children.Select(child => child.InvokeInternal(routedEvent, args, owner, executor)));
 					break;
 
 				default:
