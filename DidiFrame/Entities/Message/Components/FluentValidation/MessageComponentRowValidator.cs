@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 
-namespace DidiFrame.MessageComponents.FluentValidation
+namespace DidiFrame.Entities.Message.Components.FluentValidation
 {
 	internal sealed class MessageComponentRowValidator : AbstractValidator<MessageComponentsRow>
 	{

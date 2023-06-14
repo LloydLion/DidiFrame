@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DidiFrame.MessageComponents.FluentValidation
+namespace DidiFrame.Entities.Message.Components.FluentValidation
 {
 	internal class MessageComponentValidator : AbstractValidator<IInteractionComponent>
 	{
