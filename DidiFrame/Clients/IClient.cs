@@ -10,7 +10,5 @@ namespace DidiFrame.Clients
 		public ValueTask ConnectAsync();
 
 		public Task AwaitForExit();
-
-		public IReadOnlyCollection<IServer> ListServers();
 	}
 }
