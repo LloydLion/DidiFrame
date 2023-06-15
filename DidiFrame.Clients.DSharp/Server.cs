@@ -22,7 +22,7 @@ namespace DidiFrame.Clients.DSharp
 			Thread = thread;
 			workQueue = Thread.CreateNewExecutionQueue("work");
 
-			routedEventTreeNode = new RoutedEventTreeNode(this, overrideHandlerExecutor: CreateEventHandlerExecutor(workQueue));
+			routedEventTreeNode = new RoutedEventTreeNode(this);
 			routedEventTreeNode.AttachParent(owner.RoutedEventTreeNode);
 
 			this.owner = owner;
@@ -34,7 +34,7 @@ namespace DidiFrame.Clients.DSharp
 
 		public DSharpClient BaseClient => owner;
 
-		public bool IsClosed => throw new NotImplementedException();
+		public bool IsClosed { get; private set; } = false;
 
 		public ulong Id => baseGuild.Id;
 
@@ -102,7 +102,8 @@ namespace DidiFrame.Clients.DSharp
 		internal async ValueTask ShutdownAsync()
 		{
 			var shutdownQueue = Thread.CreateNewExecutionQueue("shutdown");
-			Thread.SetExecutionQueue(shutdownQueue);
+			workQueue.Dispatch(() => Thread.SetExecutionQueue(shutdownQueue, closePreviousQueue: false));
+			IsClosed = true;
 
 			await shutdownQueue.DispatchAsync(() =>
 			{
@@ -116,17 +117,21 @@ namespace DidiFrame.Clients.DSharp
 			});
 
 			await routedEventTreeNode.Invoke(IServer.ServerRemoved, new IServer.ServerEventArgs(this), CreateEventHandlerExecutor(shutdownQueue));
+
+			shutdownQueue.Dispatch(Thread.Stop);
 		}
 
 		internal async ValueTask InitiateStartupProcedure()
 		{
 			var startupQueue = Thread.CreateNewExecutionQueue("startup");
+			routedEventTreeNode.OverrideHandlerExecutor(CreateEventHandlerExecutor(startupQueue));
 			Thread.Begin(startupQueue);
 
 			await startupQueue.DispatchAsync(() => new(InitializeCache()));
 
-			await routedEventTreeNode.Invoke(IServer.ServerCreated, new IServer.ServerEventArgs(this), CreateEventHandlerExecutor(startupQueue));
+			await routedEventTreeNode.Invoke(IServer.ServerCreated, new IServer.ServerEventArgs(this));
 
+			routedEventTreeNode.OverrideHandlerExecutor(CreateEventHandlerExecutor(workQueue));
 			startupQueue.Dispatch(() => Thread.SetExecutionQueue(workQueue));
 		}
 

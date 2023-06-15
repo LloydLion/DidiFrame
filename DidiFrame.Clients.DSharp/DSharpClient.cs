@@ -115,9 +115,9 @@ namespace DidiFrame.Clients.DSharp
 			CurrentConnectStatus = ConnectStatus.Disconnected;
 		}
 
-		public void RemoveListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs => routedEventTreeNode.AddListener(routedEvent, handler);
+		public void RemoveListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs => routedEventTreeNode.RemoveListener(routedEvent, handler);
 
-		public void AddListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs => routedEventTreeNode.RemoveListener(routedEvent, handler);
+		public void AddListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs => routedEventTreeNode.AddListener(routedEvent, handler);
 
 		public void Dispose()
 		{
@@ -133,6 +133,9 @@ namespace DidiFrame.Clients.DSharp
 
 		public async Task<TResult> DoDiscordOperation<TResult>(Func<Task<TResult>> asyncOperation, Func<TResult, Task> asyncEffector, ServerObject serverObject)
 		{
+			if (serverObject.BaseServer.IsClosed)
+				throw new ServerClosedException("Enable to do discord operation", serverObject.BaseServer);
+
 			if (serverObject.IsExists == false)
 				throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
 

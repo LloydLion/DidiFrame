@@ -46,6 +46,11 @@
 			parent?.children.Add(this);
 		}
 
+		public void OverrideHandlerExecutor(HandlerExecutor? overrideHandlerExecutor = null)
+		{
+			this.overrideHandlerExecutor = overrideHandlerExecutor;
+		}
+
 		public async Task Invoke<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args, HandlerExecutor? overrideExecutor = null) where TEventArgs : notnull, EventArgs
 		{
 			if (invokeWaitTask is not null)
@@ -82,7 +87,8 @@
 					break;
 
 				case RoutedEvent.PropagationDirection.Bubbling:
-					parent?.InvokeInternal(routedEvent, args, owner, executor);
+					if (parent is not null)
+						await parent.InvokeInternal(routedEvent, args, owner, executor);
 					break;
 
 				case RoutedEvent.PropagationDirection.Tunneling:
