@@ -24,7 +24,7 @@
 			return (RoutedEventHandler<TEventArgs>)handler;
 		}
 
-		public override bool Equals(object? obj) => handler.Equals(obj);
+		public override bool Equals(object? obj) => obj is RoutedEventHandler reh && handler.Equals(reh.handler);
 
 		public override int GetHashCode() => handler.GetHashCode();
 	}
