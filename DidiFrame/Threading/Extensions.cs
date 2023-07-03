@@ -95,5 +95,43 @@
 
 			return tcs.Task;
 		}
+
+		public static Task DispatchAsyncIgnore(this IManagedThreadExecutionQueue queue, Action action)
+		{
+			var tcs = new TaskCompletionSource();
+
+			queue.Dispatch(() =>
+			{
+				try
+				{
+					action();
+				}
+				finally
+				{
+					tcs.SetResult();
+				}
+			});
+
+			return tcs.Task;
+		}
+
+		public static Task DispatchAsyncIgnore(this IManagedThreadExecutionQueue queue, Func<ValueTask> asyncAction)
+		{
+			var tcs = new TaskCompletionSource();
+
+			queue.Dispatch(async () =>
+			{
+				try
+				{
+					await asyncAction();
+				}
+				finally
+				{
+					tcs.SetResult();
+				}
+			});
+
+			return tcs.Task;
+		}
 	}
 }

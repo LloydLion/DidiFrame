@@ -35,6 +35,8 @@ namespace DidiFrame.Threading
 
 		public bool IsInside => Environment.CurrentManagedThreadId == internalThread.ManagedThreadId;
 
+		public int ThreadId => internalThread.ManagedThreadId;
+
 		private TaskQueue CurrentQueue => currentQueue ?? throw new InvalidOperationException("These is no any queue");
 
 
@@ -172,7 +174,7 @@ namespace DidiFrame.Threading
 
 				CheckDisposed();
 
-				owner.logger.Log(LogLevel.Debug, TaskDispatchedID, "[{This}]: New task dispatched. Task delegate: {Task}", ToString(), task.AsLogString());
+				owner.logger.Log(LogLevel.Trace, TaskDispatchedID, "[{This}]: New task dispatched. Task delegate: {Task}", ToString(), task.AsLogString());
 
 #if DEBUG || LogFullTraceInfo
 				InternalThreadTask? ownerTask = null;
@@ -258,7 +260,9 @@ namespace DidiFrame.Threading
 
 						var isDegenerate = state.Creator is not null;
 
-						var frames = isDegenerate ? state.Callstack.GetFrames().Skip(FrameToSlice) : state.Callstack.GetFrames();
+						//TODO: Check frames skip
+						var rawFrames = Callstack.GetFrames();
+						var frames = isDegenerate ? rawFrames.Take(rawFrames.Length - FrameToSlice) : rawFrames;
 
 
 						int skippedFrames = 0;

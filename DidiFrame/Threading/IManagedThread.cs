@@ -4,6 +4,8 @@
 	{
 		public bool IsInside { get; }
 
+		public int ThreadId { get; }
+
 
 		public void Begin(IManagedThreadExecutionQueue queue);
 

@@ -15,6 +15,8 @@ namespace DidiFrame.Clients.DSharp
 		private readonly DiscordGuild baseGuild;
 		private readonly IManagedThreadExecutionQueue workQueue;
 		private readonly ObjectsCache<ulong> cache = new();
+		private Role? applicationRole;
+		private Member? botMember;
 
 
 		public Server(DSharpClient owner, DiscordGuild baseGuild, IManagedThread thread)
@@ -116,7 +118,7 @@ namespace DidiFrame.Clients.DSharp
 				owner.BaseClient.GuildRoleDeleted -= OnRoleDeleted;
 			});
 
-			await routedEventTreeNode.Invoke(IServer.ServerRemoved, new IServer.ServerEventArgs(this), CreateEventHandlerExecutor(shutdownQueue));
+			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerRemoved, new IServer.ServerEventArgs(this), CreateEventHandlerExecutor(shutdownQueue));
 
 			shutdownQueue.Dispatch(Thread.Stop);
 		}
@@ -129,15 +131,17 @@ namespace DidiFrame.Clients.DSharp
 
 			await startupQueue.DispatchAsync(() => new(InitializeCache()));
 
-			await routedEventTreeNode.Invoke(IServer.ServerCreated, new IServer.ServerEventArgs(this));
+			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerCreated, new IServer.ServerEventArgs(this));
 
 			routedEventTreeNode.OverrideHandlerExecutor(CreateEventHandlerExecutor(workQueue));
 			startupQueue.Dispatch(() => Thread.SetExecutionQueue(workQueue));
 		}
 
-		internal void AttachEventTree(RoutedEventTreeNode node)
+		internal RoutedEventTreeNode CreateEventTreeNode(IServerObject serverObject)
 		{
-			node.AttachParent(routedEventTreeNode);
+			var node = new RoutedEventTreeNode(serverObject, targetThread: BaseClient.ClientThreadQueue.Thread.ThreadId);
+			BaseClient.ClientThreadQueue.DispatchAsync(() => node.AttachParent(routedEventTreeNode)).Wait();
+			return node;
 		}
 
 		internal void RemoveCache(ServerObject serverObject)
@@ -152,7 +156,7 @@ namespace DidiFrame.Clients.DSharp
 		{
 			return handler =>
 			{
-				return queue.DispatchAsync(() =>
+				return queue.DispatchAsyncIgnore(() =>
 				{
 					return handler.Invoke();
 				});
@@ -168,13 +172,10 @@ namespace DidiFrame.Clients.DSharp
 			{
 				var smember = new Member(this, member);
 				memberFrame.AddObject(smember.Id, smember);
+
+				if (member.Id == BaseClient.BaseClient.CurrentUser.Id)
+					botMember = smember;
 			}
-
-			await Task.WhenAll(memberFrame.GetObjects().Select(s => s.InitializeAsync()));
-
-			owner.BaseClient.GuildMemberAdded += OnMemberCreated;
-			owner.BaseClient.GuildMemberUpdated += OnMemberUpdated;
-			owner.BaseClient.GuildMemberRemoved += OnMemberDeleted;
 
 
 			var roles = baseGuild.Roles;
@@ -184,9 +185,17 @@ namespace DidiFrame.Clients.DSharp
 			{
 				var srole = new Role(this, role);
 				roleFrame.AddObject(srole.Id, srole);
+
+
 			}
 
+			await Task.WhenAll(memberFrame.GetObjects().Select(s => s.InitializeAsync()));
+
 			await Task.WhenAll(roleFrame.GetObjects().Select(s => s.InitializeAsync()));
+
+			owner.BaseClient.GuildMemberAdded += OnMemberCreated;
+			owner.BaseClient.GuildMemberUpdated += OnMemberUpdated;
+			owner.BaseClient.GuildMemberRemoved += OnMemberDeleted;
 
 			owner.BaseClient.GuildRoleCreated += OnRoleCreated;
 			owner.BaseClient.GuildRoleUpdated += OnRoleUpdated;

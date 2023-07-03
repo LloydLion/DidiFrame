@@ -9,15 +9,14 @@ namespace DidiFrame.Clients.DSharp.Entities
 {
 	public abstract class ServerObject : IServerObject
 	{
-		private readonly RoutedEventTreeNode routedEventTreeNode;
+		private readonly RoutedEventTreeNode? routedEventTreeNode;
 		private bool isExists;
 
 
 		protected ServerObject(Server baseServer, SnowflakeObject discordObject)
 		{
 			BaseServer = baseServer;
-			routedEventTreeNode = new RoutedEventTreeNode(this);
-			baseServer.AttachEventTree(routedEventTreeNode);
+			routedEventTreeNode = baseServer.CreateEventTreeNode(this);
 
 			Id = discordObject.Id;
 			CreationTimeStamp = discordObject.CreationTimestamp;
@@ -28,8 +27,6 @@ namespace DidiFrame.Clients.DSharp.Entities
 		protected ServerObject(Server baseServer, ulong id)
 		{
 			BaseServer = baseServer;
-			routedEventTreeNode = new RoutedEventTreeNode(this);
-			baseServer.AttachEventTree(routedEventTreeNode);
 
 			Id = id;
 			CreationTimeStamp = id.GetSnowflakeTime();
@@ -54,7 +51,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		protected abstract string WrapName { get; set; }
 
-		protected RoutedEventTreeNode RoutedEventTreeNode => routedEventTreeNode;
+		protected RoutedEventTreeNode RoutedEventTreeNode => AccessObject(routedEventTreeNode);
 
 
 		public async ValueTask DeleteAsync()
@@ -74,10 +71,10 @@ namespace DidiFrame.Clients.DSharp.Entities
 		}
 
 		public void AddListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs
-			=> CheckAccess(() => routedEventTreeNode.AddListener(routedEvent, handler));
+			=> CheckAccess(() => routedEventTreeNode?.AddListener(routedEvent, handler));
 
 		public void RemoveListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs
-			=> CheckAccess(() => routedEventTreeNode.RemoveListener(routedEvent, handler));
+			=> CheckAccess(() => routedEventTreeNode?.RemoveListener(routedEvent, handler));
 
 		public async ValueTask RenameAsync(string newName)
 		{
@@ -101,12 +98,12 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 			BaseServer.RemoveCache(this);
 			IsExists = false;
-			return RoutedEventTreeNode.Invoke(IServerObject.ObjectDeleted, new IServerObject.ServerObjectEventArgs(this));
+			return BaseClient.InvokeEvent(RoutedEventTreeNode, IServerObject.ObjectDeleted, new IServerObject.ServerObjectEventArgs(this));
 		}
 
 		internal Task InitializeAsync()
 		{
-			return RoutedEventTreeNode.Invoke(IServerObject.ObjectCreated, new IServerObject.ServerObjectEventArgs(this));
+			return BaseClient.InvokeEvent(RoutedEventTreeNode, IServerObject.ObjectCreated, new IServerObject.ServerObjectEventArgs(this));
 		}
 
 		protected abstract ValueTask CallRenameOperationAsync(string newName);
@@ -167,7 +164,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		protected Task NotifyModified()
 		{
-			return RoutedEventTreeNode.Invoke(IServerObject.ObjectModified, new IServerObject.ServerObjectEventArgs(this));
+			return BaseClient.InvokeEvent(RoutedEventTreeNode, IServerObject.ObjectModified, new IServerObject.ServerObjectEventArgs(this));
 		}
 	}
 }

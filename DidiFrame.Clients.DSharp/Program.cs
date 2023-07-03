@@ -22,7 +22,7 @@ namespace DidiFrame.Clients.DSharp
 			var loggerFactory = new LoggerFactory(new[]
 			{
 				new FancyConsoleLoggerProvider(new Colorify.Format(Theme.Dark), DateTime.UtcNow)
-			}, new LoggerFilterOptions().AddFilter("DSharpPlus.", LogLevel.Information));
+			}, new LoggerFilterOptions().AddFilter("DSharpPlus.", LogLevel.Information).AddFilter("", LogLevel.Debug));
 
 			logger = loggerFactory.CreateLogger<Program>();
 

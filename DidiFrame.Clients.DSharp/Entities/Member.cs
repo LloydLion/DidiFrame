@@ -69,7 +69,10 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		protected override async ValueTask CallRenameOperationAsync(string newName)
 		{
-			await AccessObject(discordMember).ModifyAsync(s => s.Nickname = newName);
+			await AccessObject(discordMember).ModifyAsync(s =>
+			{
+				s.Nickname = newName == UserName ? null : newName;
+			});
 		}
 
 		protected override async ValueTask CallDeleteOperationAsync()

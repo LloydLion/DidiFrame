@@ -30,8 +30,6 @@ namespace DidiFrame.Clients.DSharp
 			Logger = loggerFactory.CreateLogger<DSharpClient>();
 			this.threading = threading;
 
-
-			routedEventTreeNode = new RoutedEventTreeNode(this);
 			discordClient = new DiscordClient(new DiscordConfiguration()
 			{
 				MessageCacheSize = 0,
@@ -54,8 +52,12 @@ namespace DidiFrame.Clients.DSharp
 			clientThread = threading.CreateNewThread();
 			clientThreadQueue = clientThread.CreateNewExecutionQueue("main");
 			clientThread.Begin(clientThreadQueue);
+
+
+			routedEventTreeNode = new RoutedEventTreeNode(this, targetThread: clientThread.ThreadId);
 		}
 
+		
 		public IReadOnlyCollection<IServer> Servers
 		{
 			get
@@ -73,6 +75,8 @@ namespace DidiFrame.Clients.DSharp
 
 		internal RoutedEventTreeNode RoutedEventTreeNode => routedEventTreeNode;
 
+		internal IManagedThreadExecutionQueue ClientThreadQueue => clientThreadQueue;
+
 
 		public async ValueTask ConnectAsync()
 		{
@@ -81,7 +85,7 @@ namespace DidiFrame.Clients.DSharp
 
 			await discordClient.ConnectAsync();
 
-			Thread.Sleep(5000);
+			await Task.Delay(5000);
 
 			foreach (var guild in discordClient.Guilds)
 			{
@@ -98,7 +102,7 @@ namespace DidiFrame.Clients.DSharp
 			int ticks = 0;
 			while (ticks < 5)
 			{
-				await Task.Delay(new TimeSpan(0, 5, 0));
+				await Task.Delay(new TimeSpan(0, 1, 0));
 
 				try
 				{
@@ -113,6 +117,13 @@ namespace DidiFrame.Clients.DSharp
 			}
 
 			CurrentConnectStatus = ConnectStatus.Disconnected;
+
+			foreach (var server in servers.Values)
+			{
+				await server.ShutdownAsync();
+			}
+
+			clientThreadQueue.Dispatch(clientThread.Stop);
 		}
 
 		public void RemoveListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs => routedEventTreeNode.RemoveListener(routedEvent, handler);
@@ -122,7 +133,6 @@ namespace DidiFrame.Clients.DSharp
 		public void Dispose()
 		{
 			discordClient.Dispose();
-			clientThreadQueue.Dispatch(clientThread.Stop);
 		}
 
 		public void ThrowUnlessConnected()
@@ -133,42 +143,59 @@ namespace DidiFrame.Clients.DSharp
 
 		public async Task<TResult> DoDiscordOperation<TResult>(Func<Task<TResult>> asyncOperation, Func<TResult, Task> asyncEffector, ServerObject serverObject)
 		{
-			if (serverObject.BaseServer.IsClosed)
-				throw new ServerClosedException("Enable to do discord operation", serverObject.BaseServer);
-
-			if (serverObject.IsExists == false)
-				throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
-
-			await AwaitConnection();
-
-			TResult result;
-
 			try
 			{
-				result = await asyncOperation();
+
+				if (serverObject.BaseServer.IsClosed)
+					throw new ServerClosedException("Enable to do discord operation", serverObject.BaseServer);
+
+				if (serverObject.IsExists == false)
+					throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
+
+				int retryCount = 0;
+			retry:
+				await AwaitConnection();
+
+				TResult result;
+
+				try
+				{
+					result = await asyncOperation();
+				}
+				catch (Exception ex)
+				{
+					var iex = ex is AggregateException aex ? aex.InnerException : ex;
+
+					if (iex is NotFoundException)
+					{
+						await serverObject.MakeDeletedAsync();
+
+						throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
+					}
+
+					if (iex is UnauthorizedException unauthorizedException)
+					{
+						throw new NotEnoughPermissionsException("Bot don't have permission to do this discord operation", unauthorizedException);
+					}
+
+					if (retryCount == 5)
+						throw new InternalDiscordException("Discord operation failed", iex);
+
+					retryCount++;
+
+#pragma warning disable S907 // "goto" statement should not be used
+					goto retry;
+#pragma warning restore S907 // "goto" statement should not be used
+				}
+
+				await asyncEffector(result);
+
+				return result;
 			}
 			catch (Exception ex)
 			{
-				var iex = ex is AggregateException aex ? aex.InnerException : ex;
-
-				if (iex is NotFoundException)
-				{
-					await serverObject.MakeDeletedAsync();
-
-					throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
-				}
-
-				if (iex is UnauthorizedException unauthorizedException)
-				{
-					throw new NotEnoughPermissionsException("Bot don't have permission to do this discord operation", unauthorizedException);
-				}
-
-				throw new InternalDiscordException("Discord operation failed", iex);
+				throw new DiscordOperationException("Discord operation failed!", ex);
 			}
-
-			await asyncEffector(result);
-
-			return result;
 		}
 
 		public async Task AwaitConnection()
@@ -185,6 +212,15 @@ namespace DidiFrame.Clients.DSharp
 					await Task.Delay(new TimeSpan(0, 0, 30));
 				}
 			}
+		}
+
+		internal Task InvokeEvent<TEventArgs>(RoutedEventTreeNode routedEventTreeNode, RoutedEvent<TEventArgs> routedEvent, TEventArgs args, RoutedEventTreeNode.HandlerExecutor? handlerExecutor = null)
+			where TEventArgs : notnull, EventArgs
+		{
+			return clientThreadQueue.DispatchAsync(() =>
+			{
+				return new ValueTask(routedEventTreeNode.Invoke(routedEvent, args, handlerExecutor));
+			});
 		}
 
 		private async Task OnGuildCreated(DiscordClient sender, GuildCreateEventArgs e)
