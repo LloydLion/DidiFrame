@@ -20,7 +20,7 @@ namespace TestBot.Systems.Test.ClientExtensions.ReactionExtension
 
 		public int GetReactionsCount(IMessage message, string emoji)
 		{
-			return ((DSharpMessage)message).BaseMessage.GetReactionsAsync(DiscordEmoji.FromName(client.BaseClient, emoji)).Result.Count;
+			return ((DSharpMessage)message).BaseMessage.GetReactionsAsync(DiscordEmoji.FromName(client.DiscordClient, emoji)).Result.Count;
 		}
 
 

@@ -45,7 +45,7 @@ namespace DidiFrame.Threading
 			if (internalThread.ThreadState != ThreadState.Unstarted)
 				throw new InvalidOperationException("Thread was stared");
 
-			SetExecutionQueueInternal(queue, closePreviousQueue: true);
+			SetExecutionQueueInternal(queue);
 			internalThread.Start();
 
 			logger.Log(LogLevel.Debug, ThreadStartedID, "[{This}]: Stated new managed thread with id {ID}", ToString(), internalThread.ManagedThreadId);
@@ -62,10 +62,10 @@ namespace DidiFrame.Threading
 			return CurrentQueue;
 		}
 
-		public void SetExecutionQueue(IManagedThreadExecutionQueue queue, bool closePreviousQueue = true)
+		public void SetExecutionQueue(IManagedThreadExecutionQueue queue)
 		{
 			CheckAccess();
-			SetExecutionQueueInternal(queue, closePreviousQueue);
+			SetExecutionQueueInternal(queue);
 		}
 
 		public void Stop()
@@ -91,19 +91,16 @@ namespace DidiFrame.Threading
 				throw new InvalidOperationException($"Call from invalid thread, you can operate with it only from {internalThread} thread");
 		}
 
-		private void SetExecutionQueueInternal(IManagedThreadExecutionQueue queue, bool closePreviousQueue)
+		private void SetExecutionQueueInternal(IManagedThreadExecutionQueue queue)
 		{
 			var tq = (TaskQueue)queue;
 			tq.CheckAccess(this);
-			if (closePreviousQueue == false)
-				currentQueue?.DontClose();
 			currentQueue?.Dispose();
 			currentQueue = tq;
 
 			logger.Log(LogLevel.Debug, ExecutionQueueChangedID, "[{This}]: Execution queue changed to \"{Name}\"", ToString(), tq.Name);
 		}
 
-		//If you change task execution flow DON'T forget change InternalThreadTask.DebugState.FrameToSlice constant
 		private void ThreadWorker()
 		{
 			while (prependStop == false)
@@ -114,6 +111,12 @@ namespace DidiFrame.Threading
 				{
 					currentExecutingTask = task;
 					SynchronizationContext.SetSynchronizationContext(CurrentQueue.Context);
+
+#if DEBUG
+#pragma warning disable S1481
+					var fullTrace = task.Debug.ToString(); //Only for debugging variable
+#pragma warning restore S1481
+#endif
 
 					try
 					{
@@ -140,7 +143,6 @@ namespace DidiFrame.Threading
 			private readonly ManagedThread owner;
 			private readonly SynchronizationContext context;
 			private bool disposed;
-			private bool dontClose = false;
 
 
 			public TaskQueue(ManagedThread owner, string name)
@@ -166,12 +168,6 @@ namespace DidiFrame.Threading
 
 			public void Dispatch(ManagedThreadTask task)
 			{
-				if (dontClose && disposed)
-				{
-					//Ignore any input task, Dispatch method will not throw exception if queue disposed and dontClose set
-					return;
-				}
-
 				CheckDisposed();
 
 				owner.logger.Log(LogLevel.Trace, TaskDispatchedID, "[{This}]: New task dispatched. Task delegate: {Task}", ToString(), task.AsLogString());
@@ -213,11 +209,6 @@ namespace DidiFrame.Threading
 				if (disposed)
 					throw new ObjectDisposedException("This execution queue is disposed. NOTE: execution queue can be used only one time");
 			}
-
-			public void DontClose()
-			{
-				dontClose = true;
-			}
 		}
 
 		private sealed class InternalThreadTask
@@ -258,12 +249,7 @@ namespace DidiFrame.Threading
 					{
 						var callstackText = new StringBuilder();
 
-						var isDegenerate = state.Creator is not null;
-
-						//TODO: Check frames skip
-						var rawFrames = Callstack.GetFrames();
-						var frames = isDegenerate ? rawFrames.Take(rawFrames.Length - FrameToSlice) : rawFrames;
-
+						var frames = Callstack.GetFrames();
 
 						int skippedFrames = 0;
 						foreach (var frame in frames)
@@ -284,7 +270,9 @@ namespace DidiFrame.Threading
 									skippedFrames = 0;
 								}
 
-								var methodVisual = $"{method.DeclaringType?.FullName}.{method.Name}[{string.Join(", ", method.GetGenericArguments().AsEnumerable())}]({string.Join(", ", method.GetParameters().AsEnumerable())})";
+								var methodParametersVisual = string.Join(", ", method.GetParameters().AsEnumerable());
+								var methodGenericArgumentsVisual = method.IsGenericMethod ? $"<{string.Join(", ", method.GetGenericArguments().AsEnumerable())}>" : string.Empty;
+								var methodVisual = $"{method.DeclaringType?.FullName}.{method.Name}{methodGenericArgumentsVisual}({methodParametersVisual})";
 								var filePosition = frame.HasSource() ? $" in {frame.GetFileName()} at {frame.GetFileLineNumber}:{frame.GetFileColumnNumber()}" : null;
 								callstackText.AppendLine(methodVisual + filePosition);
 							}

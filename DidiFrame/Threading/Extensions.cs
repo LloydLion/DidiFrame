@@ -12,7 +12,7 @@
 			SynchronizationContext.SetSynchronizationContext(queue.CreateSynchronizationContext());
 		}
 
-		public static Task DispatchAsync(this IManagedThreadExecutionQueue queue, Action action)
+		public static Task AwaitDispatch(this IManagedThreadExecutionQueue queue, Action action)
 		{
 			var tcs = new TaskCompletionSource();
 
@@ -33,28 +33,7 @@
 			return tcs.Task;
 		}
 
-		public static Task DispatchAsync(this IManagedThreadExecutionQueue queue, Func<ValueTask> asyncAction)
-		{
-			var tcs = new TaskCompletionSource();
-
-			queue.Dispatch(async () =>
-			{
-				try
-				{
-					await asyncAction();
-					tcs.SetResult();
-				}
-				catch (Exception ex)
-				{
-					tcs.SetException(ex);
-					throw;
-				}
-			});
-
-			return tcs.Task;
-		}
-
-		public static Task<TResult> DispatchAsync<TResult>(this IManagedThreadExecutionQueue queue, Func<TResult> action)
+		public static Task<TResult> AwaitDispatch<TResult>(this IManagedThreadExecutionQueue queue, Func<TResult> action)
 		{
 			var tcs = new TaskCompletionSource<TResult>();
 
@@ -75,7 +54,28 @@
 			return tcs.Task;
 		}
 
-		public static Task<TResult> DispatchAsync<TResult>(this IManagedThreadExecutionQueue queue, Func<ValueTask<TResult>> asyncAction)
+		public static Task AwaitDispatchAsync(this IManagedThreadExecutionQueue queue, Func<ValueTask> asyncAction)
+		{
+			var tcs = new TaskCompletionSource();
+
+			queue.Dispatch(async () =>
+			{
+				try
+				{
+					await asyncAction();
+					tcs.SetResult();
+				}
+				catch (Exception ex)
+				{
+					tcs.SetException(ex);
+					throw;
+				}
+			});
+
+			return tcs.Task;
+		}
+
+		public static Task<TResult> AwaitDispatchAsync<TResult>(this IManagedThreadExecutionQueue queue, Func<ValueTask<TResult>> asyncAction)
 		{
 			var tcs = new TaskCompletionSource<TResult>();
 
@@ -96,7 +96,7 @@
 			return tcs.Task;
 		}
 
-		public static Task DispatchAsyncIgnore(this IManagedThreadExecutionQueue queue, Action action)
+		public static Task AwaitDispatchIgnoreEx(this IManagedThreadExecutionQueue queue, Action action)
 		{
 			var tcs = new TaskCompletionSource();
 
@@ -115,7 +115,7 @@
 			return tcs.Task;
 		}
 
-		public static Task DispatchAsyncIgnore(this IManagedThreadExecutionQueue queue, Func<ValueTask> asyncAction)
+		public static Task AwaitDispatchAsyncIgnoreEx(this IManagedThreadExecutionQueue queue, Func<ValueTask> asyncAction)
 		{
 			var tcs = new TaskCompletionSource();
 

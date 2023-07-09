@@ -9,7 +9,7 @@ namespace DidiFrame.Clients
 	{
 		public IClient Client { get; }
 
-		bool IsClosed { get; }
+		public ServerStatus Status { get; }
 
 
 		public IReadOnlyCollection<IMember> ListMembers();
@@ -29,6 +29,8 @@ namespace DidiFrame.Clients
 		public TChannel GetChannel<TChannel>(ulong id) where TChannel : notnull, IChannel;
 
 		public IServerPermissions ManagePermissions();
+
+		public void DispatchTask(IServerTask task);
 
 
 		public static readonly RoutedEvent<ServerEventArgs> ServerCreated = new(typeof(IServer), nameof(ServerCreated), RoutedEvent.PropagationDirection.Bubbling);

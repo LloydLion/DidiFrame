@@ -1,83 +1,64 @@
-﻿using DidiFrame.Utils;
+﻿using DidiFrame.Clients.DSharp.Mutations;
+using DidiFrame.Clients.DSharp.Server;
+using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
 using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.Entities
 {
-	public class Member : ServerObject, IMember
+	public class Member : ServerObject<DiscordMember, Member.State>, IMember
 	{
-		private DiscordMember? discordMember;
-		private string userName;
-		private string avatarURL;
-		private string mention;
-		private bool isBot;
+		private readonly MemberRepository repository;
 
 
-		public Member(Server server, DiscordMember discordMember) : base(server, discordMember)
+		public Member(DSharpServer baseServer, ulong id, MemberRepository repository)
+			: base(baseServer, id, new(nameof(Member), 10007 /*Unknown member*/))
 		{
-			this.discordMember = discordMember;
-
-			WrapName = discordMember.DisplayName;
-			userName = discordMember.Username;
-			avatarURL = discordMember.AvatarUrl;
-			mention = discordMember.Mention;
-			isBot = discordMember.IsBot;
-		}
-
-		public Member(Server server, ulong targetId) : base(server, targetId)
-		{
-			discordMember = null;
-
-			WrapName = string.Empty;
-			userName = string.Empty;
-			avatarURL = string.Empty;
-			mention = string.Empty;
-			isBot = false;
+			this.repository = repository;
 		}
 
 
-		public string Nickname => Name;
+		public string Nickname => AccessState().Nickname;
 
-		public string UserName { get => CheckAccess<string>(userName); private set => userName = value; }
+		public string UserName => AccessState().UserName;
 
-		public string AvatarURL { get => CheckAccess<string>(avatarURL); private set => avatarURL = value; }
+		public string AvatarURL => AccessState().AvatarURL;
 
-		public string Mention { get => CheckAccess<string>(mention); private set => mention = value; }
+		public string Mention => AccessEntity().Mention; //Can't be changed
 
-		public bool IsBot { get => CheckAccess(isBot); private set => isBot = value; }
-
-		protected override string WrapName { get; set; }
+		public bool IsBot => AccessState().IsBot;
 
 
-		public override string? ToString()
+		public override ValueTask NotifyRepositoryThatDeletedAsync()
 		{
-			return $"[Discord member ({Id})] {{Nickname={Nickname}; UserName={UserName}; Mention={Mention}; IsBot={IsBot}; CreationTimeStamp={CreationTimeStamp}; AvatarURL={AvatarURL}}}";
+			return new(repository.DeleteAsync(this));
 		}
 
-		internal Task MutateAsync(DiscordMember discordMember)
+		protected override ValueTask CallDeleteOperationAsync()
 		{
-			CheckAccess();
-
-			this.discordMember = discordMember;
-			WrapName = discordMember.DisplayName;
-			UserName = discordMember.Username;
-			AvatarURL = discordMember.AvatarUrl;
-			Mention = discordMember.Mention;
-			IsBot = discordMember.IsBot;
-
-			return NotifyModified();
+			return new(AccessEntity().RemoveAsync());
 		}
 
-		protected override async ValueTask CallRenameOperationAsync(string newName)
+		protected override ValueTask CallRenameOperationAsync(string newName)
 		{
-			await AccessObject(discordMember).ModifyAsync(s =>
+			return new(AccessEntity().ModifyAsync(s => s.Nickname = UserName == newName ? null : newName));
+		}
+
+		protected override Mutation<State> CreateNameMutation(string newName)
+		{
+			return (state) => state with { Nickname = newName };
+		}
+
+		protected override Mutation<State> MutateWithNewObject(DiscordMember newDiscordObject)
+		{
+			return (state) =>
 			{
-				s.Nickname = newName == UserName ? null : newName;
-			});
+				return new State(newDiscordObject.Nickname ?? newDiscordObject.Username, newDiscordObject.Username, newDiscordObject.AvatarUrl, newDiscordObject.IsBot);
+			};
 		}
 
-		protected override async ValueTask CallDeleteOperationAsync()
+		public record struct State(string Nickname, string UserName, string AvatarURL, bool IsBot) : IServerObjectState
 		{
-			await AccessObject(discordMember).RemoveAsync();
+			public string Name => Nickname;
 		}
 	}
 }

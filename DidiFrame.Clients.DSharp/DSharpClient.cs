@@ -1,14 +1,13 @@
-﻿using DidiFrame.Exceptions;
-using DidiFrame.Threading;
+﻿using DidiFrame.Threading;
 using DidiFrame.Utils.RoutedEvents;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using DSharpPlus.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Runtime.InteropServices;
-using System.Text;
+using DidiFrame.Clients.DSharp.Server;
+using DidiFrame.Clients.DSharp.Server.VSS;
+using DidiFrame.Clients.DSharp.Operations;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -18,17 +17,25 @@ namespace DidiFrame.Clients.DSharp
 	public sealed class DSharpClient : IClient, IDisposable
 	{
 		private readonly RoutedEventTreeNode routedEventTreeNode;
-		private readonly Dictionary<ulong, Server> servers = new();
+		private readonly Dictionary<ulong, DSharpServer> servers = new();
 		private readonly DiscordClient discordClient;
+		private readonly DiscordApiConnection apiConnection;
 		private readonly IThreadingSystem threading;
+		private readonly IVssCore vssCore;
 		private readonly IManagedThread clientThread;
 		private readonly IManagedThreadExecutionQueue clientThreadQueue;
+		private readonly DebugUserInterface debugUI;
+		private readonly Options options;
 
 
-		public DSharpClient(IOptions<Options> options, ILoggerFactory loggerFactory, IThreadingSystem threading)
+		public DSharpClient(IOptions<Options> options, ILoggerFactory loggerFactory, IThreadingSystem threading, IVssCore? vssCore = null)
 		{
 			Logger = loggerFactory.CreateLogger<DSharpClient>();
+			LoggerFactory = loggerFactory;
+
 			this.threading = threading;
+			this.vssCore = vssCore ?? new DefaultVssCore();
+			this.options = options.Value;
 
 			discordClient = new DiscordClient(new DiscordConfiguration()
 			{
@@ -45,86 +52,73 @@ namespace DidiFrame.Clients.DSharp
 
 			discordClient.GuildCreated += OnGuildCreated;
 			discordClient.GuildDeleted += OnGuildDeleted;
-#if DEBUG
-			discordClient.MessageCreated += ProcessDebugCommand;
-#endif
 
 			clientThread = threading.CreateNewThread();
 			clientThreadQueue = clientThread.CreateNewExecutionQueue("main");
 			clientThread.Begin(clientThreadQueue);
 
+			routedEventTreeNode = clientThreadQueue.AwaitDispatch(() => new RoutedEventTreeNode(this)).Result;
 
-			routedEventTreeNode = new RoutedEventTreeNode(this, targetThread: clientThread.ThreadId);
+			apiConnection = new DiscordApiConnection(discordClient);
+
+			debugUI = new DebugUserInterface(this);
+
+			DiscordOperationBroker = new DiscordOperationBroker(this);
 		}
 
-		
-		public IReadOnlyCollection<IServer> Servers
+
+		public IReadOnlyCollection<IServer> Servers => BaseServers;
+
+		public IReadOnlyCollection<DSharpServer> BaseServers
 		{
 			get
 			{
-				ThrowUnlessConnected();
+				apiConnection.ThrowUnlessConnected();
 				return servers.Values;
 			}
 		}
 
-		public ConnectStatus CurrentConnectStatus { get; private set; }
-
-		public DiscordClient BaseClient => discordClient;
+		public DiscordClient DiscordClient => discordClient;
 
 		internal ILogger<DSharpClient> Logger { get; }
+
+		internal ILoggerFactory LoggerFactory { get; }
 
 		internal RoutedEventTreeNode RoutedEventTreeNode => routedEventTreeNode;
 
 		internal IManagedThreadExecutionQueue ClientThreadQueue => clientThreadQueue;
 
+		public DiscordOperationBroker DiscordOperationBroker { get; }
+
 
 		public async ValueTask ConnectAsync()
 		{
-			if (CurrentConnectStatus != ConnectStatus.NoConnection)
-				throw new InvalidOperationException("Enable to connect twice");
-
-			await discordClient.ConnectAsync();
-
-			await Task.Delay(5000);
+			await apiConnection.ConnectAsync();
 
 			foreach (var guild in discordClient.Guilds)
-			{
 				await InitializeGuild(guild.Value);
-			}
 
-			CurrentConnectStatus = ConnectStatus.Connected;
+			if (options.IsDebugEnabled)
+				debugUI.Enable();
 		}
 
 		public async Task AwaitForExit()
 		{
-			ThrowUnlessConnected();
-
-			int ticks = 0;
-			while (ticks < 5)
-			{
-				await Task.Delay(new TimeSpan(0, 1, 0));
-
-				try
-				{
-					//Demo operation
-					await discordClient.GetUserAsync(discordClient.CurrentUser.Id, updateCache: true);
-					ticks = 0;
-				}
-				catch (Exception)
-				{
-					ticks++;
-				}
-			}
-
-			CurrentConnectStatus = ConnectStatus.Disconnected;
+			await apiConnection.AwaitForExit();
 
 			foreach (var server in servers.Values)
-			{
-				await server.ShutdownAsync();
-			}
+				await ShutdownServer(server);
 
 			clientThreadQueue.Dispatch(clientThread.Stop);
 		}
+
+		public DSharpServer? GetBaseServer(ulong id)
+		{
+			servers.TryGetValue(id, out var val);
+			return val;
+		}
+
+		public Task AwaitConnection() => apiConnection.AwaitConnection();
 
 		public void RemoveListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs => routedEventTreeNode.RemoveListener(routedEvent, handler);
 
@@ -135,89 +129,10 @@ namespace DidiFrame.Clients.DSharp
 			discordClient.Dispose();
 		}
 
-		public void ThrowUnlessConnected()
-		{
-			if (CurrentConnectStatus != ConnectStatus.Connected)
-				throw new InvalidOperationException("Enable to do this operation if client hasn't connected");
-		}
-
-		public async Task<TResult> DoDiscordOperation<TResult>(Func<Task<TResult>> asyncOperation, Func<TResult, Task> asyncEffector, ServerObject serverObject)
-		{
-			try
-			{
-
-				if (serverObject.BaseServer.IsClosed)
-					throw new ServerClosedException("Enable to do discord operation", serverObject.BaseServer);
-
-				if (serverObject.IsExists == false)
-					throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
-
-				int retryCount = 0;
-			retry:
-				await AwaitConnection();
-
-				TResult result;
-
-				try
-				{
-					result = await asyncOperation();
-				}
-				catch (Exception ex)
-				{
-					var iex = ex is AggregateException aex ? aex.InnerException : ex;
-
-					if (iex is NotFoundException)
-					{
-						await serverObject.MakeDeletedAsync();
-
-						throw new DiscordObjectNotFoundException(serverObject.GetType().Name, serverObject.Id, serverObject.Name);
-					}
-
-					if (iex is UnauthorizedException unauthorizedException)
-					{
-						throw new NotEnoughPermissionsException("Bot don't have permission to do this discord operation", unauthorizedException);
-					}
-
-					if (retryCount == 5)
-						throw new InternalDiscordException("Discord operation failed", iex);
-
-					retryCount++;
-
-#pragma warning disable S907 // "goto" statement should not be used
-					goto retry;
-#pragma warning restore S907 // "goto" statement should not be used
-				}
-
-				await asyncEffector(result);
-
-				return result;
-			}
-			catch (Exception ex)
-			{
-				throw new DiscordOperationException("Discord operation failed!", ex);
-			}
-		}
-
-		public async Task AwaitConnection()
-		{
-			while (true)
-			{
-				try
-				{
-					await discordClient.GetUserAsync(discordClient.CurrentUser.Id, updateCache: true);
-					return;
-				}
-				catch (Exception)
-				{
-					await Task.Delay(new TimeSpan(0, 0, 30));
-				}
-			}
-		}
-
 		internal Task InvokeEvent<TEventArgs>(RoutedEventTreeNode routedEventTreeNode, RoutedEvent<TEventArgs> routedEvent, TEventArgs args, RoutedEventTreeNode.HandlerExecutor? handlerExecutor = null)
 			where TEventArgs : notnull, EventArgs
 		{
-			return clientThreadQueue.DispatchAsync(() =>
+			return clientThreadQueue.AwaitDispatchAsync(() =>
 			{
 				return new ValueTask(routedEventTreeNode.Invoke(routedEvent, args, handlerExecutor));
 			});
@@ -232,19 +147,19 @@ namespace DidiFrame.Clients.DSharp
 		{
 			if (servers.TryGetValue(e.Guild.Id, out var server))
 			{
-				await server.ShutdownAsync();
+				await ShutdownServer(server);
 				servers.Remove(e.Guild.Id);
 			}
-			else throw new Exception($"Invalid event recived, no server with id {e.Guild.Id} was registered");
+			else throw new Exception($"Invalid event received, no server with id {e.Guild.Id} was registered");
 		}
 
 		private Task InitializeGuild(DiscordGuild guild)
 		{
-			return clientThreadQueue.DispatchAsync(() =>
+			return clientThreadQueue.AwaitDispatchAsync(() =>
 			{
 				var thread = threading.CreateNewThread();
 
-				var server = new Server(this, guild, thread);
+				var server = new DSharpServer(this, guild, thread, vssCore);
 
 				servers.Add(guild.Id, server);
 
@@ -252,45 +167,20 @@ namespace DidiFrame.Clients.DSharp
 			});
 		}
 
-#if DEBUG
-		private async Task ProcessDebugCommand(DiscordClient sender, MessageCreateEventArgs e)
+		private Task ShutdownServer(DSharpServer server)
 		{
-			if (e.Message.Content != $".didiFrame.{discordClient.CurrentUser.Id}.showVSS")
-				return;
-
-			if (e.Guild is null)
+			return clientThreadQueue.AwaitDispatchAsync(async () =>
 			{
-				await e.Message.RespondAsync("Enable to locale server where command called");
-				return;
-			}
-
-			if (servers.TryGetValue(e.Guild.Id, out var server))
-			{
-				string message = await server.WorkQueue.DispatchAsync(() =>
+				try
 				{
-					var members = server.ListMembers();
-					var membersList = string.Join("\n", members);
-
-					var roles = server.ListRoles();
-					var rolesList = string.Join("\n", roles);
-
-					return $"Server: {server}\n\nMembers [{members.Count}]:\n{membersList}\n\nRoles [{roles.Count}]:\n{rolesList}";
-				});
-
-				var file = Encoding.UTF8.GetBytes(message);
-				var memoryStream = new MemoryStream(file);
-
-				await e.Message.RespondAsync(builder =>
+					await server.ShutdownAsync();
+				}
+				catch (Exception ex)
 				{
-					builder.WithFile("VSS.txt", memoryStream, resetStreamPosition: true);
-				});
-			}
-			else
-			{
-				await e.Message.RespondAsync($"There is no server with id {e.Guild.Id} in server list");
-			}
+					Logger.Log(LogLevel.Error, ex, "Enable to Shutdown server {Server}", server.ToString());
+				}
+			});
 		}
-#endif
 
 
 		/// <summary>
@@ -302,25 +192,14 @@ namespace DidiFrame.Clients.DSharp
 			/// Discord's bot token, see discord documentation
 			/// </summary>
 			public string Token { get; set; } = "";
-		}
 
-		/// <summary>
-		/// Represents client state
-		/// </summary>
-		public enum ConnectStatus
-		{
-			/// <summary>
-			/// New client, no connection to server
-			/// </summary>
-			NoConnection,
-			/// <summary>
-			/// Connected to discord server
-			/// </summary>
-			Connected,
-			/// <summary>
-			/// Session closed, client closed
-			/// </summary>
-			Disconnected,
+			public bool IsDebugEnabled { get; set; }
+			//Can be overridden from configuration file, these is only default value
+#if DEBUG
+			= true;
+#else
+			= false;
+#endif
 		}
 	}
 }

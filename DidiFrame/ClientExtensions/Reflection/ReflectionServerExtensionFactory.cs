@@ -57,8 +57,9 @@ namespace DidiFrame.ClientExtensions.Reflection
 
 			lock (syncRoot)
 			{
-				if (server.IsClosed)
-					throw new InvalidOperationException("Enable to create extension for closed server");
+				if (server.Status.IsAfter(ServerStatus.Stopped))
+					throw new InvalidServerStatusException("Enable to create extension for closed server",
+						condition: new(ServerStatus.Stopped, InvalidServerStatusException.Direction.After, Inclusive: true), server);
 
 				if (instances.ContainsKey(server) == false)
 				{

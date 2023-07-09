@@ -43,9 +43,14 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
-		private static void ObjectCreated(RoutedEventSender sender, IServerObject.ServerObjectEventArgs args)
+		private static async ValueTask ObjectCreated(RoutedEventSender sender, IServerObject.ServerObjectEventArgs args)
 		{
 			logger.Log(LogLevel.Information, "Server object created event called! on {Server} with {Object}", args.Object.Server, args.Object);
+
+			if (args.Is<IMember>(out var member))
+			{
+				await member.RenameAsync(member.UserName);
+			}
 		}
 
 		private static void ObjectModified(RoutedEventSender sender, IServerObject.ServerObjectEventArgs args)

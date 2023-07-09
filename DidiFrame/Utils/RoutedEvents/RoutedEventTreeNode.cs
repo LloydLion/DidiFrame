@@ -14,9 +14,9 @@
 		private readonly int threadId;
 
 
-		public RoutedEventTreeNode(IRoutedEventObject owner, int? targetThread = null, HandlerExecutor? overrideHandlerExecutor = null)
+		public RoutedEventTreeNode(IRoutedEventObject owner, HandlerExecutor? overrideHandlerExecutor = null)
 		{
-			threadId = targetThread ?? Environment.CurrentManagedThreadId;
+			threadId = Environment.CurrentManagedThreadId;
 			this.owner = owner;
 			this.overrideHandlerExecutor = overrideHandlerExecutor;
 		}

@@ -6,6 +6,12 @@ using DButtonStyle= DSharpPlus.ButtonStyle;
 using AbsButtonStyle = DidiFrame.Entities.Message.Components.ButtonStyle;
 using DSharpPlus.Entities;
 using DidiFrame.Entities;
+using System.Runtime.CompilerServices;
+using DSharpPlus.Exceptions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using DSharpPlus.EventArgs;
+using Emzi0767.Utilities;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -105,6 +111,19 @@ namespace DidiFrame.Clients.DSharp
 		public static DButtonStyle GetDSharp(this AbsButtonStyle style)
 		{
 			return (DButtonStyle)(int)style;
+		}
+
+		public static int EjectEntityCode(this NotFoundException exception)
+		{
+			try
+			{
+				var json = JObject.Parse(exception.WebResponse.Response);
+				return json.GetValue("code")?.ToObject<int>() ?? 0;
+			}
+			catch (Exception)
+			{
+				return 0;
+			}
 		}
 	}
 }
