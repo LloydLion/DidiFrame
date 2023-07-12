@@ -8,8 +8,6 @@
 
 		public string? IconUrl { get; }
 
-		public Permissions Permissions { get; }
-
 		public bool IsMentionable { get; }
 
 		public bool IsHoisted { get; }

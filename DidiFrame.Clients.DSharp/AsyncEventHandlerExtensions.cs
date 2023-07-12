@@ -31,9 +31,9 @@ namespace DidiFrame.Clients.DSharp
 
 			public override Task WrappedHandler(TSender sender, TArgs args)
 			{
-				return queue.AwaitDispatch(() =>
+				return queue.AwaitDispatchAsyncIgnoreEx(() =>
 				{
-					Handler(sender, args);
+					return new(Handler(sender, args));
 				});
 			}
 

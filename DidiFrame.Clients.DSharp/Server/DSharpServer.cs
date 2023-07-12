@@ -70,7 +70,7 @@ namespace DidiFrame.Clients.DSharp.Server
 
 		public IReadOnlyCollection<IMember> ListMembers() => vss.GetComponent<IEntityRepository<IMember>>().GetAll();
 
-		public IReadOnlyCollection<IRole> ListRoles() => /*vss.GetComponent<IEntityRepository<IRole>>().GetAll()*/ Array.Empty<IRole>(); //TODO: remove it
+		public IReadOnlyCollection<IRole> ListRoles() => vss.GetComponent<IEntityRepository<IRole>>().GetAll();
 
 		public IServerPermissions ManagePermissions()
 		{
@@ -95,9 +95,11 @@ namespace DidiFrame.Clients.DSharp.Server
 			Thread.Begin(startupQueue);
 
 
+			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerCreatedPre, new IServer.ServerEventArgs(this));
+
 			await startupQueue.AwaitDispatchAsync(() => new(vss.InitializeAsync()));
 
-			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerCreated, new IServer.ServerEventArgs(this));
+			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerCreatedPost, new IServer.ServerEventArgs(this));
 
 
 			Status = ServerStatus.Working;
@@ -120,6 +122,10 @@ namespace DidiFrame.Clients.DSharp.Server
 				Thread.SetExecutionQueue(shutdownQueue);
 			});
 
+
+			routedEventTreeNode.OverrideHandlerExecutor(CreateEventHandlerExecutor(shutdownQueue));
+			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerRemovedPre, new IServer.ServerEventArgs(this));
+
 			await shutdownQueue.AwaitDispatchAsync(async () =>
 			{
 				Status = ServerStatus.Terminating;
@@ -134,8 +140,8 @@ namespace DidiFrame.Clients.DSharp.Server
 				}
 			});
 
-			routedEventTreeNode.OverrideHandlerExecutor(CreateEventHandlerExecutor(shutdownQueue));
-			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerRemoved, new IServer.ServerEventArgs(this));
+			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerRemovedPost, new IServer.ServerEventArgs(this));
+
 
 			shutdownQueue.Dispatch(Thread.Stop);
 

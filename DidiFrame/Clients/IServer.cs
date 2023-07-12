@@ -33,9 +33,13 @@ namespace DidiFrame.Clients
 		public void DispatchTask(IServerTask task);
 
 
-		public static readonly RoutedEvent<ServerEventArgs> ServerCreated = new(typeof(IServer), nameof(ServerCreated), RoutedEvent.PropagationDirection.Bubbling);
+		public static readonly RoutedEvent<ServerEventArgs> ServerCreatedPre = new(typeof(IServer), nameof(ServerCreatedPre), RoutedEvent.PropagationDirection.Bubbling);
 
-		public static readonly RoutedEvent<ServerEventArgs> ServerRemoved = new(typeof(IServer), nameof(ServerRemoved), RoutedEvent.PropagationDirection.Bubbling);
+		public static readonly RoutedEvent<ServerEventArgs> ServerCreatedPost = new(typeof(IServer), nameof(ServerCreatedPost), RoutedEvent.PropagationDirection.Bubbling);
+
+		public static readonly RoutedEvent<ServerEventArgs> ServerRemovedPre = new(typeof(IServer), nameof(ServerRemovedPre), RoutedEvent.PropagationDirection.Bubbling);
+
+		public static readonly RoutedEvent<ServerEventArgs> ServerRemovedPost = new(typeof(IServer), nameof(ServerRemovedPost), RoutedEvent.PropagationDirection.Bubbling);
 
 
 		public class ServerEventArgs : EventArgs

@@ -2,12 +2,15 @@
 #nullable disable
 
 using Colorify.UI;
+using DidiFrame.Clients.DSharp.Server.VSS;
+using DidiFrame.Clients.DSharp.Utils;
 using DidiFrame.Logging;
 using DidiFrame.Threading;
 using DidiFrame.Utils.RoutedEvents;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata;
 
 namespace DidiFrame.Clients.DSharp
 {
@@ -15,6 +18,7 @@ namespace DidiFrame.Clients.DSharp
 	internal class Program
 	{
 		private static ILogger logger;
+		private static int magicCouter = 0;
 
 
 		public static async Task Main(string[] args)
@@ -28,10 +32,15 @@ namespace DidiFrame.Clients.DSharp
 
 			var threading = new DefaultThreadingSystem(loggerFactory.CreateLogger<DefaultThreadingSystem>());
 
-			using var client = new DSharpClient(Options.Create(new DSharpClient.Options() { Token = File.ReadAllText("token.ini") }), loggerFactory, threading);
+			var vssCore = new DefaultVssCore(loggerFactory.CreateLogger<EventBuffer>());
 
-			client.AddListener(IServer.ServerCreated, ServerCreated);
-			client.AddListener(IServer.ServerRemoved, ServerRemoved);
+			using var client = new DSharpClient(Options.Create(new DSharpClient.Options() { Token = File.ReadAllText("token.ini") }), loggerFactory, threading, vssCore);
+
+			client.AddListener(IServer.ServerCreatedPre, ServerCreatedPre);
+			client.AddListener(IServer.ServerRemovedPre, ServerRemovedPre);
+
+			client.AddListener(IServer.ServerCreatedPost, ServerCreatedPost);
+			client.AddListener(IServer.ServerRemovedPost, ServerRemovedPost);
 
 			client.AddListener(IServerObject.ObjectCreated, ObjectCreated);
 			client.AddListener(IServerObject.ObjectModified, ObjectModified);
@@ -43,18 +52,29 @@ namespace DidiFrame.Clients.DSharp
 		}
 
 
-		private static async ValueTask ObjectCreated(RoutedEventSender sender, IServerObject.ServerObjectEventArgs args)
+		private static void ObjectCreated(RoutedEventSender sender, IServerObject.ServerObjectEventArgs args)
 		{
 			logger.Log(LogLevel.Information, "Server object created event called! on {Server} with {Object}", args.Object.Server, args.Object);
-
-			if (args.Is<IMember>(out var member))
-			{
-				await member.RenameAsync(member.UserName);
-			}
 		}
 
 		private static void ObjectModified(RoutedEventSender sender, IServerObject.ServerObjectEventArgs args)
 		{
+			if (args.Is<IRole>(out var role))
+			{
+				var file = File.OpenWrite($"vss.{magicCouter}.txt");
+				var fileWriter = new StreamWriter(file);
+				magicCouter++;
+
+				fileWriter.WriteLine(DateTime.Now);
+				fileWriter.WriteLine($"Changed " + role);
+
+				foreach (var item in role.Server.ListRoles())
+					fileWriter.WriteLine(item);
+
+				file.Flush();
+				fileWriter.Dispose();
+			}
+
 			logger.Log(LogLevel.Information, "Server object modified event called! on {Server} with {Object}", args.Object.Server, args.Object);
 		}
 
@@ -63,14 +83,24 @@ namespace DidiFrame.Clients.DSharp
 			logger.Log(LogLevel.Information, "Server object deleted event called! on {Server} with {Object}", args.Object.Server, args.Object);
 		}
 
-		private static void ServerCreated(RoutedEventSender sender, IServer.ServerEventArgs args)
+		private static void ServerCreatedPre(RoutedEventSender sender, IServer.ServerEventArgs args)
 		{
-			logger.Log(LogLevel.Information, "Server created event called! with {Server}", args.Server);
+			logger.Log(LogLevel.Information, "Server created pre event called! with {Server}", args.Server);
 		}
 
-		private static void ServerRemoved(RoutedEventSender sender, IServer.ServerEventArgs args)
+		private static void ServerRemovedPre(RoutedEventSender sender, IServer.ServerEventArgs args)
 		{
-			logger.Log(LogLevel.Information, "Server removed event called! with {Server}", args.Server);
+			logger.Log(LogLevel.Information, "Server removed pre event called! with {Server}", args.Server);
+		}
+
+		private static void ServerCreatedPost(RoutedEventSender sender, IServer.ServerEventArgs args)
+		{
+			logger.Log(LogLevel.Information, "Server created post event called! with {Server}", args.Server);
+		}
+
+		private static void ServerRemovedPost(RoutedEventSender sender, IServer.ServerEventArgs args)
+		{
+			logger.Log(LogLevel.Information, "Server removed post event called! with {Server}", args.Server);
 		}
 	}
 }

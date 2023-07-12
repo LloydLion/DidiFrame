@@ -28,13 +28,13 @@ namespace DidiFrame.Clients.DSharp
 		private readonly Options options;
 
 
-		public DSharpClient(IOptions<Options> options, ILoggerFactory loggerFactory, IThreadingSystem threading, IVssCore? vssCore = null)
+		public DSharpClient(IOptions<Options> options, ILoggerFactory loggerFactory, IThreadingSystem threading, IVssCore vssCore)
 		{
 			Logger = loggerFactory.CreateLogger<DSharpClient>();
 			LoggerFactory = loggerFactory;
 
 			this.threading = threading;
-			this.vssCore = vssCore ?? new DefaultVssCore();
+			this.vssCore = vssCore;
 			this.options = options.Value;
 
 			discordClient = new DiscordClient(new DiscordConfiguration()

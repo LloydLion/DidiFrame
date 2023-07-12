@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.Clients
 {
-	public interface IServerTask
+	public interface IServerTask : IDisposable
 	{
 		public void Execute(IServerTaskExecutionContext context);
 

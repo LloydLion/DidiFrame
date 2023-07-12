@@ -1,23 +1,30 @@
 ﻿using DSharpPlus;
 using DSharpPlus.EventArgs;
+using DidiFrame.Utils;
+using DidiFrame.Clients.DSharp.Utils;
 using AEHAdd = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.GuildMemberAddEventArgs>;
 using AEHUpdate = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs>;
 using AEHRemove = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.GuildMemberRemoveEventArgs>;
-using DidiFrame.Utils;
+using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 {
 	public class MemberRepository : IEntityRepository<Member>, IEntityRepository<IMember>
 	{
 		private readonly DSharpServer server;
+		private readonly EventBuffer eventBuffer;
 		private readonly Dictionary<ulong, Member> members = new();
 
 
-		public MemberRepository(DSharpServer server)
+		public MemberRepository(DSharpServer server, RoleRepository roleRepository, EventBuffer eventBuffer)
 		{
 			this.server = server;
+			RoleRepository = roleRepository;
+			this.eventBuffer = eventBuffer;
 		}
 
+
+		public RoleRepository RoleRepository { get; }
 
 		private DiscordClient DiscordClient => server.BaseClient.DiscordClient;
 
@@ -26,19 +33,15 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 
 		public Member GetById(ulong id) => members[id];
 
-		public async Task InitializeAsync()
+		public async Task InitializeAsync(CompositeAsyncDisposable postInitializationContainer)
 		{
-			var compositeDisposable = new CompositeAsyncDisposable();
-
 			foreach (var member in await server.BaseGuild.GetAllMembersAsync())
 			{
 				var smember = new Member(server, member.Id, this);
 				members.Add(smember.Id, smember);
 
-				compositeDisposable.PushDisposable(await smember.Initialize(member));
+				postInitializationContainer.PushDisposable(await smember.Initialize(member));
 			}
-
-			await compositeDisposable.DisposeAsync();
 
 			DiscordClient.GuildMemberAdded += new AEHAdd(OnGuildMemberAdded).SyncIn(server.WorkQueue).FilterServer(server.Id);
 			DiscordClient.GuildMemberUpdated += new AEHUpdate(OnGuildMemberUpdated).SyncIn(server.WorkQueue).FilterServer(server.Id);
@@ -63,32 +66,41 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			return member.Finalize().DisposeAsync().AsTask();
 		}
 
-		private async Task OnGuildMemberAdded(DiscordClient sender, GuildMemberAddEventArgs e)
-		{
-			var member = new Member(server, e.Member.Id, this);
-			members.Add(member.Id, member);
+		private Task OnGuildMemberAdded(DiscordClient sender, GuildMemberAddEventArgs e) => CreateOrUpdateAsync(e.Member);
 
-			await (await member.Initialize(e.Member)).DisposeAsync();
-		}
-
-		private Task OnGuildMemberUpdated(DiscordClient sender, GuildMemberUpdateEventArgs e)
-		{
-			if (members.TryGetValue(e.Member.Id, out var member))
-			{
-				return member.Mutate(e.Member).DisposeAsync().AsTask();
-			}
-
-			return Task.CompletedTask;
-		}
+		private Task OnGuildMemberUpdated(DiscordClient sender, GuildMemberUpdateEventArgs e) => CreateOrUpdateAsync(e.MemberAfter);
 
 		private Task OnGuildMemberRemoved(DiscordClient sender, GuildMemberRemoveEventArgs e)
 		{
 			if (members.TryGetValue(e.Member.Id, out var member))
 			{
-				return DeleteAsync(member);
+				members.Remove(member.Id);
+
+				var disposable = member.Finalize();
+
+				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
 			}
 
 			return Task.CompletedTask;
+		}
+
+		private async Task CreateOrUpdateAsync(DiscordMember member)
+		{
+			if (members.TryGetValue(member.Id, out var smember))
+			{
+				var disposable = smember.Mutate(member);
+
+				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
+			}
+			else
+			{
+				smember = new Member(server, member.Id, this);
+				members.Add(smember.Id, smember);
+
+				var disposable = await smember.Initialize(member);
+
+				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
+			}
 		}
 
 		IReadOnlyCollection<IMember> IEntityRepository<IMember>.GetAll() => GetAll();

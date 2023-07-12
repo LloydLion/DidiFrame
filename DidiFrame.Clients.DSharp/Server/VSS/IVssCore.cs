@@ -4,12 +4,12 @@ namespace DidiFrame.Clients.DSharp.Server.VSS
 {
 	public interface IVssCore
 	{
-		public void RegistryComponents(IServiceCollection components);
+		public void RegistryComponents(DSharpServer server, IServiceCollection components);
 
-		public Task InitializeAsync(IServiceProvider components);
+		public Task InitializeAsync(DSharpServer server, IServiceProvider components);
 
-		public void PerformTerminate(IServiceProvider components);
+		public void PerformTerminate(DSharpServer server, IServiceProvider components);
 
-		public Task TerminateAsync(IServiceProvider components);
+		public Task TerminateAsync(DSharpServer server, IServiceProvider components);
 	}
 }

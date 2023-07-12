@@ -81,6 +81,7 @@ namespace DidiFrame.Clients.DSharp.Server
 			CheckThread();
 
 			tasks.Remove(task);
+			task.Dispose();
 
 			if (termination is not null && tasks.Count == 0)
 				termination.Value.Task.SetResult();

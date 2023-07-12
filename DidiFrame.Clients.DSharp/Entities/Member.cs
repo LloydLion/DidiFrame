@@ -1,6 +1,8 @@
 ﻿using DidiFrame.Clients.DSharp.Mutations;
 using DidiFrame.Clients.DSharp.Server;
 using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
+using DidiFrame.Clients.DSharp.Utils;
+using DidiFrame.Utils;
 using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.Entities
@@ -28,6 +30,52 @@ namespace DidiFrame.Clients.DSharp.Entities
 		public bool IsBot => AccessState().IsBot;
 
 
+		public IReadOnlyList<IRole> ListRoles() => AccessState().Roles;
+
+		public ValueTask GrantRoleAsync(IRole role)
+		{
+			return new(DoDiscordOperation(async () =>
+			{
+				await AccessEntity().GrantRoleAsync(((Role)role).AccessEntity());
+				return Unit.Default;
+			},
+
+			async (_) =>
+			{
+				await MutateStateAsync((state) =>
+				{
+					if (state.Roles.Contains(role))
+						return state;
+
+					var newRoles = state.Roles.Append(role).OrderByDescending(s => s.Position).Select(s => s.Id).ToArray();
+
+					return state with { Roles = new ReferenceEntityCollection<IRole>(newRoles, repository.RoleRepository) };
+				});
+			}));
+		}
+
+		public ValueTask RevokeRoleAsync(IRole role)
+		{
+			return new(DoDiscordOperation(async () =>
+			{
+				await AccessEntity().RevokeRoleAsync(((Role)role).AccessEntity());
+				return Unit.Default;
+			},
+
+			async (_) =>
+			{
+				await MutateStateAsync((state) =>
+				{
+					if (state.Roles.Contains(role) == false)
+						return state;
+
+					var newRoles = state.Roles.Where(s => Equals(s, role) == false).OrderByDescending(s => s.Position).Select(s => s.Id).ToArray();
+
+					return state with { Roles = new ReferenceEntityCollection<IRole>(newRoles, repository.RoleRepository) };
+				});
+			}));
+		}
+
 		public override ValueTask NotifyRepositoryThatDeletedAsync()
 		{
 			return new(repository.DeleteAsync(this));
@@ -52,11 +100,19 @@ namespace DidiFrame.Clients.DSharp.Entities
 		{
 			return (state) =>
 			{
-				return new State(newDiscordObject.Nickname ?? newDiscordObject.Username, newDiscordObject.Username, newDiscordObject.AvatarUrl, newDiscordObject.IsBot);
+				var roles = newDiscordObject.Roles.Select(s => s.Id).Append(repository.RoleRepository.EveryoneRole.Id).ToArray();
+
+				return new State(
+					newDiscordObject.Nickname ?? newDiscordObject.Username,
+					newDiscordObject.Username,
+					newDiscordObject.AvatarUrl,
+					newDiscordObject.IsBot,
+					new ReferenceEntityCollection<IRole>(roles, repository.RoleRepository)
+				);
 			};
 		}
 
-		public record struct State(string Nickname, string UserName, string AvatarURL, bool IsBot) : IServerObjectState
+		public record struct State(string Nickname, string UserName, string AvatarURL, bool IsBot, ReferenceEntityCollection<IRole> Roles) : IServerObjectState
 		{
 			public string Name => Nickname;
 		}

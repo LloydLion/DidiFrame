@@ -115,6 +115,8 @@ namespace DidiFrame.Clients.DSharp.Entities
 			return new FinalizationPostfix(this);
 		}
 
+		public TDiscord AccessEntity() => AccessInitializationContext().DiscordEntity;
+
 		public override string ToString()
 		{
 			if (BaseServer.Thread.IsInside == false)
@@ -144,8 +146,6 @@ namespace DidiFrame.Clients.DSharp.Entities
 		}
 
 		protected TState AccessState() => AccessInitializationContext().State.AccessState();
-
-		protected TDiscord AccessEntity() => AccessInitializationContext().DiscordEntity;
 
 		protected ValueTask MutateStateAsync(Mutation<TState> mutation)
 		{

@@ -48,7 +48,7 @@ namespace DidiFrame.ClientExtensions.Abstract
 				{
 					instances.Add(server, CreateInstance(server, extensionContext));
 
-					server.AddListener(IServer.ServerRemoved, onServerRemoved);
+					server.AddListener(IServer.ServerRemovedPost, onServerRemoved);
 				}
 
 				return instances[server];

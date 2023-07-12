@@ -65,7 +65,7 @@ namespace DidiFrame.ClientExtensions.Reflection
 				{
 					instances.Add(server, services.ResolveObjectWithDependencies<TImplementation>(new object[] { server, extensionContext }));
 
-					server.AddListener(IServer.ServerRemoved, onServerRemoved);
+					server.AddListener(IServer.ServerRemovedPre, onServerRemoved);
 				}
 
 				return instances[server];

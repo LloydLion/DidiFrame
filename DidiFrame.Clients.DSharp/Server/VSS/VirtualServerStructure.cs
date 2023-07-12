@@ -20,7 +20,7 @@ namespace DidiFrame.Clients.DSharp.Server.VSS
 
 				serviceCollection.AddSingleton(owner);
 
-				core.RegistryComponents(serviceCollection);
+				core.RegistryComponents(owner, serviceCollection);
 
 				services = serviceCollection.BuildServiceProvider();
 			}
@@ -36,17 +36,17 @@ namespace DidiFrame.Clients.DSharp.Server.VSS
 
 		public Task InitializeAsync()
 		{
-			return core.InitializeAsync(services);
+			return core.InitializeAsync(owner, services);
 		}
 
 		public Task TerminateAsync()
 		{
-			return core.TerminateAsync(services);
+			return core.TerminateAsync(owner, services);
 		}
 
 		public void PerformTerminate()
 		{
-			core.PerformTerminate(services);
+			core.PerformTerminate(owner, services);
 		}
 
 		public TComponent GetComponent<TComponent>() where TComponent : notnull

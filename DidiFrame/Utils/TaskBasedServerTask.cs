@@ -40,6 +40,12 @@
 			token?.Cancel();
 		}
 
+		public void Dispose()
+		{
+			// Method intentionally left empty.
+		}
+
+
 		private sealed class Observer : IServerTaskObserver
 		{
 			private readonly TaskBasedServerTask owner;
