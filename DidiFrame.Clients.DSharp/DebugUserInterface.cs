@@ -43,7 +43,10 @@ namespace DidiFrame.Clients.DSharp
 					var roles = server.ListRoles();
 					var rolesList = string.Join("\n", roles);
 
-					return $"Server: {server}\n\nMembers [{members.Count}]:\n{membersList}\n\nRoles [{roles.Count}]:\n{rolesList}";
+					var categories = server.ListCategories();
+					var categoriesList = string.Join("\n", categories);
+
+					return $"Server: {server}\n\nMembers [{members.Count}]:\n{membersList}\n\nRoles [{roles.Count}]:\n{rolesList}\n\nCategories [{categories.Count}]:\n{categoriesList}";
 				});
 
 				var file = Encoding.UTF8.GetBytes(message);

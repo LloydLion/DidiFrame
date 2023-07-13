@@ -14,10 +14,10 @@
 		/// <summary>
 		/// Gets category item by id
 		/// </summary>
-		/// <typeparam name="TTarget">Target item type</typeparam>
+		/// <typeparam name="TItem">Target item type</typeparam>
 		/// <param name="id">Id of item</param>
 		/// <returns>Found item</returns>
-		public TTarget GetItem<TTarget>(ulong id) where TTarget : ICategoryItem;
+		public TItem GetItem<TItem>(ulong id) where TItem : class, ICategoryItem;
 
 		public IChannelPermissions ManagePermissions();
 

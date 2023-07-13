@@ -147,6 +147,8 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		protected TState AccessState() => AccessInitializationContext().State.AccessState();
 
+		protected RoutedEventTreeNode AccessEventTreeNode() => AccessInitializationContext().EventNode;
+
 		protected ValueTask MutateStateAsync(Mutation<TState> mutation)
 		{
 			var mr = AccessInitializationContext().State.Mutate(mutation);
