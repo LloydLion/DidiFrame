@@ -16,15 +16,14 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 		private readonly GlobalCategory globalCategory;
 		private readonly Dictionary<ulong, Category> categories = new();
 		private readonly DSharpServer server;
-		private readonly IEnumerable<IEntityRepository<ICategoryItem>> categoryItemRepositories;
+		private readonly List<IEntityRepository<ICategoryItem>> categoryItemRepositories = new();
 		private readonly EventBuffer eventBuffer;
 		private readonly CategoryCollection categoryCollection;
 
 
-		public CategoryRepository(DSharpServer server, IEnumerable<IEntityRepository<ICategoryItem>> categoryItemRepositories, EventBuffer eventBuffer)
+		public CategoryRepository(DSharpServer server, EventBuffer eventBuffer)
 		{
 			this.server = server;
-			this.categoryItemRepositories = categoryItemRepositories;
 			this.eventBuffer = eventBuffer;
 
 			globalCategory = new GlobalCategory(server, this);
@@ -49,16 +48,18 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 
 		ICategory IEntityRepository<ICategory>.GetById(ulong id) => GetById(id);
 
-		public async Task InitializeAsync(CompositeAsyncDisposable postInitializationContainer)
+		public async Task InitializeAsync(CompositeAsyncDisposable postInitializationContainer, IEnumerable<IEntityRepository<ICategoryItem>> categoryItemRepositories)
 		{
-			postInitializationContainer.PushDisposable(await globalCategory.InitializeAsync());
+			this.categoryItemRepositories.AddRange(categoryItemRepositories);
+
+			postInitializationContainer.PushDisposable(globalCategory.Initialize());
 
 			foreach (var category in (await server.BaseGuild.GetChannelsAsync()).Where(s => s.IsCategory))
 			{
 				var scategory = new Category(server, category.Id, this);
 				categories.Add(scategory.Id, scategory);
 
-				var disposable = await scategory.Initialize(category);
+				var disposable = scategory.Initialize(category);
 
 				postInitializationContainer.PushDisposable(disposable);
 			}
@@ -126,7 +127,7 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			return Task.CompletedTask;
 		}
 
-		private async Task CreateOrUpdateAsync(DiscordChannel category)
+		private Task CreateOrUpdateAsync(DiscordChannel category)
 		{
 			if (categories.TryGetValue(category.Id, out var scategory))
 			{
@@ -139,10 +140,12 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 				scategory = new Category(server, category.Id, this);
 				categories.Add(scategory.Id, scategory);
 
-				var disposable = await scategory.Initialize(category);
+				var disposable = scategory.Initialize(category);
 
 				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
 			}
+
+			return Task.CompletedTask;
 		}
 
 		private bool IsCategory(ChannelCreateEventArgs args) => args.Channel.IsCategory;

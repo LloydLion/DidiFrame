@@ -95,11 +95,11 @@ namespace DidiFrame.Clients.DSharp.Server
 			Thread.Begin(startupQueue);
 
 
-			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerCreatedPre, new IServer.ServerEventArgs(this));
+			await routedEventTreeNode.Invoke(IServer.ServerCreatedPre, new IServer.ServerEventArgs(this));
 
 			await startupQueue.AwaitDispatchAsync(() => new(vss.InitializeAsync()));
 
-			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerCreatedPost, new IServer.ServerEventArgs(this));
+			await routedEventTreeNode.Invoke(IServer.ServerCreatedPost, new IServer.ServerEventArgs(this));
 
 
 			Status = ServerStatus.Working;
@@ -124,7 +124,7 @@ namespace DidiFrame.Clients.DSharp.Server
 
 
 			routedEventTreeNode.OverrideHandlerExecutor(CreateEventHandlerExecutor(shutdownQueue));
-			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerRemovedPre, new IServer.ServerEventArgs(this));
+			await routedEventTreeNode.Invoke(IServer.ServerRemovedPre, new IServer.ServerEventArgs(this));
 
 			await shutdownQueue.AwaitDispatchAsync(async () =>
 			{
@@ -140,7 +140,7 @@ namespace DidiFrame.Clients.DSharp.Server
 				}
 			});
 
-			await BaseClient.InvokeEvent(routedEventTreeNode, IServer.ServerRemovedPost, new IServer.ServerEventArgs(this));
+			await routedEventTreeNode.Invoke(IServer.ServerRemovedPost, new IServer.ServerEventArgs(this));
 
 
 			shutdownQueue.Dispatch(Thread.Stop);
@@ -148,20 +148,17 @@ namespace DidiFrame.Clients.DSharp.Server
 			Status = ServerStatus.Stopped;
 		}
 
-		internal Task<RoutedEventTreeNode> CreateEventTreeNodeAsync(IServerObject serverObject)
+		internal RoutedEventTreeNode CreateEventTreeNode(IServerObject serverObject)
 		{
-			return BaseClient.ClientThreadQueue.AwaitDispatch(() =>
-			{
-				var node = new RoutedEventTreeNode(serverObject);
-				node.AttachParent(routedEventTreeNode);
-				return node;
-			});
+			var node = new RoutedEventTreeNode(serverObject);
+			node.AttachParent(routedEventTreeNode);
+			return node;
 		}
 
 		internal Task InvokeEvent<TEventArgs>(RoutedEventTreeNode routedEventTreeNode, RoutedEvent<TEventArgs> routedEvent, TEventArgs args)
 			where TEventArgs : notnull, EventArgs
 		{
-			var eventTask = BaseClient.InvokeEvent(routedEventTreeNode, routedEvent, args);
+			var eventTask = routedEventTreeNode.Invoke(routedEvent, args);
 			var task = new TaskBasedServerTask(eventTask);
 
 			DispatchTask(task);

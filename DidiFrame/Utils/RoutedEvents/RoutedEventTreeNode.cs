@@ -11,16 +11,16 @@
 		private readonly IRoutedEventObject owner;
 		private HandlerExecutor? overrideHandlerExecutor;
 		private CompositionRoot? cachedRoot;
-		private readonly int threadId;
 
 
 		public RoutedEventTreeNode(IRoutedEventObject owner, HandlerExecutor? overrideHandlerExecutor = null)
 		{
-			threadId = Environment.CurrentManagedThreadId;
 			this.owner = owner;
 			this.overrideHandlerExecutor = overrideHandlerExecutor;
 		}
 
+
+		public bool HasHandlers => handlers.Count != 0;
 
 		private HandlerExecutor DelegatedHandlerExecutor
 		{
@@ -66,38 +66,39 @@
 
 		public void AttachParent(RoutedEventTreeNode? node)
 		{
-			if (Environment.CurrentManagedThreadId != threadId)
-				throw new ThreadAccessException(nameof(RoutedEventTreeNode), 0, nameof(AttachParent));
-
-			if (node is not null && Environment.CurrentManagedThreadId != node.threadId)
-				throw new ThreadAccessException(nameof(RoutedEventTreeNode), 0, nameof(AttachParent));
-
-			parent?.children.Remove(this);
-			parent = node;
-			parent?.children.Add(this);
+			lock (Root.SyncRoot)
+			{
+				parent?.children.Remove(this);
+				parent = node;
+				
+				if (node is not null)
+				{
+					lock (node.Root.SyncRoot)
+					{
+						node.children.Add(this);
+					}
+				}
+			}
 		}
 
 		public void OverrideHandlerExecutor(HandlerExecutor? overrideHandlerExecutor = null)
 		{
-			if (Environment.CurrentManagedThreadId != threadId)
-				throw new ThreadAccessException(nameof(RoutedEventTreeNode), 0, nameof(OverrideHandlerExecutor));
-
-			this.overrideHandlerExecutor = overrideHandlerExecutor;
+			lock (Root.SyncRoot)
+			{
+				this.overrideHandlerExecutor = overrideHandlerExecutor;
+			}
 		}
 
 		public Task Invoke<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, TEventArgs args, HandlerExecutor? overrideExecutor = null) where TEventArgs : notnull, EventArgs
 		{
-			if (Environment.CurrentManagedThreadId != threadId)
-				throw new ThreadAccessException(nameof(RoutedEventTreeNode), 0, nameof(Invoke));
-
-			var output = new List<HandlerInvokable<TEventArgs>>();
-
 			lock (Root.SyncRoot)
 			{
-				CollectHandlers(routedEvent, output);
-			}
+				var output = new List<HandlerInvokable<TEventArgs>>();
 
-			return Task.WhenAll(output.Select(s => s.Invoke(args, overrideExecutor ?? DelegatedHandlerExecutor, this)));
+				CollectHandlers(routedEvent, output);
+
+				return Task.WhenAll(output.Select(s => s.Invoke(args, overrideExecutor ?? DelegatedHandlerExecutor, this)));
+			}
 		}
 
 		private void CollectHandlers<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, ICollection<HandlerInvokable<TEventArgs>> output) where TEventArgs : notnull, EventArgs
@@ -144,6 +145,7 @@
 		{
 			public object SyncRoot { get; } = new object();
 		}
+
 
 		private record struct HandlerInvokable<TEventArgs>(RoutedEventHandler<TEventArgs> Handler, RoutedEvent<TEventArgs> RoutedEvent, RoutedEventTreeNode OwnerNode) where TEventArgs : notnull, EventArgs
 		{

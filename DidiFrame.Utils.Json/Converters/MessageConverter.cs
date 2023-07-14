@@ -11,7 +11,7 @@ namespace DidiFrame.Utils.Json.Converters
 
 			var msg = JObject.Load(reader).ToObject<Message?>();
 			if (msg is null) return null;
-			else return msg.Value.Channel.GetMessage((ulong)msg.Value.Id);
+			else return msg.Value.Channel.GetMessageAsync((ulong)msg.Value.Id);
 		}
 
 		public override void WriteJson(JsonWriter writer, IMessage? value, JsonSerializer serializer)

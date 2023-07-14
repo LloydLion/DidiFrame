@@ -2,6 +2,6 @@
 {
 	public interface IVoiceChannelBase : IChannel
 	{
-		
+		public IReadOnlyCollection<IMember> ListConnected();
 	}
 }

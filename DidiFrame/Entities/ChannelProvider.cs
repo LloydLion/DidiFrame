@@ -34,8 +34,6 @@ namespace DidiFrame.Entities
 
 		public ValueTask DeleteAsync() => channel.DeleteAsync();
 
-		public IReadOnlyList<IMember> ListMembers() => channel.ListMembers();
-
 		public IChannelPermissions ManagePermissions() => channel.ManagePermissions();
 
 		public ValueTask RenameAsync(string newName) => channel.RenameAsync(newName);

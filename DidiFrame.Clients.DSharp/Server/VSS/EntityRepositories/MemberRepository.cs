@@ -2,10 +2,10 @@
 using DSharpPlus.EventArgs;
 using DidiFrame.Utils;
 using DidiFrame.Clients.DSharp.Utils;
+using DSharpPlus.Entities;
 using AEHAdd = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.GuildMemberAddEventArgs>;
 using AEHUpdate = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs>;
 using AEHRemove = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.GuildMemberRemoveEventArgs>;
-using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 {
@@ -40,7 +40,7 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 				var smember = new Member(server, member.Id, this);
 				members.Add(smember.Id, smember);
 
-				postInitializationContainer.PushDisposable(await smember.Initialize(member));
+				postInitializationContainer.PushDisposable(smember.Initialize(member));
 			}
 
 			DiscordClient.GuildMemberAdded += new AEHAdd(OnGuildMemberAdded).SyncIn(server.WorkQueue).FilterServer(server.Id);
@@ -84,7 +84,7 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			return Task.CompletedTask;
 		}
 
-		private async Task CreateOrUpdateAsync(DiscordMember member)
+		private Task CreateOrUpdateAsync(DiscordMember member)
 		{
 			if (members.TryGetValue(member.Id, out var smember))
 			{
@@ -97,10 +97,12 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 				smember = new Member(server, member.Id, this);
 				members.Add(smember.Id, smember);
 
-				var disposable = await smember.Initialize(member);
+				var disposable = smember.Initialize(member);
 
 				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
 			}
+
+			return Task.CompletedTask;
 		}
 
 		IReadOnlyCollection<IMember> IEntityRepository<IMember>.GetAll() => GetAll();

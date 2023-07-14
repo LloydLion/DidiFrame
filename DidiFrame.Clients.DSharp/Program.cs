@@ -10,7 +10,6 @@ using DidiFrame.Utils.RoutedEvents;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata;
 
 namespace DidiFrame.Clients.DSharp
 {

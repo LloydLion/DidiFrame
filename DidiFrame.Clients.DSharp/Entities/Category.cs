@@ -101,9 +101,9 @@ namespace DidiFrame.Clients.DSharp.Entities
 		public DSharpServer BaseServer => baseServer;
 
 
-		public async ValueTask<IAsyncDisposable> InitializeAsync()
+		public IAsyncDisposable Initialize()
 		{
-			routedEventTreeNode = await baseServer.CreateEventTreeNodeAsync(this);
+			routedEventTreeNode = baseServer.CreateEventTreeNode(this);
 
 			return new InitializationPostfix(this);
 		}

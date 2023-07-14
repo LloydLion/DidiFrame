@@ -63,7 +63,7 @@ namespace TestBot.Systems.Test
 		public async Task<UserCommandResult> GetMessage(UserCommandContext ctx, string ulongId)
 		{
 			var id = ulong.Parse(ulongId);
-			var msg = ctx.SendData.Channel.GetMessage(id);
+			var msg = ctx.SendData.Channel.GetMessageAsync(id);
 			var content = msg.Content;
 			await Task.Delay(5000);
 			return UserCommandResult.CreateWithMessage(UserCommandCode.Sucssesful, new($"Now - {msg.Content}, Was - {content}"));

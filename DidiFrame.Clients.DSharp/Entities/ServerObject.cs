@@ -66,7 +66,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 			}));
 		}
 
-		public async ValueTask<IAsyncDisposable> Initialize(TDiscord discordObject)
+		public IAsyncDisposable Initialize(TDiscord discordObject)
 		{
 			CheckThread();
 
@@ -77,7 +77,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 				throw new ArgumentException($"Enable to initialize server object with id {Id} using discord object with id {discordObject.Id}", nameof(discordObject));
 
 			var initialState = MutateWithNewObject(discordObject)(new());
-			initializationContext = new InitializationContext(new EntityState<TState>(initialState), await BaseServer.CreateEventTreeNodeAsync(this), discordObject);
+			initializationContext = new InitializationContext(new EntityState<TState>(initialState), BaseServer.CreateEventTreeNode(this), discordObject);
 			lastAccessedName = initialState.Name;
 
 			return new InitializationPostfix(this);
@@ -161,7 +161,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 			else return ValueTask.CompletedTask;
 		}
 
-		protected Task DoDiscordOperation<TResult>(DiscordOperation<TResult> operation, DiscordOperationEffector<TResult> effector)
+		protected Task<TResult> DoDiscordOperation<TResult>(DiscordOperation<TResult> operation, DiscordOperationEffector<TResult> effector)
 		{
 			CheckThread();
 			var config = new DiscordOperationConfiguration(entityName: configuration.EntityName, entityNotFoundCode: configuration.EntityNotFoundCode);

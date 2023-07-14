@@ -1,4 +1,5 @@
-﻿using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
+﻿using DidiFrame.Clients.DSharp.Entities.Channels;
+using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
 using DidiFrame.Clients.DSharp.Utils;
 using DidiFrame.Utils;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,13 @@ namespace DidiFrame.Clients.DSharp.Server.VSS
 			components.AddSingleton<IEntityRepository<IDSharpCategory>>(sp => sp.GetRequiredService<CategoryRepository>());
 			components.AddSingleton<IEntityRepository<ICategory>>(sp => sp.GetRequiredService<CategoryRepository>());
 
+			components.AddSingleton<ChannelRepository>();
+			components.AddSingleton<IEntityRepository<IDSharpChannel>>(sp => sp.GetRequiredService<ChannelRepository>());
+			components.AddSingleton<IEntityRepository<IChannel>>(sp => sp.GetRequiredService<ChannelRepository>());
+			components.AddSingleton<IEntityRepository<ICategoryItem>>(sp => sp.GetRequiredService<ChannelRepository>());
+
+			components.AddSingleton<MessageRepository>();
+
 			components.AddSingleton(new EventBuffer(TimeSpan.FromMilliseconds(1400), server.WorkQueue.Thread.ThreadId, eventBufferLogger));
         }
 
@@ -44,8 +52,12 @@ namespace DidiFrame.Clients.DSharp.Server.VSS
 			var postInitializationContainer = new CompositeAsyncDisposable();
 
 			await components.GetRequiredService<RoleRepository>().InitializeAsync(postInitializationContainer);
+			components.GetRequiredService<MessageRepository>().Initialize();
+
 			await components.GetRequiredService<MemberRepository>().InitializeAsync(postInitializationContainer);
-			await components.GetRequiredService<CategoryRepository>().InitializeAsync(postInitializationContainer);
+
+			await components.GetRequiredService<CategoryRepository>().InitializeAsync(postInitializationContainer, components.GetServices<IEntityRepository<ICategoryItem>>());
+			await components.GetRequiredService<ChannelRepository>().InitializeAsync(postInitializationContainer);
 
 			await postInitializationContainer.DisposeAsync();
 		}
@@ -55,6 +67,8 @@ namespace DidiFrame.Clients.DSharp.Server.VSS
             components.GetRequiredService<RoleRepository>().PerformTerminate();
             components.GetRequiredService<MemberRepository>().PerformTerminate();
             components.GetRequiredService<CategoryRepository>().PerformTerminate();
+            components.GetRequiredService<ChannelRepository>().PerformTerminate();
+            components.GetRequiredService<MessageRepository>().PerformTerminate();
 		}
 
 		public async Task TerminateAsync(DSharpServer server, IServiceProvider components)
@@ -62,6 +76,7 @@ namespace DidiFrame.Clients.DSharp.Server.VSS
             await components.GetRequiredService<RoleRepository>().TerminateAsync();
             await components.GetRequiredService<MemberRepository>().TerminateAsync();
             await components.GetRequiredService<CategoryRepository>().TerminateAsync();
+            await components.GetRequiredService<ChannelRepository>().TerminateAsync();
         }
 	}
 }

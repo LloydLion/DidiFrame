@@ -47,7 +47,7 @@ namespace DidiFrame.Utils
 		}
 
 
-		private static IMessage GetMessage(MessageAliveHolderModel model) => model.Channel.GetMessage(model.PossibleMessageId);
+		private static IMessage GetMessage(MessageAliveHolderModel model) => model.Channel.GetMessageAsync(model.PossibleMessageId).Result; //TODO: FIX CRITICAL PLACE
 
 		/// <summary>
 		/// Init method, checks message existance, if need restores it
@@ -63,7 +63,7 @@ namespace DidiFrame.Utils
 			var model = selector(parameter);
 			var msg = GetMessage(model);
 
-			if (msg.IsExists) postProcessor(parameter, msg, isModified: false);
+			if (await msg.CheckExistenceAsync()) postProcessor(parameter, msg, isModified: false);
 			else await SendNewMessage(parameter, model);
 
 			syncRoot.Set();
@@ -110,7 +110,8 @@ namespace DidiFrame.Utils
 			var model = selector(parameter);
 			var msg = GetMessage(model);
 
-			if (msg.IsExists) await msg.DeleteAsync();
+			if (await msg.CheckExistenceAsync())
+				await msg.DeleteAsync();
 
 			syncRoot.Set();
 		}
@@ -170,7 +171,8 @@ namespace DidiFrame.Utils
 		{
 			var msg = GetMessage(model);
 
-			if (!msg.IsExists) msg = await SendNewMessage(parameter, model);
+			if (await msg.CheckExistenceAsync() == false)
+				msg = await SendNewMessage(parameter, model);
 
 			return msg;
 		}

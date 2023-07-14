@@ -34,14 +34,14 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 
 		public Role GetById(ulong id) => roles[id];
 
-		public async Task InitializeAsync(CompositeAsyncDisposable postInitializationContainer)
+		public Task InitializeAsync(CompositeAsyncDisposable postInitializationContainer)
 		{
 			foreach (var role in server.BaseGuild.Roles)
 			{
 				var srole = new Role(server, role.Key, this);
 				roles.Add(srole.Id, srole);
 
-				postInitializationContainer.PushDisposable(await srole.Initialize(role.Value));
+				postInitializationContainer.PushDisposable(srole.Initialize(role.Value));
 			}
 
 			everyoneRole = GetById(server.Id);
@@ -49,6 +49,8 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			DiscordClient.GuildRoleCreated += new AEHAdd(OnGuildRoleCreated).SyncIn(server.WorkQueue).FilterServer(server.Id);
 			DiscordClient.GuildRoleUpdated += new AEHUpdate(OnGuildRoleUpdated).SyncIn(server.WorkQueue).FilterServer(server.Id);
 			DiscordClient.GuildRoleDeleted += new AEHRemove(OnGuildRoleDeleted).SyncIn(server.WorkQueue).FilterServer(server.Id);
+
+			return Task.CompletedTask;
 		}
 
 		public void PerformTerminate()
@@ -87,7 +89,7 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			return Task.CompletedTask;
 		}
 
-		private async Task CreateOrUpdateAsync(DiscordRole role)
+		private Task CreateOrUpdateAsync(DiscordRole role)
 		{
 			if (roles.TryGetValue(role.Id, out var srole))
 			{
@@ -100,10 +102,12 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 				srole = new Role(server, role.Id, this);
 				roles.Add(srole.Id, srole);
 
-				var disposable = await srole.Initialize(role);
+				var disposable = srole.Initialize(role);
 
 				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
 			}
+
+			return Task.CompletedTask;
 		}
 
 		IReadOnlyCollection<IRole> IEntityRepository<IRole>.GetAll() => GetAll();

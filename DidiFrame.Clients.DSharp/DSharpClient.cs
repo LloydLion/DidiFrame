@@ -57,7 +57,7 @@ namespace DidiFrame.Clients.DSharp
 			clientThreadQueue = clientThread.CreateNewExecutionQueue("main");
 			clientThread.Begin(clientThreadQueue);
 
-			routedEventTreeNode = clientThreadQueue.AwaitDispatch(() => new RoutedEventTreeNode(this)).Result;
+			routedEventTreeNode = new RoutedEventTreeNode(this);
 
 			apiConnection = new DiscordApiConnection(discordClient);
 
@@ -127,15 +127,6 @@ namespace DidiFrame.Clients.DSharp
 		public void Dispose()
 		{
 			discordClient.Dispose();
-		}
-
-		internal Task InvokeEvent<TEventArgs>(RoutedEventTreeNode routedEventTreeNode, RoutedEvent<TEventArgs> routedEvent, TEventArgs args, RoutedEventTreeNode.HandlerExecutor? handlerExecutor = null)
-			where TEventArgs : notnull, EventArgs
-		{
-			return clientThreadQueue.AwaitDispatchAsync(() =>
-			{
-				return new ValueTask(routedEventTreeNode.Invoke(routedEvent, args, handlerExecutor));
-			});
 		}
 
 		private async Task OnGuildCreated(DiscordClient sender, GuildCreateEventArgs e)
