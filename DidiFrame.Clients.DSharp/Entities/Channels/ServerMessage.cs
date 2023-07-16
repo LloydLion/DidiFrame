@@ -1,9 +1,10 @@
-﻿using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
+﻿using DidiFrame.Clients.DSharp.Entities.Channels.Aspects;
+using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
 using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.Entities.Channels
 {
-	public record ServerMessage : Message, IServerMessage
+    public record ServerMessage : Message, IServerMessage
 	{
 		public ServerMessage(MessageRepository repository, IDSharpTextChannelBase baseChannel, DiscordMessage discordMessage) : base(repository, baseChannel, discordMessage)
 		{

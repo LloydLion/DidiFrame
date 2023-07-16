@@ -3,6 +3,7 @@ using DidiFrame.Entities.Message;
 using DidiFrame.Entities.Message.Components;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace DidiFrame.Clients.DSharp.Entities.Channels
 {
@@ -67,6 +68,11 @@ namespace DidiFrame.Clients.DSharp.Entities.Channels
 		public ValueTask<bool> CheckExistenceAsync()
 		{
 			throw new NotImplementedException();
+		}
+
+		public override string ToString()
+		{
+			return $"Message({Id}) {{ Model = {Model}, Author = {Author}, Container = {Container} }}";
 		}
 
 

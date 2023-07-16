@@ -3,11 +3,13 @@ using DSharpPlus.EventArgs;
 using DidiFrame.Utils;
 using DidiFrame.Clients.DSharp.Utils;
 using DSharpPlus.Entities;
+using DidiFrame.Clients.DSharp.Entities.Channels;
+using Microsoft.Extensions.Logging;
+
 using AEHAdd = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelCreateEventArgs>;
 using AEHUpdate = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelUpdateEventArgs>;
 using AEHRemove = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelDeleteEventArgs>;
-using DidiFrame.Clients.DSharp.Entities.Channels;
-using Microsoft.Extensions.Logging;
+using AEHVoice = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.VoiceStateUpdateEventArgs>;
 
 namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 {
@@ -25,13 +27,13 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 		private readonly ILogger<ChannelRepository> logger;
 
 
-		public ChannelRepository(DSharpServer server, MessageRepository roleRepository, CategoryRepository categoryRepository, EventBuffer eventBuffer)
+		public ChannelRepository(DSharpServer server, MessageRepository roleRepository, CategoryRepository categoryRepository, MemberRepository memberRepository, EventBuffer eventBuffer)
 		{
 			this.server = server;
 			MessageRepository = roleRepository;
 			this.eventBuffer = eventBuffer;
 			CategoryRepository = categoryRepository;
-
+			MemberRepository = memberRepository;
 			logger = server.BaseClient.LoggerFactory.CreateLogger<ChannelRepository>();
 		}
 
@@ -39,6 +41,8 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 		public MessageRepository MessageRepository { get; }
 
 		public CategoryRepository CategoryRepository { get; }
+
+		public MemberRepository MemberRepository { get; }
 
 		private DiscordClient DiscordClient => server.BaseClient.DiscordClient;
 
@@ -72,15 +76,17 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			DiscordClient.ChannelCreated += new AEHAdd(OnChannelCreated).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
 			DiscordClient.ChannelUpdated += new AEHUpdate(OnChannelUpdated).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
 			DiscordClient.ChannelDeleted += new AEHRemove(OnChannelDeleted).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
+			DiscordClient.VoiceStateUpdated += new AEHVoice(OnVoiceStateUpdated).SyncIn(server.WorkQueue).FilterServer(server.Id);
 
 			logger.Log(LogLevel.Debug, RepositoryInitializedID, "Channel repository initialized in {Server}. Loaded {ChannelCount} channels", server.ToString(), channels.Count);
 		}
 
 		public void PerformTerminate()
 		{
-			DiscordClient.ChannelCreated += new AEHAdd(OnChannelCreated).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
-			DiscordClient.ChannelUpdated += new AEHUpdate(OnChannelUpdated).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
-			DiscordClient.ChannelDeleted += new AEHRemove(OnChannelDeleted).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
+			DiscordClient.ChannelCreated -= new AEHAdd(OnChannelCreated).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
+			DiscordClient.ChannelUpdated -= new AEHUpdate(OnChannelUpdated).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
+			DiscordClient.ChannelDeleted -= new AEHRemove(OnChannelDeleted).SyncIn(server.WorkQueue).Filter(IsNotCategory).FilterServer(server.Id);
+			DiscordClient.VoiceStateUpdated -= new AEHVoice(OnVoiceStateUpdated).SyncIn(server.WorkQueue).FilterServer(server.Id);
 
 			logger.Log(LogLevel.Debug, RepositoryPerformTerminateID, "Channel repository in {Server} completed PerformTerminate phase", server.ToString());
 		}
@@ -97,6 +103,8 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			channels.Remove(channel.Id);
 			return channel.Finalize().DisposeAsync().AsTask();
 		}
+
+		private Task OnVoiceStateUpdated(DiscordClient sender, VoiceStateUpdateEventArgs e) => CreateOrUpdateAsync(e.After?.Channel, e.Before?.Channel);
 
 		private Task OnChannelCreated(DiscordClient sender, ChannelCreateEventArgs e) => CreateOrUpdateAsync(e.Channel);
 
@@ -116,26 +124,37 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			return Task.CompletedTask;
 		}
 
-		private Task CreateOrUpdateAsync(DiscordChannel channel)
+		private Task CreateOrUpdateAsync(params DiscordChannel?[] input)
 		{
-			if (channels.TryGetValue(channel.Id, out var schannel))
+			var disposables = new List<IAsyncDisposable>(capacity: input.Length);
+
+			foreach (var channel in input)
 			{
-				var disposable = schannel.Mutate(channel);
+				if (channel is null)
+					continue;
 
-				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
+				if (channels.TryGetValue(channel.Id, out var schannel))
+				{
+					var disposable = schannel.Mutate(channel);
+
+					disposables.Add(disposable);
+				}
+				else
+				{
+					schannel = CreateChannel(channel);
+					if (schannel is null)
+						return Task.CompletedTask;
+
+					channels.Add(schannel.Id, schannel);	
+
+					var disposable = schannel.Initialize(channel);
+
+					disposables.Add(disposable);
+				}
 			}
-			else
-			{
-				schannel = CreateChannel(channel);
-				if (schannel is null)
-					return Task.CompletedTask;
 
-				channels.Add(schannel.Id, schannel);
-
-				var disposable = schannel.Initialize(channel);
-
+			foreach (var disposable in disposables)
 				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
-			}
 
 			return Task.CompletedTask;
 		}
@@ -144,7 +163,10 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 		{
 			var result = discordChannel.Type switch
 			{
-				ChannelType.Text => new TextChannel(server, this, discordChannel.Id),
+				ChannelType.Text => (IDSharpChannel)new TextChannel(server, this, discordChannel.Id),
+				ChannelType.Voice => new VoiceChannel(server, this, discordChannel.Id),
+				ChannelType.News => new NewsChannel(server, this, discordChannel.Id),
+				ChannelType.Stage => new StageChannel(server, this, discordChannel.Id),
 				_ => null
 			};
 

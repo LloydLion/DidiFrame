@@ -58,7 +58,7 @@ namespace DidiFrame.Clients.DSharp.Server
 
 		public ICategory GetCategory(ulong id) => vss.GetComponent<IEntityRepository<ICategory>>().GetById(id);
 
-		public TChannel GetChannel<TChannel>(ulong id) where TChannel : notnull, IChannel => vss.GetComponent<IEntityRepository<ChannelProvider>>().GetById(id).RepresentAs<TChannel>();
+		public TChannel GetChannel<TChannel>(ulong id) where TChannel : notnull, IChannel => (TChannel)vss.GetComponent<IEntityRepository<IChannel>>().GetById(id);
 
 		public IMember GetMember(ulong id) => vss.GetComponent<IEntityRepository<IMember>>().GetById(id);
 
@@ -66,7 +66,7 @@ namespace DidiFrame.Clients.DSharp.Server
 
 		public IReadOnlyCollection<ICategory> ListCategories() => vss.GetComponent<IEntityRepository<ICategory>>().GetAll();
 
-		public IReadOnlyCollection<ChannelProvider> ListChannels() => vss.GetComponent<IEntityRepository<ChannelProvider>>().GetAll();
+		public IReadOnlyCollection<ChannelProvider> ListChannels() => vss.GetComponent<IEntityRepository<IChannel>>().GetAll().Select(s => new ChannelProvider(this, s.Id)).ToArray();
 
 		public IReadOnlyCollection<IMember> ListMembers() => vss.GetComponent<IEntityRepository<IMember>>().GetAll();
 

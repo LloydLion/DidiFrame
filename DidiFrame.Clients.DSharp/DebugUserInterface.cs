@@ -82,7 +82,18 @@ namespace DidiFrame.Clients.DSharp
 					else
 						methodArguments = new object[] { server, e.Message };
 
-					var builder = await (Task<Action<DiscordMessageBuilder>>)(command.Method.Invoke(null, methodArguments) ?? throw new ImpossibleVariantException());
+					Action<DiscordMessageBuilder> builder;
+					try
+					{
+						builder = await (Task<Action<DiscordMessageBuilder>>)(command.Method.Invoke(null, methodArguments) ?? throw new ImpossibleVariantException());
+					}
+					catch (Exception ex)
+					{
+						var file = Encoding.UTF8.GetBytes(ex.ToString());
+						var memoryStream = new MemoryStream(file);
+
+						builder = (s) => s.WithContent($"Enable to execute command \"{e.Message.Content}\"").WithFile($"Error.txt", memoryStream);
+					}
 
 					await e.Message.RespondAsync(builder);
 
@@ -114,7 +125,14 @@ namespace DidiFrame.Clients.DSharp
 				var categories = server.ListCategories();
 				var categoriesList = string.Join("\n", categories);
 
-				return $"Server: {server}\n\nMembers [{members.Count}]:\n{membersList}\n\nRoles [{roles.Count}]:\n{rolesList}\n\nCategories [{categories.Count}]:\n{categoriesList}";
+				var channels = server.ListChannels();
+				var channelsList = string.Join("\n", channels.Select(s => s.RepresentAs<IChannel>()));
+
+				return $"Server: {server}\n\n" +
+					$"Members [{members.Count}]:\n{membersList}\n\n" +
+					$"Roles [{roles.Count}]:\n{rolesList}\n\n" +
+					$"Categories [{categories.Count}]:\n{categoriesList}\n\n" +
+					$"Channels [{channels.Count}]:\n{channelsList}";
 			});
 
 			var file = Encoding.UTF8.GetBytes(respond);
@@ -140,7 +158,35 @@ namespace DidiFrame.Clients.DSharp
 				var items = category.ListItems();
 				var itemsList = string.Join("\n", items);
 
-				return $"Item of {category} [{items.Count}]:\n{itemsList}";
+				return $"Items of {category} [{items.Count}]:\n{itemsList}";
+			});
+
+
+			var file = Encoding.UTF8.GetBytes(respond);
+			var memoryStream = new MemoryStream(file);
+
+			return builder =>
+			{
+				builder.WithFile($"Cat{id}.txt", memoryStream);
+			};
+		}
+
+		[Command("listText", @"(\d+) (\d+)")]
+		[SuppressMessage("CodeQuality", "IDE0051")]
+		[SuppressMessage("Style", "IDE0060")]
+		private static async Task<Action<DiscordMessageBuilder>> ListChannelMessages(DSharpServer server, DiscordMessage message, Match patternMatch)
+		{
+			var id = ulong.Parse(patternMatch.Groups[1].Value);
+			var count = int.Parse(patternMatch.Groups[2].Value);
+
+			var respond = await server.WorkQueue.AwaitDispatchAsync(async () =>
+			{
+				var channel = server.GetChannel<ITextChannel>(id);
+
+				var messages = await channel.ListMessagesAsync(count);
+				var messagesList = string.Join("\n", messages);
+
+				return $"Messages of {channel} [{messages.Count}]:\n{messagesList}";
 			});
 
 

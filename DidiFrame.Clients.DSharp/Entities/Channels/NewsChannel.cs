@@ -4,19 +4,18 @@ using DidiFrame.Clients.DSharp.Operations;
 using DidiFrame.Clients.DSharp.Server;
 using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
 using DidiFrame.Entities.Message;
-using DidiFrame.Utils.RoutedEvents;
 using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.Entities.Channels
 {
-	public class TextChannel : BaseChannel<TextChannel.State>, ITextChannel, IDSharpTextChannelBase
+	public class NewsChannel : BaseChannel<NewsChannel.State>, INewsChannel, IDSharpTextChannelBase
 	{
 		private readonly ChannelRepository repository;
 		private readonly TextChannelAspect textAspect;
 
 
-		public TextChannel(DSharpServer baseServer, ChannelRepository repository, ulong id)
-			: base(baseServer, repository.CategoryRepository, id, nameof(TextChannel))
+		public NewsChannel(DSharpServer baseServer, ChannelRepository repository, ulong id)
+			: base(baseServer, repository.CategoryRepository, id, nameof(NewsChannel))
 		{
 			this.repository = repository;
 			textAspect = new TextChannelAspect(this, new TextChannelAspectContract(this), repository);
@@ -28,11 +27,6 @@ namespace DidiFrame.Clients.DSharp.Entities.Channels
 		public ValueTask<IReadOnlyList<IServerMessage>> ListMessagesAsync(int limit = 25) => textAspect.ListMessagesAsync(limit);
 
 		public ValueTask<IServerMessage> SendMessageAsync(MessageSendModel message) => textAspect.SendMessageAsync(message);
-
-		public IReadOnlyCollection<ITextChannelThread> ListThreads()
-		{
-			throw new NotImplementedException();
-		}
 
 		async ValueTask<IMessage> IMessageContainer.GetMessageAsync(ulong id) => await GetMessageAsync(id);
 
@@ -66,10 +60,10 @@ namespace DidiFrame.Clients.DSharp.Entities.Channels
 
 		private sealed class TextChannelAspectContract : TextChannelAspect.IProtectedContract
 		{
-			private readonly TextChannel owner;
+			private readonly NewsChannel owner;
 
 
-			public TextChannelAspectContract(TextChannel owner)
+			public TextChannelAspectContract(NewsChannel owner)
 			{
 				this.owner = owner;
 			}
