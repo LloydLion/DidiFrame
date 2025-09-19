@@ -109,6 +109,8 @@ namespace DidiFrame.Clients.DSharp.Entities
 			if (IsExists == false)
 				throw new InvalidOperationException($"Enable to delete server object [{Id}] twice");
 
+			AccessEventTreeNode().AttachParent(node: null);
+
 			lastAccessedName = Name;
 			initializationContext = null;
 
@@ -132,6 +134,7 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		protected abstract Mutation<TState> MutateWithNewObject(TDiscord newDiscordObject);
 
+		protected virtual RoutedEventTreeNode CreateRoutedEventTreeNode() => BaseServer.CreateEventTreeNode(this);
 
 		protected void CheckThread([CallerMemberName] string nameOfCaller = "name of caller member")
 		{
@@ -164,8 +167,13 @@ namespace DidiFrame.Clients.DSharp.Entities
 		protected Task<TResult> DoDiscordOperation<TResult>(DiscordOperation<TResult> operation, DiscordOperationEffector<TResult> effector)
 		{
 			CheckThread();
-			var config = new DiscordOperationConfiguration(entityName: configuration.EntityName, entityNotFoundCode: configuration.EntityNotFoundCode);
+			var config = CreateDiscordOperationConfiguration();
 			return BaseClient.DiscordOperationBroker.OperateAsync(operation, effector, this, config);
+		}
+
+		protected DiscordOperationConfiguration CreateDiscordOperationConfiguration()
+		{
+			return new DiscordOperationConfiguration(entityName: configuration.EntityName, entityNotFoundCode: configuration.EntityNotFoundCode);
 		}
 
 		private InitializationContext AccessInitializationContext()

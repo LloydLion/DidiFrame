@@ -11,16 +11,16 @@
 		/// <summary>
 		/// Provides empty DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider object
 		/// </summary>
-		public static IModelAdditionalInfoProvider Empty => new SimpleModelAdditionalInfoProvider(Array.Empty<object>());
+		public static IModelAdditionalInfoProvider Empty { get; } = new SimpleModelAdditionalInfoProvider(Array.Empty<object>());
 
 
-		/// <summary>
-		/// Creates new instance of DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider based on object collection.
-		/// Be SUPER careful! objects will registated by thier types (from GetType()).
-		/// Recomended to use  DefaultModelAdditionalInfoProvider(params (object, Type)[]) ctor
-		/// </summary>
-		/// <param name="objects">Base object collection as array</param>
-		public SimpleModelAdditionalInfoProvider(params object[] objects) : this((IReadOnlyCollection<object>)objects) { }
+	/// <summary>
+	/// Creates new instance of DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider based on object collection.
+	/// Be SUPER careful! objects will registated by thier types (from GetType()).
+	/// Recomended to use  DefaultModelAdditionalInfoProvider(params (object, Type)[]) ctor
+	/// </summary>
+	/// <param name="objects">Base object collection as array</param>
+	public SimpleModelAdditionalInfoProvider(params object[] objects) : this((IReadOnlyCollection<object>)objects) { }
 
 		/// <summary>
 		/// Creates new instance of DidiFrame.Utils.ExtendableModels.SimpleModelAdditionalInfoProvider based on type to object dictionary.

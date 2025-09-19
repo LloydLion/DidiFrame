@@ -1,7 +1,7 @@
 ﻿using DPermissions = DSharpPlus.Permissions;
 using AbsPermissions = DidiFrame.Entities.Permissions;
 using DChannelType = DSharpPlus.ChannelType;
-using AbsChannelType = DidiFrame.Entities.ChannelType;
+//using AbsChannelType = DidiFrame.Entities.ChannelType;
 using DButtonStyle= DSharpPlus.ButtonStyle;
 using AbsButtonStyle = DidiFrame.Entities.Message.Components.ButtonStyle;
 using DSharpPlus.Entities;
@@ -45,16 +45,16 @@ namespace DidiFrame.Clients.DSharp
 		/// </summary>
 		/// <param name="dChannelType">DSharp channel type</param>
 		/// <returns>DidiFrame channel type</returns>
-		public static AbsChannelType? GetAbstract(this DChannelType dChannelType)
-		{
-			return dChannelType switch
-			{
-				DChannelType.Text or DChannelType.Group or DChannelType.News or DChannelType.Private => AbsChannelType.TextCompatible,
-				DChannelType.Voice => AbsChannelType.Voice,
-				(DChannelType)15 => AbsChannelType.Forum,
-				_ => null
-			};
-		}
+		//public static AbsChannelType? GetAbstract(this DChannelType dChannelType)
+		//{
+		//	return dChannelType switch
+		//	{
+		//		DChannelType.Text or DChannelType.Group or DChannelType.News or DChannelType.Private => AbsChannelType.TextCompatible,
+		//		DChannelType.Voice => AbsChannelType.Voice,
+		//		(DChannelType)15 => AbsChannelType.Forum,
+		//		_ => null
+		//	};
+		//}
 
 		/// <summary>
 		/// Converts DSharp color to  DidiFrame color 
@@ -79,18 +79,18 @@ namespace DidiFrame.Clients.DSharp
 		/// <summary>
 		/// Converts DidiFrame channel type to DSharp channel type
 		/// </summary>
-		/// <param name="absChannelType">DidiFram channel type</param>
+		/// <param name="absChannelType">DidiFrame channel type</param>
 		/// <returns>DSharp channel type</returns>
 		/// <exception cref="NotSupportedException">Channel type is not supported by method</exception>
-		public static DChannelType GetDSharp(this AbsChannelType absChannelType)
-		{
-			return absChannelType switch
-			{
-				AbsChannelType.TextCompatible => DChannelType.Text,
-				AbsChannelType.Voice => DChannelType.Voice,
-				_ => throw new NotSupportedException()
-			};
-		}
+		//public static DChannelType GetDSharp(this AbsChannelType absChannelType)
+		//{
+		//	return absChannelType switch
+		//	{
+		//		AbsChannelType.TextCompatible => DChannelType.Text,
+		//		AbsChannelType.Voice => DChannelType.Voice,
+		//		_ => throw new NotSupportedException()
+		//	};
+		//}
 
 		/// <summary>
 		/// Converts DidiFrame color to DSharp color

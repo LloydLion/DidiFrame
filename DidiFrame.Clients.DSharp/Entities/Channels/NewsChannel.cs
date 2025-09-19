@@ -34,6 +34,11 @@ namespace DidiFrame.Clients.DSharp.Entities.Channels
 
 		async ValueTask<IMessage> IMessageContainer.SendMessageAsync(MessageSendModel message) => await SendMessageAsync(message);
 
+		public IReadOnlyCollection<ITextChannelThread> ListThreads()
+		{
+			throw new NotImplementedException();
+		}
+
 		public override ValueTask NotifyRepositoryThatDeletedAsync()
 		{
 			return new(repository.DeleteAsync(this));

@@ -1,13 +1,13 @@
 ﻿using DidiFrame.Clients.DSharp.Utils;
 using DidiFrame.Utils;
-using AEHAdd = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelCreateEventArgs>;
-using AEHUpdate = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelUpdateEventArgs>;
-using AEHRemove = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelDeleteEventArgs>;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Entities;
 using System.Collections;
-using Microsoft.VisualBasic;
+
+using AEHAdd = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelCreateEventArgs>;
+using AEHUpdate = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelUpdateEventArgs>;
+using AEHRemove = Emzi0767.Utilities.AsyncEventHandler<DSharpPlus.DiscordClient, DSharpPlus.EventArgs.ChannelDeleteEventArgs>;
 
 namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 {
@@ -19,6 +19,7 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 		private readonly List<IEntityRepository<ICategoryItem>> categoryItemRepositories = new();
 		private readonly EventBuffer eventBuffer;
 		private readonly CategoryCollection categoryCollection;
+		private ChannelRepository? channelRepository;
 
 
 		public CategoryRepository(DSharpServer server, EventBuffer eventBuffer)
@@ -34,6 +35,8 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 
 		private DiscordClient DiscordClient => server.BaseClient.DiscordClient;
 
+		public ChannelRepository ChannelRepository => channelRepository ?? throw new NullReferenceException();
+
 
 		public IReadOnlyCollection<IDSharpCategory> GetAll() => categoryCollection;
 
@@ -48,9 +51,10 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 
 		ICategory IEntityRepository<ICategory>.GetById(ulong id) => GetById(id);
 
-		public async Task InitializeAsync(CompositeAsyncDisposable postInitializationContainer, IEnumerable<IEntityRepository<ICategoryItem>> categoryItemRepositories)
+		public async Task InitializeAsync(CompositeAsyncDisposable postInitializationContainer, IEnumerable<IEntityRepository<ICategoryItem>> categoryItemRepositories, ChannelRepository channelRepository)
 		{
 			this.categoryItemRepositories.AddRange(categoryItemRepositories);
+			this.channelRepository = channelRepository;
 
 			postInitializationContainer.PushDisposable(globalCategory.Initialize());
 

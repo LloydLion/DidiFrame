@@ -104,6 +104,22 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 			return channel.Finalize().DisposeAsync().AsTask();
 		}
 
+		public async Task<IDSharpChannel> CreateAsync(DiscordChannel channel)
+		{
+			if (channel.IsCategory)
+				throw new ArgumentException("Channel can't be category", nameof(channel));
+
+			if (channel.IsThread)
+				throw new ArgumentException("Channel can't be thread", nameof(channel));
+
+			var disposable = CreateOrUpdateSingleChannelAsync(channel);
+			if (disposable is not null)
+				await disposable.DisposeAsync();
+
+			return GetById(channel.Id);
+		}
+
+
 		private Task OnVoiceStateUpdated(DiscordClient sender, VoiceStateUpdateEventArgs e) => CreateOrUpdateAsync(e.After?.Channel, e.Before?.Channel);
 
 		private Task OnChannelCreated(DiscordClient sender, ChannelCreateEventArgs e) => CreateOrUpdateAsync(e.Channel);
@@ -133,30 +149,37 @@ namespace DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories
 				if (channel is null)
 					continue;
 
-				if (channels.TryGetValue(channel.Id, out var schannel))
-				{
-					var disposable = schannel.Mutate(channel);
-
+				var disposable = CreateOrUpdateSingleChannelAsync(channel);
+				if (disposable is not null)
 					disposables.Add(disposable);
-				}
-				else
-				{
-					schannel = CreateChannel(channel);
-					if (schannel is null)
-						return Task.CompletedTask;
-
-					channels.Add(schannel.Id, schannel);	
-
-					var disposable = schannel.Initialize(channel);
-
-					disposables.Add(disposable);
-				}
 			}
 
 			foreach (var disposable in disposables)
 				eventBuffer.Dispatch(async () => await disposable.DisposeAsync());
 
 			return Task.CompletedTask;
+		}
+
+		private IAsyncDisposable? CreateOrUpdateSingleChannelAsync(DiscordChannel channel)
+		{
+			if (channels.TryGetValue(channel.Id, out var schannel))
+			{
+				var disposable = schannel.Mutate(channel);
+
+				return disposable;
+			}
+			else
+			{
+				schannel = CreateChannel(channel);
+				if (schannel is null)
+					return null;
+
+				channels.Add(schannel.Id, schannel);
+
+				var disposable = schannel.Initialize(channel);
+
+				return disposable;
+			}
 		}
 
 		private IDSharpChannel? CreateChannel(DiscordChannel discordChannel)

@@ -13,7 +13,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB4DD5F7-24E1-4E9F-BC90-C3A36290B1A5}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		BuildAsPackage.props = BuildAsPackage.props
 		DidiFrameIcon.png = DidiFrameIcon.png
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		README.md = README.md
 	EndProjectSection
 EndProject

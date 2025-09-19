@@ -1,6 +1,6 @@
 ﻿namespace DidiFrame.Clients
 {
-	public interface INewsChannel : ITextChannelBase
+	public interface INewsChannel : ITextChannel
 	{
 		//TODO: add CrosspostMessage() method
 	}

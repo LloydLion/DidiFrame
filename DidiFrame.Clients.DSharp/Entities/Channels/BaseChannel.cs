@@ -2,6 +2,7 @@
 using DidiFrame.Clients.DSharp.Server;
 using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
 using DidiFrame.Utils;
+using DidiFrame.Utils.RoutedEvents;
 using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.Entities.Channels
@@ -71,6 +72,11 @@ namespace DidiFrame.Clients.DSharp.Entities.Channels
 			var category = newDiscordObject.IsThread ? newDiscordObject.Parent.Parent : newDiscordObject.Parent;
 
 			return new BaseChannelState(newDiscordObject.Name, category?.Id ?? Server.Id); //Server.Id is global category
+		}
+
+		protected override RoutedEventTreeNode CreateRoutedEventTreeNode()
+		{
+			return categoryRepository.GetById(AccessState().BaseState.Category).CreateEventTreeNodeAsync(this);
 		}
 
 		protected abstract Mutation<TState> ConvertMutation(Mutation<BaseChannelState> baseStateMutation);

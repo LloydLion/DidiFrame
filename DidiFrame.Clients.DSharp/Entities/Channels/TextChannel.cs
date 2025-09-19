@@ -4,7 +4,6 @@ using DidiFrame.Clients.DSharp.Operations;
 using DidiFrame.Clients.DSharp.Server;
 using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
 using DidiFrame.Entities.Message;
-using DidiFrame.Utils.RoutedEvents;
 using DSharpPlus.Entities;
 
 namespace DidiFrame.Clients.DSharp.Entities.Channels

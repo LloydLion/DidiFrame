@@ -19,7 +19,9 @@
 		/// <returns>Found item</returns>
 		public TItem GetItem<TItem>(ulong id) where TItem : class, ICategoryItem;
 
-		public IChannelPermissions ManagePermissions();
+		public ICategoryPermissions ManagePermissions();
+
+		public IChannelFabricator CreateChannel();
 
 
 		/// <summary>

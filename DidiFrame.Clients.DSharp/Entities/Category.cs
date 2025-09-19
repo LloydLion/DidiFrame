@@ -1,11 +1,14 @@
 ﻿using DidiFrame.Clients.DSharp.Mutations;
+using DidiFrame.Clients.DSharp.Operations;
 using DidiFrame.Clients.DSharp.Server;
 using DidiFrame.Clients.DSharp.Server.VSS.EntityRepositories;
 using DidiFrame.Exceptions;
 using DidiFrame.Threading;
 using DidiFrame.Utils.RoutedEvents;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel;
 
 namespace DidiFrame.Clients.DSharp.Entities
 {
@@ -28,21 +31,26 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		public IReadOnlyCollection<ICategoryItem> ListItems() => repository.GetItemsFor(this);
 
-		public IChannelPermissions ManagePermissions()
+		public ICategoryPermissions ManagePermissions()
 		{
 			throw new NotImplementedException();
 		}
 
 		public override ValueTask NotifyRepositoryThatDeletedAsync() => new(repository.DeleteAsync(this));
 
-		Task<RoutedEventTreeNode> IDSharpCategory.CreateEventTreeNodeAsync(IServerObject serverObject)
+		public ServerObject AsServerObject() => this;
+
+		public IChannelFabricator CreateChannel()
 		{
-			return BaseClient.ClientThreadQueue.AwaitDispatch(() =>
-			{
-				var node = new RoutedEventTreeNode(serverObject);
-				node.AttachParent(AccessEventTreeNode());
-				return node;
-			});
+			CheckThread();
+			return new CategoryChannelFabricator(repository.ChannelRepository, BaseClient.DiscordOperationBroker, CreateDiscordOperationConfiguration(), this);
+		}
+
+		RoutedEventTreeNode IDSharpCategory.CreateEventTreeNode(IServerObject serverObject)
+		{
+			var node = new RoutedEventTreeNode(serverObject);
+			node.AttachParent(AccessEventTreeNode());
+			return node;
 		}
 
 		protected override ValueTask CallDeleteOperationAsync()
@@ -72,14 +80,14 @@ namespace DidiFrame.Clients.DSharp.Entities
 		public record struct State(string Name) : IServerObjectState;
 	}
 
-	public class GlobalCategory : IDSharpCategory
+	public class GlobalCategory : ServerObject, IDSharpCategory
 	{
 		private readonly DSharpServer baseServer;
 		private readonly CategoryRepository repository;
 		private RoutedEventTreeNode? routedEventTreeNode;
 
 
-		public GlobalCategory(DSharpServer baseServer, CategoryRepository repository)
+		public GlobalCategory(DSharpServer baseServer, CategoryRepository repository) : base(baseServer, baseServer.Id)
 		{
 			this.baseServer = baseServer;
 			this.repository = repository;
@@ -88,17 +96,9 @@ namespace DidiFrame.Clients.DSharp.Entities
 
 		public bool IsGlobal => true;
 
-		public string Name => string.Empty;
+		public override string Name => string.Empty;
 
-		public IServer Server => baseServer;
-
-		public bool IsExists => true;
-
-		public ulong Id => baseServer.Id;
-
-		public DateTimeOffset CreationTimeStamp => baseServer.CreationTimeStamp;
-
-		public DSharpServer BaseServer => baseServer;
+		public override bool IsExists => true;
 
 
 		public IAsyncDisposable Initialize()
@@ -108,29 +108,41 @@ namespace DidiFrame.Clients.DSharp.Entities
 			return new InitializationPostfix(this);
 		}
 
-		public void AddListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs
+		public override void AddListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler)
 			=> (routedEventTreeNode ?? throw new InvalidOperationException("Initialize object before use")).AddListener(routedEvent, handler);
 
-		public void RemoveListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler) where TEventArgs : notnull, EventArgs
+		public override void RemoveListener<TEventArgs>(RoutedEvent<TEventArgs> routedEvent, RoutedEventHandler<TEventArgs> handler)
 			=> (routedEventTreeNode ?? throw new InvalidOperationException("Initialize object before use")).RemoveListener(routedEvent, handler);
 
 		public TItem GetItem<TItem>(ulong id) where TItem : class, ICategoryItem => repository.GetItemIn<TItem>(id, this);
 
 		public IReadOnlyCollection<ICategoryItem> ListItems() => repository.GetItemsFor(this);
 
-		public ValueTask DeleteAsync()
+		public override ValueTask DeleteAsync()
 		{
 			throw new InvalidOperationException("Enable to delete global category");
 		}
 
-		public IChannelPermissions ManagePermissions()
+		public override ValueTask NotifyRepositoryThatDeletedAsync()
+		{
+			throw new InvalidOperationException("Enable to delete global category");
+		}
+
+		public ICategoryPermissions ManagePermissions()
 		{
 			throw new InvalidOperationException("Enable to manage permissions of global category");
 		}
 
-		public ValueTask RenameAsync(string newName)
+		public override ValueTask RenameAsync(string newName)
 		{
 			throw new InvalidOperationException("Enable to rename global category");
+		}
+
+		public ServerObject AsServerObject() => this;
+
+		public IChannelFabricator CreateChannel()
+		{
+			return new CategoryChannelFabricator(repository.ChannelRepository, BaseClient.DiscordOperationBroker, new DiscordOperationConfiguration(nameof(GlobalCategory), 0), this);
 		}
 
 		public override string ToString()
@@ -140,14 +152,11 @@ namespace DidiFrame.Clients.DSharp.Entities
 			else return $"Category({Id}) Global category";
 		}
 
-		Task<RoutedEventTreeNode> IDSharpCategory.CreateEventTreeNodeAsync(IServerObject serverObject)
+		RoutedEventTreeNode IDSharpCategory.CreateEventTreeNode(IServerObject serverObject)
 		{
-			return baseServer.BaseClient.ClientThreadQueue.AwaitDispatch(() =>
-			{
-				var node = new RoutedEventTreeNode(serverObject);
-				node.AttachParent(routedEventTreeNode);
-				return node;
-			});
+			var node = new RoutedEventTreeNode(serverObject);
+			node.AttachParent(routedEventTreeNode);
+			return node;
 		}
 
 		private sealed record InitializationPostfix(GlobalCategory Category) : IAsyncDisposable
@@ -160,11 +169,67 @@ namespace DidiFrame.Clients.DSharp.Entities
 		}
 	}
 
+	internal class CategoryChannelFabricator : IChannelFabricator
+	{
+		private readonly ChannelRepository channelRepository;
+		private readonly DiscordOperationBroker broker;
+		private readonly DiscordOperationConfiguration discordOperationConfiguration;
+		private readonly IDSharpCategory category;
+
+
+		public CategoryChannelFabricator(ChannelRepository channelRepository, DiscordOperationBroker broker, DiscordOperationConfiguration discordOperationConfiguration, IDSharpCategory category)
+		{
+			this.channelRepository = channelRepository;
+			this.broker = broker;
+			this.discordOperationConfiguration = discordOperationConfiguration;
+			this.category = category;
+		}
+
+
+		public ValueTask<IForumChannel> Forum(string name) => Create<IForumChannel>(name, (ChannelType)15);
+
+		public ValueTask<INewsChannel> News(string name) => Create<INewsChannel>(name, ChannelType.News);
+
+		public ValueTask<IStageChannel> Stage(string name) => Create<IStageChannel>(name, ChannelType.Stage);
+
+		public ValueTask<ITextChannel> Text(string name) => Create<ITextChannel>(name, ChannelType.Text);
+
+		public ValueTask<IVoiceChannel> Voice(string name) => Create<IVoiceChannel>(name, ChannelType.Voice);
+
+		private async ValueTask<TCast> Create<TCast>(string name, ChannelType type) where TCast : IChannel
+		{
+			IChannel? resultChannel = null;
+
+
+			await broker.OperateAsync(async () =>
+			{
+				DiscordChannel? parent = null;
+				if (category is Category nonGlobal)
+					parent = nonGlobal.AccessEntity();
+
+				return await category.BaseServer.BaseGuild.CreateChannelAsync(name, type, parent);
+			},
+
+			async (result) =>
+			{
+				resultChannel = await channelRepository.CreateAsync(result);
+			},
+
+			category.AsServerObject(),
+			
+			configuration: discordOperationConfiguration);
+
+			return (TCast)(resultChannel ?? throw new ImpossibleVariantException());
+		}
+	}
+
 	public interface IDSharpCategory : ICategory
 	{
 		public DSharpServer BaseServer { get; }
 
 
-		internal Task<RoutedEventTreeNode> CreateEventTreeNodeAsync(IServerObject serverObject);
+		public ServerObject AsServerObject();
+
+		internal RoutedEventTreeNode CreateEventTreeNode(IServerObject serverObject);
 	}
 }
